@@ -1,0 +1,131 @@
+.backgroundColor {
+    background-color: #fafafa;
+    height          : calc(100vh - 60px);
+
+
+    .container-left {
+        margin-top: 10px;
+
+
+        .contentProfile {
+
+            padding         : 16px;
+            width           : 250px;
+            border          : 1px solid rgb(192, 192, 192);
+            border-radius   : 4px;
+            background-color: white;
+            height          : 300px;
+            box-shadow      : 1px 1px 2px 1px #c5c5c5;
+
+            .fa-user-circle,
+            .fa-ticket-alt,
+            .fa-sign-out-alt {
+                font-size : 20px;
+                margin-top: 4px;
+                cursor    : pointer;
+            }
+
+            p {
+                font-size    : 18px;
+                margin-bottom: 15px;
+                cursor       : pointer;
+            }
+
+        }
+    }
+
+    .container-right {
+        margin-top: 10px;
+
+        .contentProfile {
+            padding         : 16px;
+            width           : 700px;
+            border          : 1px solid rgb(192, 192, 192);
+            border-radius   : 4px;
+            background-color: white;
+            height          : 550px;
+            box-shadow      : 1px 1px 2px 1px #c5c5c5;
+
+            .avatar-container {
+                // display: flex;
+                height: 200px;
+
+                .prev-img-container {
+                    // display: flex;
+
+
+
+                    .avatar {
+                        margin         : auto;
+                        border         : 1px solid black;
+                        height         : 150px;
+                        width          : 150px;
+                        border-radius  : 50%;
+                        background     : center center no-repeat;
+                        background-size: contain;
+
+                        // width          : 100%;
+                        .upload-avatar {
+                            margin-top : 113px;
+                            margin-left: 104px;
+
+                            .avatar-small {
+
+                                cursor: pointer;
+
+                                .border-edit {
+                                    border         : 1px solid black;
+                                    width          : 35px;
+                                    background     : #E4E6EB;
+                                    /* margin      : 10px; */
+                                    height         : 35px;
+                                    border-radius  : 50%;
+                                    display        : flex;
+                                    align-items    : center;
+                                    justify-content: center;
+                                    z-index        : 1;
+
+                                }
+
+                                // &:hover {
+                                //     opacity: 0.8;
+                                // }
+                            }
+                        }
+                    }
+                }
+
+
+            }
+
+            .save-info {
+                width : inherit;
+                margin: auto;
+            }
+
+            .change-password {
+                width : inherit;
+                margin: auto;
+            }
+        }
+    }
+}
+
+.active {
+    color: #1890ff;
+}
+
+.custom-password {
+    position: relative;
+
+    i {
+        position: absolute;
+        right   : 10px;
+        top     : 10px;
+        cursor  : pointer;
+    }
+}
+
+label {
+    margin-bottom: 5px;
+}

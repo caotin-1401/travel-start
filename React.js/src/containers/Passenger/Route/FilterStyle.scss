@@ -1,0 +1,41 @@
+.filter .boloctimkiem {
+  font-weight: 500;
+}
+.filter .xoaloc {
+  font-size: 14px;
+  color: rgb(0, 96, 196);
+  cursor: pointer;
+}
+.filter .filter_content {
+  padding: 15px;
+  border: 1px solid rgb(192, 192, 192);
+}
+.filter .filter_rate i {
+  margin-right: 3px;
+}
+@media (max-width: 1050px) {
+  .filter,
+  .filter h6,
+  .filter input::placeholder,
+  .filter span.xoaloc,
+  .filter input {
+    font-size: 10px;
+  }
+  .filter_content {
+    // width: 160px;
+  }
+  .trip_content .filter {
+    // max-width: 18%;
+  }
+}
+@media (max-width: 850px) {
+  .filter .filter_content {
+    padding: 3px;
+  }
+}
+
+@media (max-width: 576px) {
+  .filter {
+    display: none;
+  }
+}

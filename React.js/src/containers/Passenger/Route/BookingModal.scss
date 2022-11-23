@@ -1,0 +1,331 @@
+.booking_content {
+    display       : flex;
+    padding-bottom: 20px;
+    border-bottom : 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.booking_note {
+    margin-right: 35px;
+    margin-top  : 5px;
+}
+
+.booking_icon_item {
+    margin-bottom: 10px;
+}
+
+.booking_icon_item span {
+    margin-left: 10px;
+}
+
+.booking_icon_booked {
+    color: red;
+}
+
+.booking_icon_choosing {
+    color: rgb(24, 97, 197);
+}
+
+.booking_detail {
+    margin          : 20px 0 0 150px;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding         : 20px;
+    border-radius   : 20px;
+}
+
+* {
+    padding    : 0;
+    margin     : 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing : border-box;
+}
+
+div.steps-content {
+    padding-top: 20px !important;
+}
+
+.ant-select-selection-placeholder {
+    font-size: 19px;
+}
+
+.ant-select-selector {
+    height: 55px !important;
+}
+
+.ant-select-selection-search-input {
+    margin-top: 10px;
+}
+
+.ant-select-selection-placeholder {
+    padding: 6px !important;
+}
+
+.ant-picker-large {
+    padding: 11.7px 6.5px !important;
+}
+
+.ant-picker-large .ant-picker-input>input {
+    font-size: 19px !important;
+}
+
+.btn--search {
+    background-color: #f8ae00 !important;
+}
+
+.btn--search {
+    height: 55px !important;
+}
+
+.btn--search>span {
+    font-size  : 18px;
+    font-weight: bold;
+}
+
+.btn--search:hover,
+.btn--search:focus {
+    color: black !important;
+}
+
+.ant-timeline-item-content {
+    display: flex;
+    width  : 100%;
+}
+
+.booking-form {
+    width: 65%;
+}
+
+.seat__groups {
+    text-align : left;
+    position   : absolute;
+    left       : 20%;
+    top        : 12%;
+    line-height: 3;
+}
+
+.seat__groups .seat__note {
+    font-size  : 16px;
+    font-weight: bold;
+    position   : absolute;
+    left       : -80%;
+    top        : -20%;
+}
+
+.seat__groups .seat__info {
+    margin: 20px 0px;
+}
+
+.seat__groups .seat__info .seat__info--empty {
+    width   : 40px;
+    height  : 40px;
+    position: absolute;
+    top     : 11%;
+    left    : -80%;
+    border  : 1px solid red;
+    z-index : 3;
+}
+
+.seat__groups .seat__info .seat__info--booked {
+    width           : 40px;
+    height          : 40px;
+    position        : absolute;
+    left            : -80%;
+    background-color: #767676;
+    z-index         : 3;
+    top             : 41%;
+}
+
+.seat__groups .seat__info .seat__info--select {
+    width           : 40px;
+    height          : 40px;
+    position        : absolute;
+    left            : -80%;
+    background-color: #5090e9;
+    z-index         : 3;
+    top             : 72%;
+}
+
+.seat__select {
+    background: #5090e9 !important;
+    border    : none !important;
+}
+
+.seat__unSelect {
+    background: white;
+}
+
+.seat__selecting {
+    display        : flex;
+    justify-content: center;
+    font-weight    : bold;
+    color          : #981a1e;
+}
+
+.seat__selecting .seat__selecting--item {
+    padding-right: 7px;
+}
+
+.trip .trip__item {
+    margin-left: 50px;
+}
+
+.trip .trip__item .trip__item__from-to {
+    font-size : 18px;
+    flex-basis: 50%;
+}
+
+.trip .trip__item .trip__item__from-to .trip__item--day {
+    margin-top: 5px;
+    font-size : 16px;
+    opacity   : 0.8;
+}
+
+.trip .trip__item .trip__item__price {
+    font-size : 20px;
+    flex-basis: 12%;
+}
+
+.trip .trip__item .trip__item__btn {
+    flex-basis: 25%;
+}
+
+
+.floor1 {
+    margin-top      : 10px;
+    display         : flex;
+    flex-wrap       : wrap;
+    width           : 200px;
+    background-color: #E6E6E6;
+    padding         : 20px 10px 10px 10px;
+    border-radius   : 18px 18px 5px 5px;
+}
+
+.floor2 {
+    margin-top      : 10px;
+    display         : flex;
+    flex-wrap       : wrap;
+    width           : 200px;
+    background-color: #E6E6E6;
+    padding         : 20px 10px 10px 10px;
+    border-radius   : 18px 18px 5px 5px;
+    margin-left     : 18px;
+}
+
+.driver {
+    margin-left: 10px;
+    font-weight: 700;
+}
+
+.driver_none {
+    margin-left: 10px;
+    font-weight: 700;
+    height     : 21px;
+}
+
+.w-17 {
+    width: 17%;
+}
+
+
+.seat_last {
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    background-color: white;
+    border          : 1px solid red;
+    margin          : 5px;
+    width           : 30px;
+    height          : 33px;
+    cursor          : pointer;
+}
+
+.seat_last_5 {
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    background-color: white;
+    border          : 1px solid red;
+    margin          : 5px;
+    height          : 33px;
+    cursor          : pointer;
+}
+
+.background_16 {
+    margin-top      : 10px;
+    display         : flex;
+    flex-wrap       : wrap;
+    width           : 270px;
+    height          : 120%;
+    background-color: #E6E6E6;
+    padding         : 20px 10px 10px 10px;
+    border-radius   : 18px 18px 5px 5px;
+
+}
+
+.background_22 {
+    margin-top      : 10px;
+    display         : flex;
+    flex-wrap       : wrap;
+    width           : 150px;
+    background-color: #E6E6E6;
+    padding         : 20px 10px 10px 10px;
+    border-radius   : 18px 18px 5px 5px;
+
+}
+
+.background_28 {
+    display         : flex;
+    flex-wrap       : wrap;
+    width           : 250px;
+    background-color: #E6E6E6;
+    padding         : 10px 10px 10px 10px;
+    border-radius   : 18px 18px 5px 5px;
+
+}
+
+.fcc {
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+}
+
+.driver_16 {
+    padding-left: 20px;
+    padding-top : 10px;
+    font-weight : 700;
+}
+
+.display_none {
+    width  : 0;
+    height : 0;
+    display: none;
+}
+
+.seat_16 {
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    border         : 1px solid red;
+    width          : 35px;
+    margin         : 5px;
+    height         : 40px;
+}
+
+.seat_22 {
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    border         : 1px solid red;
+    width          : 30px;
+    margin         : 5px;
+    height         : 33px;
+}
+
+.seat_28 {
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    border         : 1px solid red;
+    width          : 30px;
+    margin         : 5px;
+    height         : 27px;
+}

@@ -1,0 +1,121 @@
+.login-background {
+    height         : 100vh;
+    background     : url("../../assets/login.jpg") no-repeat;
+    background-size: cover;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+
+
+    .login-container {
+        margin          : 10px;
+        border          : 1px solid red;
+        width           : 400px;
+        height          : auto;
+        // margin: 0 auto;
+        border-radius   : 20px;
+        background-color: #FFF8F6;
+        box-shadow      : 0 0 30px #bebebe;
+
+
+        .login-content {
+            padding: 20px 50px;
+
+            .text-login {
+                text-align : center;
+                font-size  : 30px;
+                font-weight: 600;
+                padding    : 10px 0 20px 0;
+            }
+
+            .login-input {
+                margin: 7px 0;
+
+                .custom-password {
+                    position: relative;
+
+                    i {
+                        position: absolute;
+                        right   : 10px;
+                        top     : 10px;
+                        cursor  : pointer;
+                    }
+                }
+
+                label {
+                    margin-bottom: 5px;
+                }
+            }
+
+            .logostyle {
+                text-align    : center;
+                // padding-top: 10px;            
+
+                img {
+                    width: 50%;
+                }
+            }
+
+            .btn-login {
+                width           : 100%;
+                margin          : 10px 0;
+                height          : 35px;
+                border-radius   : 5px;
+                outline         : none;
+                border          : none;
+                background-color: #0D6EFD;
+                color           : #fff;
+                font-size       : 17px;
+            }
+
+            .btn-login:hover {
+                opacity: 0.7;
+
+            }
+
+            .forgot-pass {
+                font-size: 12px;
+            }
+
+            .social-login {
+                display        : flex;
+                align-items    : center;
+                justify-content: center;
+
+                .google {
+                    font-size       : 20px;
+                    background-color: #DD3646;
+                    border-radius   : 50%;
+                    width           : 40px;
+                    height          : 40px;
+                    color           : white;
+                    display         : flex;
+                    align-items     : center;
+                    justify-content : center;
+                    margin-right    : 10px;
+                }
+
+                .facebook {
+                    font-size       : 20px;
+                    background-color: #3B5998;
+                    border-radius   : 50%;
+                    width           : 40px;
+                    height          : 40px;
+                    color           : white;
+                    display         : flex;
+                    align-items     : center;
+                    justify-content : center;
+                    margin-left     : 10px;
+                }
+            }
+
+        }
+
+    }
+
+    img {
+        width   : 100%;
+        z-index : 0;
+        position: relative;
+    }
+}

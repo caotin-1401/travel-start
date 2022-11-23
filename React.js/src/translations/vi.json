@@ -1,0 +1,113 @@
+{
+    "header": {
+        "home": "TRANG CHỦ",
+        "search-bus": "TÌM XE",
+        "events": "SỰ KIỆN",
+        "supports": "Hỗ trợ",
+        "sologan": "Tìm kiếm các ưu đãi vé xe tốt nhất",
+        "destination": "Điểm đến",
+        "place-of-departure": "Điểm đón",
+        "date": "Chọn ngày",
+        "search": "Tìm vé",
+        "routes": "Tuyến đường phổ biến",
+        "more": "Xem thêm",
+        "promotion": "Khuyến mãi đặc biệt",
+
+        "welcome": "Xin chào, "
+
+    },
+    "FAQ": {
+        "header": "Các câu hỏi thường gặp",
+        "header1":"TravelStart là gì",
+        "title1":"TravelStart giúp bạn đặt vé xe một cách tốt nhất ",
+        "header2":"Làm cách nào để hoàn tất việc đặt vé tàu trực tuyến với TravelStart?",
+        "title2":"Việc đặt vé tàu trực tuyến có thể hoàn tất dễ dàng chỉ trong vài bước đơn giản. Nếu bạn đang ở trang chủ, hãy nhập địa điểm đi và điểm đến cùng với ngày đi. Sau khi hoàn tất, danh sách các chuyến tàu hoạt động trên tuyến đường của bạn sẽ được hiển thị và nhập thông tin chi tiết của hành khách và hoàn tất thanh toán. Bạn có thể tải xuống vé và hóa đơn sau khi thanh toán của bạn đã được xử lý.",
+        "header3":"Tôi có cần tạo tài khoản TravelStart không?",
+        "title3":"Có, và điều này có lợi thế của nó. Điều này sẽ giúp đẩy nhanh quá trình đặt vé khi bạn phải nhập thông tin chi tiết về hành khách và trong khi hoàn tất quá trình thanh toán.",
+        "header4":"Có bất kỳ khoản phí hủy nào được tính khi vé bị hủy không?",
+        "title4":"Chính sách hủy bỏ là cụ thể cho của từng nhà xe và được liệt kê dựa trên trang báo giá.",
+        "header5":"Tôi nên làm gì nếu gặp bất kỳ vấn đề gì khi đặt vé xe ?",
+        "title5":" Đây là một điều rất hiếm khi xảy ra. Tuy nhiên, nếu bạn gặp phải bất kỳ vấn đề gì khi đặt vé xe buýt với chúng tôi, vui lòng liên hệ với chúng tôi theo địa chỉ feedback@gmail.com hoặc gửi phản hồi cho chúng tôi bằng cách sử dụng phần 'Nhận trợ giúp' & 'Đưa ra phản hồi' trên Trang web & Ứng dụng .",
+        "header6":"Điều gì xảy ra nếu xe bị hỏng?",
+        "title6":"Vì chúng tôi làm việc với các nhà xe tốt nhất,nên các phương tiện thường đáng tin cậy. Trong trường hợp hỏng hóc, người điều khiển có trách nhiệm thay thế phương tiện trong suốt hành trình."
+
+    },
+    "menu": {
+        "admin": {
+            "dashboard": "Bảng điều khiển",
+            "manage-user": "Người dùng",
+            "manage-doctor": "Quản lý bác sĩ",
+            "manage-admin": "Quản lý admin",
+            "crud": "CRUD user",
+            "crud-redux": "CRUD-redux",
+            "user-manage": "Quan ly nguoiw dung",
+            "clinic": "Phòng khám",
+            "services": "Quản lý dịch vụ",
+            "parking": "Bãi đậu xe",
+            "parking-lot": "Quản lý bãi đậu xe",
+            "list-vehicle": "Quản lý phương tiện",
+            "manage-busOnwer": "Quản lý nhà xe",
+            "manage-driver": "Quản lý tài xế",
+            "handbook": "Cẩm nang",
+            "blog": "Quản lý cẩm nang",
+            "list-bus": "Danh sách loại xe",
+            "location": "Danh sách bến xe",
+            "route":"Danh sách tuyến đường",
+            "event":"Sự kiện",
+            "discount":"Mã giảm giá",
+            "promotions":"Khuyến mãi",
+            "listBusType":{
+                "title": "Quản lý danh sách các loại xe",
+                "name": "Tên loại xe ",
+                "num": "Tổng số chỗ ngồi",
+                "action": "Thao tác"
+            },
+            "listLocations":{
+                "title": "Quản lý danh sách các bến xe",
+                "name": "Tên bến xe",
+                "city": "Tỉnh / thành phố",
+                "address": "Địa chỉ",
+                "action": "Thao tác"
+            },
+            "listRoute":{
+                "title": "Quản lý danh sách tuyến xe",
+                "name": "Tên tuyến xe",
+                "chooseStart": "Chọn bến khởi hành",
+                "chooseEnd":"Chọn bến kết thúc",
+                "start": "Bến khởi hành",
+                "end":"Bến kết thúc",
+                "action": "Thao tác"
+            }
+        },
+        "busOwner": {
+            "dashboard": "Bảng điều khiển",
+            "manage-bus":"Phương tiện",
+            "bus": "Quản lý phương tiện",
+            "driver": "Quản lý tài xế",
+            "events": "Sự Kiện",
+            "event": "Quản lý sự kiện",
+            "parking":"Bãi đậu xe",
+            "parking-lot": "Quản lý bãi đậu xe",
+            "routes": "Tuyến đường",
+            "route": "Quản lý tuyến đường",
+            "vehicle":{
+                "title": "Quản lý danh sách xe",
+                "bsx": "Biển số xe",
+                "type-seat": "Loại xe - Số chỗ ngồi",
+                "img": "Ảnh",
+                "type": "Loại xe",
+                "seat": "Tổng số ghế",
+                "upload": "Tải ảnh",
+                "name": "Tên nhà xe"
+            }
+        },
+        "driver": {
+            
+        }
+    },
+    "manage-user":{
+        "add": "Thêm mới người dùng",
+        "save": "Thêm mới",
+        "edit": "Chỉnh sửa"
+    }
+}

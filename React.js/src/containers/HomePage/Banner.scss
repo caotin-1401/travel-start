@@ -1,0 +1,102 @@
+.home-header-banner {
+    background         : url('../../assets/background.jpg');
+    background-size    : cover;
+    background-repeat  : no-repeat;
+    background-position: center;
+    height             : 685px;
+    transition         : all 200ms ease 0s;
+    width              : 100%;
+    display            : flex;
+    align-items        : center;
+    justify-content    : center;
+    padding-bottom     : 120px;
+
+    .banner {
+        //    width: 100%;
+
+        h1 {
+            color          : white;
+            font-size      : 50px;
+            display        : flex;
+            align-items    : flex-end;
+            justify-content: center;
+            margin-bottom  : 15px;
+            text-shadow    : 2px 2px 2px #333;
+        }
+
+        p {
+            font-size    : 30px;
+            font-weight  : 500;
+            margin-bottom: 0px;
+            color        : white;
+            text-align   : center;
+            line-height  : 1;
+            white-space  : nowrap;
+            margin-bottom: 30px;
+            text-shadow  : 2px 2px 2px #333;
+        }
+
+        .searchGroup {
+            display: flex;
+
+            .inputSearch {
+                position: relative;
+                display : flex;
+
+                .inputItem {
+                    border          : 1px solid black;
+                    width           : fit-content;
+                    display         : flex;
+                    justify-content : center;
+                    margin          : 0 auto;
+                    align-items     : center;
+                    padding         : 10px;
+                    background-color: white;
+
+                    .fas {
+                        margin   : 5px;
+                        font-size: 20px;
+                    }
+
+                    .far {
+                        margin   : 5px;
+                        font-size: 20px;
+                    }
+
+                    input {
+                        border : none !important;
+                        outline: none;
+                    }
+                }
+
+                .item1 {
+                    border-radius: 5px 0 0 5px;
+                }
+            }
+
+            .search {
+                height: 58px;
+
+                button {
+                    height          : 100%;
+                    width           : 140px;
+                    background-color: #007BFF;
+                    color           : white;
+                    font-size       : 20px;
+                    font-weight     : 600;
+                    border          : 1px solid black;
+                    border-radius   : 0 5px 5px 0;
+                }
+            }
+
+
+
+
+
+        }
+    }
+}
+
+.test {
+    height: 1000px;
+}

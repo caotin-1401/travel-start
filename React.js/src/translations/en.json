@@ -1,0 +1,109 @@
+{
+    "header": {
+        "home": "HOME",
+        "search-bus": "SEARCH",
+        "events": "EVENTS",
+        "supports": "Supports",
+        "sologan": "Search for the best bus ticket deals",
+        "destination": "Destination",
+        "place-of-departure": "Place of departure",
+        "date": "Choose a date",
+        "search": "Search",
+        "routes": "Popular routes",
+        "more": "More",
+        "promotion": "Promotions",
+
+        "welcome": "welcome, "
+    },
+    "FAQ": {
+        "header": "Frequently Asked Questions",
+        "header1": "What is TravelStart",
+        "title1": "TravelStart helps you to book bus tickets in the best way",
+        "header2": "How can I complete an online train ticket booking with TravelStart",
+        "title2": "Booking a train ticket online can be completed with ease in just a few simple steps. If you are on the homepage, enter the source and destination locations along with the date of travel. Once done, a list of trains operating on your route will be displayed. Select the train and class of your choice, ane enter the details of the passenger and complete the payment. You can download the ticket and the invoice once your payment has been processed.",
+        "header3": "Do I need to make an account to make an IRCTC train ticket booking online?",
+        "title3": "Yes, and this has its advantages. This would help expedite the booking process when you have to enter details about the passenger and while completing the payment process.",
+        "header4": "What if I need to cancel my trip?",
+        "title4": "The cancellation policy is specific to each operator and is listed against the quotes on the quotations page.",
+        "header5": "What should I do if I face any problems while TravelStart tickets?",
+        "title5": "This is a very rare occurrence. However, if you face any problem/s while booking your bus tickets with us, please reach out to us on feedback@gmail.com or send us a feedback using the ‘Get Help’ & ‘Give Feedback’ sections on the Website & App.",
+        "header6": "What happens if the vehicle breaks down?",
+        "title6": "Since we work with the best operators, the vehicles are usually reliable. In case of a breakdown, it is the operator's responsibility to replace the vehicle during the journey."
+    },
+    "menu": {
+        "admin": {
+            "dashboard": "Dashboard",
+            "manage-user": "Users System",
+            "manage-doctor": "Manage Doctors",
+            "manage-admin": "Manage Admins",
+            "crud": "CRUD user",
+            "crud-redux": "CRUD-redux",
+            "user-manage": "Manage Users",
+            "clinic": "Clinics",
+            "services": "Services",
+            "parking": "Parking",
+            "parking-lot": "Parking Lot",
+            "list-vehicle": "List Bus",
+            "manage-busOnwer": "Manage BusOnwer",
+            "manage-driver": "Manage Driver",
+            "handbook": "Handbooks",
+            "blog": "Manage handbooks",
+            "list-bus": "List Bus",
+            "location": "List Location",
+            "route": "List Route",
+            "event": "Events",
+            "discount": "Discounts",
+            "promotions": "Promotions",
+            "listBusType": {
+                "title": "Manage list of vehicles",
+                "name": "Name",
+                "num": "Totals number seats",
+                "action": "Action"
+            },
+            "listLocations": {
+                "title": "Manage the list of bus stations",
+                "name": "Bus station name",
+                "city": "Province / city",
+                "address": "Address",
+                "action": "Action"
+            },
+            "listRoute": {
+                "title": "Manage the list of bus routes",
+                "name": "Route name",
+                "chooseStart": "Choose departure station",
+                "chooseEnd": "Choose the ending station",
+                "start": "Departure station",
+                "end": "End station",
+                "action": "Action"
+            }
+        },
+        "busOwner": {
+            "dashboard": "Dashboard",
+            "manage-bus": "Manage Bus",
+            "bus": "Manage Bus",
+            "driver": "Manage Driver",
+            "events": "Event",
+            "event": "Manage Event",
+            "parking": "Parking",
+            "parking-lot": "Manage Parking",
+            "routes": "Routes",
+            "route": "Manage Route",
+            "vehicle": {
+                "title": "Manage vehicle list",
+                "bsx": "License plates",
+                "type-seat": "Vehicle type - Number of seats",
+                "img": "Image",
+                "type": "Range of vehicle",
+                "seat": "Total number of seats",
+                "upload": "Upload",
+                "name": "transport service name"
+            }
+        },
+        "driver": {}
+    },
+    "manage-user": {
+        "add": "Add",
+        "save": "Add new",
+        "edit": "Edit"
+    }
+}
