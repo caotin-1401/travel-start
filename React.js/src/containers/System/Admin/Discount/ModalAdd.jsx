@@ -247,6 +247,7 @@ class ModalAdd extends Component {
             return;
         } else {
             let endDate = +endDatetest + 86399000;
+            let use = 0;
             let res = await createNewCouponService({
                 name,
                 startDate,
@@ -255,6 +256,7 @@ class ModalAdd extends Component {
                 discountMax,
                 sumMoneyCondition,
                 count,
+                use,
                 description,
                 descriptionMarkdown,
                 eventId: selectEvent.value,

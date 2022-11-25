@@ -6,15 +6,23 @@ import Navigator from "../../components/Navigator";
 import HeaderPage from "../HomePage/Header";
 import { adminMenu, busOwnerMenu, driverMenu } from "./menuApp";
 import "./Header.scss";
+import { withRouter } from "react-router";
 import { LANGUAGES, USER_ROLE } from "../../utils";
 import { FormattedMessage } from "react-intl";
 import _ from "lodash";
-
+import {
+    Dropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+} from "reactstrap";
 class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
             menuApp: [],
+            info: "",
+            dropdownOpen: false,
         };
     }
 
@@ -25,6 +33,7 @@ class Header extends Component {
     componentDidMount() {
         let { userInfo } = this.props;
         let menu = [];
+        this.setState({ info: this.props.userInfo });
         if (userInfo && !_.isEmpty(userInfo)) {
             let role = userInfo.roleID;
             if (role === USER_ROLE.ADMIN) {
@@ -42,8 +51,36 @@ class Header extends Component {
         });
     }
 
+    toggle = () => {
+        this.setState({
+            dropdownOpen: !this.state.dropdownOpen,
+        });
+    };
+    handleProfile = () => {
+        let { info } = this.state;
+        console.log(info);
+        if (info && info.roleID === "R1") {
+            if (this.props.history) {
+                this.props.history.push(`/profile/admin/userId=${info.id}`);
+            }
+        } else if (info && info.roleID === "R2") {
+            if (this.props.history) {
+                this.props.history.push(`/profile/busOwner/userId=${info.id}`);
+            }
+        } else if (info && info.roleID === "R3") {
+            if (this.props.history) {
+                this.props.history.push(`/profile/driver/userId=${info.id}`);
+            }
+        }
+    };
     render() {
         const { processLogout, language, userInfo } = this.props;
+        let { info, dropdownOpen } = this.state;
+        console.log(info);
+        let username = "a b";
+        info && info.name && (username = info.name);
+        let test = username.split(" ").reverse();
+        let name = test[0];
         if (userInfo && !_.isEmpty(userInfo)) {
             let role = userInfo.roleID;
             if (
@@ -57,92 +94,64 @@ class Header extends Component {
                             <Navigator menus={this.state.menuApp} />
                         </div>
 
-                        <div className="languages">
-                            <span className="welcome">
-                                <FormattedMessage id="header.welcome" />
-                                {userInfo && userInfo.name ? userInfo.name : ""}
-                                !
-                            </span>
-                            <span
-                                onClick={() =>
-                                    this.changeLanguage(LANGUAGES.VI)
-                                }
+                        <div className="right-content">
+                            <div
                                 className={
                                     language === LANGUAGES.VI
                                         ? "language-vi active"
                                         : "language-vi"
                                 }>
-                                VI
-                            </span>
-
-                            <span
-                                onClick={() =>
-                                    this.changeLanguage(LANGUAGES.EN)
-                                }
+                                <span
+                                    onClick={() =>
+                                        this.changeLanguage(LANGUAGES.VI)
+                                    }>
+                                    VI
+                                </span>
+                            </div>
+                            <div
                                 className={
                                     language === LANGUAGES.VI
                                         ? "language-en "
                                         : "language-en active"
                                 }>
-                                EN
-                            </span>
-
-                            <div
-                                className="btn btn-logout"
-                                onClick={processLogout}
-                                title="Log out">
-                                <i className="fas fa-sign-out-alt"></i>
+                                <span
+                                    onClick={() =>
+                                        this.changeLanguage(LANGUAGES.EN)
+                                    }>
+                                    EN
+                                </span>
                             </div>
+
+                            <Dropdown
+                                isOpen={dropdownOpen}
+                                toggle={this.toggle}>
+                                <DropdownToggle caret color="primary">
+                                    <i className="fas fa-user-circle"></i>{" "}
+                                    {name}
+                                </DropdownToggle>
+                                <DropdownMenu>
+                                    <DropdownItem onClick={this.handleProfile}>
+                                        <i className="fas fa-user-circle"></i>{" "}
+                                        Thông tin tài khoản
+                                    </DropdownItem>
+
+                                    <DropdownItem divider />
+                                    <DropdownItem>
+                                        <div
+                                            onClick={processLogout}
+                                            title="Log out">
+                                            <i className="fas fa-sign-out-alt"></i>{" "}
+                                            Đăng xuất
+                                        </div>
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
                         </div>
                         {/* nút logout */}
                     </div>
                 );
             }
         }
-        // else {
-        //     return (
-        //         <div className="header-container">
-        //             <div className="header-tabs-container">
-        //                 <HeaderPage />
-        //             </div>
-
-        //             <div className="languages">
-        //                 <span className="welcome">
-        //                     <FormattedMessage id="header.welcome" />
-        //                     {userInfo && userInfo.name ? userInfo.name : ""}!
-        //                 </span>
-        //                 <span
-        //                     onClick={() => this.changeLanguage(LANGUAGES.VI)}
-        //                     className={
-        //                         language === LANGUAGES.VI
-        //                             ? "language-vi active"
-        //                             : "language-vi"
-        //                     }>
-        //                     VI
-        //                 </span>
-
-        //                 <span
-        //                     onClick={() => this.changeLanguage(LANGUAGES.EN)}
-        //                     className={
-        //                         language === LANGUAGES.VI
-        //                             ? "language-en "
-        //                             : "language-en active"
-        //                     }>
-        //                     EN
-        //                 </span>
-
-        //                 <div
-        //                     className="btn btn-logout"
-        //                     onClick={processLogout}
-        //                     title="Log out">
-        //                     <i className="fas fa-sign-out-alt"></i>
-        //                 </div>
-        //             </div>
-        //             {/* nút logout */}
-        //         </div>
-        //     );
-        // }
-        // let language = this.props.language;
     }
 }
 
@@ -162,4 +171,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header));

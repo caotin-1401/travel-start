@@ -683,10 +683,7 @@ class TableDiscount extends Component {
                                                 ).format(
                                                     "ddd  DD-MM-YYYY  HH:mm"
                                                 );
-                                                let use;
-                                                if (user.use === null) {
-                                                    use = 0;
-                                                }
+
                                                 return (
                                                     <tr key={index}>
                                                         <td>{user.id}</td>
@@ -694,7 +691,7 @@ class TableDiscount extends Component {
                                                         <td>{user.name}</td>
                                                         <td>{user.discount}</td>
                                                         <td>{user.count}</td>
-                                                        <td>{use}</td>
+                                                        <td>{user.use}</td>
                                                         <td>{start}</td>
                                                         <td>{end}</td>
                                                         <td>

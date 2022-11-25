@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Row, Col } from "reactstrap";
 import {
-    useCouponService,
     getUseCouponService,
+    getAllUsers,
 } from "../../../services/userService";
 
 class Step3 extends Component {
@@ -18,6 +18,8 @@ class Step3 extends Component {
             discount: 0,
             discountMax: 0,
             type: "",
+            errMessage: "",
+            infoUser: {},
         };
     }
 
@@ -31,16 +33,18 @@ class Step3 extends Component {
     async componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.coupon !== this.state.coupon) {
             let res = await getUseCouponService(this.state.coupon);
-            this.setState({ inFoCoupon: res.coupons });
+            if (res && res.coupons) {
+                this.setState({ inFoCoupon: res.coupons });
+            }
+        }
+        if (prevState.inFoCoupon !== this.state.inFoCoupon) {
+            this.setState({ errMessage: "", discount: 0 });
         }
     }
     currencyFormat(num) {
         return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
     }
-    fetchCoupon = async () => {
-        let { coupon } = this.state;
-        let res = await getUseCouponService(coupon);
-    };
+
     onChangeInput = (event, id) => {
         let copyState = { ...this.state };
         copyState[id] = event.target.value.toUpperCase();
@@ -56,8 +60,10 @@ class Step3 extends Component {
             discount,
             discountMax,
             type,
+            errMessage,
+            infoUser,
         } = this.state;
-        console.log(inFoCoupon);
+
         inFoCoupon && inFoCoupon.length > 0
             ? (discount = inFoCoupon[0].discount)
             : (discount = 0);
@@ -67,38 +73,136 @@ class Step3 extends Component {
         inFoCoupon && inFoCoupon.length > 0
             ? (discountMax = inFoCoupon[0].discountMax)
             : (discount = 0);
-        if (type == "2") {
-            finalPrice = totalPrice - +discount;
+
+        if (inFoCoupon && inFoCoupon.length > 0) {
+            if (
+                inFoCoupon &&
+                inFoCoupon[0].Event &&
+                inFoCoupon[0].Event.id !== 6
+            ) {
+                let current = new Date().getTime();
+
+                if (current < inFoCoupon[0].startDate) {
+                    errMessage = "Mã giảm giá chưa tới thời gian sử dụng";
+                } else if (current > inFoCoupon[0].endDate) {
+                    errMessage = "Mã giảm giá đã hết thời gian sử dụng";
+                } else if (inFoCoupon[0].use == inFoCoupon[0].count) {
+                    errMessage = "Mã giảm giả đã hết";
+                } else if (type == "2") {
+                    finalPrice = totalPrice - +discount;
+                } else {
+                    if ((totalPrice * +discount) / 100 > discountMax)
+                        finalPrice = totalPrice - +discountMax;
+                    else
+                        finalPrice =
+                            totalPrice - (totalPrice * +discount) / 100;
+                }
+                if (finalPrice < 0) finalPrice = 0;
+                else {
+                    finalPrice = finalPrice;
+                }
+                if (errMessage) {
+                    this.setState({
+                        errMessage,
+                    });
+                } else
+                    this.setState(
+                        {
+                            finalPrice,
+                            discount,
+                            discountMax,
+                            type,
+                        },
+                        this.props.parentCallback(inFoCoupon, finalPrice)
+                    );
+            } else {
+                let id;
+                this.props.userInfo && (id = this.props.userInfo.id);
+                let resUser = await getAllUsers(id);
+                if (resUser) {
+                    if (resUser.users) {
+                        if (!resUser.users.isFirst) {
+                            let current = new Date().getTime();
+                            if (current < inFoCoupon[0].startDate) {
+                                errMessage =
+                                    "Mã giảm giá chưa tới thời gian sử dụng";
+                            } else if (current > inFoCoupon[0].endDate) {
+                                errMessage =
+                                    "Mã giảm giá đã hết thời gian sử dụng";
+                            } else if (
+                                inFoCoupon[0].use == inFoCoupon[0].count
+                            ) {
+                                errMessage = "Mã giảm giả đã hết";
+                            } else if (type == "2") {
+                                finalPrice = totalPrice - +discount;
+                            } else {
+                                if (
+                                    (totalPrice * +discount) / 100 >
+                                    discountMax
+                                )
+                                    finalPrice = totalPrice - +discountMax;
+                                else
+                                    finalPrice =
+                                        totalPrice -
+                                        (totalPrice * +discount) / 100;
+                            }
+                            if (finalPrice < 0) finalPrice = 0;
+                            else {
+                                finalPrice = finalPrice;
+                            }
+                            if (errMessage) {
+                                this.setState({
+                                    errMessage,
+                                });
+                            } else {
+                                infoUser = {
+                                    id: resUser.users.id,
+                                    isFirst: 1,
+                                };
+                                console.log(infoUser);
+                                this.setState(
+                                    {
+                                        finalPrice,
+                                        discount,
+                                        discountMax,
+                                        type,
+                                        infoUser,
+                                    },
+                                    () => {
+                                        console.log("info >>>:", infoUser);
+                                        this.props.parentCallback(
+                                            inFoCoupon,
+                                            finalPrice,
+                                            infoUser
+                                        );
+                                    }
+                                );
+                            }
+                        } else {
+                            errMessage =
+                                "Bạn đã sử dụng mã giảm giá lần đầu rồi ";
+                            this.setState({
+                                errMessage,
+                            });
+                        }
+                    }
+                }
+            }
         } else {
-            if (totalPrice.discount > discountMax)
-                finalPrice = totalPrice - +discountMax;
-            else finalPrice = totalPrice - +discount;
+            errMessage = "Mã giảm giá không tồn tại ";
+            this.setState({
+                errMessage,
+            });
         }
-        if (finalPrice < 0) finalPrice = 0;
-        else {
-            finalPrice = finalPrice;
+    };
+    handleKeyDown = (e) => {
+        if (e.key === "Enter" || e.keyCode === 13) {
+            this.handleBlur();
         }
-        this.setState(
-            {
-                finalPrice,
-                discount,
-                discountMax,
-                type,
-            },
-            this.props.parentCallback(inFoCoupon, finalPrice)
-        );
     };
     render() {
-        let {
-            seatArr,
-            totalPrice,
-            coupon,
-            finalPrice,
-            discount,
-            discountMax,
-            type,
-        } = this.state;
-
+        let { seatArr, totalPrice, coupon, finalPrice, discount, errMessage } =
+            this.state;
         return (
             <div className="container">
                 <div
@@ -146,6 +250,7 @@ class Step3 extends Component {
                                     Nhap ma khuyen mai :
                                 </label>
                             </Col>
+
                             <Col md={7}>
                                 <input
                                     value={coupon}
@@ -153,9 +258,17 @@ class Step3 extends Component {
                                         this.onChangeInput(event, "coupon");
                                     }}
                                     onBlur={this.handleBlur}
+                                    onKeyDown={this.handleKeyDown}
                                     id="coupon"
                                     className="form-control mb-4 h-38 "
                                 />
+                                <Row>
+                                    <div
+                                        style={{ color: "red" }}
+                                        className="mb-4">
+                                        {errMessage}
+                                    </div>
+                                </Row>
                             </Col>
                         </Row>
                         <Row className="mb-4">
@@ -197,7 +310,7 @@ class Step3 extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return { userInfo: state.user.userInfo };
 };
 const mapDispatchToProps = (dispatch) => {
     return {};

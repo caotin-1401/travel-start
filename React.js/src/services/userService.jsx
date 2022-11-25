@@ -39,6 +39,9 @@ const editUserService = (inputData) => {
 const changePasswordService = (inputData) => {
     return axios.put("/api/change-password", inputData);
 };
+const changeUserFirstCouponService = (inputData) => {
+    return axios.put("/api/use-coupon-isFirst", inputData);
+};
 
 const getAllCodeService = (inputType) => {
     return axios.get(`/api/allcode?type=${inputType}`);
@@ -209,12 +212,13 @@ const editCouponService = (inputData) => {
 const getUseCouponService = (inputId) => {
     return axios.get(`/api/get-use-coupon?name=${inputId}`);
 };
-const useCouponService = (inputData) => {
+const CouponService = (inputData) => {
     return axios.put("/api/use-coupon", inputData);
 };
 export {
+    changeUserFirstCouponService,
     changePasswordService,
-    useCouponService,
+    CouponService,
     getUseCouponService,
     getAllCouponService,
     createNewCouponService,

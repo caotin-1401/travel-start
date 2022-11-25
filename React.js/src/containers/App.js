@@ -25,6 +25,9 @@ import VerifyEmail from "./Passenger/VerifyEmail";
 import AllEvents from "./Passenger/Events/AllEvents";
 import DetailEvent from "./Passenger/Events/DetailEvent";
 import Profile from "./Passenger/Profile/Profile";
+import ProfileAdmin from "../containers/System/Admin/Profile/Profile";
+import ProfileBusOwner from "../containers/System/BusOwner/Profile/Profile";
+import ProfileDriver from "../containers/System/Driver/Profile/Profile";
 class App extends Component {
     handlePersistorState = () => {
         const { persistor } = this.props;
@@ -93,7 +96,6 @@ class App extends Component {
                                                 Driver
                                             )}
                                         />
-
                                         <Route
                                             path={path.ROUTE}
                                             component={userIsAuthenticated(
@@ -111,6 +113,24 @@ class App extends Component {
                                         <Route
                                             path={path.EVENT}
                                             component={DetailEvent}
+                                        />{" "}
+                                        <Route
+                                            path={path.PROFILE_ADMIN}
+                                            component={userIsAuthenticated(
+                                                ProfileAdmin
+                                            )}
+                                        />
+                                        <Route
+                                            path={path.PROFILE_BUS}
+                                            component={userIsAuthenticated(
+                                                ProfileBusOwner
+                                            )}
+                                        />
+                                        <Route
+                                            path={path.PROFILE_DRIVER}
+                                            component={userIsAuthenticated(
+                                                ProfileDriver
+                                            )}
                                         />
                                         <Route
                                             path={path.PROFILE}
@@ -118,13 +138,6 @@ class App extends Component {
                                                 Profile
                                             )}
                                         />
-                                        {/* <Route
-                                            component={() => {
-                                                return (
-                                                    <Redirect to={BusRoute} />
-                                                );
-                                            }}
-                                        /> */}
                                     </Switch>
                                 </CustomScrollbars>
                             </div>

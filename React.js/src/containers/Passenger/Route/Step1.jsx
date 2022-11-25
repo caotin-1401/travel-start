@@ -338,7 +338,7 @@ class Step1 extends Component {
                                                                         key={
                                                                             index
                                                                         }>
-                                                                        <buton
+                                                                        <button
                                                                             onClick={() =>
                                                                                 this.handleClickBtnSeat(
                                                                                     s
@@ -368,7 +368,7 @@ class Step1 extends Component {
                                                                                     s.keyMap
                                                                                 }
                                                                             </div>
-                                                                        </buton>
+                                                                        </button>
                                                                     </td>
                                                                 </div>
                                                             )}

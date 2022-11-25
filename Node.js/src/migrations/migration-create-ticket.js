@@ -32,10 +32,10 @@ module.exports = {
             },
             tripId: {
                 type: Sequelize.INTEGER,
-                references: {
-                    model: "Trips",
-                    key: "id",
-                },
+                // references: {
+                //     model: "Trips",
+                //     key: "id",
+                // },
             },
             billId: {
                 type: Sequelize.INTEGER,

@@ -108,7 +108,6 @@ class Banner extends Component {
     };
 
     handleTrip = async (route) => {
-        console.log(1);
         let { selectLocaion1, selectLocaion2, dateStartTrip } = this.state;
         let areaStart = selectLocaion1.label;
         let areaEnd = selectLocaion2.label;
@@ -126,6 +125,7 @@ class Banner extends Component {
                 dateStart
             );
             let arr = res.trips;
+            console.log(arr);
             if (res && res.errCode === 0 && !arr.length) {
                 toast.success(
                     `Hiện tại hệ thống chưa có thông tin nhà xe đi từ ${areaStart} đến ${areaEnd} vào ngày ${moment(
@@ -136,7 +136,6 @@ class Banner extends Component {
                 let start = arr[0].areaStart;
                 let end = arr[0].areaEnd;
                 let date = arr[0].dateStart;
-                console.log(this.props.history);
                 if (this.props.history) {
                     this.props.history.push(
                         `/home/route/${start}&${end}&${date}`
@@ -149,7 +148,6 @@ class Banner extends Component {
     render() {
         let { selectLocaion1, selectLocaion2, info } = this.state;
         let language = this.props.language;
-        console.log(12);
         return (
             <React.Fragment>
                 <div className="home-header-banner">

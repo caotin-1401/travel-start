@@ -62,15 +62,17 @@ let handleUserLogin = (email, password) => {
         try {
             let userData = {};
             let isExist = await checkUserEmail(email);
+            console.log(1);
             if (isExist) {
                 //User already exist
                 //compare password
-
+                console.log(2);
                 let user = await db.User.findOne({
                     attributes: ["id", "email", "roleID", "password", "name"],
                     where: { email: email },
                     raw: true,
                 });
+                console.log(3);
                 if (user) {
                     let check = await bcrypt.compareSync(
                         password,
@@ -205,6 +207,7 @@ let createNewUser = async (data) => {
         try {
             //check email exist
             let check = await checkUserEmail(data.email);
+            console.log(data);
             if (check) {
                 resolve({
                     errCode: 1,
@@ -230,18 +233,34 @@ let createNewUser = async (data) => {
                 let hashPasswordFromBcrypt = await hashUserPassword(
                     data.password
                 );
-                await db.User.create({
-                    email: data.email,
-                    password: hashPasswordFromBcrypt,
-                    name: data.name,
-                    address: data.address,
-                    phoneNumber: data.phoneNumber,
-                    roleID: data.roleID,
-                    busOwnerId: data.busOwnerId,
-                    busOwner: data.busOwner,
-                    gender: data.gender,
-                    image: data.avatar,
-                });
+                console.log(hashPasswordFromBcrypt);
+                if (!data.avatar) {
+                    await db.User.create({
+                        email: data.email,
+                        password: hashPasswordFromBcrypt,
+                        name: data.name,
+                        address: data.address,
+                        phoneNumber: data.phoneNumber,
+                        roleID: data.roleID,
+                        busOwnerId: data.busOwnerId,
+                        busOwner: data.busOwner,
+                        gender: data.gender,
+                    });
+                } else {
+                    await db.User.create({
+                        email: data.email,
+                        password: hashPasswordFromBcrypt,
+                        name: data.name,
+                        address: data.address,
+                        phoneNumber: data.phoneNumber,
+                        roleID: data.roleID,
+                        busOwnerId: data.busOwnerId,
+                        busOwner: data.busOwner,
+                        gender: data.gender,
+                        image: data.avatar,
+                    });
+                }
+
                 resolve({
                     errCode: 0,
                     errMessage: "OK",
@@ -374,15 +393,40 @@ let changePassword = async (data) => {
                         errMessage: "user not found",
                     });
                 }
-                // user.name = data.name;
-                // user.address = data.address;
-                // user.roleID = data.roleID;
-                // user.gender = data.gender;
-                // user.phoneNumber = data.phoneNumber;
-                // if (data.avatar) {
-                //     user.image = data.avatar;
-                // }
-                // await user.save();
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: "user not found",
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+let useCouponIsFirst = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        console.log(data);
+        try {
+            if (!data.id) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing required parameter",
+                });
+            }
+            let user = await db.User.findOne({
+                where: { id: data.id },
+                raw: false,
+            });
+            console.log(user);
+            if (user) {
+                user.isFirst = data.isFirst;
+                await user.save();
+                resolve({
+                    errCode: 0,
+                    message: "update user success",
+                });
             } else {
                 resolve({
                     errCode: 1,
@@ -404,4 +448,5 @@ module.exports = {
     createNewUserByRegister,
     getUserTicket,
     changePassword,
+    useCouponIsFirst,
 };

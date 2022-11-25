@@ -14,21 +14,29 @@
         &:hover {
             cursor          : pointer;
             background-color: darken(#0071ba, 5);
+            color           : #fff;
         }
 
         .menu-group-name {
-            line-height : 40px;
+            width       : 145px;
+            text-align  : center;
+            line-height : 50px;
             padding     : 0 15px;
             border-right: 1px solid #ccc;
+            font-size   : 15px;
+            font-weight : 500;
+
 
             &:first-child {
                 border-left: 1px solid #ccc;
+                min-width  : 145px;
             }
         }
 
         .menu-list {
+            min-width         : 145px;
             display           : none;
-            background-color  : #f5f5f5;
+            background-color  : #f6f6f6;
             box-shadow        : 2px 2px 4px 0 #00004d;
             -webkit-box-shadow: 2px 2px 4px 0 #00004d;
             color             : #181818;
@@ -41,6 +49,7 @@
                 height        : 35px;
                 line-height   : 35px;
                 text-transform: none;
+                border-bottom : 1px solid #ccc;
 
                 .menu-link {
                     text-decoration: none;

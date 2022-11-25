@@ -2,19 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import "./BookingModal.scss";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import Box from "@mui/material/Box";
 import MobileStepper from "@mui/material/MobileStepper";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import Step1 from "./Step1";
@@ -24,7 +14,10 @@ import { saveBulkTicket } from "../../../services/userService";
 import moment from "moment";
 import localization from "moment/locale/vi";
 import { toast } from "react-toastify";
-
+import {
+    CouponService,
+    changeUserFirstCouponService,
+} from "../../../services/userService";
 class BookingModal extends Component {
     constructor(props) {
         super(props);
@@ -39,6 +32,8 @@ class BookingModal extends Component {
             description: "",
             inFoCoupon: {},
             finalPrice: 0,
+            isActive: false,
+            infoUser: {},
         };
     }
     componentDidMount() {}
@@ -71,9 +66,18 @@ class BookingModal extends Component {
             description,
             inFoCoupon,
             finalPrice,
+            isActive,
+            infoUser,
         } = this.state;
+
         this.props.addTicket();
         let result = [];
+        this.setState(
+            {
+                isActive: true,
+            },
+            this.props.parentCallback1(isActive)
+        );
         if (!name) {
             toast.error("Please enter your name!");
         } else if (!phone) {
@@ -101,19 +105,55 @@ class BookingModal extends Component {
                 });
             }
             let arrTicket = [];
+
             let res = await saveBulkTicket({ arrTicket: result });
             if (res && res.errCode === 0) {
+                this.setState(
+                    {
+                        isActive: false,
+                    },
+                    this.props.parentCallback2(isActive)
+                );
                 toast.success("Đặt vé xe thành công");
-                let useCoupon;
-                if (inFoCoupon.use === null) {
-                    useCoupon = 1;
-                } else useCoupon = +inFoCoupon.use + 1;
-                let data = {
-                    ...inFoCoupon,
-                    use: useCoupon,
-                };
+                let data;
+                inFoCoupon &&
+                    inFoCoupon.length > 0 &&
+                    (data = {
+                        id: inFoCoupon[0].id,
+                        use: +inFoCoupon[0].use + 1,
+                    });
+                let resCoupon;
+                let resUser;
+                console.log(data);
+                if (data) {
+                    if (data.id) {
+                        resCoupon = await CouponService(data);
+                    }
+                }
+                console.log(" infoUser", infoUser);
+                if (infoUser) {
+                    if (infoUser.id) {
+                        resUser = await changeUserFirstCouponService(infoUser);
+                    }
+                }
+                console.log(resCoupon);
+                console.log("data:", data);
+            } else if (res && res.errCode !== 0) {
+                this.setState(
+                    {
+                        isActive: false,
+                    },
+                    this.props.parentCallback2(isActive)
+                );
+                toast.error("Đặt vé xe thất bại");
             }
         }
+        this.setState(
+            {
+                isActive: false,
+            },
+            this.props.parentCallback2(isActive)
+        );
         this.setState({
             current: 0,
         });
@@ -146,11 +186,15 @@ class BookingModal extends Component {
             description: description,
         });
     };
-    callbackFunction3 = (inFoCoupon, finalPrice) => {
-        this.setState({
-            inFoCoupon,
-            finalPrice,
-        });
+    callbackFunction3 = (inFoCoupon, finalPrice, infoUser) => {
+        this.setState(
+            {
+                inFoCoupon,
+                finalPrice,
+                infoUser,
+            },
+            console.log(inFoCoupon, infoUser)
+        );
     };
     render() {
         let { current, tripInfo, seatArr, totalPrice } = this.state;

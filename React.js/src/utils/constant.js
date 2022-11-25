@@ -12,6 +12,9 @@ export const path = {
     EVENTS: `/home/events`,
     EVENT: `/home/event/eventId=:id`,
     PROFILE: `/home/profile/userId=:id&:status`,
+    PROFILE_ADMIN: `/profile/admin/userId=:id`,
+    PROFILE_BUS: `/profile/busOwner/userId=:id`,
+    PROFILE_DRIVER: `/profile/driver/userId=:id`,
 };
 
 export const LANGUAGES = {

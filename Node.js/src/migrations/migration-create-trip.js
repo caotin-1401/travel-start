@@ -29,10 +29,10 @@ module.exports = {
 
             routeId: {
                 type: Sequelize.INTEGER,
-                references: {
-                    model: "Routes",
-                    key: "id",
-                },
+                // references: {
+                //     model: "Routes",
+                //     key: "id",
+                // },
             },
             driverId: {
                 type: Sequelize.INTEGER,
@@ -42,10 +42,10 @@ module.exports = {
             },
             busId: {
                 type: Sequelize.INTEGER,
-                references: {
-                    model: "Vehicles",
-                    key: "id",
-                },
+                // references: {
+                //     model: "Vehicles",
+                //     key: "id",
+                // },
             },
 
             maxNumber: {

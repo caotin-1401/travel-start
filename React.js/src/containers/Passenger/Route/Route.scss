@@ -1,3 +1,12 @@
+// div._loading_overlay_wrapper {
+//     // position          : relative;
+
+//     // position: -webkit-sticky;
+//     position: absolute;
+//     height  : 100%;
+
+// }
+
 .route-header-banner {
     background-color: #f5f5f5;
     height          : 200px;
@@ -74,21 +83,22 @@
 }
 
 .route-result {
-    height: 1000px;
+    // height: 1000px;
+    // height: 100%;
 
     .container {
-        height: 1000px;
+        // height: 1000px;
+        // height: 100%;
 
         .sort {
-            margin: 10px;
-            border: 1px solid black;
-            height: 800px;
+            margin   : 10px;
+            border   : 1px solid black;
+            // height: 800px;
         }
 
         .route-result-count {
             margin   : 10px;
             // border: 1px solid black;
-            height   : 500px;
 
             .route-sort {
                 padding: 20px;
@@ -120,7 +130,7 @@
             }
 
             .route-result-body {
-                height: 300px;
+                // height: 300px;
 
                 .ticket {
                     position     : relative;
@@ -173,14 +183,15 @@
                             padding-bottom: 5px;
                             margin-bottom : 10px;
 
+
                             .ticket-img {
-                                height             : 120px;
-                                width              : 120px;
-                                background         : url('../../../assets/background.jpg');
-                                background-size    : cover;
-                                background-repeat  : no-repeat;
-                                background-position: center;
-                                margin             : 0 10px 5px 10px;
+                                border         : 1px solid #ccc;
+                                height         : 120px;
+                                width          : 120px;
+                                background     : url('../../../assets/background.jpg');
+                                background     : center center no-repeat;
+                                background-size: contain;
+                                margin         : 0 10px 5px 10px;
                             }
 
                             .f-17 {

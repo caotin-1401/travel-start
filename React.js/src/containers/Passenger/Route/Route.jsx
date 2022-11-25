@@ -22,7 +22,7 @@ import { withRouter } from "react-router";
 
 import NotFoundTrip from "../../../assets/NotFoundTrip.png";
 import { toast } from "react-toastify";
-
+import LoadingOverlay from "react-loading-overlay";
 const customStyles = {
     control: () => ({
         border: "none",
@@ -62,6 +62,8 @@ class BusRoute extends Component {
             selectLocaion2: {},
             isOpenModel: false,
             parent: {},
+            isActive: false,
+            previewImgURL: "",
         };
     }
     async componentDidMount() {
@@ -200,7 +202,6 @@ class BusRoute extends Component {
         let { selectLocaion1, selectLocaion2, dateStartTrip } = this.state;
         let areaStart = selectLocaion1.label;
         let areaEnd = selectLocaion2.label;
-        // console.log()
         let dateStart = new Date(dateStartTrip).getTime();
         if (!areaStart) {
             toast.error("Please choose your departure point!");
@@ -214,7 +215,36 @@ class BusRoute extends Component {
                 areaEnd,
                 dateStart
             );
+
             let arr = res.trips;
+            let arr1 = [];
+            let dateStar = this.props.match.params.date;
+            let current = new Date().getTime();
+            let currentDate = moment(current).format("L");
+            let [day, month, year] = currentDate.split("/");
+            let date = new Date(+year, month - 1, +day);
+            let unixTimestamp = Math.floor(date.getTime());
+            if (unixTimestamp === +dateStar) {
+                arr &&
+                    arr.length > 0 &&
+                    (arr1 = arr.filter((item) => {
+                        let days = moment(+item.dateStart).format("L");
+                        let times = moment(+item.timeStart).format("LT");
+                        let [day, month, year] = days.split("/");
+                        let [hours, minutes] = times.split(":");
+                        let date = new Date(
+                            +year,
+                            month - 1,
+                            +day,
+                            +hours,
+                            +minutes
+                        );
+                        let unixTimestamp = Math.floor(date.getTime());
+                        return unixTimestamp > current;
+                    }));
+            } else {
+                arr1 = arr;
+            }
             // if (this.props.history) {
             this.props.history.push(
                 `/home/route/${areaStart}&${areaEnd}&${dateStart}`
@@ -227,11 +257,18 @@ class BusRoute extends Component {
                     ).format("L")}`
                 );
                 this.setState({
-                    arrRoute: arr,
+                    arrRoute: arr1,
                 });
             } else if (res && res.errCode === 0 && arr.length > 0) {
+                if (arr1 && arr1.length === 0) {
+                    toast.success(
+                        `Hiện tại hệ thống chưa có thông tin nhà xe đi từ ${areaStart} đến ${areaEnd} vào ngày ${moment(
+                            dateStart
+                        ).format("L")}`
+                    );
+                }
                 this.setState({
-                    arrRoute: arr,
+                    arrRoute: arr1,
                 });
             }
         }
@@ -239,68 +276,86 @@ class BusRoute extends Component {
     currencyFormat(num) {
         return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
     }
+    callbackFunction1 = (isActive) => {
+        this.setState({
+            isActive: true,
+        });
+    };
+    callbackFunction2 = (isActive) => {
+        this.setState({
+            isActive: false,
+        });
+    };
     render() {
         let { arrRoute, dateStartTrip, selectLocaion1, selectLocaion2 } =
             this.state;
+        // let test = dateStartTrip.moment();
+        // console.log(dateStartTrip);
+        // console.log(test);
         let language = this.props.language;
         return (
             <React.Fragment>
-                <Header />
-                <div className="route-header-banner">
-                    <div className="searchGroup">
-                        <div className="inputSearch ">
-                            <div className="inputItem item1">
-                                <i className="fas fa-map-marker-alt"></i>
-                                <Select
-                                    styles={customStyles}
-                                    value={selectLocaion1}
-                                    onChange={this.onChangeInput1}
-                                    options={this.state.listLocations}
-                                />
-                            </div>
-                            <div className="inputItem">
-                                <i className="fas fa-map-marker-alt"></i>
-                                <Select
-                                    styles={customStyles}
-                                    placeholder={"Chọn điểm kết thúc"}
-                                    value={selectLocaion2}
-                                    onChange={this.onChangeInput2}
-                                    options={this.state.listLocations}
-                                />
-                            </div>
-                            <div className="inputItem">
-                                <label
-                                    htmlFor="schedule1"
-                                    style={{ float: "right" }}>
-                                    <i
-                                        className="far fa-calendar-alt"
-                                        style={{ fontSize: "20px" }}></i>
-                                </label>
-                                <DatePicker
-                                    placeholder={"Chọn ngày"}
-                                    style={{ border: "none" }}
-                                    onChange={this.handleOnChange1}
-                                    id="schedule1"
-                                    value={dateStartTrip}
-                                    selected={this.state.dateStartTrip}
-                                    minDate={
-                                        new Date(
-                                            new Date().setDate(
-                                                new Date().getDate() - 1
+                <LoadingOverlay
+                    active={this.state.isActive}
+                    spinner
+                    text="Loading ...">
+                    <Header />
+                    <div className="route-header-banner">
+                        <div className="searchGroup">
+                            <div className="inputSearch ">
+                                <div className="inputItem item1">
+                                    <i className="fas fa-map-marker-alt"></i>
+                                    <Select
+                                        styles={customStyles}
+                                        value={selectLocaion1}
+                                        onChange={this.onChangeInput1}
+                                        options={this.state.listLocations}
+                                    />
+                                </div>
+                                <div className="inputItem">
+                                    <i className="fas fa-map-marker-alt"></i>
+                                    <Select
+                                        styles={customStyles}
+                                        placeholder={"Chọn điểm kết thúc"}
+                                        value={selectLocaion2}
+                                        onChange={this.onChangeInput2}
+                                        options={this.state.listLocations}
+                                    />
+                                </div>
+                                <div className="inputItem">
+                                    <label
+                                        htmlFor="schedule1"
+                                        style={{ float: "right" }}>
+                                        <i
+                                            className="far fa-calendar-alt"
+                                            style={{ fontSize: "20px" }}></i>
+                                    </label>
+                                    <DatePicker
+                                        placeholder={"Chọn ngày"}
+                                        style={{ border: "none" }}
+                                        onChange={this.handleOnChange1}
+                                        id="schedule1"
+                                        value={dateStartTrip}
+                                        selected={this.state.dateStartTrip}
+                                        minDate={
+                                            new Date(
+                                                new Date().setDate(
+                                                    new Date().getDate() - 1
+                                                )
                                             )
-                                        )
-                                    }
-                                />
+                                        }
+                                    />
+                                </div>
+                            </div>
+                            <div className="search">
+                                <button
+                                    onClick={(item) => this.handleTrip(item)}>
+                                    <FormattedMessage id="header.search" />
+                                </button>
                             </div>
                         </div>
-                        <div className="search">
-                            <button onClick={(item) => this.handleTrip(item)}>
-                                <FormattedMessage id="header.search" />
-                            </button>
-                        </div>
-                    </div>
-                </div>{" "}
-                {/* <div className="detail_fail text-center">
+                    </div>{" "}
+                    {/* <div className="detail_fail text-center">
                     <h4 className="mb-5 detail_title">
                         {arrRoute &&
                             arrRoute.length > 0 &&
@@ -308,203 +363,237 @@ class BusRoute extends Component {
                             ${selectLocaion2.label}: ${arrRoute.length} chuyến được tìm thấy`}
                     </h4>
                 </div> */}
-                <div className="route-container">
-                    <div className="route-result">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-md-3 col-sm-0">
-                                    <FilterComponent />
-                                </div>
-                                <div className="col-md-9 col-sm-12">
-                                    <div className="route-result-count">
-                                        {/* <div className="route-header"> */}
-                                        <div className="route-sort">
-                                            <div className="container-sub ">
-                                                <div className="w-30 fl">
-                                                    <span className="f-bold">
-                                                        {arrRoute.length}{" "}
-                                                    </span>
-                                                    <span className="f-bold">
-                                                        {" "}
-                                                        tuyến{" "}
-                                                    </span>
-                                                    <span> được tìm thấy </span>
-                                                </div>
-                                                <div className="w-70 fr">
-                                                    <div className="w-20">
-                                                        Sắp xếp theo:{" "}
+                    <div className="route-container">
+                        <div className="route-result">
+                            <div className="container">
+                                <div className="row">
+                                    <div className="col-md-3 col-sm-0">
+                                        <FilterComponent />
+                                    </div>
+                                    <div className="col-md-9 col-sm-12">
+                                        <div className="route-result-count">
+                                            {/* <div className="route-header"> */}
+                                            <div className="route-sort">
+                                                <div className="container-sub ">
+                                                    <div className="w-30 fl">
+                                                        <span className="f-bold">
+                                                            {arrRoute.length}{" "}
+                                                        </span>
+                                                        <span className="f-bold">
+                                                            {" "}
+                                                            tuyến{" "}
+                                                        </span>
+                                                        <span>
+                                                            {" "}
+                                                            được tìm thấy{" "}
+                                                        </span>
                                                     </div>
-                                                    <div className="w-20">
-                                                        Rẻ nhất
-                                                    </div>
-                                                    <div className="w-20">
-                                                        Sớm nhất
-                                                    </div>
-                                                    <div className="w-20">
-                                                        Muộn nhất
-                                                    </div>
-                                                    <div className="w-20">
-                                                        Xếp hạng
+                                                    <div className="w-70 fr">
+                                                        <div className="w-20">
+                                                            Sắp xếp theo:{" "}
+                                                        </div>
+                                                        <div className="w-20">
+                                                            Rẻ nhất
+                                                        </div>
+                                                        <div className="w-20">
+                                                            Sớm nhất
+                                                        </div>
+                                                        <div className="w-20">
+                                                            Muộn nhất
+                                                        </div>
+                                                        <div className="w-20">
+                                                            Xếp hạng
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        {/* </div> */}
-                                        <div className="route-result-body">
-                                            {arrRoute && arrRoute.length > 0 ? (
-                                                arrRoute.map((item, index) => {
-                                                    let start = moment(
-                                                        +item.timeStart
-                                                    ).format("llll");
-                                                    let end = moment(
-                                                        +item.timeEnd
-                                                    ).format("llll");
-
-                                                    return (
-                                                        <div className="ticket">
-                                                            <div className="ticket-container">
-                                                                <div className="ticket-header">
-                                                                    <div className="fl">
-                                                                        <i className="fas fa-bus"></i>
-                                                                        <span className="ml-5">
-                                                                            {
-                                                                                item
-                                                                                    .User
-                                                                                    .busOwner
-                                                                            }
-                                                                        </span>
-                                                                    </div>
-                                                                    <div className="fr">
-                                                                        {this.currencyFormat(
-                                                                            item.price
-                                                                        )}
-                                                                        {/* {`${item.price} đ `} */}
-                                                                    </div>
-                                                                </div>
-                                                                <div className="ticket-body row">
-                                                                    <div className="col-3 ticket-img "></div>
-                                                                    <div className="col-9">
-                                                                        <div className="row">
-                                                                            <div className="col-9">
-                                                                                <div>
-                                                                                    {`${item.Vehicle.BusType.typeName} ${item.Vehicle.BusType.numOfSeat} giường `}
-                                                                                </div>
-                                                                                <div className="f-17">
-                                                                                    <i className="fas fa-dot-circle"></i>
-                                                                                    <span className="timeStart">
-                                                                                        {
-                                                                                            start
-                                                                                        }
-                                                                                        {
-                                                                                            "  -  "
-                                                                                        }
-                                                                                    </span>
-                                                                                    <span className="pointStart">
-                                                                                        {
-                                                                                            item.areaStart
-                                                                                        }
-                                                                                    </span>
-                                                                                </div>
-                                                                                <div className="f-17">
-                                                                                    <i className="fas fa-map-marker-alt"></i>
-                                                                                    <span className="timeEnd">
-                                                                                        {
-                                                                                            end
-                                                                                        }
-                                                                                        {
-                                                                                            "  -  "
-                                                                                        }
-                                                                                    </span>
-                                                                                    <span className="pointEnd">
-                                                                                        {
-                                                                                            item.areaEnd
-                                                                                        }
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="col-3 fr">
-                                                                                Thong
-                                                                                tin
-                                                                                gif
-                                                                                do
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="ticket-footer">
-                                                                    <div className="row">
-                                                                        <div className="w-50 fl">
-                                                                            Thông
-                                                                            tin
-                                                                            chi
-                                                                            tiết
-                                                                        </div>
-                                                                        <div className="w-50 ">
-                                                                            <button
-                                                                                className="btn btn-primary fr"
-                                                                                onClick={() =>
-                                                                                    this.handleClickTicket(
+                                            {/* </div> */}
+                                            <div className="route-result-body">
+                                                {arrRoute &&
+                                                arrRoute.length > 0 ? (
+                                                    arrRoute.map(
+                                                        (item, index) => {
+                                                            let start = moment(
+                                                                +item.timeStart
+                                                            ).format("llll");
+                                                            let end = moment(
+                                                                +item.timeEnd
+                                                            ).format("llll");
+                                                            let imageBase64 =
+                                                                "";
+                                                            if (
+                                                                item.Vehicle
+                                                                    .image
+                                                            ) {
+                                                                imageBase64 =
+                                                                    Buffer.from(
+                                                                        item
+                                                                            .Vehicle
+                                                                            .image,
+                                                                        "base64"
+                                                                    ).toString(
+                                                                        "binary"
+                                                                    );
+                                                            }
+                                                            return (
+                                                                <div className="ticket">
+                                                                    <div className="ticket-container">
+                                                                        <div className="ticket-header">
+                                                                            <div className="fl">
+                                                                                <i className="fas fa-bus"></i>
+                                                                                <span className="ml-5">
+                                                                                    {
                                                                                         item
-                                                                                    )
-                                                                                }>
-                                                                                Chọn
-                                                                                chuyến{" "}
-                                                                            </button>
+                                                                                            .User
+                                                                                            .busOwner
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                            <div className="fr">
+                                                                                {this.currencyFormat(
+                                                                                    item.price
+                                                                                )}
+                                                                                {/* {`${item.price} đ `} */}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="ticket-body row">
+                                                                            <div
+                                                                                className="col-3 ticket-img "
+                                                                                style={{
+                                                                                    backgroundImage: `url(${imageBase64})`,
+                                                                                }}></div>
+                                                                            <div className="col-9">
+                                                                                <div className="row">
+                                                                                    <div className="col-9">
+                                                                                        <div>
+                                                                                            {`${item.Vehicle.BusType.typeName} ${item.Vehicle.BusType.numOfSeat} giường `}
+                                                                                        </div>
+                                                                                        <div className="f-17">
+                                                                                            <i className="fas fa-dot-circle"></i>
+                                                                                            <span className="timeStart">
+                                                                                                {
+                                                                                                    start
+                                                                                                }
+                                                                                                {
+                                                                                                    "  -  "
+                                                                                                }
+                                                                                            </span>
+                                                                                            <span className="pointStart">
+                                                                                                {
+                                                                                                    item.areaStart
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <div className="f-17">
+                                                                                            <i className="fas fa-map-marker-alt"></i>
+                                                                                            <span className="timeEnd">
+                                                                                                {
+                                                                                                    end
+                                                                                                }
+                                                                                                {
+                                                                                                    "  -  "
+                                                                                                }
+                                                                                            </span>
+                                                                                            <span className="pointEnd">
+                                                                                                {
+                                                                                                    item.areaEnd
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="col-3 fr">
+                                                                                        Thong
+                                                                                        tin
+                                                                                        gif
+                                                                                        do
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="ticket-footer">
+                                                                            <div className="row">
+                                                                                <div className="w-50 fl">
+                                                                                    Thông
+                                                                                    tin
+                                                                                    chi
+                                                                                    tiết
+                                                                                </div>
+                                                                                <div className="w-50 ">
+                                                                                    <button
+                                                                                        className="btn btn-primary fr"
+                                                                                        onClick={() =>
+                                                                                            this.handleClickTicket(
+                                                                                                item
+                                                                                            )
+                                                                                        }>
+                                                                                        Chọn
+                                                                                        chuyến{" "}
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })
-                                            ) : (
-                                                <div className="detail_fail text-center">
-                                                    <img
-                                                        width="70%"
-                                                        src={NotFoundTrip}
-                                                        alt=""
-                                                    />
-                                                    <p
-                                                        style={{
-                                                            marginTop: 10,
-                                                            fontSize: "25px",
-                                                            fontWeight: 500,
-                                                            marginBottom: 10,
-                                                        }}>
-                                                        Chuyến đang cập nhật
-                                                    </p>
-                                                    <p className="mb-0">
-                                                        Hiện tại hệ thống chưa
-                                                        có thông tin nhà xe đi
-                                                        từ{" "}
-                                                        {selectLocaion1.label}{" "}
-                                                        đến{" "}
-                                                        {selectLocaion2.label}{" "}
-                                                        vào ngày{" "}
-                                                        {moment(
-                                                            dateStartTrip
-                                                        ).format("L")}
-                                                    </p>
-                                                    <span>
-                                                        Xin quý khách vui lòng
-                                                        chọn ngày đi khác hoặc
-                                                        tuyến đường khác.
-                                                    </span>
-                                                </div>
-                                            )}
+                                                            );
+                                                        }
+                                                    )
+                                                ) : (
+                                                    <div className="detail_fail text-center">
+                                                        <img
+                                                            width="70%"
+                                                            src={NotFoundTrip}
+                                                            alt=""
+                                                        />
+                                                        <p
+                                                            style={{
+                                                                marginTop: 10,
+                                                                fontSize:
+                                                                    "25px",
+                                                                fontWeight: 500,
+                                                                marginBottom: 10,
+                                                            }}>
+                                                            Chuyến đang cập nhật
+                                                        </p>
+                                                        <p className="mb-0">
+                                                            Hiện tại hệ thống
+                                                            chưa có thông tin
+                                                            nhà xe đi từ{" "}
+                                                            {
+                                                                selectLocaion1.label
+                                                            }{" "}
+                                                            đến{" "}
+                                                            {
+                                                                selectLocaion2.label
+                                                            }{" "}
+                                                            vào ngày{" "}
+                                                            {moment(
+                                                                dateStartTrip
+                                                            ).format("L")}
+                                                        </p>
+                                                        <span>
+                                                            Xin quý khách vui
+                                                            lòng chọn ngày đi
+                                                            khác hoặc tuyến
+                                                            đường khác.
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <BookingModal
-                    isOpen={this.state.isOpenModel}
-                    dataFromParent={this.state.parent}
-                    toggleFromParent={this.toggleUserModel}
-                    addTicket={() => this.addTicket()}
-                />
+                    <BookingModal
+                        isOpen={this.state.isOpenModel}
+                        dataFromParent={this.state.parent}
+                        toggleFromParent={this.toggleUserModel}
+                        addTicket={() => this.addTicket()}
+                        parentCallback1={this.callbackFunction1}
+                        parentCallback2={this.callbackFunction2}
+                    />
+                </LoadingOverlay>
             </React.Fragment>
         );
     }

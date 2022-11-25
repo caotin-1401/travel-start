@@ -26,7 +26,6 @@ class System extends Component {
                                 path="/system/dashboard"
                                 component={Dashboard}
                             />
-                            {/* <Route path="/system/user-manage" component={UserManage1} /> */}
                             <Route
                                 path="/system/user-manage"
                                 component={UserManage}
@@ -76,6 +75,7 @@ class System extends Component {
                                 component={TableDiscount}
                             />
                             <Route path="/system/blog" component={TableBlog} />
+
                             <Route
                                 component={() => {
                                     return <Redirect to={systemMenuPath} />;

@@ -40,6 +40,14 @@ let getUseCoupons = (couponId) => {
             let coupons = [];
             coupons = await db.Coupon.findAll({
                 where: { name: couponId },
+                include: [
+                    {
+                        model: db.Event,
+                        attributes: ["id"],
+                    },
+                ],
+                raw: true,
+                nest: true,
             });
             resolve(coupons);
         } catch (e) {
@@ -83,6 +91,7 @@ let createNewCoupon = (data) => {
                 startDate,
                 endDate,
                 count,
+                use,
                 sumMoneyCondition,
             } = data;
             if (
@@ -120,6 +129,7 @@ let createNewCoupon = (data) => {
                     startDate,
                     endDate,
                     count,
+                    use,
                     sumMoneyCondition,
                 });
                 resolve({
@@ -200,6 +210,7 @@ let editCoupon = (data) => {
 let useCoupon = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log(data);
             if (!data.id) {
                 resolve({
                     errCode: 2,
@@ -207,9 +218,10 @@ let useCoupon = (data) => {
                 });
             } else {
                 let coupon = await db.Coupon.findOne({
-                    where: { name: data.name },
+                    where: { id: data.id },
                     raw: false,
                 });
+                console.log(coupon);
                 if (coupon) {
                     if (data.use <= coupon.count) {
                         coupon.use = data.use;
