@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Header from "../../HomePage/Header";
-import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../../utils";
 import { changeLanguageApp } from "../../../store/actions/appActions";
@@ -19,10 +18,13 @@ import Select from "react-select";
 import BookingModal from "./BookingModal";
 import FilterComponent from "./FilterComponent";
 import { withRouter } from "react-router";
-
 import NotFoundTrip from "../../../assets/NotFoundTrip.png";
 import { toast } from "react-toastify";
 import LoadingOverlay from "react-loading-overlay";
+import _ from "lodash";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Skeleton from "@mui/material/Skeleton";
 const customStyles = {
     control: () => ({
         border: "none",
@@ -64,9 +66,16 @@ class BusRoute extends Component {
             parent: {},
             isActive: false,
             previewImgURL: "",
+            isSort: "",
+            loading: false,
         };
     }
     async componentDidMount() {
+        setTimeout(() => {
+            this.setState({
+                loading: true,
+            });
+        }, 1000);
         this.props.fetchAllRoute();
         this.props.fetchAllLocation();
         if (
@@ -286,12 +295,28 @@ class BusRoute extends Component {
             isActive: false,
         });
     };
+    handleSort = (a, b) => {
+        this.state.arrRoute = _.orderBy(this.state.arrRoute, [b], [a]);
+        console.log(a + b);
+        let test = a + b;
+        this.setState({
+            sortBy: a,
+            sortField: b,
+            arrRoute: this.state.arrRoute,
+            isSort: test,
+        });
+    };
     render() {
-        let { arrRoute, dateStartTrip, selectLocaion1, selectLocaion2 } =
-            this.state;
-        // let test = dateStartTrip.moment();
-        // console.log(dateStartTrip);
-        // console.log(test);
+        let {
+            arrRoute,
+            dateStartTrip,
+            selectLocaion1,
+            selectLocaion2,
+            isSort,
+            loading,
+        } = this.state;
+        console.log(loading);
+        let imageBase64;
         let language = this.props.language;
         return (
             <React.Fragment>
@@ -377,7 +402,9 @@ class BusRoute extends Component {
                                                 <div className="container-sub ">
                                                     <div className="w-30 fl">
                                                         <span className="f-bold">
-                                                            {arrRoute.length}{" "}
+                                                            {loading === false
+                                                                ? ""
+                                                                : arrRoute.length}
                                                         </span>
                                                         <span className="f-bold">
                                                             {" "}
@@ -389,28 +416,511 @@ class BusRoute extends Component {
                                                         </span>
                                                     </div>
                                                     <div className="w-70 fr">
-                                                        <div className="w-20">
+                                                        <div
+                                                            className="w-20"
+                                                            onClick={() =>
+                                                                this.handleSort(
+                                                                    "asc",
+                                                                    "id"
+                                                                )
+                                                            }>
                                                             Sắp xếp theo:{" "}
                                                         </div>
-                                                        <div className="w-20">
-                                                            Rẻ nhất
+                                                        <div
+                                                            className="w-20"
+                                                            style={{
+                                                                backgroundColor: `${
+                                                                    isSort ===
+                                                                    "ascprice"
+                                                                        ? "#007BFF"
+                                                                        : ""
+                                                                }`,
+                                                                color: `${
+                                                                    isSort ===
+                                                                    "ascprice"
+                                                                        ? "white"
+                                                                        : "black"
+                                                                }`,
+                                                            }}
+                                                            onClick={() =>
+                                                                this.handleSort(
+                                                                    "asc",
+                                                                    "price"
+                                                                )
+                                                            }>
+                                                            <div className="test__">
+                                                                Rẻ nhất
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            className="w-20"
+                                                            style={{
+                                                                backgroundColor: `${
+                                                                    isSort ===
+                                                                    "asctimeStart"
+                                                                        ? "#007BFF"
+                                                                        : ""
+                                                                }`,
+                                                                color: `${
+                                                                    isSort ===
+                                                                    "asctimeStart"
+                                                                        ? "white"
+                                                                        : "black"
+                                                                }`,
+                                                            }}
+                                                            onClick={() =>
+                                                                this.handleSort(
+                                                                    "asc",
+                                                                    "timeStart"
+                                                                )
+                                                            }>
+                                                            {" "}
+                                                            <div className="test__">
+                                                                Sớm nhất
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            className="w-20"
+                                                            style={{
+                                                                backgroundColor: `${
+                                                                    isSort ===
+                                                                    "desctimeStart"
+                                                                        ? "#007BFF"
+                                                                        : ""
+                                                                }`,
+                                                                color: `${
+                                                                    isSort ===
+                                                                    "desctimeStart"
+                                                                        ? "white"
+                                                                        : "black"
+                                                                }`,
+                                                            }}
+                                                            onClick={() =>
+                                                                this.handleSort(
+                                                                    "desc",
+                                                                    "timeStart"
+                                                                )
+                                                            }>
+                                                            <div className="test__">
+                                                                Muộn nhất
+                                                            </div>
                                                         </div>
                                                         <div className="w-20">
-                                                            Sớm nhất
-                                                        </div>
-                                                        <div className="w-20">
-                                                            Muộn nhất
-                                                        </div>
-                                                        <div className="w-20">
-                                                            Xếp hạng
+                                                            <div className="test__">
+                                                                Xếp hạng
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             {/* </div> */}
+
                                             <div className="route-result-body">
-                                                {arrRoute &&
-                                                arrRoute.length > 0 ? (
+                                                {loading === false ? (
+                                                    <>
+                                                        {" "}
+                                                        <div className="ticket">
+                                                            <div className="ticket-container">
+                                                                <Box
+                                                                    sx={{
+                                                                        width: "100%",
+                                                                    }}>
+                                                                    {loading ===
+                                                                    false ? (
+                                                                        <Skeleton
+                                                                            width="100%"
+                                                                            height={
+                                                                                30
+                                                                            }>
+                                                                            <div className="ticket-header"></div>
+                                                                        </Skeleton>
+                                                                    ) : (
+                                                                        <Typography>
+                                                                            Ted
+                                                                        </Typography>
+                                                                    )}
+                                                                </Box>
+
+                                                                <div className="ticket-body row">
+                                                                    <div className="col-3 ticket-img_ ">
+                                                                        {" "}
+                                                                        <Box
+                                                                            sx={{
+                                                                                width: "100%",
+                                                                            }}>
+                                                                            {loading ===
+                                                                            false ? (
+                                                                                <Skeleton
+                                                                                    width="100%"
+                                                                                    height={
+                                                                                        120
+                                                                                    }></Skeleton>
+                                                                            ) : (
+                                                                                <Typography>
+                                                                                    Ted
+                                                                                </Typography>
+                                                                            )}
+                                                                        </Box>
+                                                                    </div>
+
+                                                                    <div className="col-9">
+                                                                        <div className="row">
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: "100%",
+                                                                                    mb: 2,
+                                                                                }}>
+                                                                                {loading ===
+                                                                                false ? (
+                                                                                    <Skeleton
+                                                                                        width="100%"
+                                                                                        height={
+                                                                                            30
+                                                                                        }>
+                                                                                        <div className="ticket-header"></div>
+                                                                                    </Skeleton>
+                                                                                ) : (
+                                                                                    <Typography>
+                                                                                        Ted
+                                                                                    </Typography>
+                                                                                )}
+                                                                            </Box>
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: "100%",
+                                                                                    mb: 2,
+                                                                                }}>
+                                                                                {loading ===
+                                                                                false ? (
+                                                                                    <Skeleton
+                                                                                        width="100%"
+                                                                                        height={
+                                                                                            30
+                                                                                        }>
+                                                                                        <div className="ticket-header"></div>
+                                                                                    </Skeleton>
+                                                                                ) : (
+                                                                                    <Typography>
+                                                                                        Ted
+                                                                                    </Typography>
+                                                                                )}
+                                                                            </Box>
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: "100%",
+                                                                                    mb: 2,
+                                                                                }}>
+                                                                                {loading ===
+                                                                                false ? (
+                                                                                    <Skeleton
+                                                                                        width="100%"
+                                                                                        height={
+                                                                                            30
+                                                                                        }>
+                                                                                        <div className="ticket-header"></div>
+                                                                                    </Skeleton>
+                                                                                ) : (
+                                                                                    <Typography>
+                                                                                        Ted
+                                                                                    </Typography>
+                                                                                )}
+                                                                            </Box>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="ticket-footer">
+                                                                <Box
+                                                                    sx={{
+                                                                        width: "90%",
+                                                                        ml: 3,
+                                                                    }}>
+                                                                    {loading ===
+                                                                    false ? (
+                                                                        <Skeleton
+                                                                            width="100%"
+                                                                            height={
+                                                                                30
+                                                                            }>
+                                                                            <div className="ticket-header"></div>
+                                                                        </Skeleton>
+                                                                    ) : (
+                                                                        <Typography>
+                                                                            Ted
+                                                                        </Typography>
+                                                                    )}
+                                                                </Box>
+                                                            </div>
+                                                        </div>{" "}
+                                                        <div className="ticket">
+                                                            <div className="ticket-container">
+                                                                <Box
+                                                                    sx={{
+                                                                        width: "100%",
+                                                                    }}>
+                                                                    {loading ===
+                                                                    false ? (
+                                                                        <Skeleton
+                                                                            width="100%"
+                                                                            height={
+                                                                                30
+                                                                            }>
+                                                                            <div className="ticket-header"></div>
+                                                                        </Skeleton>
+                                                                    ) : (
+                                                                        <Typography>
+                                                                            Ted
+                                                                        </Typography>
+                                                                    )}
+                                                                </Box>
+
+                                                                <div className="ticket-body row">
+                                                                    <div className="col-3 ticket-img_ ">
+                                                                        {" "}
+                                                                        <Box
+                                                                            sx={{
+                                                                                width: "100%",
+                                                                            }}>
+                                                                            {loading ===
+                                                                            false ? (
+                                                                                <Skeleton
+                                                                                    width="100%"
+                                                                                    height={
+                                                                                        120
+                                                                                    }></Skeleton>
+                                                                            ) : (
+                                                                                <Typography>
+                                                                                    Ted
+                                                                                </Typography>
+                                                                            )}
+                                                                        </Box>
+                                                                    </div>
+
+                                                                    <div className="col-9">
+                                                                        <div className="row">
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: "100%",
+                                                                                    mb: 2,
+                                                                                }}>
+                                                                                {loading ===
+                                                                                false ? (
+                                                                                    <Skeleton
+                                                                                        width="100%"
+                                                                                        height={
+                                                                                            30
+                                                                                        }>
+                                                                                        <div className="ticket-header"></div>
+                                                                                    </Skeleton>
+                                                                                ) : (
+                                                                                    <Typography>
+                                                                                        Ted
+                                                                                    </Typography>
+                                                                                )}
+                                                                            </Box>
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: "100%",
+                                                                                    mb: 2,
+                                                                                }}>
+                                                                                {loading ===
+                                                                                false ? (
+                                                                                    <Skeleton
+                                                                                        width="100%"
+                                                                                        height={
+                                                                                            30
+                                                                                        }>
+                                                                                        <div className="ticket-header"></div>
+                                                                                    </Skeleton>
+                                                                                ) : (
+                                                                                    <Typography>
+                                                                                        Ted
+                                                                                    </Typography>
+                                                                                )}
+                                                                            </Box>
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: "100%",
+                                                                                    mb: 2,
+                                                                                }}>
+                                                                                {loading ===
+                                                                                false ? (
+                                                                                    <Skeleton
+                                                                                        width="100%"
+                                                                                        height={
+                                                                                            30
+                                                                                        }>
+                                                                                        <div className="ticket-header"></div>
+                                                                                    </Skeleton>
+                                                                                ) : (
+                                                                                    <Typography>
+                                                                                        Ted
+                                                                                    </Typography>
+                                                                                )}
+                                                                            </Box>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="ticket-footer">
+                                                                <Box
+                                                                    sx={{
+                                                                        width: "90%",
+                                                                        ml: 3,
+                                                                    }}>
+                                                                    {loading ===
+                                                                    false ? (
+                                                                        <Skeleton
+                                                                            width="100%"
+                                                                            height={
+                                                                                30
+                                                                            }>
+                                                                            <div className="ticket-header"></div>
+                                                                        </Skeleton>
+                                                                    ) : (
+                                                                        <Typography>
+                                                                            Ted
+                                                                        </Typography>
+                                                                    )}
+                                                                </Box>
+                                                            </div>
+                                                        </div>{" "}
+                                                        <div className="ticket">
+                                                            <div className="ticket-container">
+                                                                <Box
+                                                                    sx={{
+                                                                        width: "100%",
+                                                                    }}>
+                                                                    {loading ===
+                                                                    false ? (
+                                                                        <Skeleton
+                                                                            width="100%"
+                                                                            height={
+                                                                                30
+                                                                            }>
+                                                                            <div className="ticket-header"></div>
+                                                                        </Skeleton>
+                                                                    ) : (
+                                                                        <Typography>
+                                                                            Ted
+                                                                        </Typography>
+                                                                    )}
+                                                                </Box>
+
+                                                                <div className="ticket-body row">
+                                                                    <div className="col-3 ticket-img_ ">
+                                                                        {" "}
+                                                                        <Box
+                                                                            sx={{
+                                                                                width: "100%",
+                                                                            }}>
+                                                                            {loading ===
+                                                                            false ? (
+                                                                                <Skeleton
+                                                                                    width="100%"
+                                                                                    height={
+                                                                                        120
+                                                                                    }></Skeleton>
+                                                                            ) : (
+                                                                                <Typography>
+                                                                                    Ted
+                                                                                </Typography>
+                                                                            )}
+                                                                        </Box>
+                                                                    </div>
+
+                                                                    <div className="col-9">
+                                                                        <div className="row">
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: "100%",
+                                                                                    mb: 2,
+                                                                                }}>
+                                                                                {loading ===
+                                                                                false ? (
+                                                                                    <Skeleton
+                                                                                        width="100%"
+                                                                                        height={
+                                                                                            30
+                                                                                        }>
+                                                                                        <div className="ticket-header"></div>
+                                                                                    </Skeleton>
+                                                                                ) : (
+                                                                                    <Typography>
+                                                                                        Ted
+                                                                                    </Typography>
+                                                                                )}
+                                                                            </Box>
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: "100%",
+                                                                                    mb: 2,
+                                                                                }}>
+                                                                                {loading ===
+                                                                                false ? (
+                                                                                    <Skeleton
+                                                                                        width="100%"
+                                                                                        height={
+                                                                                            30
+                                                                                        }>
+                                                                                        <div className="ticket-header"></div>
+                                                                                    </Skeleton>
+                                                                                ) : (
+                                                                                    <Typography>
+                                                                                        Ted
+                                                                                    </Typography>
+                                                                                )}
+                                                                            </Box>
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: "100%",
+                                                                                    mb: 2,
+                                                                                }}>
+                                                                                {loading ===
+                                                                                false ? (
+                                                                                    <Skeleton
+                                                                                        width="100%"
+                                                                                        height={
+                                                                                            30
+                                                                                        }>
+                                                                                        <div className="ticket-header"></div>
+                                                                                    </Skeleton>
+                                                                                ) : (
+                                                                                    <Typography>
+                                                                                        Ted
+                                                                                    </Typography>
+                                                                                )}
+                                                                            </Box>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="ticket-footer">
+                                                                <Box
+                                                                    sx={{
+                                                                        width: "90%",
+                                                                        ml: 3,
+                                                                    }}>
+                                                                    {loading ===
+                                                                    false ? (
+                                                                        <Skeleton
+                                                                            width="100%"
+                                                                            height={
+                                                                                30
+                                                                            }>
+                                                                            <div className="ticket-header"></div>
+                                                                        </Skeleton>
+                                                                    ) : (
+                                                                        <Typography>
+                                                                            Ted
+                                                                        </Typography>
+                                                                    )}
+                                                                </Box>
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                ) : arrRoute &&
+                                                  arrRoute.length > 0 ? (
                                                     arrRoute.map(
                                                         (item, index) => {
                                                             let start = moment(
@@ -436,104 +946,106 @@ class BusRoute extends Component {
                                                                     );
                                                             }
                                                             return (
-                                                                <div className="ticket">
-                                                                    <div className="ticket-container">
-                                                                        <div className="ticket-header">
-                                                                            <div className="fl">
-                                                                                <i className="fas fa-bus"></i>
-                                                                                <span className="ml-5">
-                                                                                    {
-                                                                                        item
-                                                                                            .User
-                                                                                            .busOwner
-                                                                                    }
-                                                                                </span>
+                                                                <>
+                                                                    <div className="ticket">
+                                                                        <div className="ticket-container">
+                                                                            <div className="ticket-header">
+                                                                                <div className="fl">
+                                                                                    <i className="fas fa-bus"></i>
+                                                                                    <span className="ml-5">
+                                                                                        {
+                                                                                            item
+                                                                                                .User
+                                                                                                .busOwner
+                                                                                        }
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div className="fr">
+                                                                                    {this.currencyFormat(
+                                                                                        item.price
+                                                                                    )}
+                                                                                    {/* {`${item.price} đ `} */}
+                                                                                </div>
                                                                             </div>
-                                                                            <div className="fr">
-                                                                                {this.currencyFormat(
-                                                                                    item.price
-                                                                                )}
-                                                                                {/* {`${item.price} đ `} */}
+                                                                            <div className="ticket-body row">
+                                                                                <div
+                                                                                    className="col-3 ticket-img "
+                                                                                    style={{
+                                                                                        backgroundImage: `url(${imageBase64})`,
+                                                                                    }}></div>
+                                                                                <div className="col-9">
+                                                                                    <div className="row">
+                                                                                        <div className="col-9">
+                                                                                            <div>
+                                                                                                {`${item.Vehicle.BusType.typeName} ${item.Vehicle.BusType.numOfSeat} giường `}
+                                                                                            </div>
+                                                                                            <div className="f-17">
+                                                                                                <i className="fas fa-dot-circle"></i>
+                                                                                                <span className="timeStart">
+                                                                                                    {
+                                                                                                        start
+                                                                                                    }
+                                                                                                    {
+                                                                                                        "  -  "
+                                                                                                    }
+                                                                                                </span>
+                                                                                                <span className="pointStart">
+                                                                                                    {
+                                                                                                        item.areaStart
+                                                                                                    }
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <div className="f-17">
+                                                                                                <i className="fas fa-map-marker-alt"></i>
+                                                                                                <span className="timeEnd">
+                                                                                                    {
+                                                                                                        end
+                                                                                                    }
+                                                                                                    {
+                                                                                                        "  -  "
+                                                                                                    }
+                                                                                                </span>
+                                                                                                <span className="pointEnd">
+                                                                                                    {
+                                                                                                        item.areaEnd
+                                                                                                    }
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className="col-3 fr">
+                                                                                            Thong
+                                                                                            tin
+                                                                                            gif
+                                                                                            do
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                        <div className="ticket-body row">
-                                                                            <div
-                                                                                className="col-3 ticket-img "
-                                                                                style={{
-                                                                                    backgroundImage: `url(${imageBase64})`,
-                                                                                }}></div>
-                                                                            <div className="col-9">
+                                                                            <div className="ticket-footer">
                                                                                 <div className="row">
-                                                                                    <div className="col-9">
-                                                                                        <div>
-                                                                                            {`${item.Vehicle.BusType.typeName} ${item.Vehicle.BusType.numOfSeat} giường `}
-                                                                                        </div>
-                                                                                        <div className="f-17">
-                                                                                            <i className="fas fa-dot-circle"></i>
-                                                                                            <span className="timeStart">
-                                                                                                {
-                                                                                                    start
-                                                                                                }
-                                                                                                {
-                                                                                                    "  -  "
-                                                                                                }
-                                                                                            </span>
-                                                                                            <span className="pointStart">
-                                                                                                {
-                                                                                                    item.areaStart
-                                                                                                }
-                                                                                            </span>
-                                                                                        </div>
-                                                                                        <div className="f-17">
-                                                                                            <i className="fas fa-map-marker-alt"></i>
-                                                                                            <span className="timeEnd">
-                                                                                                {
-                                                                                                    end
-                                                                                                }
-                                                                                                {
-                                                                                                    "  -  "
-                                                                                                }
-                                                                                            </span>
-                                                                                            <span className="pointEnd">
-                                                                                                {
-                                                                                                    item.areaEnd
-                                                                                                }
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div className="col-3 fr">
-                                                                                        Thong
+                                                                                    <div className="w-50 fl">
+                                                                                        Thông
                                                                                         tin
-                                                                                        gif
-                                                                                        do
+                                                                                        chi
+                                                                                        tiết
                                                                                     </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="ticket-footer">
-                                                                            <div className="row">
-                                                                                <div className="w-50 fl">
-                                                                                    Thông
-                                                                                    tin
-                                                                                    chi
-                                                                                    tiết
-                                                                                </div>
-                                                                                <div className="w-50 ">
-                                                                                    <button
-                                                                                        className="btn btn-primary fr"
-                                                                                        onClick={() =>
-                                                                                            this.handleClickTicket(
-                                                                                                item
-                                                                                            )
-                                                                                        }>
-                                                                                        Chọn
-                                                                                        chuyến{" "}
-                                                                                    </button>
+                                                                                    <div className="w-50 ">
+                                                                                        <button
+                                                                                            className="btn btn-primary fr"
+                                                                                            onClick={() =>
+                                                                                                this.handleClickTicket(
+                                                                                                    item
+                                                                                                )
+                                                                                            }>
+                                                                                            Chọn
+                                                                                            chuyến{" "}
+                                                                                        </button>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
+                                                                </>
                                                             );
                                                         }
                                                     )

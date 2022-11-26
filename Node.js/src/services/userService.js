@@ -175,11 +175,31 @@ let getAllUsers = (userId) => {
             }
             if (userId && userId !== "ALL") {
                 //console.log(userId);
-                users = await db.User.findOne({
+                users = await db.User.findAll({
                     where: { id: userId },
                     attributes: {
                         exclude: ["password"],
                     },
+                    include: [
+                        {
+                            model: db.Trip,
+                            attributes: [
+                                "id",
+                                "timeStart",
+                                "areaStart",
+                                "routeId",
+                                "busId",
+                                "busOwnerId",
+                            ],
+                            include: [
+                                {
+                                    model: db.Ticket,
+                                },
+                            ],
+                        },
+                    ],
+                    raw: true,
+                    nest: true,
                 });
             }
             resolve(users);

@@ -40,18 +40,19 @@ class InfoUser extends Component {
             let res = await getAllUsers(+userId);
             console.log(res.users);
             let imageBase64 = "";
-            if (res.users.image) {
-                imageBase64 = Buffer.from(res.users.image, "base64").toString(
-                    "binary"
-                );
+            if (res.users[0].image) {
+                imageBase64 = Buffer.from(
+                    res.users[0].image,
+                    "base64"
+                ).toString("binary");
             }
             this.setState({
-                gender: res.users.gender,
-                id: res.users.id,
-                name: res.users.name,
-                phoneNumber: res.users.phoneNumber,
-                email: res.users.email,
-                address: res.users.address,
+                gender: res.users[0].gender,
+                id: res.users[0].id,
+                name: res.users[0].name,
+                phoneNumber: res.users[0].phoneNumber,
+                email: res.users[0].email,
+                address: res.users[0].address,
                 previewImgURL: imageBase64,
                 avatar: imageBase64,
             });
@@ -102,23 +103,14 @@ class InfoUser extends Component {
         }
     };
     handleSaveUser = async () => {
-        let {
-            gender,
-            name,
-            phoneNumber,
-            email,
-            address,
-            id,
-            avatar,
-            previewImgURL,
-        } = this.state;
+        let { gender, name, phoneNumber, email, address, id, avatar } =
+            this.state;
         console.log(this.state);
         let language = this.props.language;
+        if (!gender) gender = "M";
         if (language === LANGUAGES.VI) {
             if (!name) {
                 toast.error("Tên không được để trống");
-            } else if (!gender) {
-                toast.error("Giới tính không được để trống");
             } else if (!email) {
                 toast.error("Email không được để trống");
             } else if (!phoneNumber) {
@@ -159,8 +151,6 @@ class InfoUser extends Component {
         } else if (language === LANGUAGES.EN) {
             if (!name) {
                 toast.error("Please enter your name");
-            } else if (!gender) {
-                toast.error("Please enter your gender");
             } else if (!email) {
                 toast.error("Please enter your email");
             } else if (!phoneNumber) {
@@ -221,6 +211,7 @@ class InfoUser extends Component {
         let genders = this.state.genderArr;
         let { gender, name, phoneNumber, email, address, isChanged } =
             this.state;
+        console.log(gender);
         return (
             <React.Fragment>
                 {this.state.isOpenModel && (

@@ -56,11 +56,7 @@ let getAllTickets = (id) => {
                     raw: true,
                     nest: true,
                 });
-                if (bus && bus.image) {
-                    bus.image = Buffer.from(bus.image, "base64").toString(
-                        "binary"
-                    );
-                }
+
                 resolve(bus);
             }
         } catch (e) {
@@ -68,7 +64,45 @@ let getAllTickets = (id) => {
         }
     });
 };
-
+let getDriverTicket = (id, dayStart) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let bus = await db.Ticket.findAll({
+                where: { driverId: id, dayStart: dayStart },
+                include: [
+                    {
+                        model: db.Trip,
+                        attributes: [
+                            "id",
+                            "timeStart",
+                            "areaStart",
+                            "routeId",
+                            "busId",
+                            "busOwnerId",
+                        ],
+                    },
+                ],
+                raw: true,
+                nest: true,
+            });
+            resolve(bus);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let getDriverTicketRoute = (id, dayStart, tripId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let bus = await db.Ticket.findAll({
+                where: { driverId: id, dayStart: dayStart, tripId: tripId },
+            });
+            resolve(bus);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let bulkCreateTicket = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -121,6 +155,7 @@ let verifyTicket = (data) => {
                     attributes: ["id", "tripId", "token"],
                     raw: false,
                 });
+                console.log(appointment);
                 appointment && appointment.length > 0
                     ? appointment.forEach(async (item) => {
                           item.status = "S2";
@@ -141,8 +176,41 @@ let verifyTicket = (data) => {
         }
     });
 };
+let checkCustomerIsPresent = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let ticket = await db.Ticket.findAll({
+                where: {
+                    token: data.token,
+                    tripId: data.tripId,
+                },
+                attributes: ["id", "tripId", "token", "isPresent"],
+                raw: false,
+            });
+            console.log(ticket);
+            ticket && ticket.length > 0
+                ? ticket.forEach(async (item) => {
+                      item.isPresent = 1;
+                      await item.save();
+                      resolve({
+                          errCode: 0,
+                          errMessage: "Update the appointment success",
+                      });
+                  })
+                : resolve({
+                      errCode: 2,
+                      errMessage: "appointment has been activated or not exist",
+                  });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 module.exports = {
     getAllTickets,
     bulkCreateTicket,
     verifyTicket,
+    getDriverTicket,
+    checkCustomerIsPresent,
+    getDriverTicketRoute,
 };

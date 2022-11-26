@@ -88,6 +88,8 @@ class Step3 extends Component {
                     errMessage = "Mã giảm giá đã hết thời gian sử dụng";
                 } else if (inFoCoupon[0].use == inFoCoupon[0].count) {
                     errMessage = "Mã giảm giả đã hết";
+                } else if (!type) {
+                    finalPrice = totalPrice;
                 } else if (type == "2") {
                     finalPrice = totalPrice - +discount;
                 } else {
@@ -121,7 +123,7 @@ class Step3 extends Component {
                 let resUser = await getAllUsers(id);
                 if (resUser) {
                     if (resUser.users) {
-                        if (!resUser.users.isFirst) {
+                        if (!resUser.users[0].isFirst) {
                             let current = new Date().getTime();
                             if (current < inFoCoupon[0].startDate) {
                                 errMessage =
@@ -133,6 +135,8 @@ class Step3 extends Component {
                                 inFoCoupon[0].use == inFoCoupon[0].count
                             ) {
                                 errMessage = "Mã giảm giả đã hết";
+                            } else if (!type) {
+                                finalPrice = totalPrice;
                             } else if (type == "2") {
                                 finalPrice = totalPrice - +discount;
                             } else {
@@ -156,10 +160,9 @@ class Step3 extends Component {
                                 });
                             } else {
                                 infoUser = {
-                                    id: resUser.users.id,
+                                    id: resUser.users[0].id,
                                     isFirst: 1,
                                 };
-                                console.log(infoUser);
                                 this.setState(
                                     {
                                         finalPrice,
@@ -169,7 +172,6 @@ class Step3 extends Component {
                                         infoUser,
                                     },
                                     () => {
-                                        console.log("info >>>:", infoUser);
                                         this.props.parentCallback(
                                             inFoCoupon,
                                             finalPrice,
@@ -193,6 +195,7 @@ class Step3 extends Component {
             this.setState({
                 errMessage,
             });
+            this.props.parentCallback(inFoCoupon, finalPrice, infoUser);
         }
     };
     handleKeyDown = (e) => {

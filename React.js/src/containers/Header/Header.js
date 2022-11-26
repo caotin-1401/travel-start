@@ -76,7 +76,6 @@ class Header extends Component {
     render() {
         const { processLogout, language, userInfo } = this.props;
         let { info, dropdownOpen } = this.state;
-        console.log(info);
         let username = "a b";
         info && info.name && (username = info.name);
         let test = username.split(" ").reverse();

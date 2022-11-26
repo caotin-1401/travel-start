@@ -25,9 +25,7 @@ import { toast } from "react-toastify";
 import {
     getAllCouponService,
     getAllEventsService,
-    createNewCouponService,
     deleteCouponService,
-    editCouponService,
 } from "../../../../services/userService";
 import ModalEdit from "./ModalEdit";
 import Select from "react-select";

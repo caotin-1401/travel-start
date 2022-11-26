@@ -288,12 +288,7 @@ let getAllSchedule = (tripId) => {
                             include: [
                                 {
                                     model: db.BusType,
-                                    attributes: [
-                                        "id",
-                                        "typeName",
-                                        "numOfSeat",
-                                        "image",
-                                    ],
+                                    attributes: ["id", "typeName", "numOfSeat"],
                                 },
                             ],
                         },
@@ -330,7 +325,7 @@ let getAllSchedule = (tripId) => {
                     include: [
                         {
                             model: db.Vehicle,
-                            attributes: ["id", "number", "busTypeId", "image"],
+                            attributes: ["id", "number", "busTypeId"],
                             include: [
                                 {
                                     model: db.BusType,

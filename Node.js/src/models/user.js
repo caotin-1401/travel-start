@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
                 as: "genderData",
             });
             User.hasMany(models.Vehicle, { foreignKey: "busOwnerId" });
-            User.hasMany(models.Trip, { foreignKey: "busId" });
+            User.hasMany(models.Trip, { foreignKey: "driverId" });
             User.hasMany(models.Ticket, { foreignKey: "userId" });
         }
     }

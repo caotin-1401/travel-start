@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Header from "../containers/Header/Header";
-import ListCustomer from "./../containers/System/Driver/ListCustomer/ListCustomer";
+import TableCustomer from "./../containers/System/Driver/ListCustomer/TableCustomer";
 import ParkingLot from "./../containers/System/BusOwner/ParkingLot";
 class Driver extends Component {
     constructor(props) {
@@ -32,7 +32,7 @@ class Driver extends Component {
                             />
                             <Route
                                 path="/driver/seatNo"
-                                component={ListCustomer}
+                                component={TableCustomer}
                             />
                             <Route
                                 component={() => {

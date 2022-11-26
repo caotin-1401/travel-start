@@ -68,8 +68,15 @@ class BookingModal extends Component {
             finalPrice,
             isActive,
             infoUser,
+            totalPrice,
         } = this.state;
-
+        let test;
+        let dayStart;
+        if (finalPrice === 0) {
+            finalPrice = totalPrice;
+        }
+        tripInfo && tripInfo.driverId && (test = tripInfo.driverId);
+        tripInfo && tripInfo.driverId && (dayStart = tripInfo.dateStart);
         this.props.addTicket();
         let result = [];
         this.setState(
@@ -90,6 +97,8 @@ class BookingModal extends Component {
                     let obj = {};
                     obj.totalPrice = finalPrice;
                     obj.name = name;
+                    obj.driverId = test;
+                    obj.dayStart = dayStart;
                     obj.phone = phone;
                     obj.email = email;
                     obj.description = description;
@@ -124,26 +133,26 @@ class BookingModal extends Component {
                     });
                 let resCoupon;
                 let resUser;
-                console.log(data);
                 if (data) {
                     if (data.id) {
                         resCoupon = await CouponService(data);
                     }
                 }
-                console.log(" infoUser", infoUser);
                 if (infoUser) {
                     if (infoUser.id) {
                         resUser = await changeUserFirstCouponService(infoUser);
                     }
                 }
-                console.log(resCoupon);
-                console.log("data:", data);
             } else if (res && res.errCode !== 0) {
                 this.setState(
                     {
                         isActive: false,
+                        seatArr: [],
                     },
-                    this.props.parentCallback2(isActive)
+                    () => {
+                        // this.seatArrParent = { seatArr };
+                        this.props.parentCallback2(isActive);
+                    }
                 );
                 toast.error("Đặt vé xe thất bại");
             }
@@ -187,17 +196,23 @@ class BookingModal extends Component {
         });
     };
     callbackFunction3 = (inFoCoupon, finalPrice, infoUser) => {
-        this.setState(
-            {
-                inFoCoupon,
-                finalPrice,
-                infoUser,
-            },
-            console.log(inFoCoupon, infoUser)
-        );
+        this.setState({
+            inFoCoupon,
+            finalPrice,
+            infoUser,
+        });
     };
     render() {
-        let { current, tripInfo, seatArr, totalPrice } = this.state;
+        let {
+            current,
+            tripInfo,
+            seatArr,
+            totalPrice,
+            name,
+            phone,
+            email,
+            description,
+        } = this.state;
         const steps = [
             {
                 label: "Chọn ghế",
@@ -214,6 +229,10 @@ class BookingModal extends Component {
                 label: "Nhập thông tin",
                 description: (
                     <Step2
+                        nameParent={name}
+                        phoneParent={phone}
+                        emailParent={email}
+                        descriptionParent={description}
                         seatArrParent={seatArr}
                         totalPriceParent={totalPrice}
                         parentCallback={this.callbackFunction2}

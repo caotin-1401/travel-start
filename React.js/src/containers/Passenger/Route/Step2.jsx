@@ -1,14 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Row, Col } from "reactstrap";
 class Step2 extends Component {
     constructor(props) {
         super(props);
@@ -23,11 +15,23 @@ class Step2 extends Component {
     }
 
     componentDidMount() {
-        let { seatArr, totalPrice } = this.state;
         this.setState({
             seatArr: this.props.seatArrParent,
             totalPrice: this.props.totalPriceParent,
         });
+        if (
+            this.props.nameParent ||
+            this.props.phoneParent ||
+            this.props.emailParent ||
+            this.props.description
+        ) {
+            this.setState({
+                name: this.props.nameParent,
+                phone: this.props.phoneParent,
+                email: this.props.emailParent,
+                description: this.props.descriptionParent,
+            });
+        }
     }
 
     checkValidInput = () => {
@@ -45,11 +49,15 @@ class Step2 extends Component {
     onChangeInput = (event, id) => {
         let copyState = { ...this.state };
         copyState[id] = event.target.value;
-        this.setState({
-            ...copyState,
-        });
-        let { name, phone, email, description, seatArr } = this.state;
-        this.props.parentCallback(name, phone, email, description, seatArr);
+        this.setState(
+            {
+                ...copyState,
+            },
+            () => {
+                let { name, phone, email, description } = this.state;
+                this.props.parentCallback(name, phone, email, description);
+            }
+        );
     };
     currencyFormat(num) {
         return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
@@ -57,6 +65,7 @@ class Step2 extends Component {
     render() {
         let { seatArr, totalPrice, name, phone, email, description } =
             this.state;
+        console.log(name, phone, email, description);
         return (
             <div className="container">
                 <div

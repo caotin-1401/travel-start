@@ -161,6 +161,16 @@ const saveBulkTicket = (data) => {
 const getAllTickets = (inputId) => {
     return axios.get(`/api/get-all-ticket?id=${inputId}`);
 };
+const getDriverTickets = (inputId, dayStart) => {
+    return axios.get(
+        `/api/get-driver-ticket?driverId=${inputId}&dayStart=${dayStart}`
+    );
+};
+const getDriverTicketsRoute = (inputId, dayStart, tripId) => {
+    return axios.get(
+        `/api/get-driver-ticket-route?driverId=${inputId}&dayStart=${dayStart}&tripId=${tripId}`
+    );
+};
 
 //verify
 const verifyEmail = (data) => {
@@ -215,7 +225,13 @@ const getUseCouponService = (inputId) => {
 const CouponService = (inputData) => {
     return axios.put("/api/use-coupon", inputData);
 };
+const checkCustomerPresent = (inputData) => {
+    return axios.put("/api/check-customer", inputData);
+};
 export {
+    getDriverTicketsRoute,
+    checkCustomerPresent,
+    getDriverTickets,
     changeUserFirstCouponService,
     changePasswordService,
     CouponService,

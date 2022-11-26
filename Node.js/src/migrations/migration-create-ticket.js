@@ -11,23 +11,32 @@ module.exports = {
             seatNo: {
                 type: Sequelize.STRING,
             },
-            // arrOfSeat: {
-            //     type: Sequelize.ARRAY(Sequelize.TEXT),
-            //     defaultValue: [],
-            // },
             userId: {
+                type: Sequelize.INTEGER,
+            },
+            driverId: {
                 type: Sequelize.INTEGER,
             },
             token: {
                 type: Sequelize.STRING,
             },
+            dayStart: {
+                type: Sequelize.STRING,
+            },
             totalPrice: {
                 type: Sequelize.INTEGER,
             },
-            packageWeight: {
+
+            description: {
                 type: Sequelize.STRING,
             },
-            description: {
+            name: {
+                type: Sequelize.STRING,
+            },
+            email: {
+                type: Sequelize.STRING,
+            },
+            phone: {
                 type: Sequelize.STRING,
             },
             tripId: {
@@ -37,8 +46,8 @@ module.exports = {
                 //     key: "id",
                 // },
             },
-            billId: {
-                type: Sequelize.INTEGER,
+            isPresent: {
+                type: Sequelize.STRING,
             },
             status: {
                 type: Sequelize.STRING,

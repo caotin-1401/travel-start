@@ -99,7 +99,10 @@
                 "name": "transport service name"
             }
         },
-        "driver": {}
+        "driver": {
+            "customer": "Passenger",
+            "list-customer": "List of Passenger"
+        }
     },
     "manage-user": {
         "add": "Add",

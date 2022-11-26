@@ -10,28 +10,22 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             Ticket.belongsTo(models.Trip, { foreignKey: "tripId" });
             Ticket.belongsTo(models.User, { foreignKey: "userId" });
-            Ticket.belongsTo(models.Allcode, {
-                foreignKey: "status",
-                targetKey: "keyMap",
-                as: "statusData",
-            });
         }
     }
     Ticket.init(
         {
             userId: DataTypes.INTEGER,
             seatNo: DataTypes.STRING,
-            // arrOfSeat: {
-            //     type: DataTypes.ARRAY(DataTypes.STRING),
-            //     defaultValue: [],
-            // },
             token: DataTypes.STRING,
             totalPrice: DataTypes.INTEGER,
-            // packageWeight: DataTypes.STRING,
             description: DataTypes.STRING,
-            // tripId: DataTypes.INTEGER,
+            name: DataTypes.STRING,
+            driverId: DataTypes.INTEGER,
             status: DataTypes.STRING,
-            billId: DataTypes.INTEGER,
+            isPresent: DataTypes.STRING,
+            dayStart: DataTypes.STRING,
+            phone: DataTypes.STRING,
+            email: DataTypes.STRING,
         },
         {
             sequelize,

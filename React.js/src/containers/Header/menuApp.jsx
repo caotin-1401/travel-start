@@ -156,9 +156,9 @@ export const driverMenu = [
     },
     {
         //quản lý hanh khach
-        name: "menu.admin.services",
+        name: "menu.driver.customer",
         menus: [
-            { name: "menu.admin.list-bus", link: "/driver/seatNo" },
+            { name: "menu.driver.list-customer", link: "/driver/seatNo" },
             // { name: "menu.admin.location", link: "/driver/dashboard" },
         ],
     },
