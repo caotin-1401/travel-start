@@ -24,6 +24,15 @@ const getAllUsers = (inputId) => {
 const createNewUserService = (data) => {
     return axios.post("/api/create-new-user", data);
 };
+const postForgotPasswordService = (data) => {
+    return axios.post("/api/post-forgot-password", data);
+};
+const getForgotPasswordService = (data) => {
+    return axios.get("/api/post-forgot-password", data);
+};
+const postResetPasswordService = (data) => {
+    return axios.post("/api/post-reset-password", data);
+};
 
 const deleteUserService = (userId) => {
     return axios.delete("/api/delete-user", {
@@ -39,6 +48,7 @@ const editUserService = (inputData) => {
 const changePasswordService = (inputData) => {
     return axios.put("/api/change-password", inputData);
 };
+
 const changeUserFirstCouponService = (inputData) => {
     return axios.put("/api/use-coupon-isFirst", inputData);
 };
@@ -229,6 +239,9 @@ const checkCustomerPresent = (inputData) => {
     return axios.put("/api/check-customer", inputData);
 };
 export {
+    getForgotPasswordService,
+    postForgotPasswordService,
+    postResetPasswordService,
     getDriverTicketsRoute,
     checkCustomerPresent,
     getDriverTickets,

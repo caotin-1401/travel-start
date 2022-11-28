@@ -2,67 +2,56 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import * as actions from "../../store/actions";
-import "./Login.scss";
+import "./Register.scss";
 import logo from "../../assets/logo2.png";
-import { handleLogin } from "../../services/userService";
-import { Link } from "react-router-dom";
+import { handleRegister } from "../../services/userService";
+import { useNavigate, Link } from "react-router-dom";
 
-class Login extends Component {
+class ResetPassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: "",
             password: "",
+            confirmPassword: "",
             isShowPassword: false,
+            isShowconfirmPassword: false,
             errMessage: "",
         };
     }
-
-    handleChangeUser = (e) => {
+    onChangeInput = (event, id) => {
+        let copyState = { ...this.state };
+        copyState[id] = event.target.value;
         this.setState({
-            email: e.target.value,
+            ...copyState,
         });
     };
-
-    handleChangePassword = (e) => {
-        this.setState({
-            password: e.target.value,
-        });
-    };
-    handleKeyDown = (e) => {
-        if (e.key === "Enter" || e.keyCode === 13) {
-            this.handleLogin();
+    checkValidInput = () => {
+        let isValid = true;
+        let arrInput = ["password", "confirmPassword"];
+        for (let i = 0; i < arrInput.length; i++) {
+            if (!this.state[arrInput[i]]) {
+                isValid = false;
+                alert("Missing: " + arrInput[i]);
+                break;
+            }
         }
+        return isValid;
     };
-    redirectToSystemPage = (data) => {
-        const { navigate } = this.props;
-        let redirectPath;
-        if (data === "R1") {
-            redirectPath = "/system/dashboard";
-        } else if (data === "R2") {
-            redirectPath = "/busOwner/dashboard";
-        } else if (data === "R3") {
-            redirectPath = "/driver/manage-parking";
-        } else {
-            redirectPath = "/home";
-        }
-
-        navigate(`${redirectPath}`);
-    };
-    handleLogin = async () => {
+    handleRegister = async () => {
         this.setState({
             errMessage: "",
         });
         try {
-            let data = await handleLogin(this.state.email, this.state.password);
-            console.log(data);
+            let data = await handleRegister(
+                this.state.password,
+                this.state.confirmPassword
+            );
             if (data && data.errCode !== 0) {
                 this.setState({
                     errMessage: data.message,
                 });
             }
             if (data && data.errCode === 0) {
-                this.redirectToSystemPage(data.user.roleID);
                 this.props.userLoginSuccess(data.user);
             }
         } catch (error) {
@@ -81,32 +70,27 @@ class Login extends Component {
             isShowPassword: !this.state.isShowPassword,
         });
     };
+    handleShowconfirmPassword = () => {
+        this.setState({
+            isShowconfirmPassword: !this.state.isShowconfirmPassword,
+        });
+    };
 
     render() {
+        let { password, confirmPassword } = this.state;
         return (
             <div className="login-background">
                 <div className="login-container">
                     <div className="login-content row">
                         <div className="logostyle">
-                            <Link to="/home">
-                                <img src={logo} />
-                            </Link>
+                            <img src={logo} />
                         </div>
                         <div className="col-12 text-center text-login">
-                            Login
+                            Register
                         </div>
+
                         <div className="col-12 form-group login-input">
-                            <label>Email : </label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Enter your email"
-                                value={this.state.email}
-                                onChange={(e) => this.handleChangeUser(e)}
-                            />
-                        </div>
-                        <div className="col-12 form-group login-input">
-                            <label>Password : </label>
+                            <label>Password (*) : </label>
                             <div className="custom-password">
                                 <input
                                     type={
@@ -116,9 +100,10 @@ class Login extends Component {
                                     }
                                     className="form-control"
                                     placeholder="Enter your password"
-                                    value={this.state.password}
-                                    onChange={this.handleChangePassword}
-                                    onKeyDown={this.handleKeyDown}
+                                    value={password}
+                                    onChange={(event) => {
+                                        this.onChangeInput(event, "password");
+                                    }}
                                 />
                                 <span onClick={() => this.handleShowPassword()}>
                                     <i
@@ -130,37 +115,50 @@ class Login extends Component {
                                 </span>
                             </div>
                         </div>
+                        <div className="col-12 form-group login-input">
+                            <label>Comfirm Password (*) : </label>
+                            <div className="custom-password">
+                                <input
+                                    type={
+                                        this.state.isShowconfirmPassword
+                                            ? "text"
+                                            : "password"
+                                    }
+                                    className="form-control"
+                                    placeholder="Enter your Comfirm password"
+                                    value={confirmPassword}
+                                    onChange={(event) => {
+                                        this.onChangeInput(
+                                            event,
+                                            "confirmPassword"
+                                        );
+                                    }}
+                                />
+                                <span
+                                    onClick={() =>
+                                        this.handleShowconfirmPassword()
+                                    }>
+                                    <i
+                                        className={
+                                            this.state.isShowconfirmPassword
+                                                ? "fas fa-eye"
+                                                : "fas fa-eye-slash"
+                                        }></i>
+                                </span>
+                            </div>
+                        </div>
+
                         <div className="col-12" style={{ color: "red" }}>
                             {this.state.errMessage}
                         </div>
                         <div className="col-12">
                             <button
                                 className="btn-login"
-                                onClick={this.handleLogin}>
+                                onClick={() => {
+                                    this.handleRegister();
+                                }}>
                                 Login
                             </button>
-                        </div>
-                        <div className="col-12">
-                            <p style={{ textAlign: "center" }}>
-                                You don't have an account?
-                                <Link to="/register"> Register</Link>
-                            </p>
-                        </div>
-                        <div className="row mt-3">
-                            <div className="col-6">
-                                <span className="forgot-pass">
-                                    <Link to="/forgot-password">
-                                        Forgot your password ?
-                                    </Link>
-                                </span>
-                            </div>
-                            <div className="col-6 left-forgot">
-                                <span className="forgot-pass">
-                                    <Link to="/home">
-                                        &#60; &#60; Go to HomePage
-                                    </Link>
-                                </span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -179,9 +177,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         navigate: (path) => dispatch(push(path)),
+        // userLoginFail: () => dispatch(actions.adminLoginFail()),
         userLoginSuccess: (userInfo) =>
             dispatch(actions.userLoginSuccess(userInfo)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword);

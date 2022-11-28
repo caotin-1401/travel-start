@@ -139,6 +139,10 @@ export const busOwnerMenu = [
                 name: "menu.busOwner.route",
                 link: "/busOwner/manage-routes",
             },
+            {
+                name: "menu.busOwner.tickets",
+                link: "/busOwner/manage-tickets",
+            },
         ],
     },
 ];

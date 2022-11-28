@@ -29,7 +29,29 @@ let sendEmail = async (dataSend) => {
         `,
     });
 };
-
+let sendEmailFrogotPassword = async (dataSend) => {
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: process.env.EMAIL_APP, // generated ethereal user
+            pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
+        },
+    });
+    let info = await transporter.sendMail({
+        from: "<caotin99a7@gmail.com>", // sender address
+        to: dataSend.receiversEmail, // list of receivers
+        subject: "Thay đổi mật khẩu", // Subject line
+        text: "Hello world?", // plain text body
+        html: `
+        <p>Để đặt lại mật khẩu của bạn, vui lòng nhấp vào liên kết bên dưới.\n\n</p>
+        <p><b><a href=${dataSend.redirectLink} target="_blank"> Click here.\n\n</a></b></p>   
+        <P>Liên kết chỉ có hiệu lực trong vòng 10 phút </P>
+        `,
+    });
+};
 module.exports = {
     sendEmail,
+    sendEmailFrogotPassword,
 };

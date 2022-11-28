@@ -28,6 +28,9 @@ import Profile from "./Passenger/Profile/Profile";
 import ProfileAdmin from "../containers/System/Admin/Profile/Profile";
 import ProfileBusOwner from "../containers/System/BusOwner/Profile/Profile";
 import ProfileDriver from "../containers/System/Driver/Profile/Profile";
+import ForgotPassword from "./Auth/ForgotPassword";
+import ResetPassword from "./Auth/ResetPassword";
+
 class App extends Component {
     handlePersistorState = () => {
         const { persistor } = this.props;
@@ -65,6 +68,18 @@ class App extends Component {
                                             path={path.LOGIN}
                                             component={userIsNotAuthenticated(
                                                 Login
+                                            )}
+                                        />{" "}
+                                        <Route
+                                            path={path.FORGOT_PASSWORD}
+                                            component={userIsNotAuthenticated(
+                                                ForgotPassword
+                                            )}
+                                        />
+                                        <Route
+                                            path={path.RESET_PASSWORD}
+                                            component={userIsNotAuthenticated(
+                                                ResetPassword
                                             )}
                                         />
                                         <Route

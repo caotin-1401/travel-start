@@ -263,14 +263,6 @@ class TableCustomer extends Component {
         // this.setState({ listUser: res.tickets });
         this.setState({ selectRoute: selectRoute });
     };
-    handleSort = (a, b) => {
-        this.state.listUser = _.orderBy(this.state.listUser, [b], [a]);
-        this.setState({
-            sortBy: a,
-            sortField: b,
-            listUser: this.state.listUser,
-        });
-    };
     render() {
         let {
             page,
@@ -369,37 +361,16 @@ class TableCustomer extends Component {
                                         </th>
                                         <th
                                             style={{
-                                                width: "15%",
+                                                width: "10%",
                                             }}>
                                             Số điện thoại
                                         </th>
                                         <th
+                                            className="section-id-list"
                                             style={{
                                                 width: "15%",
                                             }}>
-                                            <div className="section-title">
-                                                <div> Chỗ ngồi</div>
-                                                <div>
-                                                    <FaLongArrowAltDown
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "seatNo"
-                                                            )
-                                                        }
-                                                    />
-                                                    <FaLongArrowAltUp
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "seatNo"
-                                                            )
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
+                                            Chỗ ngồi
                                         </th>
                                         <th className="section-id-list">
                                             Thanh toán
@@ -458,7 +429,6 @@ class TableCustomer extends Component {
                                         : listUser
                                     ).map((item, index) => {
                                         let test = item.seatNo.join(" - ");
-                                        console.log(test);
                                         return (
                                             <tr key={index}>
                                                 <td className="section-id-list">

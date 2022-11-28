@@ -184,7 +184,85 @@ let useCouponIsFirst = async (req, res) => {
         });
     }
 };
+
+let handlePostForgotPassword = async (req, res) => {
+    try {
+        let email = req.body.email;
+
+        if (!email) {
+            return res.status(500).json({
+                errCode: 1,
+                message: "Missing inputs parameter",
+            });
+        }
+
+        let userData = await userService.handlePostForgotPassword(email);
+
+        return res.status(200).json({
+            errCode: userData.errCode,
+            message: userData.errMessage,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let handleGetForgotPassword = async (req, res) => {
+    try {
+        let email = req.query.email;
+        let token = req.query.token;
+        if (!email) {
+            return res.status(500).json({
+                errCode: 1,
+                message: "Missing inputs parameter",
+            });
+        }
+
+        let userData = await userService.handleGetForgotPassword(email, token);
+
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let handlePostResetPassword = async (req, res) => {
+    try {
+        let email = req.body.email;
+
+        if (!email) {
+            return res.status(500).json({
+                errCode: 1,
+                message: "Missing inputs parameter",
+            });
+        }
+
+        let userData = await userService.handlePostResetPassword(
+            email,
+            req.body.token,
+            req.body.password
+        );
+
+        return res.status(200).json({
+            errCode: 0,
+            message: "OK",
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 module.exports = {
+    handlePostResetPassword,
     handleLogin,
     handleGetAllUsers,
     handleCreateNewUser,
@@ -195,4 +273,6 @@ module.exports = {
     getUserTicket,
     handleChangePassword,
     useCouponIsFirst,
+    handlePostForgotPassword,
+    handleGetForgotPassword,
 };

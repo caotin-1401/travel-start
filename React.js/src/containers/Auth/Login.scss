@@ -73,9 +73,26 @@
 
             }
 
+
+
+
             .forgot-pass {
                 font-size: 12px;
+
             }
+
+            .left-forgot {
+                position: relative;
+
+                .forgot-pass {
+                    position : absolute;
+                    right    : 0;
+                    font-size: 12px;
+
+
+                }
+            }
+
 
             .social-login {
                 display        : flex;
@@ -118,4 +135,8 @@
         z-index : 0;
         position: relative;
     }
+}
+
+a {
+    text-decoration: none;
 }

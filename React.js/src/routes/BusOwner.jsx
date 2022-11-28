@@ -9,6 +9,7 @@ import UserManage from "./../containers/System/BusOwner/DriverManage/UserManage"
 import EventManage from "./../containers/System/BusOwner/EventManage";
 import ParkingLot from "./../containers/System/BusOwner/ParkingLot";
 import RouteManage from "./../containers/System/BusOwner/RouteManage/RouteManage";
+import TableCustomer from "./../containers/System/BusOwner/ListCustomer/TableCustomer";
 class BusOnwer extends Component {
     constructor(props) {
         super(props);
@@ -54,6 +55,10 @@ class BusOnwer extends Component {
                             <Route
                                 path="/busOwner/manage-routes"
                                 component={RouteManage}
+                            />{" "}
+                            <Route
+                                path="/busOwner/manage-tickets"
+                                component={TableCustomer}
                             />
                             <Route
                                 component={() => {

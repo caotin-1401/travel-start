@@ -1,7 +1,10 @@
 import db from "../models/index";
 import { reject } from "bcrypt/promises";
 import bcrypt from "bcryptjs";
-
+import emailService from "./emailService";
+import { v4 as uuidv4 } from "uuid";
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 var salt = bcrypt.genSaltSync(10);
 let checkUserEmail = (userEmail) => {
     return new Promise(async (resolve, reject) => {
@@ -439,7 +442,6 @@ let useCouponIsFirst = async (data) => {
                 where: { id: data.id },
                 raw: false,
             });
-            console.log(user);
             if (user) {
                 user.isFirst = data.isFirst;
                 await user.save();
@@ -458,7 +460,146 @@ let useCouponIsFirst = async (data) => {
         }
     });
 };
+
+let handlePostForgotPassword = async (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { email: email },
+            });
+            if (!user)
+                resolve({
+                    errCode: 2,
+                    errMessage: "OK",
+                });
+            else {
+                await db.Resetpassword.update(
+                    {
+                        status: 1,
+                    },
+                    { where: { email: email } }
+                );
+                let token = uuidv4();
+                let exp = new Date(new Date().getTime() + 10 * 60 * 1000);
+                await db.Resetpassword.create({
+                    email: email,
+                    token: token,
+                    exp: exp,
+                    status: 0,
+                });
+                await emailService.sendEmailFrogotPassword({
+                    receiversEmail: email,
+                    redirectLink: `${process.env.URL_REACT}/reset-password?token=${token}&email=${email}`,
+                });
+                resolve({
+                    errCode: 0,
+                    errMessage: "OK",
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let handleGetForgotPassword = async (email, token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { email: email },
+            });
+            if (!user)
+                resolve({
+                    errCode: 2,
+                    errMessage: "OK",
+                });
+            else {
+                await db.Resetpassword.destroy({
+                    where: {
+                        exp: { [Op.lt]: Sequelize.fn("CURDATE") },
+                    },
+                });
+                var record = await db.Resetpassword.findOne({
+                    where: {
+                        email: email,
+                        exp: { [Op.gt]: Sequelize.fn("CURDATE") },
+                        token: token,
+                        status: 0,
+                    },
+                    // raw: true,
+                });
+                if (!record) {
+                    resolve({
+                        errCode: 3,
+                        errMessage: "OK",
+                    });
+                }
+                resolve({
+                    errCode: 0,
+                    errMessage: "ok",
+                    record,
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let handlePostResetPassword = async (email, token, password) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            var record = await db.Resetpassword.findOne({
+                email: email,
+                token: token,
+                exp: { [Op.gt]: Sequelize.fn("CURDATE") },
+                status: 0,
+            });
+            if (!record) {
+                resolve({
+                    errCode: 2,
+                    errMessage: "OK",
+                });
+            } else {
+                let upd = await db.Resetpassword.findOne({
+                    where: { email: email },
+                    raw: false,
+                });
+                if (upd) {
+                    upd.status = 1;
+                    await upd.save();
+                    let hashPasswordFromBcrypt = await hashUserPassword(
+                        password
+                    );
+                    let user = await db.User.findOne({
+                        where: { email: email },
+                        raw: false,
+                    });
+                    if (user) {
+                        user.password = hashPasswordFromBcrypt;
+                        await user.save();
+                        resolve({
+                            errCode: 0,
+                            message: "update user success",
+                        });
+                    } else {
+                        resolve({
+                            errCode: 1,
+                            errMessage: "user not found",
+                        });
+                    }
+                } else {
+                    resolve({
+                        errCode: 1,
+                        errMessage: "user not found",
+                    });
+                }
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 module.exports = {
+    handlePostResetPassword,
     handleUserLogin,
     getAllUsers,
     createNewUser,
@@ -469,4 +610,6 @@ module.exports = {
     getUserTicket,
     changePassword,
     useCouponIsFirst,
+    handlePostForgotPassword,
+    handleGetForgotPassword,
 };

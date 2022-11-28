@@ -88,6 +88,7 @@
             "parking-lot": "Quản lý bãi đậu xe",
             "routes": "Tuyến đường",
             "route": "Quản lý tuyến đường",
+            "tickets": "Quản lý vé",
             "vehicle": {
                 "title": "Quản lý danh sách xe",
                 "bsx": "Biển số xe",

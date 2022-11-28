@@ -3,6 +3,8 @@ export const path = {
     HOMEPAGE: "/home",
     LOGIN: "/login",
     REGISTER: "/register",
+    FORGOT_PASSWORD: "/forgot-password",
+    RESET_PASSWORD: "/reset-password",
     LOG_OUT: "/logout",
     SYSTEM: "/system",
     BUSOWNER: "/busOwner",

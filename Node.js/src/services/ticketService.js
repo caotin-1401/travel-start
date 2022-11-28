@@ -80,6 +80,12 @@ let getDriverTicket = (id, dayStart) => {
                             "busId",
                             "busOwnerId",
                         ],
+                        include: [
+                            {
+                                model: db.Vehicle,
+                                attributes: ["number"],
+                            },
+                        ],
                     },
                 ],
                 raw: true,

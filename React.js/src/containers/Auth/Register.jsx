@@ -188,7 +188,7 @@ class Register extends Component {
                             </button>
                         </div>
 
-                        <div className="col-12 text-center mt-3">
+                        {/* <div className="col-12 text-center mt-3">
                             <span className="text-other-login">
                                 Or register with:
                             </span>
@@ -196,7 +196,7 @@ class Register extends Component {
                         <div className="col-12 social-login">
                             <i className="fab fa-google-plus-g google"></i>
                             <i className="fab fa-facebook-f facebook"></i>
-                        </div>
+                        </div> */}
                     </div>
                     <p style={{ textAlign: "center" }}>
                         {" "}

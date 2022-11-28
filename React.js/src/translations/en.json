@@ -88,6 +88,7 @@
             "parking-lot": "Manage Parking",
             "routes": "Routes",
             "route": "Manage Route",
+            "tickets": "Manage Ticket",
             "vehicle": {
                 "title": "Manage vehicle list",
                 "bsx": "License plates",

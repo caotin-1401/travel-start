@@ -46,36 +46,6 @@ let checkDateStartBus = (routeId, dayStart, busId) => {
     });
 };
 
-// let day1 = moment(1668013200000).format("L");
-// let time1 = moment(1668060000000).format("LT");
-// let time2 = moment(1668070800000).format("LT");
-
-// let [day, month, year] = day1.split("/");
-
-// let [hours1, minutes1] = time1.split(":");
-// let [hours2, minutes2] = time2.split(":");
-// if (hours1 > 12) {
-//     let timeCheckStart1 = new Date(
-//         +year,
-//         month - 1,
-//         +day,
-//         +hours1 - (+hours2 - +hours1 + 1) * 2,
-//         +minutes1
-//     );
-//     let unixTimestamp1 = Math.floor(timeCheckStart1.getTime());
-//     console.log(unixTimestamp1);
-// } else {
-//     let timeCheckStart2 = new Date(
-//         +year,
-//         month - 1,
-//         +day,
-//         +hours1 + (+hours2 - +hours1 + 1) * 2,
-//         +minutes1
-//     );
-//     let unixTimestamp2 = Math.floor(timeCheckStart2.getTime());
-//     console.log(unixTimestamp2);
-// }
-
 let checkBusTime1 = (routeId, busId, dateStart, timeStart, timeEnd) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -87,12 +57,12 @@ let checkBusTime1 = (routeId, busId, dateStart, timeStart, timeEnd) => {
                     [Op.or]: [
                         {
                             timeStart: {
-                                [Op.between]: [timeStart, timeEnd],
+                                [Op.between]: [+timeStart, +timeEnd],
                             },
                         },
                         {
                             timeEnd: {
-                                [Op.between]: [timeStart, timeEnd],
+                                [Op.between]: [+timeStart, +timeEnd],
                             },
                         },
                     ],
@@ -186,18 +156,15 @@ let checkDriverTime1 = (routeId, driverId, dateStart, timeStart, timeEnd) => {
                     [Op.or]: [
                         {
                             timeStart: {
-                                [Op.between]: [timeStart, timeEnd],
+                                [Op.between]: [+timeStart, +timeEnd],
                             },
                         },
                         {
                             timeEnd: {
-                                [Op.between]: [timeStart, timeEnd],
+                                [Op.between]: [+timeStart, +timeEnd],
                             },
                         },
                     ],
-                    // timeEnd: {
-                    //     [Op.gt]: timeStart,
-                    // },
                 },
             });
             if (driver) {
