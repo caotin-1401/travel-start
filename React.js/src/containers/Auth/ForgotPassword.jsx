@@ -11,6 +11,7 @@ class ForgotPassword extends Component {
         super(props);
         this.state = {
             email: "",
+            errMessage: "",
         };
     }
 
@@ -20,25 +21,27 @@ class ForgotPassword extends Component {
         });
     };
 
-    // handleKeyDown = (e) => {
-    //     if (e.key === "Enter" || e.keyCode === 13) {
-    //         this.handleLogin();
-    //     }
-    // };
+    handleKeyDown = (e) => {
+        if (e.key === "Enter" || e.keyCode === 13) {
+            this.handleLogin();
+        }
+    };
 
     handleLogin = async () => {
-        // alert("asdj");
+        this.setState({ errMessage: "" });
         let { email } = this.state;
         try {
-            console.log(this.state.email);
             let data = await postForgotPasswordService({ email });
             console.log(data);
+            data && data.errCode === 0
+                ? this.setState({ errMessage: "" })
+                : this.setState({ errMessage: "Email không tồn tại" });
         } catch (error) {
             if (error.response) {
                 if (error.response.data) {
-                    // this.setState({
-                    //     errMessage: error.response.data.message,
-                    // });
+                    this.setState({
+                        errMessage: error.response.data.message,
+                    });
                 }
             }
         }
@@ -59,6 +62,13 @@ class ForgotPassword extends Component {
                             Login
                         </div>
                         <div className="col-12 form-group login-input">
+                            <label>
+                                Nhập địa địa chỉ email bạn đã đăng kí tài khoản
+                                vào đây. Chúng tôi sẽ gửi cho bạn một email để
+                                bạn có thể lấy lại mật khẩu của mình.{" "}
+                            </label>
+                        </div>
+                        <div className="col-12 form-group login-input">
                             <label>Email : </label>
                             <input
                                 type="text"
@@ -66,6 +76,7 @@ class ForgotPassword extends Component {
                                 placeholder="Enter your email"
                                 value={this.state.email}
                                 onChange={(e) => this.handleChangeUser(e)}
+                                onKeyDown={this.handleKeyDown}
                             />
                         </div>
                         <div className="col-12" style={{ color: "red" }}>
@@ -88,11 +99,6 @@ class ForgotPassword extends Component {
                             <div className="col-6">
                                 <span className="forgot-pass">
                                     <Link to="/login">Back to login</Link>
-                                </span>
-                            </div>
-                            <div className="col-6">
-                                <span className="forgot-pass">
-                                    <Link to="/reset-password">resset</Link>
                                 </span>
                             </div>
                         </div>

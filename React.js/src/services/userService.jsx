@@ -27,9 +27,7 @@ const createNewUserService = (data) => {
 const postForgotPasswordService = (data) => {
     return axios.post("/api/post-forgot-password", data);
 };
-const getForgotPasswordService = (data) => {
-    return axios.get("/api/post-forgot-password", data);
-};
+
 const postResetPasswordService = (data) => {
     return axios.post("/api/post-reset-password", data);
 };
@@ -162,7 +160,13 @@ const getAllTripHomeService = (areaStartId, areaEndId, dateStart) => {
         `/api/show-all-schedule?areaStartId=${areaStartId}&areaEndId=${areaEndId}&dateStart=${dateStart}`
     );
 };
-
+const getForgotPasswordService = (email, token) => {
+    return axios.get(`/api/get-forgot-password?email=${email}&token=${token}`);
+    // return axios.get("/api/get-forgot-password", {
+    //     email: email,
+    //     token: token,
+    // });
+};
 //tickets
 
 const saveBulkTicket = (data) => {

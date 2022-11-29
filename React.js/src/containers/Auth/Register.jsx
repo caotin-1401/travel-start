@@ -199,8 +199,7 @@ class Register extends Component {
                         </div> */}
                     </div>
                     <p style={{ textAlign: "center" }}>
-                        {" "}
-                        You don't have an account?{" "}
+                        Have an account?
                         <Link to="/login">Login</Link>
                     </p>
                 </div>

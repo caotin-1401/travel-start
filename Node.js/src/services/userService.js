@@ -65,17 +65,12 @@ let handleUserLogin = (email, password) => {
         try {
             let userData = {};
             let isExist = await checkUserEmail(email);
-            console.log(1);
             if (isExist) {
-                //User already exist
-                //compare password
-                console.log(2);
                 let user = await db.User.findOne({
                     attributes: ["id", "email", "roleID", "password", "name"],
                     where: { email: email },
                     raw: true,
                 });
-                console.log(3);
                 if (user) {
                     let check = await bcrypt.compareSync(
                         password,
@@ -177,7 +172,6 @@ let getAllUsers = (userId) => {
                 });
             }
             if (userId && userId !== "ALL") {
-                //console.log(userId);
                 users = await db.User.findAll({
                     where: { id: userId },
                     attributes: {
@@ -230,7 +224,6 @@ let createNewUser = async (data) => {
         try {
             //check email exist
             let check = await checkUserEmail(data.email);
-            console.log(data);
             if (check) {
                 resolve({
                     errCode: 1,
@@ -256,7 +249,6 @@ let createNewUser = async (data) => {
                 let hashPasswordFromBcrypt = await hashUserPassword(
                     data.password
                 );
-                console.log(hashPasswordFromBcrypt);
                 if (!data.avatar) {
                     await db.User.create({
                         email: data.email,
@@ -382,7 +374,6 @@ let getAllCodeService = (typeInput) => {
 };
 let changePassword = async (data) => {
     return new Promise(async (resolve, reject) => {
-        console.log(data);
         try {
             if (!data.id) {
                 resolve({
@@ -394,7 +385,6 @@ let changePassword = async (data) => {
                 where: { id: data.id },
                 raw: false,
             });
-            console.log(user);
             if (user) {
                 let check = await bcrypt.compareSync(
                     data.oldPass,
@@ -430,7 +420,6 @@ let changePassword = async (data) => {
 
 let useCouponIsFirst = async (data) => {
     return new Promise(async (resolve, reject) => {
-        console.log(data);
         try {
             if (!data.id) {
                 resolve({
@@ -525,19 +514,20 @@ let handleGetForgotPassword = async (email, token) => {
                         token: token,
                         status: 0,
                     },
-                    // raw: true,
                 });
+                console.log(record);
                 if (!record) {
                     resolve({
                         errCode: 3,
                         errMessage: "OK",
                     });
+                } else {
+                    resolve({
+                        errCode: 0,
+                        errMessage: "ok",
+                        record,
+                    });
                 }
-                resolve({
-                    errCode: 0,
-                    errMessage: "ok",
-                    record,
-                });
             }
         } catch (e) {
             reject(e);
@@ -564,8 +554,14 @@ let handlePostResetPassword = async (email, token, password) => {
                     raw: false,
                 });
                 if (upd) {
-                    upd.status = 1;
-                    await upd.save();
+                    // upd.status = 1;
+                    // await upd.save();
+                    await db.Resetpassword.update(
+                        {
+                            status: 1,
+                        },
+                        { where: { email: email } }
+                    );
                     let hashPasswordFromBcrypt = await hashUserPassword(
                         password
                     );

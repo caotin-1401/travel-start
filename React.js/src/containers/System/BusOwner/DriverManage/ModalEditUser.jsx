@@ -10,7 +10,6 @@ import {
     Row,
     Col,
 } from "reactstrap";
-// import "../UserRedux.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
 import _ from "lodash";

@@ -6,7 +6,6 @@ import _ from "lodash";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
 import { getAllCodeService } from "../../../../services/userService";
-// import "../UserRedux.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
 import Lightbox from "react-image-lightbox";

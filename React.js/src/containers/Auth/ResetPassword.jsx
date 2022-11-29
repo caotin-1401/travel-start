@@ -4,7 +4,11 @@ import { push } from "connected-react-router";
 import * as actions from "../../store/actions";
 import "./Register.scss";
 import logo from "../../assets/logo2.png";
-import { handleRegister } from "../../services/userService";
+import {
+    getForgotPasswordService,
+    postResetPasswordService,
+    handleLogin,
+} from "../../services/userService";
 import { useNavigate, Link } from "react-router-dom";
 
 class ResetPassword extends Component {
@@ -16,7 +20,31 @@ class ResetPassword extends Component {
             isShowPassword: false,
             isShowconfirmPassword: false,
             errMessage: "",
+            email: "",
+            token: "",
+            errCode: "",
         };
+    }
+    async componentDidMount() {
+        if (this.props.location && this.props.location.search) {
+            let urlParams = new URLSearchParams(this.props.location.search);
+            let token = urlParams.get("token");
+            let email = urlParams.get("email");
+            console.log(token, email);
+            let res = await getForgotPasswordService(email, token);
+            console.log(res);
+            if (res && res.errCode === 0) {
+                this.setState({
+                    email: email,
+                    token: token,
+                });
+            } else {
+                this.setState({
+                    errMessage: "Liên ket đã hết hạn hoặc được sử dụng rồi",
+                    errCode: res.errCode,
+                });
+            }
+        }
     }
     onChangeInput = (event, id) => {
         let copyState = { ...this.state };
@@ -37,30 +65,46 @@ class ResetPassword extends Component {
         }
         return isValid;
     };
+    redirectToSystemPage = (data) => {
+        const { navigate } = this.props;
+        let redirectPath;
+        if (data === "R1") {
+            redirectPath = "/system/dashboard";
+        } else if (data === "R2") {
+            redirectPath = "/busOwner/dashboard";
+        } else if (data === "R3") {
+            redirectPath = "/driver/manage-parking";
+        } else {
+            redirectPath = "/home";
+        }
+
+        navigate(`${redirectPath}`);
+    };
     handleRegister = async () => {
+        let { password, confirmPassword, email, token } = this.state;
+        console.log(email, token);
         this.setState({
             errMessage: "",
         });
-        try {
-            let data = await handleRegister(
-                this.state.password,
-                this.state.confirmPassword
-            );
-            if (data && data.errCode !== 0) {
-                this.setState({
-                    errMessage: data.message,
-                });
-            }
+
+        if (password.length < 8) {
+            this.setState({ errMessage: "Mật khẩu phải có ít nất 8 ký tự" });
+        } else if (password !== confirmPassword) {
+            this.setState({
+                errMessage: "Xác nhận mật khẩu không đúng",
+            });
+        } else {
+            let res = await postResetPasswordService({
+                password,
+                email,
+                token,
+            });
+            let data = await handleLogin(this.state.email, this.state.password);
+            console.log(data);
+
             if (data && data.errCode === 0) {
+                this.redirectToSystemPage(data.user.roleID);
                 this.props.userLoginSuccess(data.user);
-            }
-        } catch (error) {
-            if (error.response) {
-                if (error.response.data) {
-                    this.setState({
-                        errMessage: error.response.data.message,
-                    });
-                }
             }
         }
     };
@@ -77,7 +121,8 @@ class ResetPassword extends Component {
     };
 
     render() {
-        let { password, confirmPassword } = this.state;
+        let { password, confirmPassword, errCode } = this.state;
+        console.log(errCode);
         return (
             <div className="login-background">
                 <div className="login-container">
@@ -98,6 +143,7 @@ class ResetPassword extends Component {
                                             ? "text"
                                             : "password"
                                     }
+                                    disabled={errCode == 0 ? false : true}
                                     className="form-control"
                                     placeholder="Enter your password"
                                     value={password}
@@ -124,6 +170,7 @@ class ResetPassword extends Component {
                                             ? "text"
                                             : "password"
                                     }
+                                    disabled={errCode == 0 ? false : true}
                                     className="form-control"
                                     placeholder="Enter your Comfirm password"
                                     value={confirmPassword}
@@ -152,13 +199,26 @@ class ResetPassword extends Component {
                             {this.state.errMessage}
                         </div>
                         <div className="col-12">
-                            <button
-                                className="btn-login"
-                                onClick={() => {
-                                    this.handleRegister();
-                                }}>
-                                Login
-                            </button>
+                            {errCode == 0 ? (
+                                <button
+                                    className="btn-login"
+                                    onClick={() => {
+                                        this.handleRegister();
+                                    }}>
+                                    Login
+                                </button>
+                            ) : (
+                                <button disabled className="btn-login1">
+                                    Login
+                                </button>
+                            )}
+                        </div>
+                        <div className="row mt-3">
+                            <div className="col-6">
+                                <span className="forgot-pass">
+                                    <Link to="/login">Back to login</Link>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -177,7 +237,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         navigate: (path) => dispatch(push(path)),
-        // userLoginFail: () => dispatch(actions.adminLoginFail()),
         userLoginSuccess: (userInfo) =>
             dispatch(actions.userLoginSuccess(userInfo)),
     };

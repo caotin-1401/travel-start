@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import "./UserManage.scss";
 
 import { getAllCodeService } from "../../../../services/userService";
-// import "../UserRedux.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
 import Lightbox from "react-image-lightbox";

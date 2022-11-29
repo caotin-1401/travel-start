@@ -11,7 +11,7 @@ import ListVehicle from "../containers/System/Admin/ListVehicle/ListVehicle";
 import TableEvent from "../containers/System/Admin/Event/TableEvent";
 import TableDiscount from "../containers/System/Admin/Discount/TableDiscount";
 import TableBlog from "../containers/System/Admin/Blog/TableBlog";
-import Dashboard from "../containers/System/BusOwner/Dashboard";
+import Dashboard from "../containers/System/Admin/Dashboard/Dashboard";
 
 class System extends Component {
     render() {

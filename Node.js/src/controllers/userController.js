@@ -211,6 +211,7 @@ let handlePostForgotPassword = async (req, res) => {
 };
 let handleGetForgotPassword = async (req, res) => {
     try {
+        console.log(req);
         let email = req.query.email;
         let token = req.query.token;
         if (!email) {
@@ -223,8 +224,8 @@ let handleGetForgotPassword = async (req, res) => {
         let userData = await userService.handleGetForgotPassword(email, token);
 
         return res.status(200).json({
-            errCode: 0,
-            errMessage: "OK",
+            errCode: userData.errCode,
+            errMessage: userData.errMessage,
         });
     } catch (e) {
         return res.status(200).json({
