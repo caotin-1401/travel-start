@@ -152,6 +152,13 @@ class App extends Component {
                                             component={userIsAuthenticated(
                                                 Profile
                                             )}
+                                        />{" "}
+                                        <Route
+                                            component={() => {
+                                                return (
+                                                    <Redirect to={BusRoute} />
+                                                );
+                                            }}
                                         />
                                     </Switch>
                                 </CustomScrollbars>

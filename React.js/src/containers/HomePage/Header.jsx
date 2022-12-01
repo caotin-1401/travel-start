@@ -152,6 +152,13 @@ class HeaderPage extends Component {
                                     </button>
                                 </Link>
                             )}
+                            {info && info.roleID && info.roleID !== "R4" && (
+                                <Link to="/login">
+                                    <button className="btn btn-primary">
+                                        Đi tới trang admin
+                                    </button>
+                                </Link>
+                            )}
                             {info && info.roleID && info.roleID === "R4" && (
                                 <Dropdown
                                     isOpen={dropdownOpen}

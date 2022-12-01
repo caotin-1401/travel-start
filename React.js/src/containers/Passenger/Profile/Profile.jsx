@@ -78,7 +78,6 @@ class Profile extends Component {
                             </Breadcrumbs>
                         </div>
                         <Row>
-                            <Col md={1} className="none"></Col>
                             <Col md={3} className="container-left">
                                 <div className="contentProfile">
                                     <div>
@@ -123,11 +122,10 @@ class Profile extends Component {
                                     </div>
                                 </div>
                             </Col>
-                            <Col md={7} className="container-right">
+                            <Col md={9} className="container-right">
                                 {isInfo === 1 && <InfoUser />}
                                 {isInfo === 2 && <InfoTicket />}
                             </Col>
-                            <Col md={1} className="none"></Col>
                         </Row>
                     </div>
                 </div>

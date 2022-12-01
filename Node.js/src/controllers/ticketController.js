@@ -49,6 +49,30 @@ let getDriverTicket = async (req, res) => {
         });
     }
 };
+let getUserTicket = async (req, res) => {
+    try {
+        let id = req.query.id;
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+                tickets: [],
+            });
+        }
+        let tickets = await ticketService.getUserTicket(id);
+
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            tickets,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 let getDriverTicketRoute = async (req, res) => {
     try {
         let driverId = req.query.driverId;
@@ -121,4 +145,5 @@ module.exports = {
     getDriverTicket,
     checkCustomerIsPresent,
     getDriverTicketRoute,
+    getUserTicket,
 };

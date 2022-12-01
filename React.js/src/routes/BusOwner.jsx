@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Header from "../containers/Header/Header";
 
-import Dashboard from "./../containers/System/BusOwner/Dashboard";
+import Dashboard from "./../containers/System/BusOwner/Dashboard/Dashboard";
 import ListVehicle from "./../containers/System/BusOwner/ListVehicle/ListVehicle";
 import UserManage from "./../containers/System/BusOwner/DriverManage/UserManage";
 import EventManage from "./../containers/System/BusOwner/EventManage";

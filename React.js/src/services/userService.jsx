@@ -175,6 +175,9 @@ const saveBulkTicket = (data) => {
 const getAllTickets = (inputId) => {
     return axios.get(`/api/get-all-ticket?id=${inputId}`);
 };
+const getUserTickets = (inputId) => {
+    return axios.get(`/api/get-user-ticket?id=${inputId}`);
+};
 const getDriverTickets = (inputId, dayStart) => {
     return axios.get(
         `/api/get-driver-ticket?driverId=${inputId}&dayStart=${dayStart}`
@@ -243,6 +246,7 @@ const checkCustomerPresent = (inputData) => {
     return axios.put("/api/check-customer", inputData);
 };
 export {
+    getUserTickets,
     getForgotPasswordService,
     postForgotPasswordService,
     postResetPasswordService,

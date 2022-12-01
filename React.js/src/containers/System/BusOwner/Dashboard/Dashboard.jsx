@@ -11,8 +11,8 @@ class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            counterUser: 0,
-            lengthUser: 0,
+            arrDrivers: [],
+            arrVehicles: [],
         };
     }
     componentDidMount() {
@@ -20,11 +20,26 @@ class Dashboard extends Component {
         this.props.fetchAllVehicle();
         this.props.fetchUserRedux();
     }
-
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.listUsers !== this.props.listUsers) {
+            let test = this.props.listUsers.filter(
+                (item) => item.busOwnerId === this.props.userInfo.id
+            );
+            this.setState({
+                arrDrivers: test,
+            });
+        }
+        if (prevProps.listVehicle !== this.props.listVehicle) {
+            let test = this.props.listVehicle.filter(
+                (item) => item.busOwnerId === this.props.userInfo.id
+            );
+            this.setState({
+                arrVehicles: test,
+            });
+        }
+    }
     render() {
-        let locations = this.props.listLocations;
-        let vehicles = this.props.listVehicle;
-        let users = this.props.listUsers;
+        let { arrDrivers, arrVehicles } = this.state;
         return (
             <React.Fragment>
                 <div className="container-dashboard">
@@ -32,45 +47,26 @@ class Dashboard extends Component {
                         <div>
                             <div className="titleD text-center">Dashboard</div>
                             <Row>
-                                <Col md={4}>
+                                <Col md={6}>
                                     <div className="card">
                                         <div className="card-content_1 ">
                                             <div>
                                                 <div className="icon-wrapper">
                                                     <i className="fas fa-users"></i>
                                                 </div>
-                                                {users && users.length > 0 && (
-                                                    <h3>{users.length}</h3>
-                                                )}
-                                                <h3>Người dùng</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Col>
-                                <Col md={4}>
-                                    <div className="card">
-                                        <div className="card-content_2 ">
-                                            <div>
-                                                <div className="icon-wrapper">
-                                                    <i className="fas fa-map-marked"></i>
-                                                    <FmdGoodIcon
-                                                        sx={{
-                                                            fontSize: "45px",
-                                                        }}
-                                                    />{" "}
-                                                </div>{" "}
-                                                {locations &&
-                                                    locations.length > 0 && (
+                                                {arrDrivers &&
+                                                    arrDrivers.length > 0 && (
                                                         <h3>
-                                                            {locations.length}
+                                                            {arrDrivers.length}
                                                         </h3>
                                                     )}
-                                                <h3>Bến xe</h3>
+                                                <h3>Tài xế</h3>
                                             </div>
                                         </div>
                                     </div>
                                 </Col>
-                                <Col md={4}>
+
+                                <Col md={6}>
                                     <div className="card">
                                         <div className="card-content_3 text-white">
                                             <div>
@@ -81,10 +77,10 @@ class Dashboard extends Component {
                                                         }}
                                                     />
                                                 </div>{" "}
-                                                {vehicles &&
-                                                    vehicles.length > 0 && (
+                                                {arrVehicles &&
+                                                    arrVehicles.length > 0 && (
                                                         <h3>
-                                                            {vehicles.length}
+                                                            {arrVehicles.length}
                                                         </h3>
                                                     )}
                                                 <h3>Phương tiện</h3>
@@ -110,6 +106,7 @@ const mapStateToProps = (state) => {
         listLocations: state.admin.locations,
         listVehicle: state.admin.vehicles,
         listUsers: state.admin.users,
+        userInfo: state.user.userInfo,
     };
 };
 

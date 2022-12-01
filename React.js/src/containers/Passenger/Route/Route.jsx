@@ -297,7 +297,6 @@ class BusRoute extends Component {
     };
     handleSort = (a, b) => {
         this.state.arrRoute = _.orderBy(this.state.arrRoute, [b], [a]);
-        console.log(a + b);
         let test = a + b;
         this.setState({
             sortBy: a,
@@ -315,7 +314,6 @@ class BusRoute extends Component {
             isSort,
             loading,
         } = this.state;
-        console.log(loading);
         let imageBase64;
         let language = this.props.language;
         return (

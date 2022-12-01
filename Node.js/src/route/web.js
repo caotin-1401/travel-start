@@ -73,6 +73,7 @@ let initWebRoutes = (app) => {
     router.delete("/api/delete-schedule", scheduleController.deleteSchedule);
 
     router.get("/api/get-all-ticket", ticketController.getAllTickets);
+    router.get("/api/get-user-ticket", ticketController.getUserTicket);
     router.get("/api/get-driver-ticket", ticketController.getDriverTicket);
     router.get(
         "/api/get-driver-ticket-route",

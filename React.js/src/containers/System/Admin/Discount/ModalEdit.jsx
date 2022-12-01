@@ -38,7 +38,7 @@ class ModalEdit extends Component {
             selectType: "",
             dayStart: "",
             dayEnd: "",
-            sumMoneyCondition: "",
+            sumMoneyCondition: 0,
             count: "",
             description: "",
             descriptionMarkdown: "",
@@ -161,6 +161,7 @@ class ModalEdit extends Component {
             description,
             descriptionMarkdown,
         } = this.state;
+        console.log(dayStart);
         console.log(this.state);
         let language = this.props.language;
         let startDate = new Date(dayStart).getTime();
@@ -206,33 +207,26 @@ class ModalEdit extends Component {
             return;
         } else if (selectEvent && _.isEmpty(selectEvent)) {
             if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
+                toast.error("dateStartErrVi");
             } else {
                 toast.error(dateStartErrEn);
             }
         } else if (selectType && _.isEmpty(selectType)) {
             if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
+                toast.error("dateStartErrVi");
             } else {
                 toast.error(dateStartErrEn);
             }
         } else if (!discount) {
             if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
+                toast.error("dateStartErrVi");
             } else {
                 toast.error(dateStartErrEn);
             }
             return;
         } else if (!discountMax) {
             if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
-            } else {
-                toast.error(dateStartErrEn);
-            }
-            return;
-        } else if (!sumMoneyCondition) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
+                toast.error("dateStartErrVi");
             } else {
                 toast.error(dateStartErrEn);
             }
@@ -325,11 +319,11 @@ class ModalEdit extends Component {
         let typeSelect = [
             {
                 value: 1,
-                label: "Giảm theo %",
+                label: "Giảm theo đ",
             },
             {
                 value: 2,
-                label: "Giảm theo đ",
+                label: "Giảm theo %",
             },
         ];
         return (

@@ -212,7 +212,9 @@ class BookingModal extends Component {
             phone,
             email,
             description,
+            isActive,
         } = this.state;
+        console.log(isActive);
         const steps = [
             {
                 label: "Chọn ghế",
@@ -222,6 +224,7 @@ class BookingModal extends Component {
                         tripInfoFromParent={tripInfo}
                         seatArrParent={seatArr}
                         totalPriceParent={totalPrice}
+                        isActiveParent={isActive}
                     />
                 ),
             },
@@ -236,6 +239,7 @@ class BookingModal extends Component {
                         seatArrParent={seatArr}
                         totalPriceParent={totalPrice}
                         parentCallback={this.callbackFunction2}
+                        isActiveParent={isActive}
                     />
                 ),
             },

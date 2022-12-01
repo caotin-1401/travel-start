@@ -108,14 +108,6 @@ class DetailEvent extends Component {
                                 dangerouslySetInnerHTML={{
                                     __html: description,
                                 }}></div>
-                            <Row>
-                                <Col md={6}>
-                                    <img src={Cam} alt="" />
-                                </Col>
-                                <Col md={6}>
-                                    <img src={Cam} alt="" />
-                                </Col>
-                            </Row>
                         </Col>
 
                         <Col lg={3} md={2} sm={1}></Col>

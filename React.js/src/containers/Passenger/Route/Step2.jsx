@@ -11,6 +11,7 @@ class Step2 extends Component {
             phone: "",
             email: "",
             description: "",
+            isActive: false,
         };
     }
 

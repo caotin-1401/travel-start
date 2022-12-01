@@ -75,7 +75,44 @@ let getDriverTicket = (id, dayStart) => {
                         attributes: [
                             "id",
                             "timeStart",
+                            "timeEnd",
                             "areaStart",
+                            "areaEnd",
+                            "routeId",
+                            "busId",
+                            "busOwnerId",
+                        ],
+                        include: [
+                            {
+                                model: db.Vehicle,
+                                attributes: ["number"],
+                            },
+                        ],
+                    },
+                ],
+                raw: true,
+                nest: true,
+            });
+            resolve(bus);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let getUserTicket = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let bus = await db.Ticket.findAll({
+                where: { userId: id },
+                include: [
+                    {
+                        model: db.Trip,
+                        attributes: [
+                            "id",
+                            "timeStart",
+                            "timeEnd",
+                            "areaStart",
+                            "areaEnd",
                             "routeId",
                             "busId",
                             "busOwnerId",
@@ -219,4 +256,5 @@ module.exports = {
     getDriverTicket,
     checkCustomerIsPresent,
     getDriverTicketRoute,
+    getUserTicket,
 };

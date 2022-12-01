@@ -81,7 +81,6 @@ class Step3 extends Component {
                 inFoCoupon[0].Event.id !== 6
             ) {
                 let current = new Date().getTime();
-
                 if (current < inFoCoupon[0].startDate) {
                     errMessage = "Mã giảm giá chưa tới thời gian sử dụng";
                 } else if (current > inFoCoupon[0].endDate) {
@@ -90,14 +89,17 @@ class Step3 extends Component {
                     errMessage = "Mã giảm giả đã hết";
                 } else if (!type) {
                     finalPrice = totalPrice;
-                } else if (type == "2") {
+                } else if (type == "1") {
                     finalPrice = totalPrice - +discount;
                 } else {
-                    if ((totalPrice * +discount) / 100 > discountMax)
+                    if ((totalPrice * +discount) / 100 > discountMax) {
                         finalPrice = totalPrice - +discountMax;
-                    else
+                    } else
                         finalPrice =
                             totalPrice - (totalPrice * +discount) / 100;
+
+                    discount = (totalPrice * +discount) / 100;
+                    console.log("discount >>:", discount);
                 }
                 if (finalPrice < 0) finalPrice = 0;
                 else {
@@ -137,7 +139,7 @@ class Step3 extends Component {
                                 errMessage = "Mã giảm giả đã hết";
                             } else if (!type) {
                                 finalPrice = totalPrice;
-                            } else if (type == "2") {
+                            } else if (type == "1") {
                                 finalPrice = totalPrice - +discount;
                             } else {
                                 if (
@@ -149,6 +151,9 @@ class Step3 extends Component {
                                     finalPrice =
                                         totalPrice -
                                         (totalPrice * +discount) / 100;
+
+                                discount = (totalPrice * +discount) / 100;
+                                console.log("discount >>:", discount);
                             }
                             if (finalPrice < 0) finalPrice = 0;
                             else {
@@ -194,6 +199,8 @@ class Step3 extends Component {
             errMessage = "Mã giảm giá không tồn tại ";
             this.setState({
                 errMessage,
+                discount: 0,
+                finalPrice: totalPrice,
             });
             this.props.parentCallback(inFoCoupon, finalPrice, infoUser);
         }
