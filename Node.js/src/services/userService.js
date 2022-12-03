@@ -1,6 +1,7 @@
 import db from "../models/index";
 import { reject } from "bcrypt/promises";
 import bcrypt from "bcryptjs";
+import _ from "lodash";
 import emailService from "./emailService";
 import { v4 as uuidv4 } from "uuid";
 const Sequelize = require("sequelize");
@@ -164,12 +165,22 @@ let getAllUsers = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
             let users = "";
+            let user = "";
             if (userId === "ALL") {
-                users = await db.User.findAll({
+                user = await db.User.findAll({
                     attributes: {
                         exclude: ["password"],
                     },
+                    include: [
+                        {
+                            model: db.Driver,
+                        },
+                    ],
+                    raw: true,
+                    nest: true,
                 });
+                users = _.sortBy(user, ["id"]);
+                console.log(users);
             }
             if (userId && userId !== "ALL") {
                 users = await db.User.findAll({
@@ -194,6 +205,9 @@ let getAllUsers = (userId) => {
                                 },
                             ],
                         },
+                        {
+                            model: db.Driver,
+                        },
                     ],
                     raw: true,
                     nest: true,
@@ -213,6 +227,9 @@ let getUserTicket = (userId) => {
             include: [
                 {
                     model: db.Ticket,
+                },
+                {
+                    model: db.Driver,
                 },
             ],
         });
@@ -286,6 +303,29 @@ let createNewUser = async (data) => {
         }
     });
 };
+let createNewDriver = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { email: data.email },
+            });
+            console.log(user.id);
+            console.log(data);
+            await db.Driver.create({
+                driverId: user.id,
+                busOwnerId: data.busOwnerId,
+                busOwner: data.busOwner,
+            });
+
+            resolve({
+                errCode: 0,
+                errMessage: "OK",
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 let deleteUser = async (userId) => {
     return new Promise(async (resolve, reject) => {
@@ -303,6 +343,18 @@ let deleteUser = async (userId) => {
             where: { id: userId },
         }); // đây là thao tac dưới DB
 
+        let driver = await db.Driver.findOne({
+            where: { driverId: userId },
+        });
+        if (!driver) {
+            resolve({
+                errCode: 2,
+                errMessage: `The user isn't exist`,
+            });
+        }
+        await db.Driver.destroy({
+            where: { driverId: userId },
+        });
         resolve({
             errCode: 0,
             errMessage: "The user is delete",
@@ -595,6 +647,7 @@ let handlePostResetPassword = async (email, token, password) => {
     });
 };
 module.exports = {
+    createNewDriver,
     handlePostResetPassword,
     handleUserLogin,
     getAllUsers,

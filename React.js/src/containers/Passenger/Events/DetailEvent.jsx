@@ -12,7 +12,6 @@ import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
 import { getAllEventsService } from "../../../services/userService";
 import { Row, Col } from "reactstrap";
-import Cam from "../../../assets/test.webp";
 class DetailEvent extends Component {
     constructor(props) {
         super(props);
@@ -259,8 +258,6 @@ class DetailEvent extends Component {
                                                                                     text
                                                                                 }
                                                                             </button>
-                                                                            {/* {" "}
-                                                                    NEWFREND2022 */}
                                                                         </p>
                                                                     </p>
                                                                     <p className="condition">

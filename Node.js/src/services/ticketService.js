@@ -160,21 +160,60 @@ let bulkCreateTicket = (data) => {
                 ...item,
                 token: token,
             }));
-            await db.Ticket.bulkCreate(ticket);
-            await emailService.sendEmail({
-                receiversEmail: data.arrTicket[0].email,
-                name: data.arrTicket[0].name,
-                totalPrice: data.arrTicket[0].totalPrice,
-                seatNo: result,
-                busOwner: data.arrTicket[0].busOwner,
-                time: data.arrTicket[0].time,
-                redirectLink: `${process.env.URL_REACT}/verify-booking?token=${token}&tripId=${data.arrTicket[0].tripId}`,
-            });
 
-            resolve({
-                errCode: 0,
-                errMessage: "OK",
+            let compare = [];
+            if (ticket && ticket.length > 0) {
+                ticket.map((item) => {
+                    let obj = {};
+                    obj.seatNo = item.seatNo;
+                    obj.dayStart = item.dayStart;
+                    obj.tripId = item.tripId;
+                    compare.push(obj);
+                });
+            }
+
+            var existing = await db.Ticket.findAll({
+                where: {
+                    tripId: compare[0].tripId,
+                },
+                raw: true,
             });
+            let compare1 = [];
+            if (existing && existing.length > 0) {
+                existing.map((item) => {
+                    let obj = {};
+                    obj.seatNo = item.seatNo;
+                    obj.dayStart = item.dayStart;
+                    obj.tripId = item.tripId;
+                    compare1.push(obj);
+                });
+            }
+
+            let toCreate = _.differenceWith(compare, compare1, _.isEqual);
+            console.log(toCreate.length, compare.length);
+            if (compare.length == toCreate.length) {
+                await db.Ticket.bulkCreate(ticket);
+
+                await emailService.sendEmail({
+                    receiversEmail: data.arrTicket[0].email,
+                    name: data.arrTicket[0].name,
+                    totalPrice: data.arrTicket[0].totalPrice,
+                    seatNo: result,
+                    busOwner: data.arrTicket[0].busOwner,
+                    time: data.arrTicket[0].time,
+                    redirectLink: `${process.env.URL_REACT}/verify-booking?token=${token}&tripId=${data.arrTicket[0].tripId}`,
+                });
+
+                resolve({
+                    errCode: 0,
+                    errMessage: "OK",
+                });
+            } else {
+                resolve({
+                    errCode: 5,
+                    errMessage: "OK",
+                });
+            }
         } catch (e) {
             reject(e);
         }
@@ -219,6 +258,45 @@ let verifyTicket = (data) => {
         }
     });
 };
+
+let cancelTicket = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.token || !data.tripId) {
+                resolve({
+                    errMessage: "Missing parameters",
+                });
+            } else {
+                var appointment = await db.Ticket.findAll({
+                    where: {
+                        tripId: data.tripId,
+                        token: data.token,
+                        // status: "S1",
+                    },
+                    attributes: ["id", "tripId", "token"],
+                    raw: false,
+                });
+                appointment && appointment.length > 0
+                    ? appointment.forEach(async (item) => {
+                          item.status = "S4";
+                          await item.save();
+                          resolve({
+                              errCode: 0,
+                              errMessage: "Update the appointment success",
+                          });
+                      })
+                    : resolve({
+                          errCode: 2,
+                          errMessage:
+                              "appointment has been activated or not exist",
+                      });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 let checkCustomerIsPresent = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -257,4 +335,5 @@ module.exports = {
     checkCustomerIsPresent,
     getDriverTicketRoute,
     getUserTicket,
+    cancelTicket,
 };

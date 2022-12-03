@@ -355,7 +355,8 @@ let getAllSchedules = (areaStart, areaEnd, dateStart) => {
                     },
                     {
                         model: db.User,
-                        attributes: ["id", "name", "busOwner", "busOwnerId"],
+                        attributes: ["id", "name"],
+                        include: [{ model: db.Driver }],
                     },
                 ],
                 raw: true,

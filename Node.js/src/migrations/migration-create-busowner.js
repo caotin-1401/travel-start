@@ -1,24 +1,25 @@
 "use strict";
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await queryInterface.createTable("Prices", {
-            //     defaults: DataTypes.STRING,
-            // busTypeId: DataTypes.INTEGER,
-            // turnId: DataTypes.INTEGER
+        await queryInterface.createTable("Busowners", {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER,
             },
-            defaultPrice: {
+
+            busOwnerId: {
+                type: Sequelize.INTEGER,
+            },
+            busOwner: {
                 type: Sequelize.STRING,
             },
-            busTypeId: {
-                type: Sequelize.INTEGER,
+            description: {
+                type: Sequelize.TEXT,
             },
-            turnId: {
-                type: Sequelize.INTEGER,
+            descriptionMarkdown: {
+                type: Sequelize.TEXT,
             },
 
             createdAt: {
@@ -32,6 +33,6 @@ module.exports = {
         });
     },
     down: async (queryInterface, Sequelize) => {
-        await queryInterface.dropTable("Prices");
+        await queryInterface.dropTable("Busowners");
     },
 };

@@ -21,9 +21,12 @@ class Dashboard extends Component {
         this.props.fetchUserRedux();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log(this.props.listUsers);
         if (prevProps.listUsers !== this.props.listUsers) {
             let test = this.props.listUsers.filter(
-                (item) => item.busOwnerId === this.props.userInfo.id
+                (item) =>
+                    item.Driver.busOwnerId &&
+                    item.Driver.busOwnerId === this.props.userInfo.id
             );
             this.setState({
                 arrDrivers: test,
@@ -68,7 +71,7 @@ class Dashboard extends Component {
 
                                 <Col md={6}>
                                     <div className="card">
-                                        <div className="card-content_3 text-white">
+                                        <div className="card-content_2 text-white">
                                             <div>
                                                 <div className="icon-wrapper">
                                                     <CommuteIcon

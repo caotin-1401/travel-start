@@ -259,7 +259,7 @@ class BusRoute extends Component {
                 `/home/route/${areaStart}&${areaEnd}&${dateStart}`
             );
             // }
-            if (res && res.errCode === 0 && !arr.length) {
+            if (res && res.errCode === 0 && !arr1.length) {
                 toast.success(
                     `Hiện tại hệ thống chưa có thông tin nhà xe đi từ ${areaStart} đến ${areaEnd} vào ngày ${moment(
                         dateStart
@@ -268,7 +268,7 @@ class BusRoute extends Component {
                 this.setState({
                     arrRoute: arr1,
                 });
-            } else if (res && res.errCode === 0 && arr.length > 0) {
+            } else if (res && res.errCode === 0 && arr1.length > 0) {
                 if (arr1 && arr1.length === 0) {
                     toast.success(
                         `Hiện tại hệ thống chưa có thông tin nhà xe đi từ ${areaStart} đến ${areaEnd} vào ngày ${moment(
@@ -954,6 +954,7 @@ class BusRoute extends Component {
                                                                                         {
                                                                                             item
                                                                                                 .User
+                                                                                                .Driver
                                                                                                 .busOwner
                                                                                         }
                                                                                     </span>

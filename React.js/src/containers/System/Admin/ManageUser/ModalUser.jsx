@@ -46,6 +46,15 @@ class ModalUser extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.roleRedux !== this.props.roleRedux) {
             let arrRoles = this.props.roleRedux;
+            if (arrRoles && arrRoles.length > 0) {
+                for (var i = 0; i < arrRoles.length - 1; i++) {
+                    if (arrRoles[i].id === 3) {
+                        arrRoles.splice(i, 1);
+                    }
+                }
+                console.log(arrRoles);
+            }
+
             this.setState({
                 roleArr: arrRoles,
                 role: arrRoles && arrRoles.length > 0 ? arrRoles[0].keyMap : "",

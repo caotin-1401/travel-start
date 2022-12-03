@@ -19,23 +19,17 @@ import * as actions from "../../../../store/actions";
 import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
 import _ from "lodash";
-import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
 import dayjs from "dayjs";
 import localization from "moment/locale/vi";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker, TimePicker } from "@mui/x-date-pickers";
 import moment from "moment";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
 import "react-markdown-editor-lite/lib/index.css";
-import {
-    createNewEventsService,
-    deleteEventsService,
-    editEventsService,
-} from "../../../../services/userService";
+import { createNewEventsService } from "../../../../services/userService";
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
 class ModalAdd extends Component {

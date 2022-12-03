@@ -1,5 +1,4 @@
 import express from "express";
-import homeController from "../controllers/homeController";
 import userController from "../controllers/userController";
 import locationController from "../controllers/locationController";
 import busTypeController from "../controllers/busTypeController";
@@ -13,15 +12,6 @@ import eventController from "../controllers/eventController";
 let router = express.Router();
 
 let initWebRoutes = (app) => {
-    router.get("/", homeController.getHomePage);
-    router.get("/crud", homeController.getCRUD);
-
-    router.post("/post-crud", homeController.postCRUD);
-    router.get("/get-crud", homeController.displayGetCRUD);
-    router.get("/edit-crud", homeController.getEditCRUD);
-    router.post("/put-crud", homeController.putUserCRUD);
-    router.get("/delete-crud", homeController.deleteUserCRUD);
-
     router.post("/api/login", userController.handleLogin);
     router.post("/api/register", userController.handleRegister);
     router.post(
@@ -81,6 +71,7 @@ let initWebRoutes = (app) => {
     );
     router.post("/api/create-new-ticket", ticketController.createTicket);
     router.post("/api/verify-ticket", ticketController.verifyTicket);
+    router.post("/api/cancel-ticket", ticketController.cancelTicket);
     router.put("/api/check-customer", ticketController.checkCustomerIsPresent);
 
     router.get("/api/get-all-coupons", couponController.getAllCoupons);
@@ -95,7 +86,6 @@ let initWebRoutes = (app) => {
     router.put("/api/edit-event", eventController.editEvent);
     router.delete("/api/delete-event", eventController.deleteEvent);
 
-    // router.delete("/api/delete-ticket", scheduleController.deleteSchedule);
     return app.use("/", router);
 };
 

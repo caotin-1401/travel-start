@@ -65,7 +65,7 @@ class HeaderPage extends Component {
         // let language = this.props.language;
         const { processLogout, language } = this.props;
         let { info, dropdownOpen } = this.state;
-        let username = "a b";
+        let username = "a User";
         info && info.name && (username = info.name);
         let test = username.split(" ").reverse();
         let name = test[0];

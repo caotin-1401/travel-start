@@ -20,17 +20,29 @@ class Step2 extends Component {
             seatArr: this.props.seatArrParent,
             totalPrice: this.props.totalPriceParent,
         });
-        if (
-            this.props.nameParent ||
-            this.props.phoneParent ||
-            this.props.emailParent ||
-            this.props.description
-        ) {
+        let isCleanData = this.props.isCleanDataParent;
+        if (isCleanData === false) {
+            if (
+                this.props.nameParent ||
+                this.props.phoneParent ||
+                this.props.emailParent ||
+                this.props.description
+            ) {
+                this.setState({
+                    name: this.props.nameParent,
+                    phone: this.props.phoneParent,
+                    email: this.props.emailParent,
+                    description: this.props.descriptionParent,
+                });
+            }
+        } else {
             this.setState({
-                name: this.props.nameParent,
-                phone: this.props.phoneParent,
-                email: this.props.emailParent,
-                description: this.props.descriptionParent,
+                name: "",
+                phone: "",
+                email: "",
+                description: "",
+                seatArr: [],
+                totalPrice: 0,
             });
         }
     }

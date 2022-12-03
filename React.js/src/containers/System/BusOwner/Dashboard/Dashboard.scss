@@ -30,7 +30,7 @@
                 text-align      : center;
                 padding         : 1rem;
                 position        : relative;
-                box-shadow      : 0 0 0 transparent;
+                box-shadow      : 0 0 3px #000 !important;
                 color           : rgb(4, 41, 122);
                 background-color: rgb(208, 242, 255);
 
@@ -62,7 +62,7 @@
                 text-align         : center;
                 padding            : 1rem;
                 position           : relative;
-                box-shadow         : 0 0 0 transparent;
+                box-shadow         : 0 0 3px #000 !important;
                 background-image   : radial-gradient(circle 248px at center, #16d9e3 0%, #30c7ec 47%, #46aef7 100%) !important;
 
                 .icon-wrapper {
@@ -81,35 +81,35 @@
                 }
             }
 
-            .card-content_3 {
-                margin-left     : -1px;
-                display         : flex;
-                align-items     : center;
-                justify-content : center;
-                height          : 100%;
-                border-radius   : 8px;
-                text-align      : center;
-                padding         : 1rem;
-                position        : relative;
-                box-shadow      : 0 0 0 transparent;
-                background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%) !important;
+            // .card-content_3 {
+            //     margin-left     : -1px;
+            //     display         : flex;
+            //     align-items     : center;
+            //     justify-content : center;
+            //     height          : 100%;
+            //     border-radius   : 8px;
+            //     text-align      : center;
+            //     padding         : 1rem;
+            //     position        : relative;
+            //     box-shadow      : 0 0 0 transparent;
+            //     background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%) !important;
 
 
-                .icon-wrapper {
-                    color          : white;
-                    font-size      : 40px;
-                    width          : 104px;
-                    height         : 54px;
-                    margin         : 0 auto;
-                    position       : relative;
-                    overflow       : hidden;
-                    display        : flex;
-                    align-items    : center;
-                    justify-content: center;
+            //     .icon-wrapper {
+            //         color          : white;
+            //         font-size      : 40px;
+            //         width          : 104px;
+            //         height         : 54px;
+            //         margin         : 0 auto;
+            //         position       : relative;
+            //         overflow       : hidden;
+            //         display        : flex;
+            //         align-items    : center;
+            //         justify-content: center;
 
 
-                }
-            }
+            //     }
+            // }
         }
 
     }

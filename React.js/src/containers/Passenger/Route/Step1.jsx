@@ -37,6 +37,13 @@ class Step1 extends Component {
                 totalPrice,
             });
         }
+        let isCleanData = this.props.isCleanDataParent;
+        if (isCleanData === true) {
+            this.setState({
+                seatArr: [],
+                totalPrice: 0,
+            });
+        }
     }
     async componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.listOfSeat !== this.props.listOfSeat) {

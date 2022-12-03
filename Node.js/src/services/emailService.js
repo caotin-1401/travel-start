@@ -20,6 +20,7 @@ let sendEmail = async (dataSend) => {
         <h3>Xin chào ${dataSend.name}</h3>
         <p>Bạn nhận được email này vì đã đặt vé xe online trên hệ thống Booking Bus</p>
         <p>Thông tin vé xe: </p>
+        <div><b>Khởi hành tại bến: ${dataSend.busOwner}</b></div>
         <div><b>Nhà xe: ${dataSend.busOwner}</b></div>
         <div><b>Thời gian khởi hành: ${dataSend.time}</b></div>
         <div><b>Vị trí ghế: ${dataSend.seatNo} </b></div>

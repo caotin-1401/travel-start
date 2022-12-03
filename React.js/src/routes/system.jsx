@@ -31,10 +31,6 @@ class System extends Component {
                                 component={UserManage}
                             />
                             <Route
-                                path="/system/user-redux"
-                                component={UserRedux}
-                            />
-                            <Route
                                 path="/system/admin-manage"
                                 component={UserManage}
                             />

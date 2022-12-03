@@ -7,6 +7,7 @@ import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import CommuteIcon from "@mui/icons-material/Commute";
 import * as actions from "../../../../store/actions";
 import DashboardComponent from "./DashboardComponent";
+import EmojiTransportationIcon from "@mui/icons-material/EmojiTransportation";
 class Dashboard extends Component {
     constructor(props) {
         super(props);
@@ -25,6 +26,12 @@ class Dashboard extends Component {
         let locations = this.props.listLocations;
         let vehicles = this.props.listVehicle;
         let users = this.props.listUsers;
+        let listBusOwner;
+        users &&
+            users.length &&
+            (listBusOwner = users.filter((item) => item.roleID === "R2"));
+
+        console.log(listBusOwner);
         return (
             <React.Fragment>
                 <div className="container-dashboard">
@@ -32,7 +39,7 @@ class Dashboard extends Component {
                         <div>
                             <div className="titleD text-center">Dashboard</div>
                             <Row>
-                                <Col md={4}>
+                                <Col md={3}>
                                     <div className="card">
                                         <div className="card-content_1 ">
                                             <div>
@@ -47,7 +54,7 @@ class Dashboard extends Component {
                                         </div>
                                     </div>
                                 </Col>
-                                <Col md={4}>
+                                <Col md={3}>
                                     <div className="card">
                                         <div className="card-content_2 ">
                                             <div>
@@ -70,9 +77,33 @@ class Dashboard extends Component {
                                         </div>
                                     </div>
                                 </Col>
-                                <Col md={4}>
+                                <Col md={3}>
                                     <div className="card">
                                         <div className="card-content_3 text-white">
+                                            <div>
+                                                <div className="icon-wrapper">
+                                                    <EmojiTransportationIcon
+                                                        sx={{
+                                                            fontSize: "50px",
+                                                        }}
+                                                    />
+                                                </div>
+                                                {listBusOwner &&
+                                                    listBusOwner.length > 0 && (
+                                                        <h3>
+                                                            {
+                                                                listBusOwner.length
+                                                            }
+                                                        </h3>
+                                                    )}
+                                                <h3>Nhà xe</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Col>
+                                <Col md={3}>
+                                    <div className="card">
+                                        <div className="card-content_4 text-white">
                                             <div>
                                                 <div className="icon-wrapper">
                                                     <CommuteIcon

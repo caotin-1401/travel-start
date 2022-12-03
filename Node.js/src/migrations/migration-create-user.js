@@ -27,12 +27,6 @@ module.exports = {
             roleID: {
                 type: Sequelize.STRING,
             },
-            busOwnerId: {
-                type: Sequelize.INTEGER,
-            },
-            busOwner: {
-                type: Sequelize.STRING,
-            },
             gender: {
                 type: Sequelize.STRING,
             },

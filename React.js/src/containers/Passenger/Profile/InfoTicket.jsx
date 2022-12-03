@@ -12,6 +12,7 @@ import moment from "moment";
 import { getUserTickets } from "../../../services/userService";
 import RestoreIcon from "@mui/icons-material/Restore";
 import CheckIcon from "@mui/icons-material/Check";
+import { Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
 class InfoTicket extends Component {
     constructor(props) {
@@ -63,7 +64,14 @@ class InfoTicket extends Component {
     };
     render() {
         let { step, listTickets } = this.state;
-        console.log(listTickets);
+        let arrTicket = [];
+        listTickets.forEach((item) => {
+            console.log(item);
+            if (+item.Trip.timeStart > new Date().getTime()) {
+                arrTicket.push(item.Trip.timeStart);
+            }
+        });
+        console.log(arrTicket);
         return (
             <div className="contentProfile" style={{ padding: 0 }}>
                 <Paper sx={{ height: 75 }} elevation={4}>
@@ -95,48 +103,105 @@ class InfoTicket extends Component {
                     </BottomNavigation>
                 </Paper>
                 <div className="ticket-content">
-                    {/* {step === 0 ? (
-                        <div>test</div>
-                    ) : step === 1 ? (
-                        <div>test1</div>
-                    ) : (
-                        <div>test2</div>
-                    )} */}
-                    <table class="table table-striped table-hover table-responsive">
-                        <thead style={{ borderBottom: "2px solid black" }}>
-                            <tr>
-                                <th scope="col">Nơi xuất phát</th>
-                                <th scope="col">Thoi gian chay</th>
-                                <th scope="col">Vi tri ngoi</th>
-                                <th scope="col">Tong tien</th>
-                                <th scope="col">Huyr ves</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listTickets &&
-                                listTickets.length > 0 &&
-                                listTickets.map((item, index) => {
-                                    console.log(item);
-                                    let time = moment(
-                                        +item.Trip.timeStart
-                                    ).format("llll");
-                                    let seatNO = item.seatNo.join(" - ");
-                                    return (
-                                        <tr>
-                                            <td>{item.Trip.areaStart}</td>
-                                            <td>{time}</td>
-                                            <td>{seatNO}</td>
-                                            <td>{item.totalPrice}</td>
-                                            <td></td>
-                                        </tr>
-                                    );
-                                })}
-                            {/* <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td> */}
-                        </tbody>
-                    </table>
+                    {step === 0 &&
+                        (arrTicket.length > 0 ? (
+                            <table class="table table-striped table-hover table-responsive">
+                                <thead
+                                    style={{ borderBottom: "2px solid black" }}>
+                                    <tr>
+                                        <th scope="col">Nơi xuất phát</th>
+                                        <th scope="col">Thoi gian chay</th>
+                                        <th scope="col">Vi tri ngoi</th>
+                                        <th scope="col">Tong tien</th>
+                                        <th scope="col">Hủy vé</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {listTickets &&
+                                        listTickets.length > 0 &&
+                                        listTickets.map((item, index) => {
+                                            let time = moment(
+                                                +item.Trip.timeStart
+                                            ).format("llll");
+                                            let seatNO =
+                                                item.seatNo.join(" - ");
+                                            let timeStart =
+                                                +item.Trip.timeStart;
+                                            if (
+                                                timeStart > new Date().getTime()
+                                            ) {
+                                                return (
+                                                    <tr>
+                                                        <td>
+                                                            {
+                                                                item.Trip
+                                                                    .areaStart
+                                                            }
+                                                        </td>
+                                                        <td>{time}</td>
+                                                        <td>{seatNO}</td>
+                                                        <td>
+                                                            {item.totalPrice}
+                                                        </td>
+                                                        <td>
+                                                            <button
+                                                                className="btn-delete"
+                                                                // onClick={() =>
+                                                                //     this.handleEditUser(
+                                                                //         item
+                                                                //     )
+                                                                // }
+                                                            >
+                                                                <i className="fas fa-window-close"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            }
+                                        })}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div>
+                                Bạn chưa có chuyến sắp đi nào{" "}
+                                <Link to="/home">Đặt vé ngay</Link>
+                            </div>
+                        ))}
+                    {step === 3 && (
+                        <table class="table table-striped table-hover table-responsive">
+                            <thead style={{ borderBottom: "2px solid black" }}>
+                                <tr>
+                                    <th scope="col">Nơi xuất phát</th>
+                                    <th scope="col">Thoi gian chay</th>
+                                    <th scope="col">Vi tri ngoi</th>
+                                    <th scope="col">Tong tien</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {listTickets &&
+                                    listTickets.length > 0 &&
+                                    listTickets.map((item, index) => {
+                                        let time = moment(
+                                            +item.Trip.timeStart
+                                        ).format("llll");
+                                        let seatNO = item.seatNo.join(" - ");
+                                        let timeEnd = +item.Trip.timeEnd;
+                                        if (timeEnd < new Date().getTime()) {
+                                            return (
+                                                <tr>
+                                                    <td>
+                                                        {item.Trip.areaStart}
+                                                    </td>
+                                                    <td>{time}</td>
+                                                    <td>{seatNO}</td>
+                                                    <td>{item.totalPrice}</td>
+                                                </tr>
+                                            );
+                                        }
+                                    })}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
             </div>
         );

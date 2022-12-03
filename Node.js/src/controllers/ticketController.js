@@ -126,6 +126,17 @@ let verifyTicket = async (req, res) => {
         });
     }
 };
+let cancelTicket = async (req, res) => {
+    try {
+        let response = await ticketService.cancelTicket(req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server ...",
+        });
+    }
+};
 let checkCustomerIsPresent = async (req, res) => {
     try {
         let data = await ticketService.checkCustomerIsPresent(req.body);
@@ -146,4 +157,5 @@ module.exports = {
     checkCustomerIsPresent,
     getDriverTicketRoute,
     getUserTicket,
+    cancelTicket,
 };

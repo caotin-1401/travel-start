@@ -38,7 +38,6 @@ class InfoUser extends Component {
         ) {
             let userId = this.props.match.params.id;
             let res = await getAllUsers(+userId);
-            console.log(res.users);
             let imageBase64 = "";
             if (res.users[0].image) {
                 imageBase64 = Buffer.from(

@@ -45,7 +45,9 @@ class UserManage extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.listUsers !== this.props.listUsers) {
             let test = this.props.listUsers.filter(
-                (item) => item.busOwnerId === this.props.userInfo.id
+                (item) =>
+                    item.Driver.busOwnerId &&
+                    item.Driver.busOwnerId === this.props.userInfo.id
             );
             this.setState({
                 arrUsers: test,
@@ -231,9 +233,16 @@ class UserManage extends Component {
                                     </th>
                                     <th
                                         style={{
-                                            width: "45%",
+                                            width: "35%",
                                         }}>
                                         Address
+                                    </th>
+                                    <th
+                                        style={{
+                                            width: "10%",
+                                        }}
+                                        className="section-id-list">
+                                        Tình trạng
                                     </th>
                                     <th
                                         style={{
@@ -265,6 +274,7 @@ class UserManage extends Component {
                                     </td>
                                     <td></td>
                                     <td></td>
+                                    <td></td>
                                 </tr>
                                 {arrUsers &&
                                     arrUsers.map((user, index) => {
@@ -274,6 +284,7 @@ class UserManage extends Component {
                                                 <td>{user.name}</td>
                                                 <td>{user.email}</td>
                                                 <td>{user.address}</td>
+                                                <td>{}</td>
                                                 <td>
                                                     <button
                                                         className="btn-edit"

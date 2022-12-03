@@ -75,7 +75,9 @@ class ModalUser extends Component {
         }
         if (prevProps.listUsers !== this.props.listUsers) {
             let test = this.props.listUsers.filter(
-                (item) => item.busOwnerId === this.props.userInfo.id
+                (item) =>
+                    item.Driver.busOwnerId &&
+                    item.Driver.busOwnerId === this.props.userInfo.id
             );
             let dataSelect2 = this.buildDataSelectDrivers(test);
             this.setState({

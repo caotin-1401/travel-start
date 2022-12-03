@@ -16,6 +16,8 @@ module.exports = (sequelize, DataTypes) => {
             User.hasMany(models.Vehicle, { foreignKey: "busOwnerId" });
             User.hasMany(models.Trip, { foreignKey: "driverId" });
             User.hasMany(models.Ticket, { foreignKey: "userId" });
+            User.hasOne(models.Driver, { foreignKey: "driverId" });
+            User.hasOne(models.Busowner, { foreignKey: "busOwnerId" });
         }
     }
     User.init(
@@ -26,8 +28,6 @@ module.exports = (sequelize, DataTypes) => {
             address: DataTypes.STRING,
             phoneNumber: DataTypes.STRING,
             roleID: DataTypes.STRING,
-            busOwnerId: DataTypes.INTEGER,
-            busOwner: DataTypes.STRING,
             gender: DataTypes.STRING,
             point: DataTypes.STRING,
             isFirst: DataTypes.STRING,

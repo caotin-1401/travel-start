@@ -96,6 +96,10 @@ let handleGetAllUsers = async (req, res) => {
 let handleCreateNewUser = async (req, res) => {
     try {
         let message = await userService.createNewUser(req.body);
+        console.log(req.body.roleID);
+        if (req.body.roleID === "R3") {
+            let message1 = await userService.createNewDriver(req.body);
+        }
         return res.status(200).json(message);
     } catch (e) {
         return res.status(200).json({

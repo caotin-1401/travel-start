@@ -34,6 +34,7 @@ class BookingModal extends Component {
             finalPrice: 0,
             isActive: false,
             infoUser: {},
+            isCleanData: false,
         };
     }
     componentDidMount() {}
@@ -69,6 +70,7 @@ class BookingModal extends Component {
             isActive,
             infoUser,
             totalPrice,
+            isCleanData,
         } = this.state;
         let test;
         let dayStart;
@@ -120,6 +122,7 @@ class BookingModal extends Component {
                 this.setState(
                     {
                         isActive: false,
+                        isCleanData: true,
                     },
                     this.props.parentCallback2(isActive)
                 );
@@ -143,6 +146,18 @@ class BookingModal extends Component {
                         resUser = await changeUserFirstCouponService(infoUser);
                     }
                 }
+            } else if (res && res.errCode === 5) {
+                toast.error("Ghế của bạn vừa có người đặt mất rồi");
+                this.setState(
+                    {
+                        isActive: false,
+                        seatArr: [],
+                    },
+                    () => {
+                        // this.seatArrParent = { seatArr };
+                        this.props.parentCallback2(isActive);
+                    }
+                );
             } else if (res && res.errCode !== 0) {
                 this.setState(
                     {
@@ -213,6 +228,7 @@ class BookingModal extends Component {
             email,
             description,
             isActive,
+            isCleanData,
         } = this.state;
         console.log(isActive);
         const steps = [
@@ -224,6 +240,7 @@ class BookingModal extends Component {
                         tripInfoFromParent={tripInfo}
                         seatArrParent={seatArr}
                         totalPriceParent={totalPrice}
+                        isCleanDataParent={isCleanData}
                         isActiveParent={isActive}
                     />
                 ),
@@ -240,6 +257,7 @@ class BookingModal extends Component {
                         totalPriceParent={totalPrice}
                         parentCallback={this.callbackFunction2}
                         isActiveParent={isActive}
+                        isCleanDataParent={isCleanData}
                     />
                 ),
             },

@@ -5,7 +5,7 @@ import * as actions from "../../store/actions";
 import "./Register.scss";
 import logo from "../../assets/logo2.png";
 import { handleRegister } from "../../services/userService";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 class Register extends Component {
     constructor(props) {
