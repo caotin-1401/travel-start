@@ -180,7 +180,6 @@ let getAllUsers = (userId) => {
                     nest: true,
                 });
                 users = _.sortBy(user, ["id"]);
-                console.log(users);
             }
             if (userId && userId !== "ALL") {
                 users = await db.User.findAll({
@@ -309,8 +308,7 @@ let createNewDriver = async (data) => {
             let user = await db.User.findOne({
                 where: { email: data.email },
             });
-            console.log(user.id);
-            console.log(data);
+
             await db.Driver.create({
                 driverId: user.id,
                 busOwnerId: data.busOwnerId,
@@ -567,7 +565,6 @@ let handleGetForgotPassword = async (email, token) => {
                         status: 0,
                     },
                 });
-                console.log(record);
                 if (!record) {
                     resolve({
                         errCode: 3,

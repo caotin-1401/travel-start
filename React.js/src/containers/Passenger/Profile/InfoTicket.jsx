@@ -14,6 +14,8 @@ import RestoreIcon from "@mui/icons-material/Restore";
 import CheckIcon from "@mui/icons-material/Check";
 import { Link } from "react-router-dom";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { cancelTicket } from "../../../services/userService";
+import { toast } from "react-toastify";
 class InfoTicket extends Component {
     constructor(props) {
         super(props);
@@ -34,24 +36,27 @@ class InfoTicket extends Component {
         if (res && res.errCode === 0) {
             if (res.tickets.length > 0) {
                 res.tickets.forEach((ticket) => {
-                    if (tempUser[`${ticket.token}`]) {
-                        tempUser[`${ticket.token}`].seatNo.push(ticket.seatNo);
-                    } else {
-                        tempUser[`${ticket.token}`] = {
-                            Trip: ticket.Trip,
-                            seatNo: [ticket.seatNo],
-                            token: ticket.token,
-                            phone: ticket.phone,
-                            name: ticket.name,
-                            totalPrice: ticket.totalPrice,
-                            driverId: ticket.driverId,
-                            status: ticket.status,
-                            tripId: ticket.tripId,
-                            description: ticket.description,
-                            isPresent: ticket.isPresent,
-                            dayStart: ticket.dayStart,
-                        };
-                    }
+                    if (ticket.status !== "S4")
+                        if (tempUser[`${ticket.token}`]) {
+                            tempUser[`${ticket.token}`].seatNo.push(
+                                ticket.seatNo
+                            );
+                        } else {
+                            tempUser[`${ticket.token}`] = {
+                                Trip: ticket.Trip,
+                                seatNo: [ticket.seatNo],
+                                token: ticket.token,
+                                phone: ticket.phone,
+                                name: ticket.name,
+                                totalPrice: ticket.totalPrice,
+                                driverId: ticket.driverId,
+                                status: ticket.status,
+                                tripId: ticket.tripId,
+                                description: ticket.description,
+                                isPresent: ticket.isPresent,
+                                dayStart: ticket.dayStart,
+                            };
+                        }
                 });
 
                 resultUser = Object.values(tempUser);
@@ -62,12 +67,25 @@ class InfoTicket extends Component {
     handleStep = (event, step) => {
         this.setState({ step: step });
     };
+    handleCancelTicket = async (data) => {
+        let res = await cancelTicket({
+            tripId: data.tripId,
+            token: data.token,
+        });
+        res &&
+            res.errCode === 0 &&
+            toast.success("Huỷ vé thành công") &&
+            this.getAllTickets();
+    };
     render() {
         let { step, listTickets } = this.state;
         let arrTicket = [];
         listTickets.forEach((item) => {
             console.log(item);
-            if (+item.Trip.timeStart > new Date().getTime()) {
+            if (
+                +item.Trip.timeStart > new Date().getTime() &&
+                item.status !== "S4"
+            ) {
                 arrTicket.push(item.Trip.timeStart);
             }
         });
@@ -146,12 +164,11 @@ class InfoTicket extends Component {
                                                         <td>
                                                             <button
                                                                 className="btn-delete"
-                                                                // onClick={() =>
-                                                                //     this.handleEditUser(
-                                                                //         item
-                                                                //     )
-                                                                // }
-                                                            >
+                                                                onClick={() =>
+                                                                    this.handleCancelTicket(
+                                                                        item
+                                                                    )
+                                                                }>
                                                                 <i className="fas fa-window-close"></i>
                                                             </button>
                                                         </td>

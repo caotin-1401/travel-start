@@ -96,7 +96,6 @@ let handleGetAllUsers = async (req, res) => {
 let handleCreateNewUser = async (req, res) => {
     try {
         let message = await userService.createNewUser(req.body);
-        console.log(req.body.roleID);
         if (req.body.roleID === "R3") {
             let message1 = await userService.createNewDriver(req.body);
         }
@@ -215,7 +214,6 @@ let handlePostForgotPassword = async (req, res) => {
 };
 let handleGetForgotPassword = async (req, res) => {
     try {
-        console.log(req);
         let email = req.query.email;
         let token = req.query.token;
         if (!email) {

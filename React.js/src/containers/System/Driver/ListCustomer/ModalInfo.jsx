@@ -56,8 +56,9 @@ class ModalInfo extends Component {
 
     async componentDidMount() {
         let listUser = this.props.listUser;
-        console.log("MOdal Info >>:", listUser);
-        this.setState({ listUser: listUser });
+        if (!listUser) {
+            this.setState({ listUser: [] });
+        } else this.setState({ listUser: listUser });
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {}
@@ -105,6 +106,7 @@ class ModalInfo extends Component {
                                 totalPrice: ticket.totalPrice,
                                 driverId: ticket.driverId,
                                 status: ticket.status,
+                                email: ticket.email,
                                 tripId: ticket.tripId,
                                 description: ticket.description,
                                 isPresent: ticket.isPresent,
@@ -238,16 +240,10 @@ class ModalInfo extends Component {
                                             Da len xe
                                         </th>
                                     </tr>
-                                    <tr>
-                                        {listUser && listUser.length === 0 && (
-                                            <td
-                                                colSpan="8"
-                                                style={{ textAlign: "center" }}>
-                                                No data
-                                            </td>
-                                        )}
-                                    </tr>
-                                    {(rowsPerPage > 0
+
+                                    {(listUser &&
+                                    listUser.length > 0 &&
+                                    rowsPerPage > 0
                                         ? listUser.slice(
                                               page * rowsPerPage,
                                               page * rowsPerPage + rowsPerPage
@@ -267,13 +263,7 @@ class ModalInfo extends Component {
                                                 <td>{item.description}</td>
                                                 {!item.isPresent ? (
                                                     <>
-                                                        <button
-                                                            className="btn-delete"
-                                                            onClick={() =>
-                                                                this.handleEditUser(
-                                                                    item
-                                                                )
-                                                            }>
+                                                        <button className="btn-delete">
                                                             <i className="fas fa-window-close"></i>
                                                         </button>
                                                         <button
@@ -293,34 +283,47 @@ class ModalInfo extends Component {
                                         );
                                     })}
                                 </TableBody>
-                                <TableFooter>
-                                    <TableRow>
-                                        <TablePagination
-                                            rowsPerPageOptions={[
-                                                5,
-                                                10,
-                                                25,
-                                                { label: "All", value: -1 },
-                                            ]}
-                                            colSpan={7}
-                                            count={listUser.length}
-                                            rowsPerPage={rowsPerPage}
-                                            page={page}
-                                            onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
-                                            ActionsComponent={(subProps) => (
-                                                <TablePaginationActions
-                                                    style={{
-                                                        marginBottom: "12px",
-                                                    }}
-                                                    {...subProps}
-                                                />
-                                            )}
-                                        />
-                                    </TableRow>
-                                </TableFooter>
+                                {listUser && listUser.length === 0 ? (
+                                    <td
+                                        colSpan="8"
+                                        style={{ textAlign: "center" }}>
+                                        No data
+                                    </td>
+                                ) : (
+                                    <TableFooter>
+                                        <TableRow>
+                                            <TablePagination
+                                                rowsPerPageOptions={[
+                                                    5,
+                                                    10,
+                                                    25,
+                                                    { label: "All", value: -1 },
+                                                ]}
+                                                colSpan={7}
+                                                count={listUser.length}
+                                                rowsPerPage={rowsPerPage}
+                                                page={page}
+                                                onPageChange={
+                                                    this.handleChangePage
+                                                }
+                                                onRowsPerPageChange={
+                                                    this.handleChangeRowsPerPage
+                                                }
+                                                ActionsComponent={(
+                                                    subProps
+                                                ) => (
+                                                    <TablePaginationActions
+                                                        style={{
+                                                            marginBottom:
+                                                                "12px",
+                                                        }}
+                                                        {...subProps}
+                                                    />
+                                                )}
+                                            />
+                                        </TableRow>
+                                    </TableFooter>
+                                )}
                             </Table>
                         </TableContainer>
                     </ModalBody>

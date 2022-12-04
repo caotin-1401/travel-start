@@ -2,15 +2,16 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import * as actions from "../../store/actions";
-import "./Register.scss";
+import "./Login.scss";
 import logo from "../../assets/logo2.png";
 import {
     getForgotPasswordService,
     postResetPasswordService,
     handleLogin,
 } from "../../services/userService";
-import { useNavigate, Link } from "react-router-dom";
-
+import { Link } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
+import { LANGUAGES } from "../../utils";
 class ResetPassword extends Component {
     constructor(props) {
         super(props);
@@ -26,6 +27,7 @@ class ResetPassword extends Component {
         };
     }
     async componentDidMount() {
+        let language = this.props.language;
         if (this.props.location && this.props.location.search) {
             let urlParams = new URLSearchParams(this.props.location.search);
             let token = urlParams.get("token");
@@ -39,10 +41,17 @@ class ResetPassword extends Component {
                     token: token,
                 });
             } else {
-                this.setState({
-                    errMessage: "Liên ket đã hết hạn hoặc được sử dụng rồi",
-                    errCode: res.errCode,
-                });
+                if (language === LANGUAGES.VI) {
+                    this.setState({
+                        errMessage: "Liên ket đã hết hạn hoặc được sử dụng rồi",
+                        errCode: res.errCode,
+                    });
+                } else {
+                    this.setState({
+                        errMessage: "The link has expired or is already in use",
+                        errCode: res.errCode,
+                    });
+                }
             }
         }
     }
@@ -81,18 +90,33 @@ class ResetPassword extends Component {
         navigate(`${redirectPath}`);
     };
     handleRegister = async () => {
+        let language = this.props.language;
+
         let { password, confirmPassword, email, token } = this.state;
-        console.log(email, token);
         this.setState({
             errMessage: "",
         });
 
         if (password.length < 8) {
-            this.setState({ errMessage: "Mật khẩu phải có ít nất 8 ký tự" });
+            if (language === LANGUAGES.VI) {
+                this.setState({
+                    errMessage: "Mật khẩu phải có ít nất 8 ký tự",
+                });
+            } else {
+                this.setState({
+                    errMessage: "Password must be at least 8 characters",
+                });
+            }
         } else if (password !== confirmPassword) {
-            this.setState({
-                errMessage: "Xác nhận mật khẩu không đúng",
-            });
+            if (language === LANGUAGES.VI) {
+                this.setState({
+                    errMessage: "Xác nhận mật khẩu không đúng",
+                });
+            } else {
+                this.setState({
+                    errMessage: "Comfirm password invalid",
+                });
+            }
         } else {
             let res = await postResetPasswordService({
                 password,
@@ -122,20 +146,34 @@ class ResetPassword extends Component {
 
     render() {
         let { password, confirmPassword, errCode } = this.state;
+        let language = this.props.language;
+        let input2, input3;
+        if (language === LANGUAGES.VI) {
+            input2 = "Nhập mật khẩu";
+            input3 = "Nhập xác nhận mật khẩu";
+        } else {
+            input2 = "Enter your password";
+            input3 = "Enter your comfirm password";
+        }
         console.log(errCode);
         return (
             <div className="login-background">
                 <div className="login-container">
                     <div className="login-content row">
                         <div className="logostyle">
-                            <img src={logo} />
+                            <Link to="/home">
+                                <img src={logo} />
+                            </Link>
                         </div>
                         <div className="col-12 text-center text-login">
-                            Register
+                            <FormattedMessage id="login.reset" />
                         </div>
 
                         <div className="col-12 form-group login-input">
-                            <label>Password (*) : </label>
+                            <label>
+                                <FormattedMessage id="login.password" />
+                                (*) :
+                            </label>
                             <div className="custom-password">
                                 <input
                                     type={
@@ -145,7 +183,7 @@ class ResetPassword extends Component {
                                     }
                                     disabled={errCode == 0 ? false : true}
                                     className="form-control"
-                                    placeholder="Enter your password"
+                                    placeholder={input2}
                                     value={password}
                                     onChange={(event) => {
                                         this.onChangeInput(event, "password");
@@ -162,7 +200,10 @@ class ResetPassword extends Component {
                             </div>
                         </div>
                         <div className="col-12 form-group login-input">
-                            <label>Comfirm Password (*) : </label>
+                            <label>
+                                <FormattedMessage id="login.confirm" />
+                                (*) :
+                            </label>
                             <div className="custom-password">
                                 <input
                                     type={
@@ -172,7 +213,7 @@ class ResetPassword extends Component {
                                     }
                                     disabled={errCode == 0 ? false : true}
                                     className="form-control"
-                                    placeholder="Enter your Comfirm password"
+                                    placeholder={input2}
                                     value={confirmPassword}
                                     onChange={(event) => {
                                         this.onChangeInput(
@@ -205,20 +246,21 @@ class ResetPassword extends Component {
                                     onClick={() => {
                                         this.handleRegister();
                                     }}>
-                                    Login
+                                    <FormattedMessage id="login.login" />
                                 </button>
                             ) : (
                                 <button disabled className="btn-login1">
-                                    Login
+                                    <FormattedMessage id="login.login" />
                                 </button>
                             )}
                         </div>
                         <div className="row mt-3">
-                            <div className="col-6">
-                                <span className="forgot-pass">
-                                    <Link to="/login">Back to login</Link>
-                                </span>
-                            </div>
+                            <span
+                                style={{ fontWeight: "500", fontSize: "15px" }}>
+                                <Link to="/login">
+                                    <FormattedMessage id="login.back-login" />
+                                </Link>
+                            </span>
                         </div>
                     </div>
                 </div>

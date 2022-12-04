@@ -21,8 +21,8 @@ import Select from "react-select";
 import ModalInfo from "./ModalInfo";
 import {
     getDriverTickets,
-    checkCustomerPresent,
     getDriverTicketsRoute,
+    getAllRouteFromDateDriver,
 } from "../../../../services/userService";
 class TableCustomer extends Component {
     constructor(props) {
@@ -51,29 +51,13 @@ class TableCustomer extends Component {
         let [day, month, year] = date.split("/");
         let [hours, minutes] = str.split(":");
         let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
-        let res = await getDriverTickets(id, date1.getTime());
-        if (res) {
-            if (res && res.tickets) {
-                let raw = res.tickets;
-                let temp = {};
-                raw.forEach((ticket) => {
-                    if (temp[`${ticket.tripId}`]) {
-                        temp[`${ticket.tripId}`].seatNo.push(ticket.seatNo);
-                    } else {
-                        temp[`${ticket.tripId}`] = {
-                            Trip: ticket.Trip,
-                            seatNo: [ticket.seatNo],
-                        };
-                    }
-                });
-                let result = Object.values(temp);
-
-                this.setState({
-                    listRoute: result,
-                    time: moment(new Date()).format("L"),
-                });
-            }
-        }
+        let res = await getAllRouteFromDateDriver(id, date1.getTime());
+        res &&
+            res.tickets &&
+            this.setState({
+                listRoute: res.tickets,
+                time: moment(new Date()).format("L"),
+            });
     };
 
     handleOnChange = async (data) => {
@@ -88,35 +72,17 @@ class TableCustomer extends Component {
             let test;
             data && (test = data[0].getTime());
             let id = this.props.userInfo.id;
-            let res = await getDriverTickets(id, test);
-            if (res) {
-                if (res && res.tickets) {
-                    let raw = res.tickets;
-
-                    let temp = {};
-                    raw.forEach((ticket) => {
-                        if (temp[`${ticket.tripId}`]) {
-                            temp[`${ticket.tripId}`].seatNo.push(ticket.seatNo);
-                        } else {
-                            temp[`${ticket.tripId}`] = {
-                                Trip: ticket.Trip,
-                                seatNo: [ticket.seatNo],
-                            };
-                        }
-                    });
-
-                    let result = Object.values(temp);
-
-                    this.setState({
-                        listRoute: result,
-                        time: data[0].getTime(),
-                    });
-                }
-            }
-            this.setState({
-                dateStartTrip: data[0].getTime(),
-            });
+            let res = await getAllRouteFromDateDriver(id, test);
+            res &&
+                res.tickets &&
+                this.setState({
+                    listRoute: res.tickets,
+                    time: data[0].getTime(),
+                });
         }
+        this.setState({
+            dateStartTrip: data[0].getTime(),
+        });
     };
 
     handleCheck = async (item) => {
@@ -134,39 +100,39 @@ class TableCustomer extends Component {
             res = await getDriverTicketsRoute(
                 idDriver,
                 date1.getTime(),
-                item.Trip.id
+                item.id
             );
         } else {
-            res = await getDriverTicketsRoute(
-                idDriver,
-                dateStartTrip,
-                item.Trip.id
-            );
+            res = await getDriverTicketsRoute(idDriver, dateStartTrip, item.id);
         }
+        console.log(res);
         let tempUser = {};
         let resultUser;
         if (res && res.errCode === 0) {
             if (res.tickets.length > 0) {
                 res.tickets.forEach((ticket) => {
-                    if (tempUser[`${ticket.userId}`]) {
-                        tempUser[`${ticket.userId}`].seatNo.push(ticket.seatNo);
-                    } else {
-                        tempUser[`${ticket.userId}`] = {
-                            userId: ticket.userId,
-                            seatNo: [ticket.seatNo],
-                            token: ticket.token,
-                            phone: ticket.phone,
-                            name: ticket.name,
-                            totalPrice: ticket.totalPrice,
-                            driverId: ticket.driverId,
-                            status: ticket.status,
-                            email: ticket.email,
-                            tripId: ticket.tripId,
-                            description: ticket.description,
-                            isPresent: ticket.isPresent,
-                            dayStart: ticket.dayStart,
-                        };
-                    }
+                    if (ticket.status !== "S4")
+                        if (tempUser[`${ticket.token}`]) {
+                            tempUser[`${ticket.token}`].seatNo.push(
+                                ticket.seatNo
+                            );
+                        } else {
+                            tempUser[`${ticket.token}`] = {
+                                userId: ticket.userId,
+                                seatNo: [ticket.seatNo],
+                                token: ticket.token,
+                                phone: ticket.phone,
+                                name: ticket.name,
+                                totalPrice: ticket.totalPrice,
+                                driverId: ticket.driverId,
+                                status: ticket.status,
+                                email: ticket.email,
+                                tripId: ticket.tripId,
+                                description: ticket.description,
+                                isPresent: ticket.isPresent,
+                                dayStart: ticket.dayStart,
+                            };
+                        }
                 });
 
                 resultUser = Object.values(tempUser);
@@ -281,7 +247,7 @@ class TableCustomer extends Component {
                                         <th
                                             className="section-id-list"
                                             style={{
-                                                width: "25%",
+                                                width: "23%",
                                             }}>
                                             Thời gian chạy
                                         </th>
@@ -289,14 +255,14 @@ class TableCustomer extends Component {
                                         <th
                                             className="section-id-list"
                                             style={{
-                                                width: "15%",
+                                                width: "12%",
                                             }}>
                                             Biển số xe
                                         </th>
 
                                         <th
                                             style={{
-                                                width: "10%",
+                                                width: "15%",
                                             }}
                                             className="section-id-list">
                                             Danh sách hành khách
@@ -316,9 +282,9 @@ class TableCustomer extends Component {
                                     </tr>
                                     {listRoute.map((item, index) => {
                                         let time = ` ${moment(
-                                            +item.Trip.timeStart
+                                            +item.timeStart
                                         ).format("LT")}${" - "} ${moment(
-                                            +item.Trip.timeEnd
+                                            +item.timeEnd
                                         ).format("LT")}`;
                                         return (
                                             <tr key={index}>
@@ -326,27 +292,25 @@ class TableCustomer extends Component {
                                                     {index + 1}
                                                 </td>
                                                 <td>
-                                                    {item.Trip.areaStart}{" "}
-                                                    {" - "}
-                                                    {item.Trip.areaEnd}
+                                                    {item.areaStart} {" - "}
+                                                    {item.areaEnd}
                                                 </td>
                                                 <td>{time}</td>
-                                                <td>
-                                                    {item.Trip.Vehicle.number}
-                                                </td>
-                                                {!item.isPresent ? (
+                                                <td>{item.Vehicle.number}</td>
+                                                <td
+                                                    style={{
+                                                        textAlign: "center",
+                                                    }}>
                                                     <button
-                                                        className="btn-edit"
+                                                        className="btn btn-primary"
                                                         onClick={() =>
                                                             this.handleCheck(
                                                                 item
                                                             )
                                                         }>
-                                                        <i className="fas fa-info-circle"></i>
+                                                        Danh sashc
                                                     </button>
-                                                ) : (
-                                                    "Da co mawt"
-                                                )}
+                                                </td>
                                             </tr>
                                         );
                                     })}

@@ -109,5 +109,20 @@
         "add": "Thêm mới người dùng",
         "save": "Thêm mới",
         "edit": "Chỉnh sửa"
+    },
+    "login": {
+        "login": "Đăng nhập",
+        "password": "Mật khẩu",
+        "confirm": "Xác nhận mật khẩu",
+        "name": "Họ Tên",
+        "title1": "Bạn đã có tài khoản ",
+        "title": "Bạn chưa có tài khoản ? ",
+        "register": "Đăng ký",
+        "forgot": "Quên mật khẩu",
+        "home": "Quay về trang chủ",
+        "title2": "Nhập địa địa chỉ email bạn đã đăng kí tài khoản vào đây. Chúng tôi sẽ gửi cho bạn một email để bạn có thể lấy lại mật khẩu của mình.",
+        "back-login": "Quay lại trang đăng nhập",
+        "send": "Gửi",
+        "reset": "Thay đổi mật khẩu"
     }
 }

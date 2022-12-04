@@ -69,9 +69,14 @@ let initWebRoutes = (app) => {
         "/api/get-driver-ticket-route",
         ticketController.getDriverTicketRoute
     );
+    router.get(
+        "/api/get-all-route-from-date-driver",
+        ticketController.getAllRouteFromDateDriver
+    );
     router.post("/api/create-new-ticket", ticketController.createTicket);
     router.post("/api/verify-ticket", ticketController.verifyTicket);
     router.post("/api/cancel-ticket", ticketController.cancelTicket);
+    router.delete("/api/delete-ticket", ticketController.deleteTicket);
     router.put("/api/check-customer", ticketController.checkCustomerIsPresent);
 
     router.get("/api/get-all-coupons", couponController.getAllCoupons);

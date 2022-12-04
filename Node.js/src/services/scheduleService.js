@@ -99,7 +99,6 @@ let checkBusTime2 = (routeId, busId, dateStart, timeStart, timeEnd) => {
                     +minutes1
                 );
                 let unixTimestamp1 = Math.floor(timeCheckStart1.getTime());
-                console.log(unixTimestamp1);
                 let driver = await db.Trip.findOne({
                     where: {
                         routeId: routeId,
@@ -270,11 +269,11 @@ let getAllSchedule = (tripId) => {
                         },
                         {
                             model: db.User,
-                            attributes: [
-                                "id",
-                                "name",
-                                "busOwner",
-                                "busOwnerId",
+                            attributes: ["id", "name"],
+                            include: [
+                                {
+                                    model: db.Driver,
+                                },
                             ],
                         },
                     ],

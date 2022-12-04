@@ -137,8 +137,52 @@ let getUserTicket = (id) => {
 let getDriverTicketRoute = (id, dayStart, tripId) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log(id, dayStart, tripId);
             let bus = await db.Ticket.findAll({
                 where: { driverId: id, dayStart: dayStart, tripId: tripId },
+                include: [
+                    {
+                        model: db.Trip,
+                        attributes: [
+                            "id",
+                            "timeStart",
+                            "timeEnd",
+                            "areaStart",
+                            "areaEnd",
+                            "routeId",
+                            "busId",
+                            "busOwnerId",
+                        ],
+                        include: [
+                            {
+                                model: db.Vehicle,
+                                attributes: ["number"],
+                            },
+                        ],
+                    },
+                ],
+                raw: true,
+                nest: true,
+            });
+            resolve(bus);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let getAllRouteFromDateDriver = (id, dayStart) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let bus = await db.Trip.findAll({
+                where: { driverId: id, dateStart: dayStart },
+                include: [
+                    {
+                        model: db.Vehicle,
+                        attributes: ["id", "number", "busTypeId"],
+                    },
+                ],
+                raw: true,
+                nest: true,
             });
             resolve(bus);
         } catch (e) {
@@ -190,7 +234,6 @@ let bulkCreateTicket = (data) => {
             }
 
             let toCreate = _.differenceWith(compare, compare1, _.isEqual);
-            console.log(toCreate.length, compare.length);
             if (compare.length == toCreate.length) {
                 await db.Ticket.bulkCreate(ticket);
 
@@ -237,7 +280,6 @@ let verifyTicket = (data) => {
                     attributes: ["id", "tripId", "token"],
                     raw: false,
                 });
-                console.log(appointment);
                 appointment && appointment.length > 0
                     ? appointment.forEach(async (item) => {
                           item.status = "S2";
@@ -264,6 +306,7 @@ let cancelTicket = (data) => {
         try {
             if (!data.token || !data.tripId) {
                 resolve({
+                    errCode: 1,
                     errMessage: "Missing parameters",
                 });
             } else {
@@ -308,7 +351,6 @@ let checkCustomerIsPresent = (data) => {
                 attributes: ["id", "tripId", "token", "isPresent"],
                 raw: false,
             });
-            console.log(ticket);
             ticket && ticket.length > 0
                 ? ticket.forEach(async (item) => {
                       item.isPresent = 1;
@@ -327,7 +369,44 @@ let checkCustomerIsPresent = (data) => {
         }
     });
 };
+let deleteTicket = async (tripId, token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!token || !tripId) {
+                resolve({ errCode: 1, errMessage: "Missing parameters" });
+            } else {
+                var ticket = await db.Ticket.findAll({
+                    where: {
+                        tripId: tripId,
+                        token: token,
+                    },
+                    raw: false,
+                });
+                if (!ticket) {
+                    resolve({
+                        errCode: 2,
+                        errMessage: `The user isn't exist`,
+                    });
+                } else {
+                    await db.Ticket.destroy({
+                        where: {
+                            tripId: tripId,
+                            token: token,
+                        },
+                    });
+                    resolve({
+                        errCode: 0,
+                        errMessage: "The user is delete",
+                    });
+                }
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 module.exports = {
+    deleteTicket,
     getAllTickets,
     bulkCreateTicket,
     verifyTicket,
@@ -336,4 +415,5 @@ module.exports = {
     getDriverTicketRoute,
     getUserTicket,
     cancelTicket,
+    getAllRouteFromDateDriver,
 };

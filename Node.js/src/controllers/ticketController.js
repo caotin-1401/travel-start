@@ -85,6 +85,7 @@ let getDriverTicketRoute = async (req, res) => {
                 tickets: [],
             });
         }
+        console.log(driverId, dayStart, routeId);
         let tickets = await ticketService.getDriverTicketRoute(
             driverId,
             dayStart,
@@ -149,6 +150,55 @@ let checkCustomerIsPresent = async (req, res) => {
         });
     }
 };
+
+let deleteTicket = async (req, res) => {
+    try {
+        if (!req.body.tripId) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+            });
+        }
+        let message = await ticketService.deleteTicket(
+            req.body.tripId,
+            req.body.token
+        );
+        return res.status(200).json(message);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let getAllRouteFromDateDriver = async (req, res) => {
+    try {
+        let driverId = req.query.driverId;
+        let dayStart = req.query.dayStart;
+        if (!driverId) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+                tickets: [],
+            });
+        }
+        let tickets = await ticketService.getAllRouteFromDateDriver(
+            driverId,
+            dayStart
+        );
+
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            tickets,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 module.exports = {
     getAllTickets,
     createTicket,
@@ -158,4 +208,6 @@ module.exports = {
     getDriverTicketRoute,
     getUserTicket,
     cancelTicket,
+    deleteTicket,
+    getAllRouteFromDateDriver,
 };

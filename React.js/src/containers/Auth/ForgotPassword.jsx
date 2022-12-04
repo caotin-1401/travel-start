@@ -6,6 +6,10 @@ import "./Login.scss";
 import logo from "../../assets/logo2.png";
 import { Link } from "react-router-dom";
 import { postForgotPasswordService } from "../../services/userService";
+import { FormattedMessage } from "react-intl";
+import { LANGUAGES } from "../../utils";
+import { changeLanguageApp } from "../../store/actions/appActions";
+
 class ForgotPassword extends Component {
     constructor(props) {
         super(props);
@@ -30,25 +34,48 @@ class ForgotPassword extends Component {
     handleLogin = async () => {
         this.setState({ errMessage: "" });
         let { email } = this.state;
-        try {
-            let data = await postForgotPasswordService({ email });
-            console.log(data);
-            data && data.errCode === 0
-                ? this.setState({ errMessage: "" })
-                : this.setState({ errMessage: "Email không tồn tại" });
-        } catch (error) {
-            if (error.response) {
-                if (error.response.data) {
-                    this.setState({
-                        errMessage: error.response.data.message,
-                    });
+        let language = this.props.language;
+        let message;
+        if (!email) {
+            if (language === LANGUAGES.VI) {
+                message = "Vui lòng nhập email";
+            } else {
+                message = "Please enter your email";
+            }
+        } else {
+            try {
+                let data = await postForgotPasswordService({ email });
+                data && data.errCode === 0
+                    ? (message = "")
+                    : language === LANGUAGES.EN
+                    ? (message = "Email does not exist")
+                    : (message = "Email không tồn tại");
+            } catch (error) {
+                if (error.response) {
+                    if (error.response.data) {
+                        this.setState({
+                            errMessage: error.response.data.message,
+                        });
+                    }
                 }
             }
         }
+
+        this.setState({
+            errMessage: message,
+        });
     };
 
     render() {
-        console.log(this.state.email);
+        let language = this.props.language;
+        let input1, input2;
+        if (language === LANGUAGES.VI) {
+            input1 = "Nhập email";
+            input2 = "Gửi email thành công";
+        } else {
+            input1 = "Enter your email";
+            input2 = "Send email success";
+        }
         return (
             <div className="login-background">
                 <div className="login-container">
@@ -59,13 +86,11 @@ class ForgotPassword extends Component {
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">
-                            Login
+                            <FormattedMessage id="login.forgot" />
                         </div>
                         <div className="col-12 form-group login-input">
-                            <label>
-                                Nhập địa địa chỉ email bạn đã đăng kí tài khoản
-                                vào đây. Chúng tôi sẽ gửi cho bạn một email để
-                                bạn có thể lấy lại mật khẩu của mình.{" "}
+                            <label style={{ textAlign: "justify" }}>
+                                <FormattedMessage id="login.title2" />
                             </label>
                         </div>
                         <div className="col-12 form-group login-input">
@@ -73,7 +98,7 @@ class ForgotPassword extends Component {
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Enter your email"
+                                placeholder={input1}
                                 value={this.state.email}
                                 onChange={(e) => this.handleChangeUser(e)}
                                 onKeyDown={this.handleKeyDown}
@@ -86,21 +111,16 @@ class ForgotPassword extends Component {
                             <button
                                 className="btn-login"
                                 onClick={this.handleLogin}>
-                                Login
+                                <FormattedMessage id="login.send" />
                             </button>
                         </div>
-                        <p style={{ textAlign: "center" }}>
-                            {" "}
-                            You don't have an account?{" "}
-                            <Link to="/register">Register</Link>
-                        </p>
 
                         <div className="row mt-3">
-                            <div className="col-6">
-                                <span className="forgot-pass">
-                                    <Link to="/login">Back to login</Link>
-                                </span>
-                            </div>
+                            <span className="forgot-pass">
+                                <Link to="/login">
+                                    <FormattedMessage id="login.back-login" />
+                                </Link>
+                            </span>
                         </div>
                     </div>
                 </div>

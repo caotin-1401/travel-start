@@ -188,10 +188,27 @@ const getDriverTicketsRoute = (inputId, dayStart, tripId) => {
         `/api/get-driver-ticket-route?driverId=${inputId}&dayStart=${dayStart}&tripId=${tripId}`
     );
 };
+const getAllRouteFromDateDriver = (inputId, dayStart) => {
+    return axios.get(
+        `/api/get-all-route-from-date-driver?driverId=${inputId}&dayStart=${dayStart}`
+    );
+};
 
 //verify
 const verifyEmail = (data) => {
     return axios.post("/api/verify-ticket", data);
+};
+const cancelTicket = (data) => {
+    return axios.post("/api/cancel-ticket", data);
+};
+
+const deleteTicket = (tripId, token) => {
+    return axios.delete("/api/delete-ticket", {
+        data: {
+            tripId: tripId,
+            token: token,
+        },
+    });
 };
 
 //event
@@ -246,6 +263,7 @@ const checkCustomerPresent = (inputData) => {
     return axios.put("/api/check-customer", inputData);
 };
 export {
+    getAllRouteFromDateDriver,
     getUserTickets,
     getForgotPasswordService,
     postForgotPasswordService,
@@ -295,4 +313,6 @@ export {
     createNewEventsService,
     deleteEventsService,
     editEventsService,
+    cancelTicket,
+    deleteTicket,
 };

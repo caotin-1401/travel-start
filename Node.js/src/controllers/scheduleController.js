@@ -1,6 +1,5 @@
 import db from "../models/index";
 import scheduleService from "../services/scheduleService";
-import busService from "../services/busService";
 let getAllSchedule = async (req, res) => {
     try {
         let id = req.query.id;

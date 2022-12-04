@@ -16,14 +16,17 @@ import DatePicker from "../../../../components/DatePicker";
 import { Row, Col } from "reactstrap";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
-import _ from "lodash";
+import _, { isBuffer } from "lodash";
 import Select from "react-select";
 import {
     getDriverTickets,
     getDriverTicketsRoute,
+    deleteTicket,
+    getAllRouteFromDateDriver,
 } from "../../../../services/userService";
 import * as actions from "../../../../store/actions";
 import ModalTicket from "./ModalTicket";
+import { toast } from "react-toastify";
 class TableCustomer extends Component {
     constructor(props) {
         super(props);
@@ -95,36 +98,28 @@ class TableCustomer extends Component {
         });
     };
     handleOnChange = async (data) => {
-        let { selectDriver } = this.state;
-        if (selectDriver.value) {
-            let res = await getDriverTickets(
-                selectDriver.value,
-                data[0].getTime()
-            );
-            if (res) {
-                if (res && res.tickets) {
-                    let raw = res.tickets;
-                    let temp = {};
-                    raw.forEach((ticket) => {
-                        if (temp[`${ticket.tripId}`]) {
-                            temp[`${ticket.tripId}`].seatNo.push(ticket.seatNo);
-                        } else {
-                            temp[`${ticket.tripId}`] = {
-                                Trip: ticket.Trip,
-                                seatNo: [ticket.seatNo],
-                            };
-                        }
-                    });
-                    let result = Object.values(temp);
+        console.log(data);
+        if (data.length === 1) {
+            this.setState({
+                selectRoute: "",
+                listUser: [],
+            });
+            let { selectDriver } = this.state;
+            if (selectDriver.value) {
+                let res = await getAllRouteFromDateDriver(
+                    selectDriver.value,
+                    data[0].getTime()
+                );
+                if (res && res.tickets && res.tickets.length > 0) {
                     let listRoute = [];
-                    if (result && result.length > 0) {
-                        result.map((item) => {
+                    if (res.tickets && res.tickets.length > 0) {
+                        res.tickets.map((item) => {
                             let obj = {};
-                            obj.value = item.Trip.id;
-                            obj.label = `${item.Trip.areaStart} - ${moment(
-                                +item.Trip.timeStart
+                            obj.value = item.id;
+                            obj.label = `${item.areaStart} - ${moment(
+                                +item.timeStart
                             ).format("LT")} - Biển số xe: ${
-                                item.Trip.Vehicle.number
+                                item.Vehicle.number
                             }`;
                             listRoute.push(obj);
                         });
@@ -134,10 +129,10 @@ class TableCustomer extends Component {
                     });
                 }
             }
+            this.setState({
+                dateStartTrip: data[0].getTime(),
+            });
         }
-        this.setState({
-            dateStartTrip: data[0].getTime(),
-        });
     };
     onChangeInputDriver = async (selectDriver) => {
         let { dateStartTrip, time } = this.state;
@@ -149,45 +144,31 @@ class TableCustomer extends Component {
             let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
             dateStartTrip = date1.getTime();
         }
-        let res = await getDriverTickets(selectDriver.value, dateStartTrip);
-        if (res) {
-            if (res && res.tickets) {
-                let raw = res.tickets;
-                let temp = {};
-                raw.forEach((ticket) => {
-                    if (temp[`${ticket.tripId}`]) {
-                        temp[`${ticket.tripId}`].seatNo.push(ticket.seatNo);
-                    } else {
-                        temp[`${ticket.tripId}`] = {
-                            Trip: ticket.Trip,
-                            seatNo: [ticket.seatNo],
-                        };
-                    }
-                });
-                let result = Object.values(temp);
-                let listRoute = [];
-                if (result && result.length > 0) {
-                    result.map((item) => {
-                        let obj = {};
-                        obj.value = item.Trip.id;
-                        obj.label = `${item.Trip.areaStart} - ${moment(
-                            +item.Trip.timeStart
-                        ).format("LT")} - Biển số xe: ${
-                            item.Trip.Vehicle.number
-                        }`;
-                        listRoute.push(obj);
-                    });
-                }
-                this.setState({
-                    listRoute: listRoute,
+        let res = await getAllRouteFromDateDriver(
+            selectDriver.value,
+            dateStartTrip
+        );
+        if (res && res.tickets && res.tickets.length > 0) {
+            let listRoute = [];
+            if (res.tickets && res.tickets.length > 0) {
+                res.tickets.map((item) => {
+                    let obj = {};
+                    obj.value = item.id;
+                    obj.label = `${item.areaStart} - ${moment(
+                        +item.timeStart
+                    ).format("LT")} - Biển số xe: ${item.Vehicle.number}`;
+                    listRoute.push(obj);
                 });
             }
+            this.setState({
+                listRoute: listRoute,
+            });
         }
+
         this.setState({ selectDriver });
     };
     onChangeInputStart = async (selectRoute) => {
         let { dateStartTrip, time, selectDriver } = this.state;
-        console.log(dateStartTrip, selectDriver.value);
         let res;
         if (!dateStartTrip) {
             let test = moment(new Date().getTime()).format("L");
@@ -207,16 +188,15 @@ class TableCustomer extends Component {
                 selectRoute.value
             );
         }
-
         let tempUser = {};
         let resultUser;
         if (res && res.errCode === 0) {
             if (res.tickets.length > 0) {
                 res.tickets.forEach((ticket) => {
-                    if (tempUser[`${ticket.userId}`]) {
-                        tempUser[`${ticket.userId}`].seatNo.push(ticket.seatNo);
+                    if (tempUser[`${ticket.token}`]) {
+                        tempUser[`${ticket.token}`].seatNo.push(ticket.seatNo);
                     } else {
-                        tempUser[`${ticket.userId}`] = {
+                        tempUser[`${ticket.token}`] = {
                             userId: ticket.userId,
                             seatNo: [ticket.seatNo],
                             token: ticket.token,
@@ -235,10 +215,10 @@ class TableCustomer extends Component {
                 });
 
                 resultUser = Object.values(tempUser);
+                this.setState({ listUser: resultUser });
             }
         }
-        console.log(resultUser);
-        this.setState({ listUser: resultUser });
+
         this.setState({ selectRoute: selectRoute });
     };
 
@@ -254,11 +234,71 @@ class TableCustomer extends Component {
         });
     };
     handleEditUser = (item) => {
-        console.log(item);
         this.setState({
             isOpenModel: true,
             userEdit: item,
         });
+    };
+    handleDeleteTicket = async (data) => {
+        let token = data.token;
+        let tripId = data.tripId;
+        let { dateStartTrip, selectDriver, selectRoute } = this.state;
+        let resDelete = await deleteTicket(tripId, token);
+        if (resDelete && resDelete.errCode === 0) {
+            let res;
+            if (!dateStartTrip) {
+                let test = moment(new Date().getTime()).format("L");
+                let str = "00:00";
+                let [day, month, year] = test.split("/");
+                let [hours, minutes] = str.split(":");
+                let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
+                res = await getDriverTicketsRoute(
+                    selectDriver.value,
+                    date1.getTime(),
+                    selectRoute.value
+                );
+            } else {
+                res = await getDriverTicketsRoute(
+                    selectDriver.value,
+                    dateStartTrip,
+                    selectRoute.value
+                );
+            }
+            let tempUser = {};
+            let resultUser;
+            if (res && res.errCode === 0) {
+                if (res.tickets.length > 0) {
+                    res.tickets.forEach((ticket) => {
+                        if (tempUser[`${ticket.token}`]) {
+                            tempUser[`${ticket.token}`].seatNo.push(
+                                ticket.seatNo
+                            );
+                        } else {
+                            tempUser[`${ticket.token}`] = {
+                                userId: ticket.userId,
+                                seatNo: [ticket.seatNo],
+                                token: ticket.token,
+                                phone: ticket.phone,
+                                name: ticket.name,
+                                totalPrice: ticket.totalPrice,
+                                driverId: ticket.driverId,
+                                status: ticket.status,
+                                email: ticket.email,
+                                tripId: ticket.tripId,
+                                description: ticket.description,
+                                isPresent: ticket.isPresent,
+                                dayStart: ticket.dayStart,
+                            };
+                        }
+                    });
+
+                    resultUser = Object.values(tempUser);
+                }
+            }
+            this.setState({ listUser: resultUser });
+        } else {
+            toast.error("Xoas ve thaats bai");
+        }
     };
     render() {
         let {
@@ -278,7 +318,6 @@ class TableCustomer extends Component {
             listCoupons,
             isOpenModel,
         } = this.state;
-        console.log(isOpenModel);
         return (
             <div className="user-redux-container">
                 {isOpenModel && (
@@ -415,16 +454,9 @@ class TableCustomer extends Component {
                                         </th>
                                     </tr>
 
-                                    <tr>
-                                        {listUser && listUser.length === 0 && (
-                                            <td
-                                                colSpan="8"
-                                                style={{ textAlign: "center" }}>
-                                                No data
-                                            </td>
-                                        )}
-                                    </tr>
-                                    {(rowsPerPage > 0
+                                    {(listUser &&
+                                    listUser.length > 0 &&
+                                    rowsPerPage > 0
                                         ? listUser.slice(
                                               page * rowsPerPage,
                                               page * rowsPerPage + rowsPerPage
@@ -439,6 +471,8 @@ class TableCustomer extends Component {
                                             statusSeat = "Đã xác nhận";
                                         } else if (item.status === "S3") {
                                             statusSeat = "Đã gửi vé";
+                                        } else if (item.status === "S4") {
+                                            statusSeat = "Đã hủy vé";
                                         }
                                         return (
                                             <tr key={index}>
@@ -451,49 +485,83 @@ class TableCustomer extends Component {
                                                 <td>{item.totalPrice}</td>
                                                 <td>{item.description}</td>
                                                 <td>{statusSeat}</td>
-                                                <td>
-                                                    <button
-                                                        className="btn btn-primary"
-                                                        onClick={() =>
-                                                            this.handleEditUser(
-                                                                item
-                                                            )
-                                                        }>
-                                                        Gửi vé
-                                                    </button>
+                                                <td
+                                                    style={{
+                                                        textAlign: "center",
+                                                    }}>
+                                                    {item.status === "S4" ? (
+                                                        <button
+                                                            style={{
+                                                                width: "80px",
+                                                            }}
+                                                            className="btn btn-danger"
+                                                            onClick={() =>
+                                                                this.handleDeleteTicket(
+                                                                    item
+                                                                )
+                                                            }>
+                                                            Hủy vé
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            className="btn btn-primary"
+                                                            style={{
+                                                                width: "80px",
+                                                            }}
+                                                            onClick={() =>
+                                                                this.handleEditUser(
+                                                                    item
+                                                                )
+                                                            }>
+                                                            Gửi vé
+                                                        </button>
+                                                    )}
                                                 </td>
                                             </tr>
                                         );
                                     })}
                                 </TableBody>
-                                <TableFooter>
-                                    <TableRow>
-                                        <TablePagination
-                                            rowsPerPageOptions={[
-                                                5,
-                                                10,
-                                                25,
-                                                { label: "All", value: -1 },
-                                            ]}
-                                            colSpan={8}
-                                            count={listUser.length}
-                                            rowsPerPage={rowsPerPage}
-                                            page={page}
-                                            onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
-                                            ActionsComponent={(subProps) => (
-                                                <TablePaginationActions
-                                                    style={{
-                                                        marginBottom: "12px",
-                                                    }}
-                                                    {...subProps}
-                                                />
-                                            )}
-                                        />
-                                    </TableRow>
-                                </TableFooter>
+                                {listUser && listUser.length === 0 ? (
+                                    <td
+                                        colSpan="8"
+                                        style={{ textAlign: "center" }}>
+                                        No data
+                                    </td>
+                                ) : (
+                                    <TableFooter>
+                                        <TableRow>
+                                            <TablePagination
+                                                rowsPerPageOptions={[
+                                                    5,
+                                                    10,
+                                                    25,
+                                                    { label: "All", value: -1 },
+                                                ]}
+                                                colSpan={8}
+                                                count={listUser.length}
+                                                rowsPerPage={rowsPerPage}
+                                                page={page}
+                                                onPageChange={
+                                                    this.handleChangePage
+                                                }
+                                                onRowsPerPageChange={
+                                                    this.handleChangeRowsPerPage
+                                                }
+                                                ActionsComponent={(
+                                                    subProps
+                                                ) => (
+                                                    <TablePaginationActions
+                                                        style={{
+                                                            marginBottom:
+                                                                "12px",
+                                                        }}
+                                                        {...subProps}
+                                                    />
+                                                )}
+                                            />
+                                        </TableRow>
+                                    </TableFooter>
+                                )}
                             </Table>
                         </TableContainer>
                         {/* </div> */}

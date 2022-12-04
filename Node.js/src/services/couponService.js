@@ -58,14 +58,11 @@ let getUseCoupons = (couponId) => {
 let checkName = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(data);
-            console.log(1);
             let name1 = await db.Coupon.findOne({
                 where: {
                     name: data,
                 },
             });
-            console.log(name1);
             if (name1) {
                 resolve(true);
             } else {
@@ -210,7 +207,6 @@ let editCoupon = (data) => {
 let useCoupon = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(data);
             if (!data.id) {
                 resolve({
                     errCode: 2,
@@ -221,7 +217,6 @@ let useCoupon = (data) => {
                     where: { id: data.id },
                     raw: false,
                 });
-                console.log(coupon);
                 if (coupon) {
                     if (data.use <= coupon.count) {
                         coupon.use = data.use;

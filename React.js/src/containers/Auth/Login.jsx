@@ -6,7 +6,9 @@ import "./Login.scss";
 import logo from "../../assets/logo2.png";
 import { handleLogin } from "../../services/userService";
 import { Link } from "react-router-dom";
-
+import { FormattedMessage } from "react-intl";
+import { LANGUAGES } from "../../utils";
+import { changeLanguageApp } from "../../store/actions/appActions";
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -50,30 +52,61 @@ class Login extends Component {
         navigate(`${redirectPath}`);
     };
     handleLogin = async () => {
-        this.setState({
-            errMessage: "",
-        });
-        try {
-            let data = await handleLogin(this.state.email, this.state.password);
-            console.log(data);
-            if (data && data.errCode !== 0) {
-                this.setState({
-                    errMessage: data.message,
-                });
+        let { email, password } = this.state;
+        let language = this.props.language;
+        let message1, message2;
+        if (!email) {
+            if (language === LANGUAGES.VI) {
+                message1 = "Vui lòng nhập email";
+            } else {
+                message1 = "Please enter your email";
             }
-            if (data && data.errCode === 0) {
-                this.redirectToSystemPage(data.user.roleID);
-                this.props.userLoginSuccess(data.user);
+        } else if (!password) {
+            if (language === LANGUAGES.VI) {
+                message1 = "Vui lòng nhập mật khẩu";
+            } else {
+                message1 = "Please enter your password";
             }
-        } catch (error) {
-            if (error.response) {
-                if (error.response.data) {
-                    this.setState({
-                        errMessage: error.response.data.message,
-                    });
+        } else {
+            try {
+                let data = await handleLogin(
+                    this.state.email,
+                    this.state.password
+                );
+                console.log(data);
+                if (data && data.errCode !== 0) {
+                    if (data.errCode === 3) {
+                        if (language === LANGUAGES.VI) {
+                            message1 = "Mật khẩu không hợp lệ";
+                        } else {
+                            message1 = "Invalid password";
+                        }
+                    } else if (data.errCode === 1) {
+                        if (language === LANGUAGES.VI) {
+                            message1 = "Email không tồn tại";
+                        } else {
+                            message1 = "Invalid email";
+                        }
+                    }
+                }
+                if (data && data.errCode === 0) {
+                    this.redirectToSystemPage(data.user.roleID);
+                    this.props.userLoginSuccess(data.user);
+                }
+            } catch (error) {
+                if (error.response) {
+                    if (error.response.data) {
+                        this.setState({
+                            errMessage: error.response.data.message,
+                        });
+                    }
                 }
             }
         }
+
+        this.setState({
+            errMessage: message1,
+        });
     };
 
     handleShowPassword = () => {
@@ -83,6 +116,15 @@ class Login extends Component {
     };
 
     render() {
+        let language = this.props.language;
+        let input1, input2;
+        if (language === LANGUAGES.VI) {
+            input1 = "Nhập email";
+            input2 = "Nhập mật khẩu";
+        } else {
+            input1 = "Enter your email";
+            input2 = "Enter your password";
+        }
         return (
             <div className="login-background">
                 <div className="login-container">
@@ -93,20 +135,22 @@ class Login extends Component {
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">
-                            Login
+                            <FormattedMessage id="login.login" />
                         </div>
                         <div className="col-12 form-group login-input">
                             <label>Email : </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Enter your email"
+                                placeholder={input1}
                                 value={this.state.email}
                                 onChange={(e) => this.handleChangeUser(e)}
                             />
                         </div>
                         <div className="col-12 form-group login-input">
-                            <label>Password : </label>
+                            <label>
+                                <FormattedMessage id="login.password" /> :{" "}
+                            </label>
                             <div className="custom-password">
                                 <input
                                     type={
@@ -115,7 +159,7 @@ class Login extends Component {
                                             : "password"
                                     }
                                     className="form-control"
-                                    placeholder="Enter your password"
+                                    placeholder={input2}
                                     value={this.state.password}
                                     onChange={this.handleChangePassword}
                                     onKeyDown={this.handleKeyDown}
@@ -137,27 +181,36 @@ class Login extends Component {
                             <button
                                 className="btn-login"
                                 onClick={this.handleLogin}>
-                                Login
+                                <FormattedMessage id="login.login" />
                             </button>
                         </div>
                         <div className="col-12">
-                            <p style={{ textAlign: "center" }}>
-                                You don't have an account?
-                                <Link to="/register"> Register</Link>
+                            <p
+                                style={{
+                                    textAlign: "center",
+                                    fontSize: "15px",
+                                }}>
+                                <FormattedMessage id="login.title" />
+                                <Link to="/register">
+                                    <b>
+                                        <FormattedMessage id="login.register" />
+                                    </b>
+                                </Link>
                             </p>
                         </div>
                         <div className="row mt-3">
                             <div className="col-6">
                                 <span className="forgot-pass">
                                     <Link to="/forgot-password">
-                                        Forgot your password ?
+                                        <FormattedMessage id="login.forgot" />
                                     </Link>
                                 </span>
                             </div>
                             <div className="col-6 left-forgot">
                                 <span className="forgot-pass">
                                     <Link to="/home">
-                                        &#60; &#60; Go to HomePage
+                                        &#60; &#60;{" "}
+                                        <FormattedMessage id="login.home" />
                                     </Link>
                                 </span>
                             </div>
@@ -181,6 +234,8 @@ const mapDispatchToProps = (dispatch) => {
         navigate: (path) => dispatch(push(path)),
         userLoginSuccess: (userInfo) =>
             dispatch(actions.userLoginSuccess(userInfo)),
+        // changeLanguageAppRedux: (language) =>
+        //     dispatch(changeLanguageApp(language)),
     };
 };
 

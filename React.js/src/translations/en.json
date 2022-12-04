@@ -109,5 +109,20 @@
         "add": "Add",
         "save": "Add new",
         "edit": "Edit"
+    },
+    "login": {
+        "login": "Login",
+        "password": "Password",
+        "confirm": "Confirm Password",
+        "name": "Full Name",
+        "title": "You don't have an account? ",
+        "title1": "Do you already have an account? ",
+        "register": "Register",
+        "forgot": "Forgot your password ?",
+        "home": "Go to the home page",
+        "title2": "Enter the email address you signed up with here. We'll send you an email so you can retrieve your password.",
+        "back-login": "Back to login page",
+        "send": "Send",
+        "reset": "Reset Password"
     }
 }

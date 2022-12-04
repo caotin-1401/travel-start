@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import * as actions from "../../store/actions";
-import "./Register.scss";
 import logo from "../../assets/logo2.png";
 import { handleRegister } from "../../services/userService";
 import { Link } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
+import { LANGUAGES } from "../../utils";
 
 class Register extends Component {
     constructor(props) {
@@ -82,22 +83,37 @@ class Register extends Component {
 
     render() {
         let { email, password, name, confirmPassword } = this.state;
+        let language = this.props.language;
+        let input1, input2, input3, input4;
+        if (language === LANGUAGES.VI) {
+            input1 = "Nhập email";
+            input2 = "Nhập mật khẩu";
+            input3 = "Nhập xác nhận mật khẩu";
+            input4 = "Nhập họ tên đầy đủ";
+        } else {
+            input1 = "Enter your email";
+            input2 = "Enter your password";
+            input3 = "Enter your comfirm password";
+            input4 = "Enter your full name";
+        }
         return (
             <div className="login-background">
                 <div className="login-container">
                     <div className="login-content row">
                         <div className="logostyle">
-                            <img src={logo} />
+                            <Link to="/home">
+                                <img src={logo} />
+                            </Link>
                         </div>
                         <div className="col-12 text-center text-login">
-                            Register
+                            <FormattedMessage id="login.register" />
                         </div>
                         <div className="col-12 form-group login-input">
                             <label>Email (*) : </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Enter your email"
+                                placeholder={input1}
                                 value={email}
                                 onChange={(event) => {
                                     this.onChangeInput(event, "email");
@@ -105,7 +121,9 @@ class Register extends Component {
                             />
                         </div>
                         <div className="col-12 form-group login-input">
-                            <label>Password (*) : </label>
+                            <label>
+                                <FormattedMessage id="login.password" /> (*) :
+                            </label>
                             <div className="custom-password">
                                 <input
                                     type={
@@ -114,7 +132,7 @@ class Register extends Component {
                                             : "password"
                                     }
                                     className="form-control"
-                                    placeholder="Enter your password"
+                                    placeholder={input2}
                                     value={password}
                                     onChange={(event) => {
                                         this.onChangeInput(event, "password");
@@ -131,7 +149,10 @@ class Register extends Component {
                             </div>
                         </div>
                         <div className="col-12 form-group login-input">
-                            <label>Comfirm Password (*) : </label>
+                            <label>
+                                {" "}
+                                <FormattedMessage id="login.confirm" /> (*) :
+                            </label>
                             <div className="custom-password">
                                 <input
                                     type={
@@ -140,7 +161,7 @@ class Register extends Component {
                                             : "password"
                                     }
                                     className="form-control"
-                                    placeholder="Enter your password"
+                                    placeholder={input3}
                                     value={confirmPassword}
                                     onChange={(event) => {
                                         this.onChangeInput(
@@ -163,11 +184,13 @@ class Register extends Component {
                             </div>
                         </div>
                         <div className="col-12 form-group login-input">
-                            <label>Full name : </label>
+                            <label>
+                                <FormattedMessage id="login.name" /> (*) :
+                            </label>
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Enter your email"
+                                placeholder={input4}
                                 value={name}
                                 onChange={(event) => {
                                     this.onChangeInput(event, "name");
@@ -184,24 +207,24 @@ class Register extends Component {
                                 onClick={() => {
                                     this.handleRegister();
                                 }}>
-                                Login
+                                <FormattedMessage id="login.register" />
                             </button>
                         </div>
-
-                        {/* <div className="col-12 text-center mt-3">
-                            <span className="text-other-login">
-                                Or register with:
-                            </span>
+                        <div className="col-12">
+                            <p
+                                style={{
+                                    textAlign: "center",
+                                    fontSize: "15px",
+                                }}>
+                                <FormattedMessage id="login.title1" />
+                                <Link to="/login">
+                                    <b>
+                                        <FormattedMessage id="login.login" />
+                                    </b>
+                                </Link>
+                            </p>
                         </div>
-                        <div className="col-12 social-login">
-                            <i className="fab fa-google-plus-g google"></i>
-                            <i className="fab fa-facebook-f facebook"></i>
-                        </div> */}
                     </div>
-                    <p style={{ textAlign: "center" }}>
-                        Have an account?
-                        <Link to="/login">Login</Link>
-                    </p>
                 </div>
                 {/* </div> */}
             </div>
