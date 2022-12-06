@@ -351,6 +351,13 @@ let getAllSchedules = (areaStart, areaEnd, dateStart) => {
                     {
                         model: db.Route,
                         attributes: ["id", "name", "areaStartId", "areaEndId"],
+                        include: [
+                            {
+                                model: db.Location,
+                                attributes: ["address", "name"],
+                                as: "from",
+                            },
+                        ],
                     },
                     {
                         model: db.User,

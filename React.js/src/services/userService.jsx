@@ -201,7 +201,9 @@ const verifyEmail = (data) => {
 const cancelTicket = (data) => {
     return axios.post("/api/cancel-ticket", data);
 };
-
+const sendTicket = (data) => {
+    return axios.post("/api/send-ticket", data);
+};
 const deleteTicket = (tripId, token) => {
     return axios.delete("/api/delete-ticket", {
         data: {
@@ -263,6 +265,7 @@ const checkCustomerPresent = (inputData) => {
     return axios.put("/api/check-customer", inputData);
 };
 export {
+    sendTicket,
     getAllRouteFromDateDriver,
     getUserTickets,
     getForgotPasswordService,

@@ -10,6 +10,7 @@ import {
     Paper,
     Table,
 } from "@mui/material";
+import "./style.scss";
 import localization from "moment/locale/vi";
 import moment from "moment";
 import DatePicker from "../../../../components/DatePicker";
@@ -27,6 +28,8 @@ import {
 import * as actions from "../../../../store/actions";
 import ModalTicket from "./ModalTicket";
 import { toast } from "react-toastify";
+import LoadingOverlay from "react-loading-overlay-ts";
+
 class TableCustomer extends Component {
     constructor(props) {
         super(props);
@@ -48,8 +51,8 @@ class TableCustomer extends Component {
             selectDriver: "",
             isOpenModel: false,
             // dateStartTrip: "",
-            listCoupons: [],
             userEdit: {},
+            isActive: false,
         };
     }
 
@@ -229,6 +232,56 @@ class TableCustomer extends Component {
         });
     };
     sendEmail = async (data) => {
+        let { dateStartTrip, time, selectDriver, selectRoute } = this.state;
+        let res;
+        if (!dateStartTrip) {
+            let test = moment(new Date().getTime()).format("L");
+            let str = "00:00";
+            let [day, month, year] = test.split("/");
+            let [hours, minutes] = str.split(":");
+            let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
+            res = await getDriverTicketsRoute(
+                selectDriver.value,
+                date1.getTime(),
+                selectRoute.value
+            );
+        } else {
+            res = await getDriverTicketsRoute(
+                selectDriver.value,
+                dateStartTrip,
+                selectRoute.value
+            );
+        }
+        let tempUser = {};
+        let resultUser;
+        if (res && res.errCode === 0) {
+            if (res.tickets.length > 0) {
+                res.tickets.forEach((ticket) => {
+                    if (tempUser[`${ticket.token}`]) {
+                        tempUser[`${ticket.token}`].seatNo.push(ticket.seatNo);
+                    } else {
+                        tempUser[`${ticket.token}`] = {
+                            userId: ticket.userId,
+                            seatNo: [ticket.seatNo],
+                            token: ticket.token,
+                            phone: ticket.phone,
+                            name: ticket.name,
+                            totalPrice: ticket.totalPrice,
+                            driverId: ticket.driverId,
+                            status: ticket.status,
+                            email: ticket.email,
+                            tripId: ticket.tripId,
+                            description: ticket.description,
+                            isPresent: ticket.isPresent,
+                            dayStart: ticket.dayStart,
+                        };
+                    }
+                });
+
+                resultUser = Object.values(tempUser);
+                this.setState({ listUser: resultUser });
+            }
+        }
         this.setState({
             isOpenModel: false,
         });
@@ -300,6 +353,16 @@ class TableCustomer extends Component {
             toast.error("Xoas ve thaats bai");
         }
     };
+    callbackFunction1 = (isActive) => {
+        this.setState({
+            isActive: true,
+        });
+    };
+    callbackFunction2 = (isActive) => {
+        this.setState({
+            isActive: false,
+        });
+    };
     render() {
         let {
             page,
@@ -315,259 +378,287 @@ class TableCustomer extends Component {
             selectRoute,
             listDrivers,
             selectDriver,
-            listCoupons,
             isOpenModel,
+            userEdit,
         } = this.state;
         return (
-            <div className="user-redux-container">
-                {isOpenModel && (
-                    <ModalTicket
-                        listCoupons={listCoupons}
-                        isOpen={this.state.isOpenModel}
-                        toggleFromParent={this.toggleUserModel}
-                        sendEmail={this.sendEmail}
-                    />
-                )}
+            <LoadingOverlay
+                active={this.state.isActive}
+                spinner
+                text="Loading ...">
+                <div className="user-redux-container">
+                    {isOpenModel && (
+                        <ModalTicket
+                            style={{ zIndex: 10 }}
+                            userEdit={userEdit}
+                            isOpen={this.state.isOpenModel}
+                            toggleFromParent={this.toggleUserModel}
+                            sendEmail={this.sendEmail}
+                            parentCallback1={this.callbackFunction1}
+                            parentCallback2={this.callbackFunction2}
+                        />
+                    )}
 
-                <div className="title">
-                    <p style={{ marginBottom: "20px" }}>Quản lý vé</p>
-                </div>
-                <div className="container form-reux">
-                    <Row>
-                        <Col md={3}>
-                            <label htmlFor="schedule1">Chọn ngày chạy</label>
-                            <span
-                                className="form-control mb-4"
-                                style={{ height: "38px" }}
-                                htmlFor="schedule1">
-                                <DatePicker
-                                    locale="vi"
-                                    style={{ border: "none" }}
-                                    onChange={this.handleOnChange}
-                                    id="schedule1"
-                                    value={time}
-                                    selected={time}
-                                />
-                                <label
-                                    htmlFor="schedule1"
-                                    style={{ float: "right" }}>
-                                    <i
-                                        className="far fa-calendar-alt"
-                                        style={{
-                                            fontSize: "20px",
-                                        }}></i>
+                    <div className="title">
+                        <p style={{ marginBottom: "20px" }}>Quản lý vé</p>
+                    </div>
+                    <div className="container form-reux">
+                        <Row>
+                            <Col md={3}>
+                                <label htmlFor="schedule1">
+                                    Chọn ngày chạy
                                 </label>
-                            </span>
-                        </Col>
-                        <Col md={3}>
-                            <label>Chọn tài xế</label>
-                            <Select
-                                className="mb-4"
-                                value={selectDriver}
-                                onChange={this.onChangeInputDriver}
-                                options={listDrivers}
-                            />
-                        </Col>
-                        <Col md={6}>
-                            <label>Chọn địa điểm /thời gian xuất phát:</label>
-                            <Select
-                                className="mb-4"
-                                value={selectRoute}
-                                onChange={this.onChangeInputStart}
-                                options={listRoute}
-                            />
-                        </Col>
-                    </Row>
-                    <div className="user-container">
-                        <TableContainer component={Paper} id="customers">
-                            <Table>
-                                <TableBody>
-                                    <tr>
-                                        <th
-                                            className="section-id"
+                                <span
+                                    className="form-control mb-4"
+                                    style={{ height: "38px" }}
+                                    htmlFor="schedule1">
+                                    <DatePicker
+                                        locale="vi"
+                                        style={{ border: "none" }}
+                                        onChange={this.handleOnChange}
+                                        id="schedule1"
+                                        value={time}
+                                        selected={time}
+                                    />
+                                    <label
+                                        htmlFor="schedule1"
+                                        style={{ float: "right" }}>
+                                        <i
+                                            className="far fa-calendar-alt"
                                             style={{
-                                                width: "5%",
-                                            }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
-                                            Id
-                                        </th>
-                                        <th>
-                                            <div className="section-title">
-                                                <div> Tên</div>
-                                                <div>
-                                                    <FaLongArrowAltDown
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "number"
-                                                            )
-                                                        }
-                                                    />
-                                                    <FaLongArrowAltUp
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "number"
-                                                            )
-                                                        }
-                                                    />
+                                                fontSize: "20px",
+                                            }}></i>
+                                    </label>
+                                </span>
+                            </Col>
+                            <Col md={3}>
+                                <label>Chọn tài xế</label>
+                                <Select
+                                    className="mb-4"
+                                    value={selectDriver}
+                                    onChange={this.onChangeInputDriver}
+                                    options={listDrivers}
+                                />
+                            </Col>
+                            <Col md={6}>
+                                <label>
+                                    Chọn địa điểm /thời gian xuất phát:
+                                </label>
+                                <Select
+                                    className="mb-4"
+                                    value={selectRoute}
+                                    onChange={this.onChangeInputStart}
+                                    options={listRoute}
+                                />
+                            </Col>
+                        </Row>
+                        <div className="user-container">
+                            <TableContainer component={Paper} id="customers">
+                                <Table>
+                                    <TableBody>
+                                        <tr>
+                                            <th
+                                                className="section-id"
+                                                style={{
+                                                    width: "5%",
+                                                }}
+                                                onClick={() =>
+                                                    this.handleSort("asc", "id")
+                                                }>
+                                                Id
+                                            </th>
+                                            <th>
+                                                <div className="section-title">
+                                                    <div> Tên</div>
+                                                    <div>
+                                                        <FaLongArrowAltDown
+                                                            className="iconSortDown"
+                                                            onClick={() =>
+                                                                this.handleSort(
+                                                                    "asc",
+                                                                    "number"
+                                                                )
+                                                            }
+                                                        />
+                                                        <FaLongArrowAltUp
+                                                            className="iconSortDown"
+                                                            onClick={() =>
+                                                                this.handleSort(
+                                                                    "desc",
+                                                                    "number"
+                                                                )
+                                                            }
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </th>
-                                        <th
-                                            style={{
-                                                width: "10%",
-                                            }}>
-                                            Số điện thoại
-                                        </th>
-                                        <th
-                                            className="section-id-list"
-                                            style={{
-                                                width: "15%",
-                                            }}>
-                                            Chỗ ngồi
-                                        </th>
-                                        <th className="section-id-list">
-                                            Thanh toán
-                                        </th>
+                                            </th>
+                                            <th
+                                                style={{
+                                                    width: "10%",
+                                                }}>
+                                                Số điện thoại
+                                            </th>
+                                            <th
+                                                className="section-id-list"
+                                                style={{
+                                                    width: "15%",
+                                                }}>
+                                                Chỗ ngồi
+                                            </th>
+                                            <th className="section-id-list">
+                                                Thanh toán
+                                            </th>
 
-                                        <th>
-                                            <div className="section-title">
-                                                <div>Yeu cau them</div>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div className="section-title">
-                                                <div>tinh trang</div>
-                                            </div>
-                                        </th>
-                                        <th
-                                            style={{
-                                                width: "10%",
-                                            }}
-                                            className="section-id-list">
-                                            Gui ve xe
-                                        </th>
-                                    </tr>
+                                            <th>
+                                                <div className="section-title">
+                                                    <div>Yeu cau them</div>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div className="section-title">
+                                                    <div>tinh trang</div>
+                                                </div>
+                                            </th>
+                                            <th
+                                                style={{
+                                                    width: "10%",
+                                                }}
+                                                className="section-id-list">
+                                                Gui ve xe
+                                            </th>
+                                        </tr>
 
-                                    {(listUser &&
-                                    listUser.length > 0 &&
-                                    rowsPerPage > 0
-                                        ? listUser.slice(
-                                              page * rowsPerPage,
-                                              page * rowsPerPage + rowsPerPage
-                                          )
-                                        : listUser
-                                    ).map((item, index) => {
-                                        let test = item.seatNo.join(" - ");
-                                        let statusSeat;
-                                        if (item.status === "S1") {
-                                            statusSeat = "Chưa xác nhận";
-                                        } else if (item.status === "S2") {
-                                            statusSeat = "Đã xác nhận";
-                                        } else if (item.status === "S3") {
-                                            statusSeat = "Đã gửi vé";
-                                        } else if (item.status === "S4") {
-                                            statusSeat = "Đã hủy vé";
-                                        }
-                                        return (
-                                            <tr key={index}>
-                                                <td className="section-id-list">
-                                                    {index + 1}
-                                                </td>
-                                                <td>{item.name}</td>
-                                                <td>{item.phone}</td>
-                                                <td>{test}</td>
-                                                <td>{item.totalPrice}</td>
-                                                <td>{item.description}</td>
-                                                <td>{statusSeat}</td>
-                                                <td
-                                                    style={{
-                                                        textAlign: "center",
-                                                    }}>
-                                                    {item.status === "S4" ? (
-                                                        <button
-                                                            style={{
-                                                                width: "80px",
-                                                            }}
-                                                            className="btn btn-danger"
-                                                            onClick={() =>
-                                                                this.handleDeleteTicket(
-                                                                    item
-                                                                )
-                                                            }>
-                                                            Hủy vé
-                                                        </button>
-                                                    ) : (
-                                                        <button
-                                                            className="btn btn-primary"
-                                                            style={{
-                                                                width: "80px",
-                                                            }}
-                                                            onClick={() =>
-                                                                this.handleEditUser(
-                                                                    item
-                                                                )
-                                                            }>
-                                                            Gửi vé
-                                                        </button>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </TableBody>
-                                {listUser && listUser.length === 0 ? (
-                                    <td
-                                        colSpan="8"
-                                        style={{ textAlign: "center" }}>
-                                        No data
-                                    </td>
-                                ) : (
-                                    <TableFooter>
-                                        <TableRow>
-                                            <TablePagination
-                                                rowsPerPageOptions={[
-                                                    5,
-                                                    10,
-                                                    25,
-                                                    { label: "All", value: -1 },
-                                                ]}
-                                                colSpan={8}
-                                                count={listUser.length}
-                                                rowsPerPage={rowsPerPage}
-                                                page={page}
-                                                onPageChange={
-                                                    this.handleChangePage
-                                                }
-                                                onRowsPerPageChange={
-                                                    this.handleChangeRowsPerPage
-                                                }
-                                                ActionsComponent={(
-                                                    subProps
-                                                ) => (
-                                                    <TablePaginationActions
+                                        {(listUser &&
+                                        listUser.length > 0 &&
+                                        rowsPerPage > 0
+                                            ? listUser.slice(
+                                                  page * rowsPerPage,
+                                                  page * rowsPerPage +
+                                                      rowsPerPage
+                                              )
+                                            : listUser
+                                        ).map((item, index) => {
+                                            let test = item.seatNo.join(" - ");
+                                            let statusSeat;
+                                            if (item.status === "S1") {
+                                                statusSeat = "Chưa xác nhận";
+                                            } else if (item.status === "S2") {
+                                                statusSeat = "Đã xác nhận";
+                                            } else if (item.status === "S3") {
+                                                statusSeat = "Đã gửi vé";
+                                            } else if (item.status === "S4") {
+                                                statusSeat = "Đã hủy vé";
+                                            }
+                                            return (
+                                                <tr key={index}>
+                                                    <td className="section-id-list">
+                                                        {index + 1}
+                                                    </td>
+                                                    <td>{item.name}</td>
+                                                    <td>{item.phone}</td>
+                                                    <td>{test}</td>
+                                                    <td>{item.totalPrice}</td>
+                                                    <td>{item.description}</td>
+                                                    <td>{statusSeat}</td>
+                                                    <td
                                                         style={{
-                                                            marginBottom:
-                                                                "12px",
-                                                        }}
-                                                        {...subProps}
-                                                    />
-                                                )}
-                                            />
-                                        </TableRow>
-                                    </TableFooter>
-                                )}
-                            </Table>
-                        </TableContainer>
-                        {/* </div> */}
+                                                            textAlign: "center",
+                                                        }}>
+                                                        {item.status ===
+                                                        "S4" ? (
+                                                            <button
+                                                                style={{
+                                                                    width: "80px",
+                                                                }}
+                                                                className="btn btn-danger"
+                                                                onClick={() =>
+                                                                    this.handleDeleteTicket(
+                                                                        item
+                                                                    )
+                                                                }>
+                                                                Hủy vé
+                                                            </button>
+                                                        ) : item.status ===
+                                                          "S3" ? (
+                                                            <button
+                                                                className="btn btn-primary"
+                                                                style={{
+                                                                    width: "80px",
+                                                                }}
+                                                                disabled>
+                                                                Gửi vé
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                className="btn btn-primary"
+                                                                style={{
+                                                                    width: "80px",
+                                                                }}
+                                                                onClick={() =>
+                                                                    this.handleEditUser(
+                                                                        item
+                                                                    )
+                                                                }>
+                                                                Gửi vé
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </TableBody>
+                                    {listUser && listUser.length === 0 ? (
+                                        <td
+                                            colSpan="8"
+                                            style={{ textAlign: "center" }}>
+                                            No data
+                                        </td>
+                                    ) : (
+                                        <TableFooter>
+                                            <TableRow>
+                                                <TablePagination
+                                                    rowsPerPageOptions={[
+                                                        5,
+                                                        10,
+                                                        25,
+                                                        {
+                                                            label: "All",
+                                                            value: -1,
+                                                        },
+                                                    ]}
+                                                    colSpan={8}
+                                                    count={listUser.length}
+                                                    rowsPerPage={rowsPerPage}
+                                                    page={page}
+                                                    onPageChange={
+                                                        this.handleChangePage
+                                                    }
+                                                    onRowsPerPageChange={
+                                                        this
+                                                            .handleChangeRowsPerPage
+                                                    }
+                                                    ActionsComponent={(
+                                                        subProps
+                                                    ) => (
+                                                        <TablePaginationActions
+                                                            style={{
+                                                                marginBottom:
+                                                                    "12px",
+                                                            }}
+                                                            {...subProps}
+                                                        />
+                                                    )}
+                                                />
+                                            </TableRow>
+                                        </TableFooter>
+                                    )}
+                                </Table>
+                            </TableContainer>
+                            {/* </div> */}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </LoadingOverlay>
         );
     }
 }

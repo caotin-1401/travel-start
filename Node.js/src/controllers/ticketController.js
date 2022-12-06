@@ -85,7 +85,6 @@ let getDriverTicketRoute = async (req, res) => {
                 tickets: [],
             });
         }
-        console.log(driverId, dayStart, routeId);
         let tickets = await ticketService.getDriverTicketRoute(
             driverId,
             dayStart,
@@ -199,6 +198,18 @@ let getAllRouteFromDateDriver = async (req, res) => {
         });
     }
 };
+let sendTickets = async (req, res) => {
+    try {
+        let response = await ticketService.sendTickets(req.body);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server ...",
+        });
+    }
+};
+
 module.exports = {
     getAllTickets,
     createTicket,
@@ -210,4 +221,5 @@ module.exports = {
     cancelTicket,
     deleteTicket,
     getAllRouteFromDateDriver,
+    sendTickets,
 };

@@ -137,7 +137,6 @@ let getUserTicket = (id) => {
 let getDriverTicketRoute = (id, dayStart, tripId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log(id, dayStart, tripId);
             let bus = await db.Ticket.findAll({
                 where: { driverId: id, dayStart: dayStart, tripId: tripId },
                 include: [
@@ -242,6 +241,8 @@ let bulkCreateTicket = (data) => {
                     name: data.arrTicket[0].name,
                     totalPrice: data.arrTicket[0].totalPrice,
                     seatNo: result,
+                    station: data.arrTicket[0].station,
+                    address: data.arrTicket[0].address,
                     busOwner: data.arrTicket[0].busOwner,
                     time: data.arrTicket[0].time,
                     redirectLink: `${process.env.URL_REACT}/verify-booking?token=${token}&tripId=${data.arrTicket[0].tripId}`,
@@ -405,7 +406,55 @@ let deleteTicket = async (tripId, token) => {
         }
     });
 };
+let sendTickets = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.token || !data.tripId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing parameters",
+                });
+            } else {
+                var appointment = await db.Ticket.findAll({
+                    where: {
+                        tripId: data.tripId,
+                        token: data.token,
+                        // status: "S2",
+                    },
+                    attributes: ["id", "tripId", "token"],
+                    raw: false,
+                });
+
+                if (appointment) {
+                    await emailService.sendAttachment({
+                        receiversEmail: data.email,
+                        name: data.name,
+                        img: data.img,
+                    });
+                }
+                console.log(3);
+                appointment && appointment.length > 0
+                    ? appointment.forEach(async (item) => {
+                          item.status = "S3";
+                          await item.save();
+                          resolve({
+                              errCode: 0,
+                              errMessage: "Update the appointment success",
+                          });
+                      })
+                    : resolve({
+                          errCode: 2,
+                          errMessage:
+                              "appointment has been activated or not exist",
+                      });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 module.exports = {
+    sendTickets,
     deleteTicket,
     getAllTickets,
     bulkCreateTicket,

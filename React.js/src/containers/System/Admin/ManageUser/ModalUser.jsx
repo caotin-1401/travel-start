@@ -151,7 +151,7 @@ class ModalUser extends Component {
         let language = this.props.language;
         let roles = this.state.roleArr;
         let genders = this.state.genderArr;
-        let { email, password, name, phone, address, gender, role, avatar } =
+        let { email, password, name, phone, address, gender, role } =
             this.state;
         return (
             <div>

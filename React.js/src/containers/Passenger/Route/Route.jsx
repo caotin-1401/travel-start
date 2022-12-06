@@ -20,7 +20,7 @@ import FilterComponent from "./FilterComponent";
 import { withRouter } from "react-router";
 import NotFoundTrip from "../../../assets/NotFoundTrip.png";
 import { toast } from "react-toastify";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import _ from "lodash";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";

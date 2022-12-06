@@ -75,6 +75,7 @@ let initWebRoutes = (app) => {
     );
     router.post("/api/create-new-ticket", ticketController.createTicket);
     router.post("/api/verify-ticket", ticketController.verifyTicket);
+    router.post("/api/send-ticket", ticketController.sendTickets);
     router.post("/api/cancel-ticket", ticketController.cancelTicket);
     router.delete("/api/delete-ticket", ticketController.deleteTicket);
     router.put("/api/check-customer", ticketController.checkCustomerIsPresent);

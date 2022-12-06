@@ -107,7 +107,9 @@ class BookingModal extends Component {
                     obj.userId = this.props.userInfo.id;
                     obj.seatNo = item.keyMap;
                     obj.tripId = tripInfo.id;
-                    obj.busOwner = tripInfo.User.busOwner;
+                    obj.busOwner = tripInfo.User.Driver.busOwner;
+                    obj.station = tripInfo.Route.from.name;
+                    obj.address = tripInfo.Route.from.address;
                     obj.time = moment(+tripInfo.timeStart).format(
                         "ddd DD/MM hh:mm"
                     );
@@ -154,7 +156,6 @@ class BookingModal extends Component {
                         seatArr: [],
                     },
                     () => {
-                        // this.seatArrParent = { seatArr };
                         this.props.parentCallback2(isActive);
                     }
                 );
@@ -165,7 +166,6 @@ class BookingModal extends Component {
                         seatArr: [],
                     },
                     () => {
-                        // this.seatArrParent = { seatArr };
                         this.props.parentCallback2(isActive);
                     }
                 );
