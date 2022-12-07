@@ -10,7 +10,7 @@ import {
     Paper,
     Table,
 } from "@mui/material";
-import "./style.scss";
+// import "./style.scss";
 import localization from "moment/locale/vi";
 import moment from "moment";
 import DatePicker from "../../../../components/DatePicker";
