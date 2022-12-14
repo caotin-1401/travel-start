@@ -147,13 +147,13 @@ class UserManage extends Component {
                         />
                     )}
 
-                    <div className="title text-center">User manage</div>
+                    <div className="title text-center">Quản lý tài xế</div>
                     <div className="mx-5 my-3">
                         <button
                             className="btn btn-primary px-3"
                             onClick={() => this.handleAddUser()}>
                             <i className="fas fa-plus px-1"></i>
-                            Add new user
+                            Thêm tài xế
                         </button>
                     </div>
                     <div style={{ marginTop: "50px" }}></div>
@@ -235,7 +235,7 @@ class UserManage extends Component {
                                         style={{
                                             width: "35%",
                                         }}>
-                                        Address
+                                        Địa chỉ
                                     </th>
                                     <th
                                         style={{
@@ -284,7 +284,21 @@ class UserManage extends Component {
                                                 <td>{user.name}</td>
                                                 <td>{user.email}</td>
                                                 <td>{user.address}</td>
-                                                <td>{}</td>
+                                                <td
+                                                    style={{
+                                                        textAlign: "center",
+                                                    }}>
+                                                    {user.Driver.status ===
+                                                    2 ? (
+                                                        <div className="driver-run">
+                                                            Đang chạy
+                                                        </div>
+                                                    ) : (
+                                                        <div className="driver-not-run">
+                                                            Không chạy
+                                                        </div>
+                                                    )}
+                                                </td>
                                                 <td>
                                                     <button
                                                         className="btn-edit"

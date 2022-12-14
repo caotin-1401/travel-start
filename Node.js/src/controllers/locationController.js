@@ -25,6 +25,56 @@ let getAllLocations = async (req, res) => {
     }
 };
 
+let getAllCity = async (req, res) => {
+    try {
+        let id = req.query.id; //ALL, id
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameters",
+                citys: [],
+            });
+        }
+        let citys = await locationService.getAllCity(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            citys,
+        });
+    } catch (e) {
+        console.error("Get all code error:", e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+
+let getAllVehicleFromStation = async (req, res) => {
+    try {
+        let id = req.query.id; //ALL, id
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameters",
+                locations: [],
+            });
+        }
+        let locations = await locationService.getAllVehicleFromStation(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            locations,
+        });
+    } catch (e) {
+        console.error("Get all code error:", e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+
 let handleCreateNewLocations = async (req, res) => {
     try {
         let data = await locationService.createNewLocations(req.body);
@@ -95,7 +145,9 @@ let getAllBusTypes = async (req, res) => {
 };
 
 module.exports = {
+    getAllCity,
     getAllLocations,
+    getAllVehicleFromStation,
     handleCreateNewLocations,
     handleEditLocations,
     deleteLocations,

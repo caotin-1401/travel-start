@@ -145,7 +145,7 @@ class HeaderPage extends Component {
                                 </div>
                             )} */}
                             {!info && (
-                                <Link to="/login">
+                                <Link to="/login" rel="preconnect">
                                     <button className="btn btn-primary">
                                         <i className="fas fa-user-circle"></i>{" "}
                                         Dang nhap
@@ -153,7 +153,7 @@ class HeaderPage extends Component {
                                 </Link>
                             )}
                             {info && info.roleID && info.roleID !== "R4" && (
-                                <Link to="/login">
+                                <Link to="/login" rel="preconnect">
                                     <button className="btn btn-primary">
                                         Đi tới trang admin
                                     </button>

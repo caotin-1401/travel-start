@@ -20,6 +20,29 @@ const getAllUsers = (inputId) => {
         id: inputId,
     });
 };
+const getInfoDriverRoute = (inputId) => {
+    return axios.get(`/api/get-info-driver-route?id=${inputId}`, {
+        id: inputId,
+    });
+};
+const handleDriverStartTrip = (inputData) => {
+    return axios.put("/api/handle-driver-start-trip", inputData);
+};
+const handleDriverEndTrip = (inputData) => {
+    return axios.put("/api/handle-driver-end-trip", inputData);
+};
+const handleStartTrip = (inputData) => {
+    return axios.put("/api/handle-start-trip", inputData);
+};
+const handleEndTrip = (inputData) => {
+    return axios.put("/api/handle-end-trip", inputData);
+};
+const handleVehicleStartTrip = (inputData) => {
+    return axios.put("/api/handle-vehicle-start-trip", inputData);
+};
+const handleVehicleEndTrip = (inputData) => {
+    return axios.put("/api/handle-vehicle-end-trip", inputData);
+};
 
 const createNewUserService = (data) => {
     return axios.post("/api/create-new-user", data);
@@ -53,6 +76,12 @@ const changeUserFirstCouponService = (inputData) => {
 
 const getAllCodeService = (inputType) => {
     return axios.get(`/api/allcode?type=${inputType}`);
+};
+
+const getAllCity = (inputId) => {
+    return axios.get(`/api/get-all-city?id=${inputId}`, {
+        id: inputId,
+    });
 };
 const getAllLocationService = (inputId) => {
     return axios.get(`/api/get-all-locations?id=${inputId}`, {
@@ -265,6 +294,14 @@ const checkCustomerPresent = (inputData) => {
     return axios.put("/api/check-customer", inputData);
 };
 export {
+    getAllCity,
+    handleVehicleStartTrip,
+    handleVehicleEndTrip,
+    handleStartTrip,
+    handleEndTrip,
+    getInfoDriverRoute,
+    handleDriverStartTrip,
+    handleDriverEndTrip,
     sendTicket,
     getAllRouteFromDateDriver,
     getUserTickets,

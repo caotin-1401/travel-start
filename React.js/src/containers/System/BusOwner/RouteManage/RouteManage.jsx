@@ -153,13 +153,13 @@ class RouteManage extends Component {
                         createNewUser1={this.createNewUser1}
                     />
 
-                    <div className="title text-center">User manage</div>
+                    <div className="title text-center">Quản lý chuyến đi</div>
                     <div className="mx-5 my-3">
                         <button
                             className="btn btn-primary px-3"
                             onClick={() => this.handleAddUser()}>
                             <i className="fas fa-plus px-1"></i>
-                            Add new user
+                            Thêm
                         </button>
                     </div>
                     <div className="use-table m-3">

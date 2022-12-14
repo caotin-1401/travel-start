@@ -44,6 +44,7 @@ export const adminMenu = [
             { name: "menu.admin.list-bus", link: "/system/list-bus" },
             { name: "menu.admin.location", link: "/system/list-location" },
             { name: "menu.admin.route", link: "/system/list-route" },
+            { name: "menu.admin.route", link: "/system/test" },
         ],
     },
     {

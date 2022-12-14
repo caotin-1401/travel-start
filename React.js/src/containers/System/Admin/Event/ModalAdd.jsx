@@ -244,7 +244,7 @@ class ModalAdd extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Create a new trip
+                        Thêm sự kiện
                     </ModalHeader>
                     <ModalBody>
                         <Box
@@ -384,7 +384,7 @@ class ModalAdd extends Component {
                                         Thong tin su kien
                                     </label>
                                     <MdEditor
-                                        style={{ height: "370px" }}
+                                        style={{ height: "350px" }}
                                         renderHTML={(text) =>
                                             mdParser.render(text)
                                         }

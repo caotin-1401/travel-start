@@ -66,7 +66,47 @@ let deleteBus = async (req, res) => {
         });
     }
 };
+let handleVehicleStartTrip = async (req, res) => {
+    try {
+        let id = req.body.id;
+        let data = req.body;
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+            });
+        }
+        let message = await busService.handleVehicleStartTrip(data);
+        return res.status(200).json(message);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let handleVehicleEndTrip = async (req, res) => {
+    try {
+        let id = req.body.id;
+        let data = req.body;
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+            });
+        }
+        let message = await busService.handleVehicleEndTrip(data);
+        return res.status(200).json(message);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 module.exports = {
+    handleVehicleStartTrip,
+    handleVehicleEndTrip,
     getAllBus,
     createNewBus,
     editBus,

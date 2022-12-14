@@ -1,15 +1,11 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import "./TableEvent.scss";
+import "./TableStation.scss";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
-import moment from "moment";
-import localization from "moment/locale/vi";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
-import Lightbox from "react-image-lightbox";
-import "react-image-lightbox/style.css"; // This only needs to be imported once in your app
+import { LANGUAGES } from "../../../../utils";
 import ModalAdd from "./ModalAdd";
 import {
     TableBody,
@@ -22,89 +18,68 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import {
-    getAllEventsService,
-    createNewEventsService,
-    deleteEventsService,
-    editEventsService,
+    getAllLocationService,
+    deleteLocationService,
 } from "../../../../services/userService";
-import ModalEdit from "./ModalEdit";
-
 import TablePaginationActions from "../../../../components/TablePaginationActions";
-class TableEvent extends Component {
+
+class TableStation extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isOpenModel: false,
-            isOpenModelEditUser: false,
-            userEdit: {},
-            listEvents: [],
+            listLocations: [],
             sortBy: "",
             sortField: "",
-            keywordNumber: "",
             page: 0,
             rowsPerPage: 5,
+
+            isTest: false,
+            test: [],
+            test1: [],
         };
     }
 
     async componentDidMount() {
-        // this.props.fetchAllEvents();
-        await this.getAllEvents();
+        await this.getAllLocations();
     }
 
-    // componentDidUpdate(prevProps, prevState, snapshot) {
-    //     console.log(this.props.events);
-    //     if (prevProps.events !== this.props.events) {
-    //         this.setState({ listEvents: this.props.events });
-    //     }
-    // }
-    getAllEvents = async () => {
-        let res = await getAllEventsService("ALL");
+    getAllLocations = async () => {
+        let res = await getAllLocationService("ALL");
         if (res && res.errCode === 0) {
             this.setState({
-                listEvents: res.events,
+                listLocations: res.locations,
             });
         }
     };
-    //open modal
-    toggleUserModel = () => {
+
+    toggleModel = () => {
         this.setState({
             isOpenModel: !this.state.isOpenModel,
         });
     };
-    toggleUserEditModel = () => {
-        this.setState({
-            isOpenModelEditUser: !this.state.isOpenModelEditUser,
-        });
-    };
-    handleAddUser = () => {
+
+    handleAddLocation = () => {
         this.setState({
             isOpenModel: true,
         });
     };
-    handleEditUser = (user) => {
-        console.log(user);
-        this.setState({
-            isOpenModelEditUser: true,
-            userEdit: user,
-        });
-    };
 
     handleDeleteUser = async (user) => {
-        let res = await deleteEventsService(user.id);
+        let { language } = this.props;
+        let res = await deleteLocationService(user.id);
         if (res && res.errCode === 0) {
-            toast.success("xoa su kien thanh cong");
-            await this.getAllEvents();
+            if (language === LANGUAGES.VI) {
+                toast.success("Xóa bến xe thành công");
+            } else {
+                toast.success("Delete successful bus station");
+            }
+            await this.getAllLocations();
         }
     };
 
-    doEditUser = async (user) => {
-        await this.getAllEvents();
-        this.setState({
-            isOpenModelEditUser: false,
-        });
-    };
-    createNewUser1 = async (data) => {
-        await this.getAllEvents();
+    createLocation = async (data) => {
+        await this.getAllLocations();
         this.setState({
             isOpenModel: false,
         });
@@ -122,66 +97,75 @@ class TableEvent extends Component {
         });
     };
     handleSort = (a, b) => {
-        this.state.listEvents = _.orderBy(this.state.listEvents, [b], [a]);
+        this.state.listLocations = _.orderBy(
+            this.state.listLocations,
+            [b],
+            [a]
+        );
         this.setState({
             sortBy: a,
             sortField: b,
-            listEvents: this.state.listEvents,
+            listLocations: this.state.listLocations,
         });
     };
-    handleKeyword = (e, target) => {
+    handleKeyword = (e) => {
         let term = e.target.value.toUpperCase();
-        let clone = this.state.listEvents;
+        let clone = this.state.listLocations;
+        console.log(term);
+        console.log(clone);
         if (term) {
-            clone = clone.filter((item) => item.number.includes(term));
+            clone = clone.filter((item) => item.name.includes(term));
             this.setState({
-                listEvents: clone,
+                test1: clone,
+                isTest: true,
             });
         } else {
-            this.props.fetchAllVehicle();
+            this.setState({
+                isTest: false,
+            });
+            this.getAllLocations();
         }
     };
     handleKeyword1 = (e) => {
         let term = e.target.value.toUpperCase();
-        let clone = this.state.listEvents;
+        let clone = this.state.listLocations;
+
         if (term) {
-            clone = clone.filter((item) =>
-                item.BusType.typeName.includes(term)
-            );
+            clone = clone.filter((item) => item.city.includes(term));
             this.setState({
-                listEvents: clone,
+                test1: clone,
+                isTest: true,
             });
         } else {
-            this.props.fetchAllVehicle();
+            this.setState({
+                isTest: false,
+            });
+            this.getAllLocations();
         }
     };
     render() {
-        let { page, rowsPerPage, listEvents } = this.state;
-        // listEvents.reverse();
+        let { page, rowsPerPage, listLocations, test, test1, isTest } =
+            this.state;
+        isTest === true ? (test = test1) : (test = listLocations);
         return (
             <div className="container form-redux">
                 <div className="user-container">
                     <ModalAdd
-                        listEvents={listEvents}
+                        listLocations={listLocations}
                         isOpen={this.state.isOpenModel}
-                        toggleFromParent={this.toggleUserModel}
-                        createNewUser1={this.createNewUser1}
+                        toggleFromParent={this.toggleModel}
+                        createLocation={this.createLocation}
                     />
-                    {this.state.isOpenModelEditUser && (
-                        <ModalEdit
-                            isOpen={this.state.isOpenModelEditUser}
-                            toggleFromParent={this.toggleUserEditModel}
-                            currentUser={this.state.userEdit}
-                            doEditUser={this.doEditUser}
-                        />
-                    )}
-                    <div className="title text-center">Quan ly su kien</div>
+
+                    <div className="title text-center">
+                        <FormattedMessage id="menu.admin.listLocations.title" />
+                    </div>
                     <div className="mx-5 my-3">
                         <button
-                            className="btn btn-primary px-3"
-                            onClick={() => this.handleAddUser()}>
-                            <i className="fas fa-plus px-1"></i>
-                            Them su kien
+                            className="btn btn-primary px-3 w130"
+                            onClick={() => this.handleAddLocation()}>
+                            <i className="fas fa-plus px-1 "></i>
+                            <FormattedMessage id="menu.admin.listLocations.add" />
                         </button>
                     </div>
                     <div className="use-table m-3">
@@ -201,12 +185,13 @@ class TableEvent extends Component {
                                         </th>
                                         <th
                                             style={{
-                                                width: "34%",
+                                                width: "25%",
                                             }}>
                                             <div className="section-title">
-                                                <div> Tên sự kiện</div>
                                                 <div>
-                                                    {" "}
+                                                    <FormattedMessage id="menu.admin.listLocations.name" />
+                                                </div>
+                                                <div>
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
@@ -228,18 +213,21 @@ class TableEvent extends Component {
                                                 </div>
                                             </div>
                                         </th>
-
-                                        <th>
+                                        <th
+                                            style={{
+                                                width: "25%",
+                                            }}>
                                             <div className="section-title">
-                                                <div> Ngày bắt đầu </div>
                                                 <div>
-                                                    {" "}
+                                                    <FormattedMessage id="menu.admin.listLocations.city" />
+                                                </div>
+                                                <div>
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
                                                             this.handleSort(
                                                                 "asc",
-                                                                "startDate"
+                                                                "city"
                                                             )
                                                         }
                                                     />
@@ -248,46 +236,29 @@ class TableEvent extends Component {
                                                         onClick={() =>
                                                             this.handleSort(
                                                                 "desc",
-                                                                "startDate"
+                                                                "city"
                                                             )
                                                         }
                                                     />
                                                 </div>
                                             </div>
                                         </th>
-                                        <th>
-                                            <div className="section-title">
-                                                <div> Ngày kết thúc </div>
-                                                <div>
-                                                    {" "}
-                                                    <FaLongArrowAltDown
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "endDate"
-                                                            )
-                                                        }
-                                                    />
-                                                    <FaLongArrowAltUp
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "endDate"
-                                                            )
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
+                                        <th
+                                            style={{
+                                                width: "35%",
+                                            }}>
+                                            <FormattedMessage id="menu.admin.listLocations.address" />
                                         </th>
 
-                                        <th style={{ width: "10%" }}>
-                                            Hành động
+                                        <th
+                                            style={{
+                                                width: "10%",
+                                            }}
+                                            className="section-id-list">
+                                            <FormattedMessage id="menu.admin.listLocations.action" />
                                         </th>
                                     </tr>
                                     <tr style={{ height: "50px" }}>
-                                        <td></td>
                                         <td></td>
                                         <td>
                                             <input
@@ -305,41 +276,24 @@ class TableEvent extends Component {
                                                 }
                                             />
                                         </td>
-
+                                        <td></td>
                                         <td></td>
                                     </tr>
-                                    {(rowsPerPage > 0 &&
-                                    listEvents &&
-                                    listEvents.length > 0
-                                        ? listEvents.slice(
+                                    {(rowsPerPage > 0 && test && test.length > 0
+                                        ? test.slice(
                                               page * rowsPerPage,
                                               page * rowsPerPage + rowsPerPage
                                           )
-                                        : listEvents
+                                        : test
                                     ).map((user, index) => {
-                                        let start = moment(
-                                            +user.startDate
-                                        ).format("ddd DD-MM-YYYY HH:mm");
-                                        let end = moment(
-                                            new Date(+user.endDate)
-                                        ).format("ddd  DD-MM-YYYY  HH:mm");
                                         return (
                                             <tr key={index}>
                                                 <td>{user.id}</td>
 
                                                 <td>{user.name}</td>
-                                                <td>{start}</td>
-                                                <td>{end}</td>
-                                                <td>
-                                                    <button
-                                                        className="btn-edit"
-                                                        onClick={() =>
-                                                            this.handleEditUser(
-                                                                user
-                                                            )
-                                                        }>
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
+                                                <td>{user.city}</td>
+                                                <td>{user.address}</td>
+                                                <td className="center">
                                                     <button
                                                         className="btn-delete"
                                                         onClick={() =>
@@ -357,6 +311,21 @@ class TableEvent extends Component {
                                 <TableFooter>
                                     <TableRow>
                                         <TablePagination
+                                            sx={{
+                                                "& .MuiTablePagination-selectLabel ":
+                                                    {
+                                                        display: "None",
+                                                    },
+                                                "& .MuiTablePagination-displayedRows  ":
+                                                    {
+                                                        marginTop: "10px",
+                                                        fontSize: "15px",
+                                                    },
+                                                "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
+                                                    {
+                                                        fontSize: "15px",
+                                                    },
+                                            }}
                                             rowsPerPageOptions={[
                                                 5,
                                                 10,
@@ -364,7 +333,7 @@ class TableEvent extends Component {
                                                 { label: "All", value: -1 },
                                             ]}
                                             colSpan={7}
-                                            count={listEvents.length}
+                                            count={listLocations.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
@@ -394,17 +363,15 @@ class TableEvent extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        events: state.admin.events,
-
         userInfo: state.user.userInfo,
+        locations: state.admin.locations,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-        deleteSchedule: (id) => dispatch(actions.deleteSchedule(id)),
+        fetchAllLocation: () => dispatch(actions.fetchAllLocation()),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TableEvent);
+export default connect(mapStateToProps, mapDispatchToProps)(TableStation);

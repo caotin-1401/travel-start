@@ -1,7 +1,21 @@
 import db from "../models/index";
-import { reject } from "bcrypt/promises";
-import bcrypt from "bcryptjs";
 
+let getAllCity = async (locationId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let locations = "";
+            if (locationId === "ALL") {
+                locations = await db.Province.findAll({
+                    attributes: ["id", "name"],
+                });
+            }
+
+            resolve(locations);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let getAllLocations = async (locationId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -14,6 +28,36 @@ let getAllLocations = async (locationId) => {
                     where: { id: locationId },
                 });
             }
+            resolve(locations);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let getAllVehicleFromStation = async (locationId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let locations = "";
+
+            locations = await db.Location.findAll({
+                where: { id: locationId },
+                include: [
+                    {
+                        model: db.Vehicle,
+                        attributes: ["id", "arrivalTime", "areaEndId"],
+                        as: "tovehicle",
+                        include: [
+                            {
+                                model: db.User,
+                                attributes: ["id", "name"],
+                            },
+                        ],
+                    },
+                ],
+                raw: true,
+                nest: true,
+            });
+
             resolve(locations);
         } catch (e) {
             reject(e);
@@ -173,9 +217,11 @@ let getAllBusTypes = async (locationId) => {
 };
 
 module.exports = {
+    getAllVehicleFromStation,
     getAllLocations,
     createNewLocations,
     deleteLocations,
     editLocations,
     getAllBusTypes,
+    getAllCity,
 };

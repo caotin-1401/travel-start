@@ -441,6 +441,7 @@ let bulkCreateSchedule = (data) => {
                         areaStart: areaStartId,
                         areaEnd: areaEndId,
                         busOwnerId,
+                        status: 1,
                     });
                 }
                 resolve({
@@ -511,6 +512,7 @@ let bulkCreateSchedule = (data) => {
                         areaStart: areaStartId,
                         areaEnd: areaEndId,
                         busOwnerId,
+                        status: 1,
                     });
                     resolve({
                         errCode: 0,
@@ -551,9 +553,70 @@ let deleteSchedule = (data) => {
         }
     });
 };
+let handleStartTrip = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let trip = await db.Trip.findOne({
+                where: {
+                    id: data.id,
+                    status: 1,
+                },
+                raw: false,
+            });
+            if (trip) {
+                trip.status = 2;
+
+                await trip.save();
+                resolve({
+                    errCode: 0,
+                    message: "update trip success",
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: "trip not found",
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let handleEndTrip = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let trip = await db.Trip.findOne({
+                where: {
+                    id: data.id,
+                    status: 2,
+                },
+                raw: false,
+            });
+            if (trip) {
+                trip.status = 3;
+
+                await trip.save();
+                resolve({
+                    errCode: 0,
+                    message: "update trip success",
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: "trip not found",
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 module.exports = {
     getAllSchedule,
     getAllSchedules,
     bulkCreateSchedule,
     deleteSchedule,
+    handleEndTrip,
+    handleStartTrip,
 };

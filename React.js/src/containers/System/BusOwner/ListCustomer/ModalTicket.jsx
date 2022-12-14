@@ -82,7 +82,7 @@ class ModalTicket extends Component {
                     toggle={() => {
                         this.toggle();
                     }}
-                    style={{ width: "500px" }}
+                    style={{ maxWidth: "500px" }}
                     centered
                     size="sm">
                     <ModalHeader

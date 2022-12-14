@@ -219,6 +219,25 @@ let getAllUsers = (userId) => {
     });
 };
 
+let getInfoDriverRoute = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let users = "";
+            if (userId === "ALL") {
+                users = await db.Driver.findAll({});
+            } else {
+                users = await db.Driver.findOne({
+                    where: { driverId: userId },
+                });
+            }
+
+            resolve(users);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 let getUserTicket = (userId) => {
     return new Promise(async (resolve, reject) => {
         users = await db.User.findAll({
@@ -310,6 +329,8 @@ let createNewDriver = async (data) => {
             });
 
             await db.Driver.create({
+                status: 1,
+                name: data.name,
                 driverId: user.id,
                 busOwnerId: data.busOwnerId,
                 busOwner: data.busOwner,
@@ -400,6 +421,64 @@ let updateUserData = async (data) => {
     });
 };
 
+let handleDriverStartTrip = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.Driver.findOne({
+                where: {
+                    driverId: data.id,
+                    [Op.or]: [{ status: 1 }, { status: 3 }],
+                },
+                raw: false,
+            });
+            if (user) {
+                user.status = 2;
+
+                await user.save();
+                resolve({
+                    errCode: 0,
+                    message: "update user success",
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: "user not found",
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let handleDriverEndTrip = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.Driver.findOne({
+                where: {
+                    driverId: data.id,
+                    status: 2,
+                },
+                raw: false,
+            });
+            if (user) {
+                user.status = 3;
+
+                await user.save();
+                resolve({
+                    errCode: 0,
+                    message: "update user success",
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: "user not found",
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let getAllCodeService = (typeInput) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -644,6 +723,9 @@ let handlePostResetPassword = async (email, token, password) => {
     });
 };
 module.exports = {
+    handleDriverStartTrip,
+    handleDriverEndTrip,
+    getInfoDriverRoute,
     createNewDriver,
     handlePostResetPassword,
     handleUserLogin,

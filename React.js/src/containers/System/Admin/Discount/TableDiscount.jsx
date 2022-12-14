@@ -251,7 +251,7 @@ class TableDiscount extends Component {
                                         className="btn btn-primary px-3"
                                         onClick={() => this.handleAddUser()}>
                                         <i className="fas fa-plus px-1"></i>
-                                        Them ma giam gia
+                                        Thêm mã giảm giá
                                     </button>
                                 </div>
                             </Col>
@@ -274,9 +274,8 @@ class TableDiscount extends Component {
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div> Ten su kien </div>
+                                                    <div> Tên mã giảm giá </div>
                                                     <div>
-                                                        {" "}
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
@@ -300,7 +299,7 @@ class TableDiscount extends Component {
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div> Tien giảm </div>
+                                                    <div> Tiền giảm </div>
                                                     <div>
                                                         {" "}
                                                         <FaLongArrowAltDown
@@ -352,12 +351,15 @@ class TableDiscount extends Component {
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div> Số lượng đã xài </div>
+                                                    <div>
+                                                        {" "}
+                                                        Số lượng đã dùng{" "}
+                                                    </div>
                                                 </div>
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div> Ngay xuat phat </div>
+                                                    <div> Ngày bắt đầuy </div>
                                                     <div>
                                                         {" "}
                                                         <FaLongArrowAltDown
@@ -383,7 +385,7 @@ class TableDiscount extends Component {
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div> giờ xuất phát </div>
+                                                    <div> Ngày kết thúc </div>
                                                     <div>
                                                         {" "}
                                                         <FaLongArrowAltDown
@@ -409,7 +411,7 @@ class TableDiscount extends Component {
                                             </th>
 
                                             <th style={{ width: "15%" }}>
-                                                Action
+                                                Hành động
                                             </th>
                                         </tr>
 
@@ -451,7 +453,7 @@ class TableDiscount extends Component {
                             />
                         )}
                         <div className="title text-center">
-                            Quan ly ma giam gia
+                            Quản lý mã giảm giá
                         </div>
                         <Row>
                             {" "}
@@ -470,7 +472,7 @@ class TableDiscount extends Component {
                                         className="btn btn-primary px-3"
                                         onClick={() => this.handleAddUser()}>
                                         <i className="fas fa-plus px-1"></i>
-                                        Them ma giam gia
+                                        Thêm mã giảm giá
                                     </button>
                                 </div>
                             </Col>
@@ -493,7 +495,7 @@ class TableDiscount extends Component {
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div> Ten su kien </div>
+                                                    <div> Tên mã giảm giá </div>
                                                     <div>
                                                         {" "}
                                                         <FaLongArrowAltDown
@@ -519,7 +521,7 @@ class TableDiscount extends Component {
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div> Tien giảm </div>
+                                                    <div>Tiền giảm </div>
                                                     <div>
                                                         {" "}
                                                         <FaLongArrowAltDown
@@ -571,12 +573,15 @@ class TableDiscount extends Component {
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div> Số lượng đã xài </div>
+                                                    <div>
+                                                        {" "}
+                                                        Số lượng đã dùng{" "}
+                                                    </div>
                                                 </div>
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div> Ngay xuat phat </div>
+                                                    <div> Ngày bắt đầu </div>
                                                     <div>
                                                         {" "}
                                                         <FaLongArrowAltDown
@@ -602,7 +607,7 @@ class TableDiscount extends Component {
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div> giờ xuất phát </div>
+                                                    <div> Ngày kết thúc</div>
                                                     <div>
                                                         {" "}
                                                         <FaLongArrowAltDown
@@ -628,7 +633,7 @@ class TableDiscount extends Component {
                                             </th>
 
                                             <th style={{ width: "15%" }}>
-                                                Action
+                                                Hành động
                                             </th>
                                         </tr>
 

@@ -61,6 +61,7 @@ class InfoTicket extends Component {
 
                 resultUser = Object.values(tempUser);
             }
+            console.log(resultUser);
             this.setState({ listTickets: resultUser });
         }
     };
@@ -80,15 +81,18 @@ class InfoTicket extends Component {
     render() {
         let { step, listTickets } = this.state;
         let arrTicket = [];
-        listTickets.forEach((item) => {
-            console.log(item);
-            if (
-                +item.Trip.timeStart > new Date().getTime() &&
-                item.status !== "S4"
-            ) {
-                arrTicket.push(item.Trip.timeStart);
-            }
-        });
+        console.log(listTickets);
+        if (listTickets && listTickets.length > 0) {
+            listTickets.forEach((item) => {
+                if (
+                    +item.Trip.timeEnd > new Date().getTime() &&
+                    item.status !== "S4"
+                ) {
+                    arrTicket.push(item.Trip.timeStart);
+                }
+            });
+        }
+        console.log(listTickets);
         console.log(arrTicket);
         return (
             <div className="contentProfile" style={{ padding: 0 }}>
@@ -143,8 +147,7 @@ class InfoTicket extends Component {
                                             ).format("llll");
                                             let seatNO =
                                                 item.seatNo.join(" - ");
-                                            let timeStart =
-                                                +item.Trip.timeStart;
+                                            let timeStart = +item.Trip.timeEnd;
                                             if (
                                                 timeStart > new Date().getTime()
                                             ) {

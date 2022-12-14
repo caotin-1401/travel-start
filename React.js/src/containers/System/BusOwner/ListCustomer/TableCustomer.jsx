@@ -1,26 +1,16 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    TableBody,
-    TableContainer,
-    TableFooter,
-    TablePagination,
-    TableRow,
-    Paper,
-    Table,
-} from "@mui/material";
+import { TableBody, TableContainer, Paper, Table } from "@mui/material";
 // import "./style.scss";
 import localization from "moment/locale/vi";
 import moment from "moment";
 import DatePicker from "../../../../components/DatePicker";
 import { Row, Col } from "reactstrap";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
-import TablePaginationActions from "../../../../components/TablePaginationActions";
 import _, { isBuffer } from "lodash";
 import Select from "react-select";
 import {
-    getDriverTickets,
     getDriverTicketsRoute,
     deleteTicket,
     getAllRouteFromDateDriver,
@@ -89,17 +79,6 @@ class TableCustomer extends Component {
         return result;
     };
 
-    handleChangePage = (event, newPage) => {
-        this.setState({
-            page: newPage,
-        });
-    };
-    handleChangeRowsPerPage = (event) => {
-        this.setState({
-            rowsPerPage: parseInt(event.target.value),
-            page: 0,
-        });
-    };
     handleOnChange = async (data) => {
         console.log(data);
         if (data.length === 1) {
@@ -138,6 +117,11 @@ class TableCustomer extends Component {
         }
     };
     onChangeInputDriver = async (selectDriver) => {
+        console.log(selectDriver);
+        this.setState({
+            selectRoute: "",
+            listUser: [],
+        });
         let { dateStartTrip, time } = this.state;
         if (!dateStartTrip) {
             let date = moment(new Date().getTime()).format("L");
@@ -607,50 +591,12 @@ class TableCustomer extends Component {
                                             );
                                         })}
                                     </TableBody>
-                                    {listUser && listUser.length === 0 ? (
+                                    {listUser && listUser.length === 0 && (
                                         <td
                                             colSpan="8"
                                             style={{ textAlign: "center" }}>
                                             No data
                                         </td>
-                                    ) : (
-                                        <TableFooter>
-                                            <TableRow>
-                                                <TablePagination
-                                                    rowsPerPageOptions={[
-                                                        5,
-                                                        10,
-                                                        25,
-                                                        {
-                                                            label: "All",
-                                                            value: -1,
-                                                        },
-                                                    ]}
-                                                    colSpan={8}
-                                                    count={listUser.length}
-                                                    rowsPerPage={rowsPerPage}
-                                                    page={page}
-                                                    onPageChange={
-                                                        this.handleChangePage
-                                                    }
-                                                    onRowsPerPageChange={
-                                                        this
-                                                            .handleChangeRowsPerPage
-                                                    }
-                                                    ActionsComponent={(
-                                                        subProps
-                                                    ) => (
-                                                        <TablePaginationActions
-                                                            style={{
-                                                                marginBottom:
-                                                                    "12px",
-                                                            }}
-                                                            {...subProps}
-                                                        />
-                                                    )}
-                                                />
-                                            </TableRow>
-                                        </TableFooter>
                                     )}
                                 </Table>
                             </TableContainer>

@@ -165,7 +165,7 @@ class TableVehicle extends Component {
                                 </th>
                                 <th
                                     style={{
-                                        width: "25%",
+                                        width: "20%",
                                     }}>
                                     <div className="section-title">
                                         <div>
@@ -206,10 +206,17 @@ class TableVehicle extends Component {
                                 </th>
                                 <th
                                     style={{
-                                        width: "20%",
+                                        width: "15%",
                                     }}
                                     className="section-id-list">
                                     <FormattedMessage id="menu.busOwner.vehicle.img" />
+                                </th>
+                                <th
+                                    style={{
+                                        width: "10%",
+                                    }}
+                                    className="section-id-list">
+                                    Trangj thais
                                 </th>
                                 <th
                                     style={{
@@ -236,6 +243,7 @@ class TableVehicle extends Component {
                                 <td></td>
                                 <td></td>
                                 <td></td>
+                                <td></td>
                             </tr>
                             {(rowsPerPage > 0
                                 ? test.slice(
@@ -252,6 +260,22 @@ class TableVehicle extends Component {
                                         <td>{item.number}</td>
                                         <td>{item.BusType.typeName}</td>
                                         <td>{item.BusType.numOfSeat}</td>
+                                        <td
+                                            style={{
+                                                height: "100px",
+                                                textAlign: "center",
+                                                display: "flex",
+                                            }}>
+                                            {item.status === 2 ? (
+                                                <div className="vehicle-run">
+                                                    Đang chạy
+                                                </div>
+                                            ) : (
+                                                <div className="vehicle-not-run">
+                                                    Trong ben
+                                                </div>
+                                            )}
+                                        </td>
                                         <td
                                             className="content-left"
                                             style={{

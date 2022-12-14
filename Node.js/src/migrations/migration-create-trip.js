@@ -48,7 +48,7 @@ module.exports = {
                 // },
             },
 
-            maxNumber: {
+            status: {
                 type: Sequelize.INTEGER,
             },
             busOwnerId: {

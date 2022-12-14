@@ -12,7 +12,7 @@ let sendEmail = async (dataSend) => {
         },
     });
     let info = await transporter.sendMail({
-        from: "<caotin99a7@gmail.com>", // sender address
+        from: `"Travel Start" <travelstart.ad@gmail.com>`, // sender address
         to: dataSend.receiversEmail, // list of receivers
         subject: "Thông tin đặt vé xe", // Subject line
         text: "Hello world?", // plain text body
@@ -42,7 +42,7 @@ let sendEmailFrogotPassword = async (dataSend) => {
         },
     });
     let info = await transporter.sendMail({
-        from: "<caotin99a7@gmail.com>", // sender address
+        from: `"Travel Start" <travelstart.ad@gmail.com>`, // sender address
         to: dataSend.receiversEmail, // list of receivers
         subject: "Thay đổi mật khẩu", // Subject line
         text: "Hello world?", // plain text body
@@ -65,7 +65,7 @@ let sendAttachment = async (dataSend) => {
         },
     });
     let info = await transporter.sendMail({
-        from: "<caotin99a7@gmail.com>", // sender address
+        from: `"Travel Start" <travelstart.ad@gmail.com>`, // sender address
         to: dataSend.receiversEmail, // list of receivers
         subject: "Thông tin vé xe", // Subject line
         text: "Hello world?", // plain text body

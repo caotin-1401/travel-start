@@ -16,6 +16,17 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: "areaEndId",
                 as: "to",
             });
+            Location.hasMany(models.Vehicle, {
+                foreignKey: "areaStartId",
+                as: "fromvehicle",
+            });
+            Location.hasMany(models.Vehicle, {
+                foreignKey: "areaEndId",
+                as: "tovehicle",
+            });
+            Location.belongsTo(models.Province, {
+                foreignKey: "city",
+            });
         }
     }
     Location.init(

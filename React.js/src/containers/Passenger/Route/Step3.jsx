@@ -272,14 +272,12 @@ class Step3 extends Component {
                                     id="coupon"
                                     className="form-control mb-4 h-38 "
                                 />
-                                <Row>
-                                    <div
-                                        style={{ color: "red" }}
-                                        className="mb-4">
-                                        {errMessage}
-                                    </div>
-                                </Row>
                             </Col>
+                        </Row>{" "}
+                        <Row>
+                            <div style={{ color: "red" }} className="mb-4">
+                                {errMessage}
+                            </div>
                         </Row>
                         <Row className="mb-4">
                             <span

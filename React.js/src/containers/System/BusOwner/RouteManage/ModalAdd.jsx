@@ -327,7 +327,7 @@ class ModalUser extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Create a new trip
+                        Tạo mới chuyến xe
                     </ModalHeader>
                     <ModalBody>
                         <Row>

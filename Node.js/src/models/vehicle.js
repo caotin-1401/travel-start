@@ -12,6 +12,14 @@ module.exports = (sequelize, DataTypes) => {
             Vehicle.belongsTo(models.BusType, { foreignKey: "busTypeId" });
             Vehicle.belongsTo(models.User, { foreignKey: "busOwnerId" });
             Vehicle.hasOne(models.Trip, { foreignKey: "busId" });
+            Vehicle.belongsTo(models.Location, {
+                foreignKey: "areaStartId",
+                as: "fromvehicle",
+            });
+            Vehicle.belongsTo(models.Location, {
+                foreignKey: "areaEndId",
+                as: "tovehicle",
+            });
         }
     }
     Vehicle.init(
@@ -19,7 +27,13 @@ module.exports = (sequelize, DataTypes) => {
             number: DataTypes.STRING,
             // busTypeId: DataTypes.STRING,
             busOwnerId: DataTypes.INTEGER,
+            status: DataTypes.INTEGER,
             image: DataTypes.BLOB("long"),
+            areaStartId: DataTypes.STRING,
+            areaEndId: DataTypes.STRING,
+            driverId: DataTypes.INTEGER,
+
+            arrivalTime: DataTypes.STRING,
         },
         {
             sequelize,

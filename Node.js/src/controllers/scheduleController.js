@@ -82,9 +82,49 @@ let deleteSchedule = async (req, res) => {
         });
     }
 };
+let handleStartTrip = async (req, res) => {
+    try {
+        let id = req.body.id;
+        let data = req.body;
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+            });
+        }
+        let message = await scheduleService.handleStartTrip(data);
+        return res.status(200).json(message);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let handleEndTrip = async (req, res) => {
+    try {
+        let id = req.body.id;
+        let data = req.body;
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+            });
+        }
+        let message = await scheduleService.handleEndTrip(data);
+        return res.status(200).json(message);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 module.exports = {
     getAllSchedule,
     createSchedule,
     deleteSchedule,
     shouldAllSchedule,
+    handleEndTrip,
+    handleStartTrip,
 };

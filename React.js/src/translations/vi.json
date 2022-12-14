@@ -8,7 +8,7 @@
         "destination": "Điểm đến",
         "place-of-departure": "Điểm đón",
         "date": "Chọn ngày",
-        "search": "Tìm vé",
+        "search": "Tìm chuyến",
         "routes": "Tuyến đường phổ biến",
         "more": "Xem thêm",
         "promotion": "Khuyến mãi đặc biệt",
@@ -58,14 +58,22 @@
                 "title": "Quản lý danh sách các loại xe",
                 "name": "Tên loại xe ",
                 "num": "Tổng số chỗ ngồi",
-                "action": "Thao tác"
+                "action": "Thao tác",
+                "add": "Thêm ",
+                "cancel": "Hủy",
+                "save": "Thêm",
+                "modaladd": "Thêm mới loại xe"
             },
             "listLocations": {
                 "title": "Quản lý danh sách các bến xe",
                 "name": "Tên bến xe",
                 "city": "Tỉnh / thành phố",
                 "address": "Địa chỉ",
-                "action": "Thao tác"
+                "action": "Thao tác",
+                "add": "Thêm bến xe",
+                "cancel": "Hủy",
+                "save": "Thêm",
+                "modaladd": "Thêm mới bến xe"
             },
             "listRoute": {
                 "title": "Quản lý danh sách tuyến xe",

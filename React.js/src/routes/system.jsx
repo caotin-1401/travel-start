@@ -2,16 +2,17 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import UserRedux from "../containers/System/Admin/UserRedux";
-import ListBusType from "../containers/System/Admin/BusType/BusType";
 import Header from "../containers/Header/Header";
 import UserManage from "../containers/System/Admin/ManageUser/UserManage";
-import ListLocation from "../containers/System/Admin/ListLocation/ListLocation";
 import ListRoute from "../containers/System/Admin/ListRoute/ListRoute";
 import ListVehicle from "../containers/System/Admin/ListVehicle/ListVehicle";
 import TableEvent from "../containers/System/Admin/Event/TableEvent";
 import TableDiscount from "../containers/System/Admin/Discount/TableDiscount";
 import TableBlog from "../containers/System/Admin/Blog/TableBlog";
 import Dashboard from "../containers/System/Admin/Dashboard/Dashboard";
+import TableStation1 from "./../containers/System/Admin/Station/TableStation";
+import TableStation from "./../containers/System/Admin/ListStation/TableStation";
+import BusType from "./../containers/System/Admin/BusType/TableType";
 
 class System extends Component {
     render() {
@@ -44,19 +45,20 @@ class System extends Component {
                             />
                             <Route
                                 path="/system/list-bus"
-                                component={ListBusType}
+                                component={BusType}
                             />
                             <Route
                                 path="/system/list-route"
                                 component={ListRoute}
                             />
+                            <Route path="/system/test" component={BusType} />
                             <Route
                                 path="/system/list-location"
-                                component={ListLocation}
+                                component={TableStation}
                             />
                             <Route
                                 path="/system/parking-lot"
-                                component={UserRedux}
+                                component={TableStation1}
                             />
                             <Route
                                 path="/system/list-vehicle"
@@ -71,7 +73,6 @@ class System extends Component {
                                 component={TableDiscount}
                             />
                             <Route path="/system/blog" component={TableBlog} />
-
                             <Route
                                 component={() => {
                                     return <Redirect to={systemMenuPath} />;

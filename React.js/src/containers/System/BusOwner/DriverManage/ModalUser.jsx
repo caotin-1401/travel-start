@@ -150,7 +150,7 @@ class ModalUser extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Create a new user
+                        Tạo tài xế mới
                     </ModalHeader>
                     <ModalBody>
                         <Row>
@@ -169,7 +169,7 @@ class ModalUser extends Component {
                             </Col>
                             <Col md={6}>
                                 <label htmlFor="examplePassword">
-                                    Password
+                                    Mật khẩu
                                 </label>
                                 <input
                                     className="form-control mb-4"
@@ -185,7 +185,7 @@ class ModalUser extends Component {
                         </Row>
                         <Row>
                             <Col md={6}>
-                                <label htmlFor="name">Full Name</label>
+                                <label htmlFor="name">Họ tên</label>
                                 <input
                                     className="form-control mb-4"
                                     id="name"
@@ -198,7 +198,7 @@ class ModalUser extends Component {
                                 />
                             </Col>
                             <Col md={6}>
-                                <label htmlFor="phone">Phone Number</label>
+                                <label htmlFor="phone">Số điện thoại</label>
                                 <input
                                     className="form-control mb-4"
                                     id="phone"
@@ -212,7 +212,7 @@ class ModalUser extends Component {
                                 />
                             </Col>
                         </Row>
-                        <label htmlFor="exampleAddress">Address</label>
+                        <label htmlFor="exampleAddress">Địa chỉ</label>
                         <input
                             className="form-control mb-4"
                             id="exampleAddress"
@@ -225,7 +225,9 @@ class ModalUser extends Component {
                         />
                         <Row>
                             <Col md={3}>
-                                <label htmlFor="exampleAddress">Gender</label>
+                                <label htmlFor="exampleAddress">
+                                    Giới tính
+                                </label>
                                 <select
                                     className="form-select mb-4"
                                     onChange={(event) => {
@@ -248,7 +250,7 @@ class ModalUser extends Component {
                                 </select>
                             </Col>
                             <Col md={6}>
-                                <label htmlFor="img">Img</label>
+                                <label htmlFor="img">Avatar</label>
                                 <div className="prev-img-container">
                                     <input
                                         // className="form-control mb-4"

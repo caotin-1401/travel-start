@@ -58,14 +58,22 @@
                 "title": "Manage list of vehicles",
                 "name": "Name",
                 "num": "Totals number seats",
-                "action": "Action"
+                "action": "Action",
+                "add": "Add",
+                "cancel": "Cancel",
+                "save": "Add",
+                "modaladd": "Add new vehicle type"
             },
             "listLocations": {
                 "title": "Manage the list of bus stations",
                 "name": "Bus station name",
                 "city": "Province / city",
                 "address": "Address",
-                "action": "Action"
+                "action": "Action",
+                "add": "Add station",
+                "cancel": "Cancel",
+                "save": "Add",
+                "modaladd": "Add new bus station"
             },
             "listRoute": {
                 "title": "Manage the list of bus routes",

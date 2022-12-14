@@ -8,6 +8,7 @@ import { handleLogin } from "../../services/userService";
 import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../utils";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import { changeLanguageApp } from "../../store/actions/appActions";
 class Login extends Component {
     constructor(props) {
@@ -131,7 +132,7 @@ class Login extends Component {
                     <div className="login-content row">
                         <div className="logostyle">
                             <Link to="/home">
-                                <img src={logo} />
+                                <LazyLoadImage src={logo} />
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">

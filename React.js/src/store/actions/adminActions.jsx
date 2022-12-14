@@ -1,5 +1,6 @@
 import actionTypes from "./actionTypes";
 import {
+    getAllCity,
     createNewUserService,
     getAllCodeService,
     getAllUsers,
@@ -210,7 +211,27 @@ export const createNewLocation = (data) => {
         }
     };
 };
-
+export const fetchAllCity = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            let res = await getAllCity("ALL");
+            if (res && res.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_CITY_SUCCESS,
+                    city: res.city,
+                }); // trong cai dispatch la action truyen di
+            } else {
+                dispatch({
+                    type: actionTypes.FETCH_CITY_FAILED,
+                });
+            }
+        } catch (e) {
+            dispatch({
+                type: actionTypes.FETCH_CITY_FAILED,
+            });
+        }
+    };
+};
 export const fetchAllLocation = (data) => {
     return async (dispatch, getState) => {
         try {

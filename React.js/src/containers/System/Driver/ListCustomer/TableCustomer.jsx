@@ -19,8 +19,16 @@ import TablePaginationActions from "../../../../components/TablePaginationAction
 import _ from "lodash";
 import Select from "react-select";
 import ModalInfo from "./ModalInfo";
+import { toast } from "react-toastify";
+import { LANGUAGES } from "../../../../utils";
 import {
-    getDriverTickets,
+    handleVehicleStartTrip,
+    handleVehicleEndTrip,
+    handleStartTrip,
+    handleEndTrip,
+    handleDriverEndTrip,
+    getInfoDriverRoute,
+    handleDriverStartTrip,
     getDriverTicketsRoute,
     getAllRouteFromDateDriver,
 } from "../../../../services/userService";
@@ -36,6 +44,7 @@ class TableCustomer extends Component {
             isOpenModel: false,
             listUser: {},
             dateStartTrip: "",
+            tripId: "",
         };
     }
 
@@ -62,8 +71,6 @@ class TableCustomer extends Component {
 
     handleOnChange = async (data) => {
         if (data.length === 1) {
-            console.log(1);
-            console.log(data);
             this.setState({
                 listRoute: [],
                 selectRoute: "",
@@ -84,12 +91,70 @@ class TableCustomer extends Component {
             dateStartTrip: data[0].getTime(),
         });
     };
-
+    handleBeginTrip = async (item) => {
+        let { idDriver, time } = this.state;
+        let { language } = this.props;
+        let vehicleId = item.Vehicle.id;
+        let resTrip = await handleStartTrip({ id: item.id });
+        if (resTrip && resTrip.errCode === 0) {
+            let resDriver = await handleDriverStartTrip({ id: idDriver });
+            if (resDriver && resDriver.errCode !== 0) {
+                if (language === LANGUAGES.VI) {
+                    toast.error("Tài xế hiện đang trong chuyến khác");
+                } else {
+                    toast.error("The driver is currently on another trip");
+                }
+                return;
+            }
+            let resVehicle = await handleVehicleStartTrip({
+                id: vehicleId,
+                idDriver,
+            });
+            if (resVehicle && resVehicle.errCode !== 0) {
+                if (language === LANGUAGES.VI) {
+                    toast.error("Phương tiện hiện đang trong chuyến khác");
+                } else {
+                    toast.error("The vehivle is currently on another trip");
+                }
+                return;
+            }
+            let res = await getAllRouteFromDateDriver(idDriver, time);
+            this.setState({
+                listRoute: res.tickets,
+            });
+            if (language === LANGUAGES.VI) {
+                toast.success("Bắt đầu chuyến xe");
+            } else {
+                toast.success("Start the trip");
+            }
+        }
+    };
+    handleEndTrip = async (item) => {
+        let { idDriver, time } = this.state;
+        let { language } = this.props;
+        let vehicleId = item.Vehicle.id;
+        let station = item.areaEnd;
+        console.log(station);
+        let resTrip = await handleEndTrip({ id: item.id });
+        if (resTrip && resTrip.errCode === 0) {
+            let resDriver = await handleDriverEndTrip({ id: idDriver });
+            let resVehicle = await handleVehicleEndTrip({
+                id: vehicleId,
+                areaEndId: station,
+            });
+            let res = await getAllRouteFromDateDriver(idDriver, time);
+            this.setState({
+                listRoute: res.tickets,
+            });
+            if (language === LANGUAGES.VI) {
+                toast.success("Kết thúc chuyến xe");
+            } else {
+                toast.success("End the trip");
+            }
+        }
+    };
     handleCheck = async (item) => {
         let { dateStartTrip, time, idDriver } = this.state;
-        console.log(item);
-        console.log(dateStartTrip);
-        console.log(idDriver);
         let res;
         if (!dateStartTrip) {
             let test = moment(new Date().getTime()).format("L");
@@ -105,7 +170,6 @@ class TableCustomer extends Component {
         } else {
             res = await getDriverTicketsRoute(idDriver, dateStartTrip, item.id);
         }
-        console.log(res);
         let tempUser = {};
         let resultUser;
         if (res && res.errCode === 0) {
@@ -118,6 +182,7 @@ class TableCustomer extends Component {
                             );
                         } else {
                             tempUser[`${ticket.token}`] = {
+                                Trip: ticket.Trip,
                                 userId: ticket.userId,
                                 seatNo: [ticket.seatNo],
                                 token: ticket.token,
@@ -131,6 +196,7 @@ class TableCustomer extends Component {
                                 description: ticket.description,
                                 isPresent: ticket.isPresent,
                                 dayStart: ticket.dayStart,
+                                status: ticket.status,
                             };
                         }
                 });
@@ -218,7 +284,7 @@ class TableCustomer extends Component {
                                         <th
                                             className="section-id-list"
                                             style={{
-                                                width: "45%",
+                                                width: "30%",
                                             }}>
                                             <div className="section-title">
                                                 <div> Tuyến đường</div>
@@ -244,14 +310,9 @@ class TableCustomer extends Component {
                                                 </div>
                                             </div>
                                         </th>
-                                        <th
-                                            className="section-id-list"
-                                            style={{
-                                                width: "23%",
-                                            }}>
+                                        <th className="section-id-list">
                                             Thời gian chạy
                                         </th>
-
                                         <th
                                             className="section-id-list"
                                             style={{
@@ -259,12 +320,10 @@ class TableCustomer extends Component {
                                             }}>
                                             Biển số xe
                                         </th>
-
-                                        <th
-                                            style={{
-                                                width: "15%",
-                                            }}
-                                            className="section-id-list">
+                                        <th className="section-id-list">
+                                            Trạng thái
+                                        </th>
+                                        <th className="section-id-list">
                                             Danh sách hành khách
                                         </th>
                                     </tr>
@@ -286,6 +345,8 @@ class TableCustomer extends Component {
                                         ).format("LT")}${" - "} ${moment(
                                             +item.timeEnd
                                         ).format("LT")}`;
+                                        let statusDriver = +item.status;
+
                                         return (
                                             <tr key={index}>
                                                 <td className="section-id-list">
@@ -301,6 +362,47 @@ class TableCustomer extends Component {
                                                     style={{
                                                         textAlign: "center",
                                                     }}>
+                                                    {+item.status === 1 ? (
+                                                        <button
+                                                            style={{
+                                                                width: "100px",
+                                                            }}
+                                                            className="btn btn-primary"
+                                                            onClick={() =>
+                                                                this.handleBeginTrip(
+                                                                    item
+                                                                )
+                                                            }>
+                                                            Xuất phát
+                                                        </button>
+                                                    ) : +item.status === 2 ? (
+                                                        <button
+                                                            style={{
+                                                                width: "100px",
+                                                            }}
+                                                            className="btn btn-warning"
+                                                            onClick={() =>
+                                                                this.handleEndTrip(
+                                                                    item
+                                                                )
+                                                            }>
+                                                            Về bến
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            style={{
+                                                                width: "100px",
+                                                            }}
+                                                            className="btn btn-primary"
+                                                            disabled>
+                                                            Đã két thúc
+                                                        </button>
+                                                    )}
+                                                </td>
+                                                <td
+                                                    style={{
+                                                        textAlign: "center",
+                                                    }}>
                                                     <button
                                                         className="btn btn-primary"
                                                         onClick={() =>
@@ -308,7 +410,7 @@ class TableCustomer extends Component {
                                                                 item
                                                             )
                                                         }>
-                                                        Danh sashc
+                                                        Danh sách
                                                     </button>
                                                 </td>
                                             </tr>
@@ -328,6 +430,7 @@ class TableCustomer extends Component {
 const mapStateToProps = (state) => {
     return {
         userInfo: state.user.userInfo,
+        language: state.app.language,
     };
 };
 

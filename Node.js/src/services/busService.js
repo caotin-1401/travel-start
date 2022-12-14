@@ -1,7 +1,9 @@
 import db from "../models/index";
 import { reject } from "bcrypt/promises";
 import bcrypt from "bcryptjs";
+import _ from "lodash";
 // const { Buffer } = require("buffer");
+const { Op } = require("sequelize");
 let checkName = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -20,14 +22,11 @@ let checkName = (data) => {
         }
     });
 };
-let getAllBus = (busId) => {
+let getAllBus = async (busId) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (busId === "ALL") {
                 let bus = await db.Vehicle.findAll({
-                    // attributes: {
-                    //     exclude: ["image"],
-                    // },
                     include: [
                         {
                             model: db.BusType,
@@ -41,13 +40,15 @@ let getAllBus = (busId) => {
                     raw: true,
                     nest: true,
                 });
-                bus.map((item) => {
+
+                bus.map(async (item) => {
                     if (item && item.image) {
                         item.image = Buffer.from(item.image, "base64").toString(
                             "binary"
                         );
                     }
                 });
+
                 resolve(bus);
             }
             if (busId && busId !== "ALL") {
@@ -66,11 +67,18 @@ let getAllBus = (busId) => {
                     raw: true,
                     nest: true,
                 });
+                let driver = {};
                 if (bus && bus.image) {
                     bus.image = Buffer.from(bus.image, "base64").toString(
                         "binary"
                     );
                 }
+                if (bus.driverId !== 0) {
+                    driver = await db.Driver.findOne({
+                        where: { driverId: bus.driverId },
+                    });
+                }
+                bus = { ...bus, driver };
                 resolve(bus);
             }
         } catch (e) {
@@ -99,6 +107,11 @@ let createNewBus = (data) => {
                     busTypeId: data.busTypeId,
                     busOwnerId: data.busOwnerId,
                     image: data.image,
+                    areaStartId: 0,
+                    areaEndId: 0,
+                    driverId: 0,
+                    arrivalTime: 0,
+                    status: 1,
                 });
                 resolve({
                     errCode: 0,
@@ -173,7 +186,77 @@ let deleteBus = (data) => {
         }
     });
 };
+let handleVehicleStartTrip = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let vehicle = await db.Vehicle.findOne({
+                where: {
+                    id: data.id,
+                    [Op.or]: [{ status: 1 }, { status: 3 }],
+                },
+                raw: false,
+            });
+            if (vehicle) {
+                vehicle.status = 2;
+                vehicle.driverId = data.idDriver;
+                vehicle.areaEndId = 0;
+                await vehicle.save();
+
+                resolve({
+                    errCode: 0,
+                    message: "update vehicle success",
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: "vehicle not found",
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let handleVehicleEndTrip = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let vehicle = await db.Vehicle.findOne({
+                where: {
+                    id: data.id,
+                    status: 2,
+                    areaEndId: 0,
+                },
+                raw: false,
+            });
+            let time = new Date().getTime();
+            let station = await db.Location.findOne({
+                where: { name: data.areaEndId },
+            });
+
+            if (vehicle) {
+                vehicle.status = 3;
+                vehicle.areaEndId = station.id;
+                vehicle.arrivalTime = time;
+                vehicle.driverId = 0;
+                await vehicle.save();
+                resolve({
+                    errCode: 0,
+                    message: "update vehicle success",
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: "vehicle not found",
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 module.exports = {
+    handleVehicleStartTrip,
+    handleVehicleEndTrip,
     getAllBus,
     createNewBus,
     editBus,

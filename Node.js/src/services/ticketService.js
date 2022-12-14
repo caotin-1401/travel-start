@@ -151,11 +151,12 @@ let getDriverTicketRoute = (id, dayStart, tripId) => {
                             "routeId",
                             "busId",
                             "busOwnerId",
+                            "status",
                         ],
                         include: [
                             {
                                 model: db.Vehicle,
-                                attributes: ["number"],
+                                attributes: ["number", "status"],
                             },
                         ],
                     },
@@ -178,6 +179,16 @@ let getAllRouteFromDateDriver = (id, dayStart) => {
                     {
                         model: db.Vehicle,
                         attributes: ["id", "number", "busTypeId"],
+                    },
+                    {
+                        model: db.User,
+                        attributes: ["id"],
+                        include: [
+                            {
+                                model: db.Driver,
+                                attributes: ["status", "driverId"],
+                            },
+                        ],
                     },
                 ],
                 raw: true,
@@ -419,7 +430,7 @@ let sendTickets = (data) => {
                     where: {
                         tripId: data.tripId,
                         token: data.token,
-                        // status: "S2",
+                        status: "S2",
                     },
                     attributes: ["id", "tripId", "token"],
                     raw: false,
@@ -432,7 +443,6 @@ let sendTickets = (data) => {
                         img: data.img,
                     });
                 }
-                console.log(3);
                 appointment && appointment.length > 0
                     ? appointment.forEach(async (item) => {
                           item.status = "S3";

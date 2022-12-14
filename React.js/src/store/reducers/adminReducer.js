@@ -65,7 +65,17 @@ const adminReducer = (state = initialState, action) => {
             return {
                 ...state,
             };
+        case actionTypes.FETCH_CITY_SUCCESS:
+            state.citys = action.citys;
+            return {
+                ...state,
+            };
 
+        case actionTypes.FETCH_CITY_FAILED:
+            state.citys = [];
+            return {
+                ...state,
+            };
         case actionTypes.FETCH_BUS_TYPES_SUCCESS:
             state.busTypes = action.busTypes;
             return {

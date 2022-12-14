@@ -33,6 +33,31 @@ let initWebRoutes = (app) => {
     router.put("/api/change-password", userController.handleChangePassword);
     router.delete("/api/delete-user", userController.handleDeleteUser);
     router.get("/api/allcode", userController.getAllCode);
+    router.get("/api/get-info-driver-route", userController.getInfoDriverRoute);
+    router.put(
+        "/api/handle-driver-start-trip",
+        userController.handleDriverStartTrip
+    );
+    router.put(
+        "/api/handle-driver-end-trip",
+        userController.handleDriverEndTrip
+    );
+    router.put(
+        "/api/handle-vehicle-start-trip",
+        busController.handleVehicleStartTrip
+    );
+    router.put(
+        "/api/handle-vehicle-end-trip",
+        busController.handleVehicleEndTrip
+    );
+    router.get(
+        "/api/get-driver-ticket-route",
+        ticketController.getDriverTicketRoute
+    );
+    router.get(
+        "/api/get-all-route-from-date-driver",
+        ticketController.getAllRouteFromDateDriver
+    );
 
     router.get("/api/get-all-locations", locationController.getAllLocations);
     router.post(
@@ -41,6 +66,11 @@ let initWebRoutes = (app) => {
     );
     router.put("/api/edit-locations", locationController.handleEditLocations);
     router.delete("/api/delete-locations", locationController.deleteLocations);
+    router.get(
+        "/api/get-all-vehicle-from-station",
+        locationController.getAllVehicleFromStation
+    );
+    router.get("/api/get-all-city", locationController.getAllCity);
 
     router.get("/api/get-all-bustypes", busTypeController.getAllBusTypes);
     router.post("/api/create-new-bustype", busTypeController.createNewBusTypes);
@@ -61,18 +91,13 @@ let initWebRoutes = (app) => {
     router.get("/api/show-all-schedule", scheduleController.shouldAllSchedule);
     router.post("/api/create-new-schedule", scheduleController.createSchedule);
     router.delete("/api/delete-schedule", scheduleController.deleteSchedule);
+    router.put("/api/handle-start-trip", scheduleController.handleStartTrip);
+    router.put("/api/handle-end-trip", scheduleController.handleEndTrip);
 
     router.get("/api/get-all-ticket", ticketController.getAllTickets);
     router.get("/api/get-user-ticket", ticketController.getUserTicket);
     router.get("/api/get-driver-ticket", ticketController.getDriverTicket);
-    router.get(
-        "/api/get-driver-ticket-route",
-        ticketController.getDriverTicketRoute
-    );
-    router.get(
-        "/api/get-all-route-from-date-driver",
-        ticketController.getAllRouteFromDateDriver
-    );
+
     router.post("/api/create-new-ticket", ticketController.createTicket);
     router.post("/api/verify-ticket", ticketController.verifyTicket);
     router.post("/api/send-ticket", ticketController.sendTickets);

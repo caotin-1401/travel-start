@@ -98,6 +98,7 @@ class ModalInfo extends Component {
                             );
                         } else {
                             tempUser[`${ticket.token}`] = {
+                                Trip: ticket.Trip,
                                 userId: ticket.userId,
                                 seatNo: [ticket.seatNo],
                                 token: ticket.token,
@@ -111,6 +112,7 @@ class ModalInfo extends Component {
                                 description: ticket.description,
                                 isPresent: ticket.isPresent,
                                 dayStart: ticket.dayStart,
+                                status: ticket.status,
                             };
                         }
                     });
@@ -261,24 +263,28 @@ class ModalInfo extends Component {
                                                 <td>{test}</td>
                                                 <td>{item.totalPrice}</td>
                                                 <td>{item.description}</td>
-                                                {!item.isPresent ? (
-                                                    <>
-                                                        <button className="btn-delete">
-                                                            <i className="fas fa-window-close"></i>
-                                                        </button>
-                                                        <button
-                                                            className="btn-edit"
-                                                            onClick={() =>
-                                                                this.handleCheck(
-                                                                    item
-                                                                )
-                                                            }>
-                                                            <i className="fas fa-check"></i>
-                                                        </button>
-                                                    </>
-                                                ) : (
-                                                    "Da co mawt"
-                                                )}
+                                                <td>
+                                                    {item.Trip.status === 3 ? (
+                                                        <></>
+                                                    ) : !item.isPresent ? (
+                                                        <>
+                                                            <button className="btn-delete">
+                                                                <i className="fas fa-window-close"></i>
+                                                            </button>
+                                                            <button
+                                                                className="btn-edit"
+                                                                onClick={() =>
+                                                                    this.handleCheck(
+                                                                        item
+                                                                    )
+                                                                }>
+                                                                <i className="fas fa-check"></i>
+                                                            </button>
+                                                        </>
+                                                    ) : (
+                                                        "Da co mawt"
+                                                    )}
+                                                </td>
                                             </tr>
                                         );
                                     })}

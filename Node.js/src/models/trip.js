@@ -25,12 +25,8 @@ module.exports = (sequelize, DataTypes) => {
             driverId: DataTypes.INTEGER,
             busId: DataTypes.INTEGER,
             price: DataTypes.INTEGER,
-            maxNumber: DataTypes.INTEGER,
+            status: DataTypes.INTEGER,
             busOwnerId: DataTypes.INTEGER,
-            // arrOfSeat: {
-            //     type: DataTypes.ARRAY(DataTypes.STRING),
-            //     defaultValue: [],
-            // },
         },
         {
             sequelize,

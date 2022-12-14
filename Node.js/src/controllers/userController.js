@@ -92,6 +92,31 @@ let handleGetAllUsers = async (req, res) => {
         });
     }
 };
+let getInfoDriverRoute = async (req, res) => {
+    try {
+        let id = req.query.id; //ALL, id
+
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameters",
+                users: [],
+            });
+        }
+
+        let users = await userService.getInfoDriverRoute(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            users,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 
 let handleCreateNewUser = async (req, res) => {
     try {
@@ -112,6 +137,44 @@ let handleEditUser = async (req, res) => {
     let data = req.body;
     let message = await userService.updateUserData(data);
     return res.status(200).json(message);
+};
+let handleDriverStartTrip = async (req, res) => {
+    try {
+        let id = req.body.id;
+        let data = req.body;
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+            });
+        }
+        let message = await userService.handleDriverStartTrip(data);
+        return res.status(200).json(message);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let handleDriverEndTrip = async (req, res) => {
+    try {
+        let id = req.body.id;
+        let data = req.body;
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+            });
+        }
+        let message = await userService.handleDriverEndTrip(data);
+        return res.status(200).json(message);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
 };
 
 let handleDeleteUser = async (req, res) => {
@@ -137,7 +200,6 @@ let getAllCode = async (req, res) => {
         let data = await userService.getAllCodeService(req.query.type);
         return res.status(200).json(data);
     } catch (e) {
-        console.error("Get all code error:", e);
         return res.status(200).json({
             errCode: -1,
             errMessage: "Error from server",
@@ -265,6 +327,8 @@ let handlePostResetPassword = async (req, res) => {
     }
 };
 module.exports = {
+    handleDriverStartTrip,
+    handleDriverEndTrip,
     handlePostResetPassword,
     handleLogin,
     handleGetAllUsers,
@@ -278,4 +342,5 @@ module.exports = {
     useCouponIsFirst,
     handlePostForgotPassword,
     handleGetForgotPassword,
+    getInfoDriverRoute,
 };

@@ -142,7 +142,6 @@ let checkCustomerIsPresent = async (req, res) => {
         let data = await ticketService.checkCustomerIsPresent(req.body);
         return res.status(200).json(data);
     } catch (e) {
-        console.error("Get all code error:", e);
         return res.status(200).json({
             errCode: -1,
             errMessage: "Error from server",

@@ -21,10 +21,24 @@ module.exports = {
             busOwnerId: {
                 type: Sequelize.INTEGER,
             },
+            status: {
+                type: Sequelize.INTEGER,
+            },
+            areaStartId: {
+                type: Sequelize.INTEGER,
+            },
+            areaEndId: {
+                type: Sequelize.INTEGER,
+            },
+            driverId: {
+                type: Sequelize.INTEGER,
+            },
+            arrivalTime: {
+                type: Sequelize.STRING,
+            },
             image: {
                 type: Sequelize.BLOB("long"),
             },
-
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE,

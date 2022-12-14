@@ -44,7 +44,11 @@ class AllEvents extends Component {
     render() {
         let language = this.props.language;
         let { listEvents } = this.state;
-        console.log(listEvents);
+        listEvents &&
+            listEvents.length > 0 &&
+            (listEvents = [listEvents[3], ...listEvents]);
+        // listEvents = [listEvents[3], ...listEvents];
+        console.log(listEvents[3]);
         return (
             <React.Fragment>
                 <Header />
@@ -118,9 +122,8 @@ class AllEvents extends Component {
                                             }
                                             let time1 = +item.startDate;
                                             let time2 = +item.endDate;
-                                            let timeCurrent = new Date(
-                                                1671814800000
-                                            ).getTime();
+                                            let timeCurrent =
+                                                new Date().getTime();
 
                                             return (
                                                 <li key={index}>
@@ -164,11 +167,11 @@ class AllEvents extends Component {
                                                                 <div className="btn-1">
                                                                     {time1 >
                                                                     timeCurrent
-                                                                        ? "Sap dien ra"
+                                                                        ? "Sắp diễn ra"
                                                                         : time2 <
                                                                           timeCurrent
-                                                                        ? "Da ket thuc"
-                                                                        : "dang dien ra"}
+                                                                        ? "Đã kết thúc"
+                                                                        : "Đang diễn ra"}
                                                                 </div>
                                                             </div>
                                                         </div>
