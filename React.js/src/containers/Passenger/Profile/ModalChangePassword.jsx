@@ -15,7 +15,7 @@ import * as actions from "../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../utils";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { changePasswordService } from "../../../services/userService";
+import { handleChangePasswordPassenger } from "../../../services/userService";
 class ModalChangePassword extends Component {
     constructor(props) {
         super(props);
@@ -132,7 +132,7 @@ class ModalChangePassword extends Component {
             });
             return;
         } else {
-            let res = await changePasswordService({
+            let res = await handleChangePasswordPassenger({
                 id,
                 oldPass,
                 newPass,

@@ -27,8 +27,8 @@ export const adminMenu = [
                 link: "/system/busOnwer-manage",
             },
             {
-                name: "menu.admin.manage-driver",
-                link: "/system/driver-manage",
+                name: "menu.admin.manage-passenger",
+                link: "/system/passenger-manage",
                 // subMenus: [
                 //     { name: 'menu.system.system-administrator.dashboard', link: '/system/dashboard' },
                 //     { name: 'menu.system.system-administrator.user-manage', link: '/system/user-manage' },
@@ -44,7 +44,6 @@ export const adminMenu = [
             { name: "menu.admin.list-bus", link: "/system/list-bus" },
             { name: "menu.admin.location", link: "/system/list-location" },
             { name: "menu.admin.route", link: "/system/list-route" },
-            { name: "menu.admin.route", link: "/system/test" },
         ],
     },
     {

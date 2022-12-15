@@ -45,7 +45,7 @@
             "parking-lot": "Quản lý bãi đậu xe",
             "list-vehicle": "Quản lý phương tiện",
             "manage-busOnwer": "Quản lý nhà xe",
-            "manage-driver": "Quản lý tài xế",
+            "manage-passenger": "Quản lý hành khách",
             "handbook": "Cẩm nang",
             "blog": "Quản lý cẩm nang",
             "list-bus": "Danh sách loại xe",
@@ -82,7 +82,20 @@
                 "chooseEnd": "Chọn bến kết thúc",
                 "start": "Bến khởi hành",
                 "end": "Bến kết thúc",
-                "action": "Thao tác"
+                "action": "Thao tác",
+                "modaladd": "Thêm mới tuyến đường",
+                "upimage": "Tải ảnh"
+            },
+            "listPassenger": {
+                "title": "Quản lý danh sách hành khách",
+                "name": "Tên tuyến xe",
+                "chooseStart": "Chọn bến khởi hành",
+                "chooseEnd": "Chọn bến kết thúc",
+                "start": "Bến khởi hành",
+                "end": "Bến kết thúc",
+                "action": "Thao tác",
+                "modaladd": "Thêm mới tuyến đường",
+                "upimage": "Tải ảnh"
             }
         },
         "busOwner": {

@@ -6,6 +6,7 @@ const initialState = {
     gender: [],
     listOfSeat: [],
     listOfTicketDisabled: [],
+    passengers: [],
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -53,7 +54,17 @@ const adminReducer = (state = initialState, action) => {
             return {
                 ...state,
             };
+        case actionTypes.FETCH_ALL_PASSENGERS_SUCCESS:
+            state.passengers = action.users;
+            return {
+                ...state,
+            };
 
+        case actionTypes.FETCH_ALL_PASSENGERS_FAILED:
+            state.passengers = [];
+            return {
+                ...state,
+            };
         case actionTypes.FETCH_LOCATION_SUCCESS:
             state.locations = action.locations;
             return {

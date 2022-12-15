@@ -28,6 +28,7 @@ import {
     getAllTickets,
     getAllEventsService,
     getAllCouponService,
+    getAllPassengers,
 } from "../../services/userService";
 import { toast } from "react-toastify";
 
@@ -106,7 +107,27 @@ export const saveUserSuccess = (data) => ({
 export const saveUserFailed = () => ({
     type: actionTypes.CREATE_USER_FAILED,
 });
-
+export const fetchAllPassenger = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            let res = await getAllPassengers("ALL");
+            if (res && res.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_ALL_PASSENGERS_SUCCESS,
+                    users: res.users,
+                }); // trong cai dispatch la action truyen di
+            } else {
+                dispatch({
+                    type: actionTypes.FETCH_ALL_PASSENGERS_FAILED,
+                });
+            }
+        } catch (e) {
+            dispatch({
+                type: actionTypes.FETCH_ALL_PASSENGERS_FAILED,
+            });
+        }
+    };
+};
 export const fetchAllUsersStart = () => {
     return async (dispatch, getState) => {
         try {

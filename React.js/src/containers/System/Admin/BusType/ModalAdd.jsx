@@ -62,6 +62,18 @@ class ModalAdd extends Component {
             } else {
                 toast.error("Please enter the total number of seats");
             }
+        } else if (isNaN(numOfSeat)) {
+            if (language === LANGUAGES.VI) {
+                toast.error("Tổng số chỗ ngồi phải là 1 số");
+            } else {
+                toast.error("Number of seat must be a number");
+            }
+        } else if (numOfSeat > 50) {
+            if (language === LANGUAGES.VI) {
+                toast.error("Tổng số chỗ ngồi phải bé hơn 50");
+            } else {
+                toast.error("Total number of seats must be less than 50");
+            }
         } else {
             let res = await createNewBusTypeService({
                 typeName: name,
@@ -73,8 +85,14 @@ class ModalAdd extends Component {
                 } else {
                     toast.success("Add successful vehicle type");
                 }
+                this.props.createLocation(this.state);
+            } else if (res && res.errCode === 1) {
+                if (language === LANGUAGES.VI) {
+                    toast.error("Loại xe đã tồn tại");
+                } else {
+                    toast.error("Bus type already exists");
+                }
             }
-            this.props.createLocation(this.state);
         }
     };
     render() {

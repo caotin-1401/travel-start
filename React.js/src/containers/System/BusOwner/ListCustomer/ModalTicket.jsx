@@ -81,10 +81,7 @@ class ModalTicket extends Component {
                     isOpen={this.props.isOpen}
                     toggle={() => {
                         this.toggle();
-                    }}
-                    style={{ maxWidth: "500px" }}
-                    centered
-                    size="sm">
+                    }}>
                     <ModalHeader
                         toggle={() => {
                             this.toggle();

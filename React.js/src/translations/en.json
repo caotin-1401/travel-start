@@ -45,7 +45,7 @@
             "parking-lot": "Parking Lot",
             "list-vehicle": "List Bus",
             "manage-busOnwer": "Manage BusOnwer",
-            "manage-driver": "Manage Driver",
+            "manage-passenger": "Manage Passenger",
             "handbook": "Handbooks",
             "blog": "Manage handbooks",
             "list-bus": "List Bus",
@@ -82,7 +82,21 @@
                 "chooseEnd": "Choose the ending station",
                 "start": "Departure station",
                 "end": "End station",
-                "action": "Action"
+                "action": "Action",
+                "modaladd": "Add new route",
+                "upimage": "Up Img"
+            },
+
+            "listPassenger": {
+                "title": "Manage the list of passengers",
+                "name": "Tên tuyến xe",
+                "chooseStart": "Chọn bến khởi hành",
+                "chooseEnd": "Chọn bến kết thúc",
+                "start": "Bến khởi hành",
+                "end": "Bến kết thúc",
+                "action": "Thao tác",
+                "modaladd": "Thêm mới tuyến đường",
+                "upimage": "Tải ảnh"
             }
         },
         "busOwner": {

@@ -4,7 +4,6 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import UserRedux from "../containers/System/Admin/UserRedux";
 import Header from "../containers/Header/Header";
 import UserManage from "../containers/System/Admin/ManageUser/UserManage";
-import ListRoute from "../containers/System/Admin/ListRoute/ListRoute";
 import ListVehicle from "../containers/System/Admin/ListVehicle/ListVehicle";
 import TableEvent from "../containers/System/Admin/Event/TableEvent";
 import TableDiscount from "../containers/System/Admin/Discount/TableDiscount";
@@ -13,6 +12,8 @@ import Dashboard from "../containers/System/Admin/Dashboard/Dashboard";
 import TableStation1 from "./../containers/System/Admin/Station/TableStation";
 import TableStation from "./../containers/System/Admin/ListStation/TableStation";
 import BusType from "./../containers/System/Admin/BusType/TableType";
+import TableRoutes from "./../containers/System/Admin/ListRoute/TableRoutes";
+import TablePassenger from "./../containers/System/Admin/ManagePassenger/TablePassenger";
 
 class System extends Component {
     render() {
@@ -40,8 +41,8 @@ class System extends Component {
                                 component={UserRedux}
                             />
                             <Route
-                                path="/system/driver-manage"
-                                component={UserRedux}
+                                path="/system/passenger-manage"
+                                component={TablePassenger}
                             />
                             <Route
                                 path="/system/list-bus"
@@ -49,9 +50,9 @@ class System extends Component {
                             />
                             <Route
                                 path="/system/list-route"
-                                component={ListRoute}
+                                component={TableRoutes}
                             />
-                            <Route path="/system/test" component={BusType} />
+
                             <Route
                                 path="/system/list-location"
                                 component={TableStation}

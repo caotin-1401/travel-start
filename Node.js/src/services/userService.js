@@ -13,7 +13,12 @@ let checkUserEmail = (userEmail) => {
             let user = await db.User.findOne({
                 where: { email: userEmail },
             });
+            let passenger = db.Passenger.findOne({
+                where: { email: userEmail },
+            });
             if (user) {
+                resolve(true);
+            } else if (passenger) {
                 resolve(true);
             } else {
                 resolve(false);
@@ -72,6 +77,14 @@ let handleUserLogin = (email, password) => {
                     where: { email: email },
                     raw: true,
                 });
+                let passenger = await db.Passenger.findOne({
+                    where: { email: email },
+                    attributes: ["id", "email", "roleID", "password", "name"],
+                    raw: true,
+                });
+                console.log(user);
+                console.log(passenger);
+                console.log(2);
                 if (user) {
                     let check = await bcrypt.compareSync(
                         password,
@@ -82,6 +95,22 @@ let handleUserLogin = (email, password) => {
                         userData.errMessage = "OK";
                         delete user.password;
                         userData.user = user;
+                    } else {
+                        userData.errCode = 3;
+                        userData.errMessage = "Wrong Password";
+                    }
+                } else if (passenger) {
+                    console.log(1);
+                    let check = await bcrypt.compareSync(
+                        password,
+                        passenger.password
+                    ); // false
+                    console.log(3);
+                    if (check) {
+                        userData.errCode = 0;
+                        userData.errMessage = "OK";
+                        delete passenger.password;
+                        userData.user = passenger;
                     } else {
                         userData.errCode = 3;
                         userData.errMessage = "Wrong Password";
@@ -136,13 +165,16 @@ let createNewUserByRegister = (email, password, confirmPassword, name) => {
                     errMessage: "Invalid mail address",
                 });
             } else {
+                console.log("1");
                 let hashPasswordFromBcrypt = await hashUserPassword(password);
-                let user = await db.User.create({
+                console.log("2");
+                let user = await db.Passenger.create({
                     email: email,
                     name: name,
                     password: hashPasswordFromBcrypt,
                     roleID: "R4",
                 });
+                console.log("3");
                 userData.errCode = 0;
                 userData.errMessage = "OK";
                 delete user.password;
@@ -161,6 +193,52 @@ let createNewUserByRegister = (email, password, confirmPassword, name) => {
     });
 };
 
+let getAllPassengers = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let users = "";
+            let user = "";
+            if (userId === "ALL") {
+                user = await db.Passenger.findAll({});
+                users = _.sortBy(user, ["id"]);
+            }
+            if (userId && userId !== "ALL") {
+                users = await db.Passenger.findAll({
+                    where: { id: userId },
+                    // attributes: {
+                    //     exclude: ["password"],
+                    // },
+                    // include: [
+                    //     {
+                    //         model: db.Trip,
+                    //         attributes: [
+                    //             "id",
+                    //             "timeStart",
+                    //             "areaStart",
+                    //             "routeId",
+                    //             "busId",
+                    //             "busOwnerId",
+                    //         ],
+                    //         include: [
+                    //             {
+                    //                 model: db.Ticket,
+                    //             },
+                    //         ],
+                    //     },
+                    //     {
+                    //         model: db.Driver,
+                    //     },
+                    // ],
+                    raw: true,
+                    nest: true,
+                });
+            }
+            resolve(users);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let getAllUsers = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -380,7 +458,45 @@ let deleteUser = async (userId) => {
         });
     });
 };
+let handEditPassenger = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.id) {
+                resolve({
+                    errCode: 2,
+                    errMessage: "Missing required parameter",
+                });
+            }
+            let user = await db.Passenger.findOne({
+                where: { id: data.id },
+                raw: false,
+            });
 
+            if (user) {
+                user.name = data.name;
+                user.address = data.address;
+                user.roleID = data.roleID;
+                user.gender = data.gender;
+                user.phoneNumber = data.phoneNumber;
+                if (data.avatar) {
+                    user.image = data.avatar;
+                }
+                await user.save();
+                resolve({
+                    errCode: 0,
+                    message: "update user success",
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: "user not found",
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let updateUserData = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -501,6 +617,52 @@ let getAllCodeService = (typeInput) => {
         } // khi lỗi sẽ nhảy vào catch này
     }); // sau đó nhảy vào userController và nhảy vào catch
 };
+
+let handleChangePasswordPassenger = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.id) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing required parameter",
+                });
+            }
+            let user = await db.Passenger.findOne({
+                where: { id: data.id },
+                raw: false,
+            });
+            if (user) {
+                let check = await bcrypt.compareSync(
+                    data.oldPass,
+                    user.password
+                );
+                if (check) {
+                    let hashPasswordFromBcrypt = await hashUserPassword(
+                        data.newPass
+                    );
+                    user.password = hashPasswordFromBcrypt;
+                    await user.save();
+                    resolve({
+                        errCode: 0,
+                        message: "update user success",
+                    });
+                } else {
+                    resolve({
+                        errCode: 2,
+                        errMessage: "user not found",
+                    });
+                }
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: "user not found",
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let changePassword = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -556,7 +718,7 @@ let useCouponIsFirst = async (data) => {
                     errMessage: "Missing required parameter",
                 });
             }
-            let user = await db.User.findOne({
+            let user = await db.Passenger.findOne({
                 where: { id: data.id },
                 raw: false,
             });
@@ -723,6 +885,8 @@ let handlePostResetPassword = async (email, token, password) => {
     });
 };
 module.exports = {
+    handEditPassenger,
+    getAllPassengers,
     handleDriverStartTrip,
     handleDriverEndTrip,
     getInfoDriverRoute,
@@ -740,4 +904,5 @@ module.exports = {
     useCouponIsFirst,
     handlePostForgotPassword,
     handleGetForgotPassword,
+    handleChangePasswordPassenger,
 };

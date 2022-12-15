@@ -8,7 +8,10 @@ import "./Profile.scss";
 import * as actions from "../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../utils";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import { getAllUsers, editUserService } from "../../../services/userService";
+import {
+    getAllPassengers,
+    handEditPassenger,
+} from "../../../services/userService";
 import { toast } from "react-toastify";
 import ModalChangePassword from "./ModalChangePassword";
 class InfoUser extends Component {
@@ -37,7 +40,7 @@ class InfoUser extends Component {
             this.props.match.params.id
         ) {
             let userId = this.props.match.params.id;
-            let res = await getAllUsers(+userId);
+            let res = await getAllPassengers(+userId);
             let imageBase64 = "";
             if (res.users[0].image) {
                 imageBase64 = Buffer.from(
@@ -116,7 +119,7 @@ class InfoUser extends Component {
                 toast.error("Số điện thoại không được để trống");
             } else {
                 console.log(gender);
-                let res = await editUserService({
+                let res = await handEditPassenger({
                     id,
                     name,
                     email,
@@ -156,7 +159,7 @@ class InfoUser extends Component {
                 toast.error("Please enter your phone number");
             } else {
                 console.log(gender);
-                let res = await editUserService({
+                let res = await handEditPassenger({
                     id,
                     name,
                     email,

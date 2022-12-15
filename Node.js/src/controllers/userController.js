@@ -66,7 +66,31 @@ let handleRegister = async (req, res) => {
         });
     }
 };
+let getAllPassengers = async (req, res) => {
+    try {
+        let id = req.query.id; //ALL, id
 
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameters",
+                users: [],
+            });
+        }
+
+        let users = await userService.getAllPassengers(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            users,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 let handleGetAllUsers = async (req, res) => {
     try {
         let id = req.query.id; //ALL, id
@@ -136,6 +160,11 @@ let handleCreateNewUser = async (req, res) => {
 let handleEditUser = async (req, res) => {
     let data = req.body;
     let message = await userService.updateUserData(data);
+    return res.status(200).json(message);
+};
+let handEditPassenger = async (req, res) => {
+    let data = req.body;
+    let message = await userService.handEditPassenger(data);
     return res.status(200).json(message);
 };
 let handleDriverStartTrip = async (req, res) => {
@@ -237,6 +266,11 @@ let handleChangePassword = async (req, res) => {
     let message = await userService.changePassword(data);
     return res.status(200).json(message);
 };
+let handleChangePasswordPassenger = async (req, res) => {
+    let data = req.body;
+    let message = await userService.handleChangePasswordPassenger(data);
+    return res.status(200).json(message);
+};
 let useCouponIsFirst = async (req, res) => {
     try {
         let data = req.body;
@@ -327,6 +361,9 @@ let handlePostResetPassword = async (req, res) => {
     }
 };
 module.exports = {
+    handleChangePasswordPassenger,
+    handEditPassenger,
+    getAllPassengers,
     handleDriverStartTrip,
     handleDriverEndTrip,
     handlePostResetPassword,

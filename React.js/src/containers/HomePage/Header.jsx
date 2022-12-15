@@ -69,7 +69,7 @@ class HeaderPage extends Component {
         info && info.name && (username = info.name);
         let test = username.split(" ").reverse();
         let name = test[0];
-
+        console.log(info);
         return (
             <React.Fragment>
                 <div className="home-header-container">

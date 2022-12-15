@@ -42,7 +42,6 @@ class ModalAdd extends Component {
             this.setState({
                 name: "",
                 selectCity: "",
-
                 address: "",
             });
         }
@@ -101,8 +100,21 @@ class ModalAdd extends Component {
                 } else {
                     toast.success("Add successful bus station");
                 }
+                this.props.createLocation(this.state);
+            } else if (res && res.errCode === 1) {
+                if (language === LANGUAGES.VI) {
+                    toast.success("Bến xe đã tồn tại trong hệ thống");
+                } else {
+                    toast.success("The station already exists in the system");
+                }
+                this.props.createLocation(this.state);
+            } else {
+                if (language === LANGUAGES.VI) {
+                    toast.error("Lỗi từ máy chủ");
+                } else {
+                    toast.error("Error from server");
+                }
             }
-            this.props.createLocation(this.state);
         }
     };
     render() {

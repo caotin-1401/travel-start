@@ -20,6 +20,11 @@ const getAllUsers = (inputId) => {
         id: inputId,
     });
 };
+const getAllPassengers = (inputId) => {
+    return axios.get(`/api/get-all-passengers?id=${inputId}`, {
+        id: inputId,
+    });
+};
 const getInfoDriverRoute = (inputId) => {
     return axios.get(`/api/get-info-driver-route?id=${inputId}`, {
         id: inputId,
@@ -66,10 +71,16 @@ const deleteUserService = (userId) => {
 const editUserService = (inputData) => {
     return axios.put("/api/edit-user", inputData);
 };
+const handEditPassenger = (inputData) => {
+    return axios.put("/api/edit-passenger", inputData);
+};
+
 const changePasswordService = (inputData) => {
     return axios.put("/api/change-password", inputData);
 };
-
+const handleChangePasswordPassenger = (inputData) => {
+    return axios.put("/api/change-password-passenger", inputData);
+};
 const changeUserFirstCouponService = (inputData) => {
     return axios.put("/api/use-coupon-isFirst", inputData);
 };
@@ -295,6 +306,8 @@ const checkCustomerPresent = (inputData) => {
 };
 export {
     getAllCity,
+    handleChangePasswordPassenger,
+    getAllPassengers,
     handleVehicleStartTrip,
     handleVehicleEndTrip,
     handleStartTrip,
@@ -355,4 +368,5 @@ export {
     editEventsService,
     cancelTicket,
     deleteTicket,
+    handEditPassenger,
 };

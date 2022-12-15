@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Row, Col } from "reactstrap";
 import {
     getUseCouponService,
-    getAllUsers,
+    getAllPassengers,
 } from "../../../services/userService";
 
 class Step3 extends Component {
@@ -122,7 +122,7 @@ class Step3 extends Component {
             } else {
                 let id;
                 this.props.userInfo && (id = this.props.userInfo.id);
-                let resUser = await getAllUsers(id);
+                let resUser = await getAllPassengers(id);
                 if (resUser) {
                     if (resUser.users) {
                         if (!resUser.users[0].isFirst) {

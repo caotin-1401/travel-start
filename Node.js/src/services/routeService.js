@@ -118,7 +118,7 @@ let createNewRoute = (data) => {
                 });
             } else if (data.areaStartId === data.areaEndId) {
                 resolve({
-                    errCode: 1,
+                    errCode: 2,
                     errMessage: "start and end locations must be different",
                 });
             } else {

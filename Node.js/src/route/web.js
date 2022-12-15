@@ -8,10 +8,20 @@ import scheduleController from "../controllers/scheduleController";
 import ticketController from "../controllers/ticketController";
 import couponController from "../controllers/couponController";
 import eventController from "../controllers/eventController";
+import homeController from "../controllers/homeController";
 
 let router = express.Router();
 
 let initWebRoutes = (app) => {
+    router.get("/", homeController.getHomePage);
+
+    router.get("/crud", homeController.getCRUD);
+
+    router.post("/post-crud", homeController.postCRUD);
+    router.get("/get-crud", homeController.displayGetCRUD);
+    router.get("/edit-crud", homeController.getEditCRUD);
+    router.post("/put-crud", homeController.putUserCRUD);
+    router.get("/delete-crud", homeController.deleteUserCRUD);
     router.post("/api/login", userController.handleLogin);
     router.post("/api/register", userController.handleRegister);
     router.post(
@@ -27,10 +37,16 @@ let initWebRoutes = (app) => {
         userController.handlePostResetPassword
     );
     router.get("/api/get-all-users", userController.handleGetAllUsers);
+    router.get("/api/get-all-passengers", userController.getAllPassengers);
     router.post("/api/create-new-user", userController.handleCreateNewUser);
     router.put("/api/edit-user", userController.handleEditUser);
+    router.put("/api/edit-passenger", userController.handEditPassenger);
     router.put("/api/use-coupon-isFirst", userController.useCouponIsFirst);
     router.put("/api/change-password", userController.handleChangePassword);
+    router.put(
+        "/api/change-password-passenger",
+        userController.handleChangePasswordPassenger
+    );
     router.delete("/api/delete-user", userController.handleDeleteUser);
     router.get("/api/allcode", userController.getAllCode);
     router.get("/api/get-info-driver-route", userController.getInfoDriverRoute);
