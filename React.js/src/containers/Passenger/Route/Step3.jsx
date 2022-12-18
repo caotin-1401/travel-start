@@ -99,12 +99,12 @@ class Step3 extends Component {
                             totalPrice - (totalPrice * +discount) / 100;
 
                     discount = (totalPrice * +discount) / 100;
-                    console.log("discount >>:", discount);
                 }
                 if (finalPrice < 0) finalPrice = 0;
                 else {
                     finalPrice = finalPrice;
                 }
+                // console.log(finalPrice);
                 if (errMessage) {
                     this.setState({
                         errMessage,
@@ -153,7 +153,6 @@ class Step3 extends Component {
                                         (totalPrice * +discount) / 100;
 
                                 discount = (totalPrice * +discount) / 100;
-                                console.log("discount >>:", discount);
                             }
                             if (finalPrice < 0) finalPrice = 0;
                             else {

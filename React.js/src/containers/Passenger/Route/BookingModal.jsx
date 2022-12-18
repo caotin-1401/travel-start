@@ -84,6 +84,7 @@ class BookingModal extends Component {
         this.setState(
             {
                 isActive: true,
+                totalPrice: 0,
             },
             this.props.parentCallback1(isActive)
         );
@@ -94,10 +95,11 @@ class BookingModal extends Component {
         } else if (!email) {
             toast.error("Please enter your email!");
         } else {
+            console.log(finalPrice);
             if (seatArr && seatArr.length > 0) {
                 seatArr.map((item) => {
                     let obj = {};
-                    obj.totalPrice = finalPrice;
+                    obj.totalPrice = totalPrice;
                     obj.name = name;
                     obj.driverId = test;
                     obj.dayStart = dayStart;
@@ -213,7 +215,7 @@ class BookingModal extends Component {
     callbackFunction3 = (inFoCoupon, finalPrice, infoUser) => {
         this.setState({
             inFoCoupon,
-            finalPrice,
+            totalPrice: finalPrice,
             infoUser,
         });
     };
@@ -230,7 +232,7 @@ class BookingModal extends Component {
             isActive,
             isCleanData,
         } = this.state;
-        console.log(isActive);
+        console.log(totalPrice);
         const steps = [
             {
                 label: "Chọn ghế",

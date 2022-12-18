@@ -29,6 +29,7 @@ import {
     getAllEventsService,
     getAllCouponService,
     getAllPassengers,
+    getAllBlogsService,
 } from "../../services/userService";
 import { toast } from "react-toastify";
 
@@ -470,7 +471,27 @@ export const fetchAllRoute = (data) => {
         }
     };
 };
-
+export const fetchAllBlogs = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            let res = await getAllBlogsService("ALL");
+            if (res && res.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_BLOGS_SUCCESS,
+                    blogs: res.blogs,
+                }); // trong cai dispatch la action truyen di
+            } else {
+                dispatch({
+                    type: actionTypes.FETCH_BLOGS_FAILED,
+                });
+            }
+        } catch (e) {
+            dispatch({
+                type: actionTypes.FETCH_BLOGS_FAILED,
+            });
+        }
+    };
+};
 export const deleteRoute = (userId) => {
     return async (dispatch, getState) => {
         try {

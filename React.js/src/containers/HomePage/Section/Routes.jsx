@@ -63,7 +63,7 @@ class Routes extends Component {
                                     newArr.map((item, index) => {
                                         let imageBase64 = "";
                                         if (item.image) {
-                                            imageBase64 = new Buffer(
+                                            imageBase64 = Buffer.from(
                                                 item.image,
                                                 "base64"
                                             ).toString("binary");
@@ -73,6 +73,7 @@ class Routes extends Component {
 
                                         return (
                                             <div
+                                                key={index}
                                                 className=" section-custom"
                                                 onClick={() =>
                                                     this.handleViewDetail(item)

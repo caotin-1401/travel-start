@@ -211,7 +211,7 @@ class ModalUser extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        <FormattedMessage id="menu.admin.listAdmin.modaltitle" />
+                        Create a new user
                     </ModalHeader>
                     <ModalBody>
                         <Row>
@@ -230,7 +230,7 @@ class ModalUser extends Component {
                             </Col>
                             <Col md={6}>
                                 <label htmlFor="examplePassword">
-                                    <FormattedMessage id="menu.admin.listAdmin.pass" />
+                                    Password
                                 </label>
                                 <input
                                     className="form-control mb-4"
@@ -246,10 +246,7 @@ class ModalUser extends Component {
                         </Row>
                         <Row>
                             <Col md={6}>
-                                <label htmlFor="name">
-                                    {" "}
-                                    <FormattedMessage id="menu.admin.listAdmin.name" />
-                                </label>
+                                <label htmlFor="name">Full Name</label>
                                 <input
                                     className="form-control mb-4"
                                     id="name"
@@ -262,9 +259,7 @@ class ModalUser extends Component {
                                 />
                             </Col>
                             <Col md={6}>
-                                <label htmlFor="phone">
-                                    <FormattedMessage id="menu.admin.listAdmin.phone" />
-                                </label>
+                                <label htmlFor="phone">Phone Number</label>
                                 <input
                                     className="form-control mb-4"
                                     id="phone"
@@ -278,9 +273,7 @@ class ModalUser extends Component {
                                 />
                             </Col>
                         </Row>
-                        <label htmlFor="exampleAddress">
-                            <FormattedMessage id="menu.admin.listAdmin.address" />
-                        </label>
+                        <label htmlFor="exampleAddress">Address</label>
                         <input
                             className="form-control mb-4"
                             id="exampleAddress"
@@ -293,10 +286,7 @@ class ModalUser extends Component {
                         />
                         <Row>
                             <Col md={3}>
-                                <label htmlFor="exampleAddress">
-                                    {" "}
-                                    <FormattedMessage id="menu.admin.listAdmin.gender" />
-                                </label>
+                                <label htmlFor="exampleAddress">Gender</label>
                                 <select
                                     className="form-select mb-4"
                                     onChange={(event) => {
@@ -332,8 +322,7 @@ class ModalUser extends Component {
                                         }
                                     />
                                     <label className="upload-img" htmlFor="img">
-                                        <FormattedMessage id="menu.admin.listAdmin.upload" />
-                                        <i className="fas fa-upload"></i>
+                                        Tải ảnh<i className="fas fa-upload"></i>
                                     </label>
                                     <div
                                         className="prev-img"
@@ -354,7 +343,7 @@ class ModalUser extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            <FormattedMessage id="menu.admin.listAdmin.cancel" />
+                            Cancel
                         </Button>{" "}
                         <Button
                             color="primary"
@@ -362,7 +351,7 @@ class ModalUser extends Component {
                                 this.handleAddNewUser();
                             }}
                             className="btn-primary-modal">
-                            <FormattedMessage id="menu.admin.listAdmin.save" />
+                            Save
                         </Button>
                     </ModalFooter>
                 </Modal>

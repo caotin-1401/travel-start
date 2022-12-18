@@ -84,7 +84,7 @@
 
     background-position: center;
     background-repeat  : no-repeat;
-    background-size    : cover;
+    background-size    : contain;
     border-radius      : 5px;
     margin-left        : 0;
     margin-bottom      : 15px;
@@ -93,7 +93,6 @@
 }
 
 .bg-img_100 {
-    width              : 500px;
     height             : 300px;
     margin-top         : 20px;
     margin-bottom      : 20px;
@@ -105,6 +104,16 @@
     border-radius      : 5px;
     margin-left        : 0;
     margin-bottom      : 15px;
+}
+
+.t-box {
+    box-sizing                : border-box;
+    position                  : relative;
+    margin-bottom             : 1em;
+    transition-property       : undefined;
+    transition-duration       : 1s;
+    transition-timing-function: ease-out;
+    filter                    : blur(0px);
 }
 
 .title_header {
@@ -211,4 +220,13 @@
     background-color: #DAEEFE;
     color           : #0071ba;
     font-weight     : bold;
+}
+
+.content_event {
+    background-color: #fff;
+    padding         : 15px 30px;
+    border          : 1px solid #dee0e1;
+    margin-top      : 30px;
+    margin-bottom   : 30px;
+    border-radius   : 5px;
 }

@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import "./TableEvent.scss";
-import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
-import _ from "lodash";
-import moment from "moment";
-import localization from "moment/locale/vi";
+import "./UserManage.scss";
+import { withRouter } from "react-router";
+
+import {
+    getAllUsers,
+    deleteUserService,
+} from "../../../../services/userService";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
-import Lightbox from "react-image-lightbox";
-import "react-image-lightbox/style.css"; // This only needs to be imported once in your app
-import ModalAdd from "./ModalAdd";
+import { LANGUAGES } from "../../../../utils";
+import ModalUser from "./ModalUser";
 import {
     TableBody,
     TableContainer,
@@ -20,40 +20,46 @@ import {
     Paper,
     Table,
 } from "@mui/material";
-import { toast } from "react-toastify";
-import {
-    getAllBlogsService,
-    deleteBlogsService,
-} from "../../../../services/userService";
-import ModalEdit from "./ModalEdit";
+import _ from "lodash";
 
+import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
+import { toast } from "react-toastify";
+import moment from "moment";
+import localization from "moment/locale/vi";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
-class TableBlog extends Component {
+class ManageOwner extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            arrUsers: [],
             isOpenModel: false,
-            isOpenModelEditUser: false,
             userEdit: {},
-            listBlogs: [],
+            usersRedux: [],
             sortBy: "",
             sortField: "",
             keywordNumber: "",
             page: 0,
             rowsPerPage: 5,
+            isTest: false,
+            test: [],
+            test1: [],
         };
     }
 
     async componentDidMount() {
-        await this.getAllBlogs();
+        await this.getAllAdmin();
     }
 
-    getAllBlogs = async () => {
-        let res = await getAllBlogsService("ALL");
-        if (res && res.errCode === 0) {
-            this.setState({
-                listBlogs: res.blogs,
-            });
+    getAllAdmin = async () => {
+        let res = await getAllUsers("ALL");
+        let listAdmin;
+        if (res) {
+            if (res.errCode === 0) {
+                listAdmin = res.users.filter((item) => item.roleID === "R2");
+                this.setState({
+                    usersRedux: listAdmin,
+                });
+            }
         }
     };
     //open modal
@@ -62,117 +68,92 @@ class TableBlog extends Component {
             isOpenModel: !this.state.isOpenModel,
         });
     };
-    toggleUserEditModel = () => {
-        this.setState({
-            isOpenModelEditUser: !this.state.isOpenModelEditUser,
-        });
-    };
+
     handleAddUser = () => {
         this.setState({
             isOpenModel: true,
         });
     };
-    handleEditUser = (user) => {
-        console.log(user);
-        this.setState({
-            isOpenModelEditUser: true,
-            userEdit: user,
-        });
-    };
 
     handleDeleteUser = async (user) => {
-        let res = await deleteBlogsService(user.id);
+        let res = await deleteUserService(user.id);
         if (res && res.errCode === 0) {
-            toast.success("xoa su kien thanh cong");
-            await this.getAllBlogs();
+            toast.success("xoa thanh cong");
+            await this.getAllAdmin();
+        } else {
+            toast.error("xoa that bai");
+            await this.getAllAdmin();
         }
     };
 
-    doEditUser = async (user) => {
-        await this.getAllBlogs();
-        this.setState({
-            isOpenModelEditUser: false,
-        });
-    };
     createNewUser1 = async (data) => {
-        await this.getAllBlogs();
+        await this.getAllAdmin();
         this.setState({
             isOpenModel: false,
         });
     };
-
-    handleChangePage = (event, newPage) => {
-        this.setState({
-            page: newPage,
-        });
+    handleDriver = (item) => {
+        console.log(item);
+        if (this.props.history) {
+            this.props.history.push(
+                `/system/busOnwer/driver_busOnwer=${item.id}`
+            );
+        }
     };
-    handleChangeRowsPerPage = (event) => {
-        this.setState({
-            rowsPerPage: parseInt(event.target.value),
-            page: 0,
-        });
+    handleVehicle = (item) => {
+        console.log(item);
+        if (this.props.history) {
+            this.props.history.push(
+                `/system/busOnwer/vehicle_busOnwer=${item.id}`
+            );
+        }
     };
     handleSort = (a, b) => {
-        this.state.listBlogs = _.orderBy(this.state.listBlogs, [b], [a]);
+        this.state.usersRedux = _.orderBy(this.state.usersRedux, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            listBlogs: this.state.listBlogs,
+            usersRedux: this.state.usersRedux,
         });
     };
     handleKeyword = (e) => {
-        let term = e.target.value.toUpperCase();
-        let clone = this.state.listBlogs;
+        let term = e.target.value;
+        let clone = this.state.usersRedux;
         if (term) {
-            clone = clone.filter((item) => item.number.includes(term));
+            clone = clone.filter((item) => item.name.includes(term));
             this.setState({
-                listBlogs: clone,
+                test1: clone,
+                isTest: true,
             });
         } else {
-            this.props.fetchAllVehicle();
-        }
-    };
-    handleKeyword1 = (e) => {
-        let term = e.target.value.toUpperCase();
-        let clone = this.state.listBlogs;
-        if (term) {
-            clone = clone.filter((item) =>
-                item.BusType.typeName.includes(term)
-            );
             this.setState({
-                listBlogs: clone,
+                isTest: false,
             });
-        } else {
-            this.props.fetchAllVehicle();
+            this.getAllAdmin();
         }
     };
     render() {
-        let { page, rowsPerPage, listBlogs } = this.state;
-        // listBlogs.reverse();
+        let { usersRedux, rowsPerPage, page, test, test1, isTest } = this.state;
+        isTest === true ? (test = test1) : (test = usersRedux);
         return (
             <div className="container form-redux">
                 <div className="user-container">
-                    <ModalAdd
-                        listBlogs={listBlogs}
+                    <ModalUser
+                        usersRedux={usersRedux}
                         isOpen={this.state.isOpenModel}
                         toggleFromParent={this.toggleUserModel}
                         createNewUser1={this.createNewUser1}
                     />
-                    {this.state.isOpenModelEditUser && (
-                        <ModalEdit
-                            isOpen={this.state.isOpenModelEditUser}
-                            toggleFromParent={this.toggleUserEditModel}
-                            currentUser={this.state.userEdit}
-                            doEditUser={this.doEditUser}
-                        />
-                    )}
-                    <div className="title text-center">Quan ly su kien</div>
+
+                    <div className="title text-center">
+                        <FormattedMessage id="menu.admin.listOwner.title" />
+                    </div>
                     <div className="mx-5 my-3">
                         <button
                             className="btn btn-primary px-3"
                             onClick={() => this.handleAddUser()}>
                             <i className="fas fa-plus px-1"></i>
-                            Them su kien
+                            <FormattedMessage id="menu.admin.listOwner.add" />
                         </button>
                     </div>
                     <div className="use-table m-3">
@@ -195,9 +176,10 @@ class TableBlog extends Component {
                                                 width: "34%",
                                             }}>
                                             <div className="section-title">
-                                                <div> Tên sự kiện</div>
                                                 <div>
-                                                    {" "}
+                                                    <FormattedMessage id="menu.admin.listOwner.name" />
+                                                </div>
+                                                <div>
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
@@ -219,53 +201,79 @@ class TableBlog extends Component {
                                                 </div>
                                             </div>
                                         </th>
-
                                         <th>
                                             <div className="section-title">
-                                                Thời gian tạo bài viết
+                                                <FormattedMessage id="menu.admin.listOwner.title1" />
                                             </div>
                                         </th>
-
                                         <th>
                                             <div className="section-title">
-                                                Người tạo bài viết
+                                                <FormattedMessage id="menu.admin.listOwner.driver" />
+                                            </div>
+                                        </th>{" "}
+                                        <th>
+                                            <div className="section-title">
+                                                <FormattedMessage id="menu.admin.listOwner.vehicle" />
                                             </div>
                                         </th>
-
                                         <th style={{ width: "10%" }}>
-                                            Hành động
+                                            <FormattedMessage id="menu.admin.listOwner.action" />
                                         </th>
                                     </tr>
+                                    <tr style={{ height: "50px" }}>
+                                        <td></td>
+                                        <td>
+                                            <input
+                                                className="form-control"
+                                                onChange={(e) =>
+                                                    this.handleKeyword(e)
+                                                }
+                                            />
+                                        </td>
+                                        <td></td>
+                                        <td></td>
 
-                                    {(rowsPerPage > 0 &&
-                                    listBlogs &&
-                                    listBlogs.length > 0
-                                        ? listBlogs.slice(
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    {(rowsPerPage > 0 && test && test.length > 0
+                                        ? test.slice(
                                               page * rowsPerPage,
                                               page * rowsPerPage + rowsPerPage
                                           )
-                                        : listBlogs
+                                        : test
                                     ).map((user, index) => {
-                                        let start = moment(
-                                            user.createdAt
-                                        ).format("ddd DD-MM-YYYY HH:mm:ss");
                                         return (
                                             <tr key={index}>
                                                 <td>{user.id}</td>
 
-                                                <td>{user.description}</td>
-                                                <td>{start}</td>
-                                                <td>{user.author}</td>
-                                                <td>
+                                                <td>{user.name}</td>
+                                                <td>{user.email}</td>
+                                                <td className="center">
                                                     <button
-                                                        className="btn-edit"
                                                         onClick={() =>
-                                                            this.handleEditUser(
+                                                            this.handleDriver(
+                                                                user
+                                                            )
+                                                        }
+                                                        className="btn
+                                                        btn-primary">
+                                                        {" "}
+                                                        Danh sách tài xế
+                                                    </button>
+                                                </td>
+                                                <td className="center">
+                                                    <button
+                                                        className="btn btn-info"
+                                                        onClick={() =>
+                                                            this.handleVehicle(
                                                                 user
                                                             )
                                                         }>
-                                                        <i class="fas fa-edit"></i>
+                                                        Danh sách phương tiện
                                                     </button>
+                                                </td>
+                                                <td className="center">
                                                     <button
                                                         className="btn-delete"
                                                         onClick={() =>
@@ -283,14 +291,29 @@ class TableBlog extends Component {
                                 <TableFooter>
                                     <TableRow>
                                         <TablePagination
+                                            sx={{
+                                                "& .MuiTablePagination-selectLabel ":
+                                                    {
+                                                        display: "None",
+                                                    },
+                                                "& .MuiTablePagination-displayedRows  ":
+                                                    {
+                                                        marginTop: "10px",
+                                                        fontSize: "15px",
+                                                    },
+                                                "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
+                                                    {
+                                                        fontSize: "15px",
+                                                    },
+                                            }}
                                             rowsPerPageOptions={[
                                                 5,
                                                 10,
                                                 25,
                                                 { label: "All", value: -1 },
                                             ]}
-                                            colSpan={4}
-                                            count={listBlogs.length}
+                                            colSpan={6}
+                                            count={usersRedux.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
@@ -320,12 +343,19 @@ class TableBlog extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        userInfo: state.user.userInfo,
+        // genderRedux: state.admin.gender,
+        listUsers: state.admin.users,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        getGenderStart: () => dispatch(actions.fetchGenderStart()),
+        fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()),
+        deleteUser: (id) => dispatch(actions.deleteUser(id)),
+    };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TableBlog);
+export default withRouter(
+    connect(mapStateToProps, mapDispatchToProps)(ManageOwner)
+);

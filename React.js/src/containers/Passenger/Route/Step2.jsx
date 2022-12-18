@@ -78,7 +78,6 @@ class Step2 extends Component {
     render() {
         let { seatArr, totalPrice, name, phone, email, description } =
             this.state;
-        console.log(name, phone, email, description);
         return (
             <div className="container">
                 <div

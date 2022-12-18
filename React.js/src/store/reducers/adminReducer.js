@@ -111,6 +111,18 @@ const adminReducer = (state = initialState, action) => {
                 ...state,
             };
 
+        case actionTypes.FETCH_BLOGS_SUCCESS:
+            state.blogs = action.blogs;
+            return {
+                ...state,
+            };
+
+        case actionTypes.FETCH_BLOGS_FAILED:
+            state.blogs = [];
+            return {
+                ...state,
+            };
+
         case actionTypes.FETCH_VEHICLES_SUCCESS:
             state.vehicles = action.vehicles;
             return {

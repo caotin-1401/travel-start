@@ -8,6 +8,7 @@ import scheduleController from "../controllers/scheduleController";
 import ticketController from "../controllers/ticketController";
 import couponController from "../controllers/couponController";
 import eventController from "../controllers/eventController";
+import blogController from "../controllers/blogController";
 import homeController from "../controllers/homeController";
 
 let router = express.Router();
@@ -22,6 +23,7 @@ let initWebRoutes = (app) => {
     router.get("/edit-crud", homeController.getEditCRUD);
     router.post("/put-crud", homeController.putUserCRUD);
     router.get("/delete-crud", homeController.deleteUserCRUD);
+
     router.post("/api/login", userController.handleLogin);
     router.post("/api/register", userController.handleRegister);
     router.post(
@@ -37,7 +39,12 @@ let initWebRoutes = (app) => {
         userController.handlePostResetPassword
     );
     router.get("/api/get-all-users", userController.handleGetAllUsers);
+    router.get("/api/get-all-drivers", userController.getAllDrivers);
     router.get("/api/get-all-passengers", userController.getAllPassengers);
+    router.get(
+        "/api/get-all-passengers-ticket",
+        userController.getAllPassengersTicket
+    );
     router.post("/api/create-new-user", userController.handleCreateNewUser);
     router.put("/api/edit-user", userController.handleEditUser);
     router.put("/api/edit-passenger", userController.handEditPassenger);
@@ -132,6 +139,11 @@ let initWebRoutes = (app) => {
     router.post("/api/create-new-event", eventController.createNewEvent);
     router.put("/api/edit-event", eventController.editEvent);
     router.delete("/api/delete-event", eventController.deleteEvent);
+
+    router.get("/api/get-all-blogs", blogController.getAllBlogs);
+    router.post("/api/create-new-blog", blogController.createNewBlog);
+    router.put("/api/edit-blog", blogController.editBlog);
+    router.delete("/api/delete-blog", blogController.deleteBlog);
 
     return app.use("/", router);
 };

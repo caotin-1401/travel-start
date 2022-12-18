@@ -30,6 +30,8 @@ import ProfileBusOwner from "../containers/System/BusOwner/Profile/Profile";
 import ProfileDriver from "../containers/System/Driver/Profile/Profile";
 import ForgotPassword from "./Auth/ForgotPassword";
 import ResetPassword from "./Auth/ResetPassword";
+import DetailBlog from "./Passenger/Blogs/DetailBlog";
+import AllBlogs from "./Passenger/Blogs/AllBlogs";
 
 class App extends Component {
     handlePersistorState = () => {
@@ -128,7 +130,15 @@ class App extends Component {
                                         <Route
                                             path={path.EVENT}
                                             component={DetailEvent}
-                                        />{" "}
+                                        />
+                                        <Route
+                                            path={path.BLOGS}
+                                            component={AllBlogs}
+                                        />
+                                        <Route
+                                            path={path.BLOG}
+                                            component={DetailBlog}
+                                        />
                                         <Route
                                             path={path.PROFILE_ADMIN}
                                             component={userIsAuthenticated(

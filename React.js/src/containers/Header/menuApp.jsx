@@ -14,11 +14,6 @@ export const adminMenu = [
         name: "menu.admin.manage-user",
         menus: [
             {
-                name: "menu.admin.user-manage",
-                link: "/system/user-manage",
-            },
-
-            {
                 name: "menu.admin.manage-admin",
                 link: "/system/admin-manage",
             },
@@ -53,10 +48,6 @@ export const adminMenu = [
             {
                 name: "menu.admin.parking-lot",
                 link: "/system/parking-lot",
-            },
-            {
-                name: "menu.admin.list-vehicle",
-                link: "/system/list-vehicle",
             },
         ],
     },

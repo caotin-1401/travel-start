@@ -25,6 +25,16 @@ const getAllPassengers = (inputId) => {
         id: inputId,
     });
 };
+const getAllDrivers = (inputId) => {
+    return axios.get(`/api/get-all-drivers?id=${inputId}`, {
+        id: inputId,
+    });
+};
+const getAllPassengersTicket = (inputId) => {
+    return axios.get(`/api/get-all-passengers-ticket?id=${inputId}`, {
+        id: inputId,
+    });
+};
 const getInfoDriverRoute = (inputId) => {
     return axios.get(`/api/get-info-driver-route?id=${inputId}`, {
         id: inputId,
@@ -274,6 +284,26 @@ const editEventsService = (inputData) => {
     return axios.put("/api/edit-event", inputData);
 };
 
+//blog
+const getAllBlogsService = (inputId) => {
+    return axios.get(`/api/get-all-blogs?id=${inputId}`);
+};
+
+const createNewBlogsService = (data) => {
+    return axios.post("/api/create-new-blog", data);
+};
+
+const deleteBlogsService = (userId) => {
+    return axios.delete("/api/delete-blog", {
+        data: {
+            id: userId,
+        },
+    });
+};
+
+const editBlogsService = (inputData) => {
+    return axios.put("/api/edit-blog", inputData);
+};
 //coupon
 const getAllCouponService = (inputId) => {
     return axios.get(`/api/get-all-coupons?id=${inputId}`);
@@ -305,7 +335,12 @@ const checkCustomerPresent = (inputData) => {
     return axios.put("/api/check-customer", inputData);
 };
 export {
+    getAllBlogsService,
+    createNewBlogsService,
+    deleteBlogsService,
+    editBlogsService,
     getAllCity,
+    getAllPassengersTicket,
     handleChangePasswordPassenger,
     getAllPassengers,
     handleVehicleStartTrip,
@@ -335,6 +370,7 @@ export {
     handleLogin,
     handleRegister,
     getAllUsers,
+    getAllDrivers,
     createNewUserService,
     deleteUserService,
     editUserService,

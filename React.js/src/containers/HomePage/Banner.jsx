@@ -82,7 +82,7 @@ class Banner extends Component {
     buildDataSelect = (inputData) => {
         let result = [];
         if (inputData && inputData.length > 0) {
-            inputData.map((item, key) => {
+            inputData.map((item) => {
                 let obj = {};
                 obj.label = item.name;
                 obj.value = item.id;

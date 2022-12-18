@@ -88,14 +88,50 @@
             },
             "listPassenger": {
                 "title": "Quản lý danh sách hành khách",
-                "name": "Tên tuyến xe",
-                "chooseStart": "Chọn bến khởi hành",
-                "chooseEnd": "Chọn bến kết thúc",
-                "start": "Bến khởi hành",
-                "end": "Bến kết thúc",
+                "name": "Tên ",
+                "phone": "Số điện thoại",
+                "totalmoney": "Tổng tiền vé đã đặt",
+                "gender": "Giới tính",
+                "address": "Địa chỉ",
                 "action": "Thao tác",
-                "modaladd": "Thêm mới tuyến đường",
-                "upimage": "Tải ảnh"
+                "modal": "Thông tin hành khách",
+                "modal1": "Thông tin cơ bản",
+                "modal2": "Thông tin vé xe đã đặt",
+                "trip": "Tuyến đường",
+                "time": "Thời gian khởi hành",
+                "seat": "Vị trí ngồi",
+                "total": "Tổng tiền",
+                "des": "Hành khách này chưa đặt vé trên hệ thống"
+            },
+            "listAdmin": {
+                "title": "Danh sách người quản lý hệ thống",
+                "add": "Thêm",
+                "name": "Tên",
+                "phone": "Số điện thoại",
+                "action": "Hành động",
+                "modaltitle": "Thêm người quản lý hệ thống",
+                "pass": "Mật khẩu",
+                "address": "Địa chỉ",
+                "gender": "Giới tính",
+                "upload": "Tải ảnh",
+                "save": "Lưu",
+                "cancel": "Hủy"
+            },
+            "listOwner": {
+                "title": "Quản lý nhà xe",
+                "title1": "Tuyến đường chạy nhiều nhất",
+                "name": "Tên nhà xe",
+                "driver": "Danh sách tài xế",
+                "vehicle": "Danh sách phương tiện",
+                "action": "Xóa nhà xe",
+                "add": "Thêm nhà xe"
+            },
+            "listDriver": {
+                "back": "Quay lại trang quản lý nhà xe",
+                "name": "Tên tài xế",
+                "phone": "Số điện thoại",
+                "status": "Tình trạng",
+                "action": "Xóa tài xế"
             }
         },
         "busOwner": {
@@ -118,7 +154,8 @@
                 "type": "Loại xe",
                 "seat": "Tổng số ghế",
                 "upload": "Tải ảnh",
-                "name": "Tên nhà xe"
+                "name": "Tên nhà xe",
+                "status": "Trạng thái"
             }
         },
         "driver": {

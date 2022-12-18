@@ -44,6 +44,11 @@ class HeaderPage extends Component {
             this.props.history.push(`/home/events`);
         }
     };
+    handleBlogs = () => {
+        if (this.props.history) {
+            this.props.history.push(`/home/blogs`);
+        }
+    };
     handleProfile = () => {
         let { info } = this.state;
         if (this.props.history) {
@@ -69,7 +74,6 @@ class HeaderPage extends Component {
         info && info.name && (username = info.name);
         let test = username.split(" ").reverse();
         let name = test[0];
-        console.log(info);
         return (
             <React.Fragment>
                 <div className="home-header-container">
@@ -86,11 +90,7 @@ class HeaderPage extends Component {
                                     <FormattedMessage id="header.home" />
                                 </p>
                             </div>
-                            <div className="child-content">
-                                <p>
-                                    <FormattedMessage id="header.search-bus" />
-                                </p>
-                            </div>
+
                             <div
                                 className="child-content"
                                 onClick={() => this.handleEvents()}>
@@ -98,8 +98,13 @@ class HeaderPage extends Component {
                                     <FormattedMessage id="header.events" />
                                 </p>
                             </div>
-                            <div className="child-content">
+                            <div
+                                className="child-content"
+                                onClick={() => this.handleBlogs()}>
                                 <p>BLOG</p>
+                            </div>
+                            <div className="child-content">
+                                <p>LIÊN HỆ</p>
                             </div>
                         </div>
                         <div className="right-content">

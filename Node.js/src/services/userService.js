@@ -7,18 +7,13 @@ import { v4 as uuidv4 } from "uuid";
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 var salt = bcrypt.genSaltSync(10);
-let checkUserEmail = (userEmail) => {
+let checkUserEmailAdmin = (userEmail) => {
     return new Promise(async (resolve, reject) => {
         try {
             let user = await db.User.findOne({
                 where: { email: userEmail },
             });
-            let passenger = db.Passenger.findOne({
-                where: { email: userEmail },
-            });
             if (user) {
-                resolve(true);
-            } else if (passenger) {
                 resolve(true);
             } else {
                 resolve(false);
@@ -28,7 +23,46 @@ let checkUserEmail = (userEmail) => {
         }
     });
 };
-
+let checkUserEmailPassenger = (userEmail) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let passenger = db.Passenger.findOne({
+                where: { email: userEmail },
+            });
+            if (passenger) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let checkUserEmail = (userEmail) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { email: userEmail },
+            });
+            console.log(user);
+            let passenger = db.Passenger.findOne({
+                where: { email: userEmail },
+            });
+            console.log(passenger);
+            if (user) {
+                resolve(true);
+            } else if (passenger) {
+                console.log(passenger);
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 var emailRegex =
     /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 
@@ -82,9 +116,6 @@ let handleUserLogin = (email, password) => {
                     attributes: ["id", "email", "roleID", "password", "name"],
                     raw: true,
                 });
-                console.log(user);
-                console.log(passenger);
-                console.log(2);
                 if (user) {
                     let check = await bcrypt.compareSync(
                         password,
@@ -100,12 +131,10 @@ let handleUserLogin = (email, password) => {
                         userData.errMessage = "Wrong Password";
                     }
                 } else if (passenger) {
-                    console.log(1);
                     let check = await bcrypt.compareSync(
                         password,
                         passenger.password
                     ); // false
-                    console.log(3);
                     if (check) {
                         userData.errCode = 0;
                         userData.errMessage = "OK";
@@ -137,7 +166,7 @@ let createNewUserByRegister = (email, password, confirmPassword, name) => {
     return new Promise(async (resolve, reject) => {
         try {
             let userData = {};
-            let check = await checkUserEmail(email);
+            let check = await checkUserEmailPassenger(email);
             if (check) {
                 resolve({
                     errCode: 1,
@@ -165,16 +194,13 @@ let createNewUserByRegister = (email, password, confirmPassword, name) => {
                     errMessage: "Invalid mail address",
                 });
             } else {
-                console.log("1");
                 let hashPasswordFromBcrypt = await hashUserPassword(password);
-                console.log("2");
                 let user = await db.Passenger.create({
                     email: email,
                     name: name,
                     password: hashPasswordFromBcrypt,
                     roleID: "R4",
                 });
-                console.log("3");
                 userData.errCode = 0;
                 userData.errMessage = "OK";
                 delete user.password;
@@ -193,6 +219,52 @@ let createNewUserByRegister = (email, password, confirmPassword, name) => {
     });
 };
 
+let getAllPassengersTicket = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let users = "";
+            let user = "";
+            if (userId === "ALL") {
+                user = await db.Passenger.findAll({
+                    attributes: {
+                        exclude: ["password", "image"],
+                    },
+                    include: [
+                        {
+                            model: db.Ticket,
+                            include: [
+                                {
+                                    model: db.Trip,
+                                },
+                            ],
+                        },
+                    ],
+                    raw: true,
+                    nest: true,
+                });
+                users = _.sortBy(user, ["id"]);
+            }
+            if (userId && userId !== "ALL") {
+                users = await db.Passenger.findAll({
+                    where: { id: userId },
+                    attributes: {
+                        exclude: ["password", "image"],
+                    },
+                    include: [
+                        {
+                            model: db.Ticket,
+                        },
+                    ],
+                    raw: true,
+                    nest: true,
+                });
+            }
+            resolve(users);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let getAllPassengers = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -231,6 +303,40 @@ let getAllPassengers = (userId) => {
                     // ],
                     raw: true,
                     nest: true,
+                });
+            }
+            resolve(users);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let getAllDrivers = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let users = "";
+            let user = "";
+            if (userId === "ALL") {
+                user = await db.Driver.findAll({
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: [
+                                "email",
+                                "address",
+                                "phoneNumber",
+                                "gender",
+                            ],
+                        },
+                    ],
+                    raw: true,
+                    nest: true,
+                });
+                users = _.sortBy(user, ["id"]);
+            }
+            if (userId && userId !== "ALL") {
+                users = await db.Driver.findAll({
+                    where: { id: userId },
                 });
             }
             resolve(users);
@@ -336,7 +442,7 @@ let createNewUser = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             //check email exist
-            let check = await checkUserEmail(data.email);
+            let check = await checkUserEmailAdmin(data.email);
             if (check) {
                 resolve({
                     errCode: 1,
@@ -443,15 +549,12 @@ let deleteUser = async (userId) => {
         let driver = await db.Driver.findOne({
             where: { driverId: userId },
         });
-        if (!driver) {
-            resolve({
-                errCode: 2,
-                errMessage: `The user isn't exist`,
+
+        if (driver) {
+            await db.Driver.destroy({
+                where: { driverId: userId },
             });
         }
-        await db.Driver.destroy({
-            where: { driverId: userId },
-        });
         resolve({
             errCode: 0,
             errMessage: "The user is delete",
@@ -514,7 +617,6 @@ let updateUserData = async (data) => {
             if (user) {
                 user.name = data.name;
                 user.address = data.address;
-                user.roleID = data.roleID;
                 user.gender = data.gender;
                 user.phoneNumber = data.phoneNumber;
                 if (data.avatar) {
@@ -886,6 +988,8 @@ let handlePostResetPassword = async (email, token, password) => {
 };
 module.exports = {
     handEditPassenger,
+    getAllDrivers,
+    getAllPassengersTicket,
     getAllPassengers,
     handleDriverStartTrip,
     handleDriverEndTrip,

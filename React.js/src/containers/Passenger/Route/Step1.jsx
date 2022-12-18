@@ -109,7 +109,7 @@ class Step1 extends Component {
     render() {
         let { rangeSeat, dataTicket, totalPrice, seatArr, seatDisable } =
             this.state;
-
+        // console.log(totalPrice);
         let lengthArr = rangeSeat.length;
         return (
             <div>

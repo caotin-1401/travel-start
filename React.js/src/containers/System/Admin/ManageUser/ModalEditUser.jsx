@@ -11,14 +11,13 @@ import {
     Col,
 } from "reactstrap";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
+import { LANGUAGES, CommonUtils } from "../../../../utils";
 import _ from "lodash";
 
 class ModalEditUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            roleArr: [],
             genderArr: [],
             previewImgURL: "",
             isOpenImg: false,
@@ -29,14 +28,11 @@ class ModalEditUser extends Component {
             phone: "",
             address: "",
             gender: "",
-            role: "",
             avatar: "",
-            action: "",
-            userEditId: "",
+            id: "",
         };
     }
     async componentDidMount() {
-        this.props.getRoleStart();
         this.props.getGenderStart();
 
         let user = this.props.currentUser;
@@ -54,23 +50,14 @@ class ModalEditUser extends Component {
                 name: user.name,
                 phone: user.phoneNumber,
                 address: user.address,
-                role: user.roleID,
                 gender: user.gender,
                 avatar: "",
                 previewImgURL: imageBase64,
-                action: CRUD_ACTIONS.EDIT,
-                userEditId: user.id,
             });
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.roleRedux !== this.props.roleRedux) {
-            let arrRoles = this.props.roleRedux;
-            this.setState({
-                roleArr: arrRoles,
-            });
-        }
         if (prevProps.genderRedux !== this.props.genderRedux) {
             let arrGenders = this.props.genderRedux;
             this.setState({
@@ -81,74 +68,12 @@ class ModalEditUser extends Component {
     toggle = () => {
         this.props.toggleFromParent();
     };
-    handleSaveUser = () => {
-        let isValid = this.checkValidInput();
-        if (isValid === false) return;
 
-        this.props.doEditUser1(this.state);
-
-        let { action } = this.state;
-
-        if (action === CRUD_ACTIONS.EDIT) {
-            this.props.EditUser({
-                id: this.state.userEditId,
-                name: this.state.name,
-                address: this.state.address,
-                roleID: this.state.role,
-                gender: this.state.gender,
-                phoneNumber: this.state.phone,
-                avatar: this.state.avatar,
-            });
-        }
-    };
-
-    checkValidInput = () => {
-        let isValid = true;
-        let arrCheck = ["email", "password", "name", "phone", "address"];
-        for (let i = 0; i < arrCheck.length; i++) {
-            if (!this.state[arrCheck[i]]) {
-                isValid = false;
-                alert("this input is required: " + arrCheck[i]);
-                break;
-            }
-        }
-        return isValid;
-    };
-
-    onChangeInput = (event, id) => {
-        let copyState = { ...this.state };
-        copyState[id] = event.target.value;
-        this.setState({
-            ...copyState,
-        });
-    };
-    handleChangeImage = async (event) => {
-        const file = event.target.files[0];
-        console.log(file);
-        console.log(file.preview);
-        if (file) {
-            let base64 = await CommonUtils.getBase64(file);
-            file.preview = URL.createObjectURL(file);
-            this.setState({
-                previewImgURL: file.preview,
-                avatar: base64,
-            });
-        }
-    };
-
-    openPreviewImg = () => {
-        if (this.state.previewImgURL === "") return;
-        this.setState({
-            isOpenImg: true,
-        });
-    };
     render() {
         let language = this.props.language;
-        let roles = this.state.roleArr;
         let genders = this.state.genderArr;
-        let { email, password, name, phone, address, gender, role, avatar } =
+        let { email, password, name, phone, address, gender, avatar } =
             this.state;
-        console.log(email, password, name, phone, address, gender, role);
         return (
             <Modal
                 isOpen={this.props.isOpen}
@@ -165,82 +90,49 @@ class ModalEditUser extends Component {
                 <ModalBody>
                     <Row>
                         <Col md={6}>
-                            <label htmlFor="exampleEmail">Email</label>
-                            <input
-                                className="form-control mb-4"
-                                id="exampleEmail"
-                                placeholder="with a placeholder"
-                                type="email"
-                                value={email}
-                                onChange={(event) => {
-                                    this.onChangeInput(event, "email");
-                                }}
-                                disabled
-                            />
+                            <label>Email</label>
+                            <input className="form-control mb-4" disabled />
                         </Col>
                         <Col md={6}>
-                            <label htmlFor="examplePassword">Password</label>
+                            <label>Password</label>
                             <input
                                 className="form-control mb-4"
-                                id="examplePassword"
-                                placeholder="password placeholder"
                                 type="password"
                                 value={password}
-                                onChange={(event) => {
-                                    this.onChangeInput(event, "password");
-                                }}
                                 disabled
                             />
                         </Col>
                     </Row>
                     <Row>
                         <Col md={6}>
-                            <label htmlFor="name">Full Name</label>
+                            <label>Full Name</label>
                             <input
                                 className="form-control mb-4"
-                                id="name"
-                                placeholder="with a placeholder"
-                                type="text"
                                 value={name}
-                                onChange={(event) => {
-                                    this.onChangeInput(event, "name");
-                                }}
+                                disabled
                             />
                         </Col>
                         <Col md={6}>
-                            <label htmlFor="phone">Phone Number</label>
+                            <label>Phone Number</label>
                             <input
                                 className="form-control mb-4"
-                                id="phone"
-                                name="phoneNumber"
-                                placeholder="with a placeholder"
-                                type="text"
                                 value={phone}
-                                onChange={(event) => {
-                                    this.onChangeInput(event, "phone");
-                                }}
+                                disabled
                             />
                         </Col>
                     </Row>
-                    <label htmlFor="exampleAddress">Address</label>
+                    <label>Address</label>
                     <input
                         className="form-control mb-4"
-                        id="exampleAddress"
-                        placeholder="1234 Main St"
-                        type="text"
                         value={address}
-                        onChange={(event) => {
-                            this.onChangeInput(event, "address");
-                        }}
+                        disabled
                     />
                     <Row>
                         <Col md={3}>
-                            <label htmlFor="exampleAddress">Gender</label>
+                            <label>Gender</label>
                             <select
                                 className="form-select mb-4"
-                                onChange={(event) => {
-                                    this.onChangeInput(event, "gender");
-                                }}
+                                disabled
                                 value={gender}>
                                 {genders &&
                                     genders.length > 0 &&
@@ -257,51 +149,24 @@ class ModalEditUser extends Component {
                                     })}
                             </select>
                         </Col>
-                        <Col md={3}>
-                            <label htmlFor="exampleAddress">RoleID</label>
-                            <select
-                                className="form-select mb-4"
-                                onChange={(event) => {
-                                    this.onChangeInput(event, "role");
-                                }}
-                                value={role}>
-                                {roles &&
-                                    roles.length > 0 &&
-                                    roles.map((item, index) => {
-                                        return (
-                                            <option
-                                                key={index}
-                                                value={item.keyMap}>
-                                                {language === LANGUAGES.VI
-                                                    ? item.valueVi
-                                                    : item.valueEn}
-                                            </option>
-                                        );
-                                    })}
-                            </select>
-                        </Col>
 
-                        <Col md={6}>
-                            <label htmlFor="img">Img</label>
+                        <Col md={6} disabled>
+                            <label>Img</label>
                             <div className="prev-img-container">
                                 <input
                                     // className="form-control mb-4"
-                                    id="img"
                                     type="file"
                                     hidden
-                                    onChange={(event) =>
-                                        this.handleChangeImage(event)
-                                    }
+                                    disabled
                                 />
-                                <label className="upload-img" htmlFor="img">
+                                <label className="upload-img">
                                     Tải ảnh<i className="fas fa-upload"></i>
                                 </label>
                                 <div
                                     className="prev-img"
                                     style={{
                                         backgroundImage: `url(${this.state.previewImgURL})`,
-                                    }}
-                                    onClick={() => this.openPreviewImg()}></div>
+                                    }}></div>
                             </div>
                         </Col>
                     </Row>
@@ -318,10 +183,10 @@ class ModalEditUser extends Component {
                     <Button
                         color="primary"
                         onClick={() => {
-                            this.handleSaveUser();
+                            this.toggle();
                         }}
                         className="btn-primary-modal">
-                        Save
+                        Close
                     </Button>
                 </ModalFooter>
             </Modal>
@@ -332,7 +197,6 @@ class ModalEditUser extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        roleRedux: state.admin.roles,
         genderRedux: state.admin.gender,
         listUsers: state.admin.users,
 
@@ -342,10 +206,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getRoleStart: () => dispatch(actions.fetchRoleStart()),
         getGenderStart: () => dispatch(actions.fetchGenderStart()),
         fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()),
-        EditUser: (data) => dispatch(actions.EditUser(data)),
     };
 };
 

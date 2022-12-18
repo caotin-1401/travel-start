@@ -23,7 +23,7 @@ let getAllTickets = (id) => {
                             ],
                         },
                         {
-                            model: db.User,
+                            model: db.Passenger,
                             attributes: ["id", "email", "name", "phoneNumber"],
                         },
                     ],
@@ -49,7 +49,7 @@ let getAllTickets = (id) => {
                             ],
                         },
                         {
-                            model: db.User,
+                            model: db.Passenger,
                             attributes: ["id", "email", "name", "phoneNumber"],
                         },
                     ],
@@ -173,6 +173,8 @@ let getDriverTicketRoute = (id, dayStart, tripId) => {
 let getAllRouteFromDateDriver = (id, dayStart) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log(id, dayStart);
+
             let bus = await db.Trip.findAll({
                 where: { driverId: id, dateStart: dayStart },
                 include: [

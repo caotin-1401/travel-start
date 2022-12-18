@@ -91,6 +91,56 @@ let getAllPassengers = async (req, res) => {
         });
     }
 };
+let getAllDrivers = async (req, res) => {
+    try {
+        let id = req.query.id; //ALL, id
+
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameters",
+                users: [],
+            });
+        }
+
+        let users = await userService.getAllDrivers(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            users,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let getAllPassengersTicket = async (req, res) => {
+    try {
+        let id = req.query.id; //ALL, id
+
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameters",
+                users: [],
+            });
+        }
+
+        let users = await userService.getAllPassengersTicket(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            users,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 let handleGetAllUsers = async (req, res) => {
     try {
         let id = req.query.id; //ALL, id
@@ -361,6 +411,7 @@ let handlePostResetPassword = async (req, res) => {
     }
 };
 module.exports = {
+    getAllPassengersTicket,
     handleChangePasswordPassenger,
     handEditPassenger,
     getAllPassengers,
@@ -380,4 +431,5 @@ module.exports = {
     handlePostForgotPassword,
     handleGetForgotPassword,
     getInfoDriverRoute,
+    getAllDrivers,
 };

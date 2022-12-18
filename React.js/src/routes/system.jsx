@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
-import UserRedux from "../containers/System/Admin/UserRedux";
 import Header from "../containers/Header/Header";
 import UserManage from "../containers/System/Admin/ManageUser/UserManage";
-import ListVehicle from "../containers/System/Admin/ListVehicle/ListVehicle";
 import TableEvent from "../containers/System/Admin/Event/TableEvent";
 import TableDiscount from "../containers/System/Admin/Discount/TableDiscount";
 import TableBlog from "../containers/System/Admin/Blog/TableBlog";
@@ -14,6 +12,9 @@ import TableStation from "./../containers/System/Admin/ListStation/TableStation"
 import BusType from "./../containers/System/Admin/BusType/TableType";
 import TableRoutes from "./../containers/System/Admin/ListRoute/TableRoutes";
 import TablePassenger from "./../containers/System/Admin/ManagePassenger/TablePassenger";
+import ManageOwner from "./../containers/System/Admin/manageOwner/UserManage";
+import ListDriver from "./../containers/System/Admin/manageOwner/ListDriver";
+import ListVehicleOfAdmin from "./../containers/System/Admin/manageOwner/ListVehicle";
 
 class System extends Component {
     render() {
@@ -28,17 +29,22 @@ class System extends Component {
                                 path="/system/dashboard"
                                 component={Dashboard}
                             />
-                            <Route
-                                path="/system/user-manage"
-                                component={UserManage}
-                            />
+
                             <Route
                                 path="/system/admin-manage"
                                 component={UserManage}
                             />
                             <Route
                                 path="/system/busOnwer-manage"
-                                component={UserRedux}
+                                component={ManageOwner}
+                            />
+                            <Route
+                                path="/system/busOnwer/driver_busOnwer=:id"
+                                component={ListDriver}
+                            />
+                            <Route
+                                path="/system/busOnwer/vehicle_busOnwer=:id"
+                                component={ListVehicleOfAdmin}
                             />
                             <Route
                                 path="/system/passenger-manage"
@@ -61,10 +67,7 @@ class System extends Component {
                                 path="/system/parking-lot"
                                 component={TableStation1}
                             />
-                            <Route
-                                path="/system/list-vehicle"
-                                component={ListVehicle}
-                            />
+
                             <Route
                                 path="/system/event"
                                 component={TableEvent}

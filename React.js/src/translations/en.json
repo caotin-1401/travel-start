@@ -54,6 +54,7 @@
             "event": "Events",
             "discount": "Discounts",
             "promotions": "Promotions",
+
             "listBusType": {
                 "title": "Manage list of vehicles",
                 "name": "Name",
@@ -89,14 +90,51 @@
 
             "listPassenger": {
                 "title": "Manage the list of passengers",
-                "name": "Tên tuyến xe",
-                "chooseStart": "Chọn bến khởi hành",
-                "chooseEnd": "Chọn bến kết thúc",
-                "start": "Bến khởi hành",
-                "end": "Bến kết thúc",
-                "action": "Thao tác",
-                "modaladd": "Thêm mới tuyến đường",
-                "upimage": "Tải ảnh"
+                "name": "Full Name",
+                "phone": "Phone Number",
+                "totalmoney": "Total amount booked",
+                "gender": "Gender",
+                "address": "Address",
+                "action": "Action",
+                "modal": "Passenger information",
+                "modal1": "Basic information",
+                "modal2": "Information about booked bus tickets",
+                "trip": "Route",
+                "time": "Departure time",
+                "seat": "Seat No",
+                "total": "Total amount",
+                "des": "This passenger has not booked a ticket on the system"
+            },
+            "listAdmin": {
+                "title": "List of system administrators",
+                "add": "Add",
+                "name": "Full Name",
+                "phone": "Phone Number",
+                "action": "Action",
+                "modaltitle": "Add system manager",
+                "modaltitle1": "Edit system manager",
+                "pass": "Password",
+                "address": "Address",
+                "gender": "Gender",
+                "upload": "Upload",
+                "save": "Save",
+                "cancel": "Cancel"
+            },
+            "listOwner": {
+                "title": "Management of vehicle owners",
+                "title1": "The route that runs the most",
+                "name": "Name",
+                "driver": "List of drivers",
+                "vehicle": "List of vehicles",
+                "action": "Delete",
+                "add": "Add"
+            },
+            "listDriver": {
+                "back": "Back to page",
+                "name": "Name driver",
+                "phone": "Phone Number",
+                "status": "Status",
+                "action": "Delete driver"
             }
         },
         "busOwner": {
@@ -119,7 +157,8 @@
                 "type": "Range of vehicle",
                 "seat": "Total number of seats",
                 "upload": "Upload",
-                "name": "transport service name"
+                "name": "transport service name",
+                "status": "Status"
             }
         },
         "driver": {

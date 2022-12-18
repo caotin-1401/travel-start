@@ -13,10 +13,13 @@ export const path = {
     VERIFY_EMAIL: `/verify-booking`,
     EVENTS: `/home/events`,
     EVENT: `/home/event/eventId=:id`,
+    BLOGS: `/home/blogs`,
+    BLOG: `/home/blog/blogId=:id`,
     PROFILE: `/home/profile/userId=:id&:status`,
     PROFILE_ADMIN: `/profile/admin/userId=:id`,
     PROFILE_BUS: `/profile/busOwner/userId=:id`,
     PROFILE_DRIVER: `/profile/driver/userId=:id`,
+    ADMIN_DRIVER: `/system/busOnwer-manage/driverId=:id`,
 };
 
 export const LANGUAGES = {

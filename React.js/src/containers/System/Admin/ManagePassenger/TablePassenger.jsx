@@ -5,7 +5,6 @@ import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
-// import ModalAdd from "./ModalAdd";
 import {
     TableBody,
     TableContainer,
@@ -17,10 +16,12 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import {
+    getAllPassengersTicket,
     getAllPassengers,
     deleteRouteService,
 } from "../../../../services/userService";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
+import ModalInfo from "./ModalInfo";
 
 class TablePassenger extends Component {
     constructor(props) {
@@ -28,6 +29,8 @@ class TablePassenger extends Component {
         this.state = {
             isOpenModel: false,
             listPassenger: [],
+            userEdit: {},
+
             sortBy: "",
             sortField: "",
             page: 0,
@@ -40,10 +43,31 @@ class TablePassenger extends Component {
     }
 
     getAllPassengers = async () => {
-        let res = await getAllPassengers("ALL");
+        let res = await getAllPassengersTicket("ALL");
         if (res && res.errCode === 0) {
+            let tempUser = {};
+            let arr = res.users;
+            arr &&
+                arr.length > 0 &&
+                arr.forEach((ticket) => {
+                    if (tempUser[`${ticket.id}`]) {
+                        tempUser[`${ticket.id}`].Tickets.push(ticket.Tickets);
+                    } else {
+                        tempUser[`${ticket.id}`] = {
+                            Tickets: [ticket.Tickets],
+                            email: ticket.email,
+                            name: ticket.name,
+                            phoneNumber: ticket.phoneNumber,
+                            id: ticket.id,
+                            address: ticket.address,
+                            gender: ticket.gender,
+                        };
+                    }
+                });
+            let result = Object.values(tempUser);
+
             this.setState({
-                listPassenger: res.users,
+                listPassenger: result,
             });
         }
     };
@@ -51,6 +75,19 @@ class TablePassenger extends Component {
     toggleModel = () => {
         this.setState({
             isOpenModel: !this.state.isOpenModel,
+        });
+    };
+    toggleOpenModel = () => {
+        this.setState({
+            isOpenModel: !this.state.isOpenModel,
+        });
+    };
+
+    handleDetailInfo = (item) => {
+        console.log(item);
+        this.setState({
+            isOpenModel: true,
+            userEdit: item,
         });
     };
 
@@ -90,19 +127,22 @@ class TablePassenger extends Component {
             listPassenger: this.state.listPassenger,
         });
     };
-
+    currencyFormat(num) {
+        return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
+    }
     render() {
         let { page, rowsPerPage, listPassenger } = this.state;
+        console.log(listPassenger);
         return (
             <div className="container form-redux">
-                <div className="user-container">
-                    {/* <ModalAdd
-                        listPassenger={listPassenger}
+                {this.state.isOpenModel && (
+                    <ModalInfo
                         isOpen={this.state.isOpenModel}
-                        toggleFromParent={this.toggleModel}
-                        createLocation={this.createLocation}
-                    /> */}
-
+                        toggleFromParent={this.toggleOpenModel}
+                        currentUser={this.state.userEdit}
+                    />
+                )}
+                <div className="user-container">
                     <div className="title text-center">
                         <FormattedMessage id="menu.admin.listPassenger.title" />
                     </div>
@@ -120,13 +160,19 @@ class TablePassenger extends Component {
                                             }>
                                             Id
                                         </th>
-                                        <th>Name</th>
+                                        <th>
+                                            <FormattedMessage id="menu.admin.listPassenger.name" />
+                                        </th>
                                         <th>Email</th>
                                         <th>
+                                            <FormattedMessage id="menu.admin.listPassenger.phone" />
+                                        </th>
+                                        <th>
                                             <div className="section-title">
-                                                <div>Tổng tiền vé đã đặt </div>
                                                 <div>
-                                                    {" "}
+                                                    <FormattedMessage id="menu.admin.listPassenger.totalmoney" />
+                                                </div>
+                                                <div>
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
@@ -150,7 +196,7 @@ class TablePassenger extends Component {
                                         </th>
 
                                         <th
-                                            style={{ width: "10%" }}
+                                            style={{ width: "15%" }}
                                             className="section-id-list">
                                             <FormattedMessage id="menu.admin.listLocations.action" />
                                         </th>
@@ -165,24 +211,68 @@ class TablePassenger extends Component {
                                           )
                                         : listPassenger
                                     ).map((user, index) => {
+                                        let arrTickets = user.Tickets;
+                                        let tempUser = {};
+                                        let resultUser;
+                                        arrTickets.forEach((ticket) => {
+                                            if (tempUser[`${ticket.token}`]) {
+                                                tempUser[
+                                                    `${ticket.token}`
+                                                ].seatNo.push(ticket.seatNo);
+                                            } else {
+                                                tempUser[`${ticket.token}`] = {
+                                                    seatNo: [ticket.seatNo],
+                                                    token: ticket.token,
+                                                    phone: ticket.phone,
+                                                    name: ticket.name,
+                                                    totalPrice:
+                                                        ticket.totalPrice,
+                                                    tripId: ticket.tripId,
+                                                    description:
+                                                        ticket.description,
+                                                    dayStart: ticket.dayStart,
+                                                };
+                                            }
+                                        });
+                                        resultUser = Object.values(tempUser);
+                                        let totalPrice = 0;
+                                        if (resultUser.length === 1)
+                                            if (resultUser[0].token)
+                                                totalPrice =
+                                                    resultUser[0].totalPrice;
+                                            else totalPrice = 0;
+                                        else {
+                                            resultUser.forEach((item) => {
+                                                totalPrice =
+                                                    totalPrice +
+                                                    item.totalPrice;
+                                            });
+                                        }
                                         return (
                                             <tr key={index}>
                                                 <td>{user.id}</td>
-
                                                 <td>{user.name}</td>
                                                 <td>{user.email}</td>
-                                                <td></td>
+                                                <td>{user.phoneNumber}</td>
+                                                <td>
+                                                    {this.currencyFormat(
+                                                        totalPrice
+                                                    )}
+                                                </td>
                                                 <td className="center">
                                                     <button
+                                                        title="Infomation Detail"
                                                         className="btn-edit"
                                                         onClick={() =>
-                                                            this.handleEditUser(
+                                                            this.handleDetailInfo(
                                                                 user
                                                             )
                                                         }>
                                                         <i className="fas fa-info-circle"></i>
                                                     </button>
+
                                                     <button
+                                                        title="Delete Passenger"
                                                         className="btn-delete"
                                                         onClick={() =>
                                                             this.handleDeleteUser(
@@ -220,7 +310,7 @@ class TablePassenger extends Component {
                                                 25,
                                                 { label: "All", value: -1 },
                                             ]}
-                                            colSpan={5}
+                                            colSpan={6}
                                             count={listPassenger.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}

@@ -78,40 +78,51 @@ class DetailEvent extends Component {
         return (
             <React.Fragment style={{ overflowX: "hidden" }}>
                 <Header />
-                <div className="container">
-                    <Row>
-                        <Col lg={3} md={2} sm={1}></Col>
-                        <Col lg={7} md={8} sm={10}>
-                            <div className="title_header">Uu dai noi bac</div>
-                            <h2
-                                style={{
-                                    marginBottom: "22px",
-                                    fontSize: "30px",
-                                }}>
-                                {name}
-                            </h2>
-                            <div style={{ marginBottom: "22px" }}>
-                                Thời gian: Từ <b>{start}</b> đến hết{" "}
-                                <b>{end} </b>
-                            </div>
-                            <div style={{ width: "inherit" }}>
-                                <div
-                                    className="bg-img_100"
+                <div
+                    style={{
+                        backgroundColor: "#FAFAFA",
+                    }}>
+                    <div className="container">
+                        <Row>
+                            <Col lg={3} md={2} sm={1}></Col>
+                            <Col
+                                lg={6}
+                                md={8}
+                                sm={10}
+                                className="content_event">
+                                <div className="title_header">
+                                    Uu dai noi bac
+                                </div>
+                                <h2
                                     style={{
-                                        backgroundImage: `url(${imageBase64})`,
-                                    }}
-                                />
-                            </div>
-                            <div
-                                style={{ textAlign: "justify" }}
-                                dangerouslySetInnerHTML={{
-                                    __html: description,
-                                }}></div>
-                        </Col>
+                                        marginBottom: "22px",
+                                        fontSize: "30px",
+                                    }}>
+                                    {name}
+                                </h2>
+                                <div style={{ marginBottom: "22px" }}>
+                                    Thời gian: Từ <b>{start}</b> đến hết{" "}
+                                    <b>{end} </b>
+                                </div>
+                                <div className="t-box">
+                                    <div
+                                        className="bg-img_100"
+                                        style={{
+                                            backgroundImage: `url(${imageBase64})`,
+                                        }}
+                                    />
+                                </div>
+                                <div
+                                    style={{ textAlign: "justify" }}
+                                    dangerouslySetInnerHTML={{
+                                        __html: description,
+                                    }}></div>
+                            </Col>
 
-                        <Col lg={3} md={2} sm={1}></Col>
-                    </Row>
-                    <div style={{ height: "500px" }} className="test"></div>
+                            <Col lg={3} md={2} sm={1}></Col>
+                        </Row>
+                        <div style={{ height: "500px" }} className="test"></div>
+                    </div>
                 </div>
                 <div>
                     <Row style={{ backgroundColor: "#F0F4F6" }}>

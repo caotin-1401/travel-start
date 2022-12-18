@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import Slider from "react-slick";
@@ -66,6 +65,7 @@ class Events extends Component {
                                         }
                                         return (
                                             <div
+                                                key={index}
                                                 className=" section-custom"
                                                 onClick={() =>
                                                     this.handleViewDetail(item)
