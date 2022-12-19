@@ -32,9 +32,6 @@ module.exports = {
             isFirst: {
                 type: Sequelize.STRING,
             },
-            point: {
-                type: Sequelize.STRING,
-            },
             image: {
                 type: Sequelize.BLOB("long"),
             },

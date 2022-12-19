@@ -678,21 +678,24 @@ class TableDiscount extends Component {
                                             ).map((user, index) => {
                                                 let start = moment(
                                                     +user.startDate
-                                                ).format(
-                                                    "ddd DD-MM-YYYY HH:mm"
-                                                );
+                                                ).format(" DD-MM-YYYY HH:mm");
                                                 let end = moment(
                                                     new Date(+user.endDate)
-                                                ).format(
-                                                    "ddd  DD-MM-YYYY  HH:mm"
-                                                );
+                                                ).format("  DD-MM-YYYY  HH:mm");
+                                                let price;
 
+                                                if (user.type === 1)
+                                                    price = "đ";
+                                                else price = "%";
                                                 return (
                                                     <tr key={index}>
                                                         <td>{user.id}</td>
 
                                                         <td>{user.name}</td>
-                                                        <td>{user.discount}</td>
+                                                        <td>
+                                                            {user.discount}{" "}
+                                                            {price}
+                                                        </td>
                                                         <td>{user.count}</td>
                                                         <td>{user.use}</td>
                                                         <td>{start}</td>

@@ -26,9 +26,11 @@ let checkUserEmailAdmin = (userEmail) => {
 let checkUserEmailPassenger = (userEmail) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let passenger = db.Passenger.findOne({
+            console.log(userEmail);
+            let passenger = await db.Passenger.findOne({
                 where: { email: userEmail },
             });
+            console.log(passenger);
             if (passenger) {
                 resolve(true);
             } else {
@@ -46,7 +48,7 @@ let checkUserEmail = (userEmail) => {
                 where: { email: userEmail },
             });
             console.log(user);
-            let passenger = db.Passenger.findOne({
+            let passenger = await db.Passenger.findOne({
                 where: { email: userEmail },
             });
             console.log(passenger);

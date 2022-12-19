@@ -162,7 +162,7 @@ class ResetPassword extends Component {
                     <div className="login-content row">
                         <div className="logostyle">
                             <Link to="/home">
-                                <img src={logo} />
+                                <img src={logo} loading="eager" />
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">

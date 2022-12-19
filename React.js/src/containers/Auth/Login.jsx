@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import * as actions from "../../store/actions";
@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../utils";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { changeLanguageApp } from "../../store/actions/appActions";
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -132,7 +131,10 @@ class Login extends Component {
                     <div className="login-content row">
                         <div className="logostyle">
                             <Link to="/home">
-                                <LazyLoadImage src={logo} />
+                                {/* <img src={logo} loading="eager" /> */}
+                                <LazyLoadImage
+                                    src={logo} // use normal <img> attributes as props
+                                />
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">
@@ -235,8 +237,6 @@ const mapDispatchToProps = (dispatch) => {
         navigate: (path) => dispatch(push(path)),
         userLoginSuccess: (userInfo) =>
             dispatch(actions.userLoginSuccess(userInfo)),
-        // changeLanguageAppRedux: (language) =>
-        //     dispatch(changeLanguageApp(language)),
     };
 };
 

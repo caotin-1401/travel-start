@@ -1,17 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Header from "../../HomePage/Header";
-import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../../utils";
 import { changeLanguageApp } from "../../../store/actions/appActions";
-import dayjs from "dayjs";
 import moment from "moment";
 import localization from "moment/locale/vi";
 import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
 import { getAllEventsService } from "../../../services/userService";
 import { Row, Col } from "reactstrap";
+import ModalDetalCoupon from "./ModalDetalCoupon";
 class DetailEvent extends Component {
     constructor(props) {
         super(props);
@@ -23,6 +22,7 @@ class DetailEvent extends Component {
             startDate: "",
             endDate: "",
             image: "",
+            isOpenModelEditUser: false,
         };
     }
     async componentDidMount() {
@@ -64,7 +64,27 @@ class DetailEvent extends Component {
                   });
         }
     }
-
+    toggleUserEditModel = () => {
+        this.setState({
+            isOpenModelEditUser: !this.state.isOpenModelEditUser,
+        });
+    };
+    handleEditUser = (user) => {
+        console.log(user);
+        this.setState({
+            isOpenModelEditUser: true,
+            userEdit: user,
+        });
+    };
+    doEditUser = async (user) => {
+        this.setState({
+            isOpenModelEditUser: false,
+        });
+    };
+    currencyFormat(num) {
+        console.log(" >>:", num);
+        return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
+    }
     render() {
         let { name, description, startDate, endDate, image, listCoupons } =
             this.state;
@@ -75,9 +95,18 @@ class DetailEvent extends Component {
         if (image) {
             imageBase64 = Buffer.from(image, "base64").toString("binary");
         }
+        console.log(listCoupons);
         return (
             <React.Fragment style={{ overflowX: "hidden" }}>
                 <Header />
+                {this.state.isOpenModelEditUser && (
+                    <ModalDetalCoupon
+                        isOpen={this.state.isOpenModelEditUser}
+                        toggleFromParent={this.toggleUserEditModel}
+                        currentUser={this.state.userEdit}
+                        doEditUser={this.doEditUser}
+                    />
+                )}
                 <div
                     style={{
                         backgroundColor: "#FAFAFA",
@@ -133,19 +162,21 @@ class DetailEvent extends Component {
                                     backgroundColor: "#D3D6D8",
                                     marginTop: "40px",
                                 }}>
-                                {listCoupons && listCoupons.length > 0 ? (
+                                {listCoupons &&
+                                listCoupons.length > 0 &&
+                                listCoupons[0].id ? (
                                     listCoupons.map((item, index) => {
                                         if (index % 2 === 0) {
                                             let price;
-                                            +item.type == 1
+                                            +item.type == 2
                                                 ? (price = "%")
                                                 : (price = "đ");
                                             let start = moment(
-                                                +startDate
+                                                +item.startDate
                                             ).format("L");
-                                            let end = moment(+endDate).format(
-                                                "L"
-                                            );
+                                            let end = moment(
+                                                +item.endDate
+                                            ).format("L");
                                             let text = item.name;
                                             return (
                                                 <>
@@ -165,10 +196,9 @@ class DetailEvent extends Component {
                                                                     <p className="coupon-required">
                                                                         Cho đơn
                                                                         từ{" "}
-                                                                        {
+                                                                        {this.currencyFormat(
                                                                             item.discountMax
-                                                                        }{" "}
-                                                                        đ
+                                                                        )}
                                                                     </p>
                                                                     <p className="start-date">
                                                                         {start}{" "}
@@ -199,7 +229,13 @@ class DetailEvent extends Component {
                                                                     NEWFREND2022 */}
                                                                         </p>
                                                                     </p>
-                                                                    <p className="condition">
+                                                                    <p
+                                                                        className="condition"
+                                                                        onClick={() =>
+                                                                            this.handleEditUser(
+                                                                                item
+                                                                            )
+                                                                        }>
                                                                         Điều
                                                                         kiện
                                                                     </p>
@@ -212,15 +248,15 @@ class DetailEvent extends Component {
                                             );
                                         } else {
                                             let price;
-                                            +item.type == 1
+                                            +item.type == 2
                                                 ? (price = "%")
                                                 : (price = "đ");
                                             let start = moment(
-                                                +startDate
+                                                +item.startDate
                                             ).format("L");
-                                            let end = moment(+endDate).format(
-                                                "L"
-                                            );
+                                            let end = moment(
+                                                +item.endDate
+                                            ).format("L");
                                             let text = item.name;
                                             return (
                                                 <>
@@ -239,9 +275,9 @@ class DetailEvent extends Component {
                                                                     <p className="coupon-required">
                                                                         Cho đơn
                                                                         từ{" "}
-                                                                        {
+                                                                        {this.currencyFormat(
                                                                             item.discountMax
-                                                                        }{" "}
+                                                                        )}
                                                                         đ
                                                                     </p>
                                                                     <p className="start-date">
@@ -271,7 +307,13 @@ class DetailEvent extends Component {
                                                                             </button>
                                                                         </p>
                                                                     </p>
-                                                                    <p className="condition">
+                                                                    <p
+                                                                        className="condition"
+                                                                        onClick={() =>
+                                                                            this.handleEditUser(
+                                                                                item
+                                                                            )
+                                                                        }>
                                                                         Điều
                                                                         kiện
                                                                     </p>
@@ -286,7 +328,12 @@ class DetailEvent extends Component {
                                         }
                                     })
                                 ) : (
-                                    <div>nsdf</div>
+                                    <div>
+                                        <div style={{ textAlign: "center" }}>
+                                            Hiện tại không có mã giảm giá của sự
+                                            kiện này
+                                        </div>
+                                    </div>
                                 )}
                             </Row>
                         </Col>

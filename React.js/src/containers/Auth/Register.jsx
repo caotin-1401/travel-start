@@ -28,46 +28,83 @@ class Register extends Component {
             ...copyState,
         });
     };
-    checkValidInput = () => {
-        let isValid = true;
-        let arrInput = ["email", "password", "confirmPassword", "name"];
-        for (let i = 0; i < arrInput.length; i++) {
-            if (!this.state[arrInput[i]]) {
-                isValid = false;
-                alert("Missing: " + arrInput[i]);
-                break;
-            }
-        }
-        return isValid;
-    };
+
     handleRegister = async () => {
+        let { language } = this.props;
+        let { email, password, confirmPassword, name } = this.state;
+        let message;
         this.setState({
             errMessage: "",
         });
-        try {
-            let data = await handleRegister(
-                this.state.email,
-                this.state.password,
-                this.state.confirmPassword,
-                this.state.name
-            );
-            if (data && data.errCode !== 0) {
-                this.setState({
-                    errMessage: data.message,
-                });
+        if (!email) {
+            if (language === LANGUAGES.VI) {
+                message = "Vui lòng nhập email";
+            } else {
+                message = "Please enter your email";
             }
-            if (data && data.errCode === 0) {
-                this.props.userLoginSuccess(data.user);
+        } else if (!password) {
+            if (language === LANGUAGES.VI) {
+                message = "Vui lòng nhập mật khẩu";
+            } else {
+                message = "Please enter your password";
             }
-        } catch (error) {
-            if (error.response) {
-                if (error.response.data) {
-                    this.setState({
-                        errMessage: error.response.data.message,
-                    });
+        } else if (!confirmPassword) {
+            if (language === LANGUAGES.VI) {
+                message = "Vui lòng nhập xác nhận mật khẩu";
+            } else {
+                message = "Please enter your comfirm password";
+            }
+        } else if (password.length !== confirmPassword.length) {
+            if (language === LANGUAGES.VI) {
+                message = "Mật khẩu và xác nhận mật khẩu phải giống nhau";
+            } else {
+                message = "Comfirm Passwords must be same as password";
+            }
+        } else if (password.length < 8 || password.length > 15) {
+            if (language === LANGUAGES.VI) {
+                message =
+                    "Mật khẩu phải có ít nhất 8 ký tự và nhiều nhất 15 ký tự";
+            } else {
+                message =
+                    "Password must be at least 8 characters and maximum 15 characters";
+            }
+        } else {
+            try {
+                let data = await handleRegister(
+                    email,
+                    password,
+                    confirmPassword,
+                    name
+                );
+                if (data && data.errCode === 0) {
+                    this.props.userLoginSuccess(data.user);
+                } else if (data && data.errCode === 1) {
+                    if (language === LANGUAGES.VI) {
+                        message = "Email đã tồn tại, vui lòng thử email khác";
+                    } else {
+                        message =
+                            "Your email already exists, please try another email";
+                    }
+                } else if (data && data.errCode === 5) {
+                    if (language === LANGUAGES.VI) {
+                        message = "Email không đúng định dạng";
+                    } else {
+                        message = "Invalid email address";
+                    }
+                }
+            } catch (error) {
+                if (error.response) {
+                    if (error.response.data) {
+                        this.setState({
+                            errMessage: error.response.data.message,
+                        });
+                    }
                 }
             }
         }
+        this.setState({
+            errMessage: message,
+        });
     };
 
     handleShowPassword = () => {
@@ -102,7 +139,7 @@ class Register extends Component {
                     <div className="login-content row">
                         <div className="logostyle">
                             <Link to="/home">
-                                <img src={logo} />
+                                <img src={logo} loading="eager" />
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">

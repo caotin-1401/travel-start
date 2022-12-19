@@ -1,8 +1,4 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
-import Slider from "react-slick";
 
 class HomeFooter extends Component {
     render() {
@@ -22,15 +18,4 @@ class HomeFooter extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        isLoggedIn: state.user.isLoggedIn,
-        language: state.app.language,
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(HomeFooter);
+export default HomeFooter;

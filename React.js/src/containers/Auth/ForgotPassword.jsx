@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { push } from "connected-react-router";
-import * as actions from "../../store/actions";
 import "./Login.scss";
 import logo from "../../assets/logo2.png";
 import { Link } from "react-router-dom";
 import { postForgotPasswordService } from "../../services/userService";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../utils";
-import { changeLanguageApp } from "../../store/actions/appActions";
 
 class ForgotPassword extends Component {
     constructor(props) {
@@ -82,7 +79,7 @@ class ForgotPassword extends Component {
                     <div className="login-content row">
                         <div className="logostyle">
                             <Link to="/home">
-                                <img src={logo} />
+                                <img src={logo} loading="eager" />
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">

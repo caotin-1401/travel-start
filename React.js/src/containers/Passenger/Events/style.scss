@@ -211,6 +211,7 @@
     font-size  : 15px;
     color      : #0097FF;
     font-weight: 500;
+    cursor     : pointer;
 }
 
 
@@ -229,4 +230,13 @@
     margin-top      : 30px;
     margin-bottom   : 30px;
     border-radius   : 5px;
+}
+
+.mb0 {
+    margin-top   : 10px;
+    margin-bottom: 0;
+}
+
+.mb1 {
+    padding-bottom: 20px;
 }

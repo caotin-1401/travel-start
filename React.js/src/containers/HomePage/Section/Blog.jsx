@@ -37,7 +37,11 @@ class Blog extends Component {
     render() {
         console.log(this.state.listBlogs);
         let { listBlogs } = this.state;
-        let test = listBlogs.concat(listBlogs).concat(listBlogs);
+        let test = listBlogs
+            .concat(listBlogs)
+            .concat(listBlogs)
+            .concat(listBlogs)
+            .concat(listBlogs);
         let newArr = test.slice(0, 6);
         let settings = {
             dots: false,

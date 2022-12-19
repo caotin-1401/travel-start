@@ -10,26 +10,9 @@ let getAllEvents = (eventId) => {
             } else if (eventId && eventId !== "ALL") {
                 events = await db.Event.findAll({
                     where: { id: eventId },
-                    // attributes: {
-                    //     exclude: ["image"],
-                    // },
                     include: [
                         {
                             model: db.Coupon,
-                            attributes: [
-                                "id",
-                                "name",
-                                "discount",
-                                "discountMax",
-                                "description",
-                                "startDate",
-                                "endDate",
-                                "type",
-                                "sumMoneyCondition",
-                                "count",
-                                "eventId",
-                                "descriptionMarkdown",
-                            ],
                         },
                     ],
                     raw: true,
