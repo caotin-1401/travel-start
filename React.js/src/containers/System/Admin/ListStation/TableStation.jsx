@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import "./TableStation.scss";
+import "../style.scss";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
 import * as actions from "../../../../store/actions";

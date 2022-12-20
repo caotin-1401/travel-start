@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 import Box from "@mui/material/Box";
 import { changeLanguageApp } from "../../../../store/actions/appActions";
-import "./TableDiscount.scss";
+import "../style.scss";
 import DatePicker from "../../../../components/DatePicker";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";

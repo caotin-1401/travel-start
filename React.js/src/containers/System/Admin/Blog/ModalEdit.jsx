@@ -11,7 +11,7 @@ import {
     Col,
 } from "reactstrap";
 import Box from "@mui/material/Box";
-import "./TableEvent.scss";
+import "../style.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";

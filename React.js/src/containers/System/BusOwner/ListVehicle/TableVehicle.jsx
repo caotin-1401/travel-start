@@ -113,7 +113,7 @@ class TableVehicle extends Component {
         let { page, rowsPerPage, listVehicles, test, test1, isTest } =
             this.state;
         isTest === true ? (test = test1) : (test = listVehicles);
-
+        console.log(this.state.image);
         let language = this.props.language;
         return (
             <div className="user-container">
@@ -252,6 +252,7 @@ class TableVehicle extends Component {
                                   )
                                 : test
                             ).map((item, index) => {
+                                console.log(item.image);
                                 return (
                                     <tr key={index}>
                                         <td className="section-id-list">

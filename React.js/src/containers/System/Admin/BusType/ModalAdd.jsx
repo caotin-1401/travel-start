@@ -12,7 +12,6 @@ import {
 } from "reactstrap";
 import Box from "@mui/material/Box";
 import { changeLanguageApp } from "../../../../store/actions/appActions";
-import "./BusType.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
 import { toast } from "react-toastify";

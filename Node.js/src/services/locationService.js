@@ -37,34 +37,85 @@ let getAllLocations = async (locationId) => {
 let getAllVehicleFromStation = async (locationId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let locations = "";
+            let vehicles = "";
+            if (locationId === "ALL") {
+                vehicles = await db.Location.findAll({
+                    include: [
+                        {
+                            model: db.Vehicle,
+                            attributes: ["id", "arrivalTime", "areaEndId"],
+                            as: "tovehicle",
+                        },
+                    ],
+                    raw: false,
+                });
+            }
+            if (locationId && locationId !== "ALL") {
+                vehicles = await db.Location.findAll({
+                    where: { id: locationId },
+                    include: [
+                        {
+                            model: db.Vehicle,
+                            attributes: ["id", "arrivalTime", "areaEndId"],
+                            as: "tovehicle",
+                            include: [
+                                {
+                                    model: db.User,
+                                    attributes: ["id", "name"],
+                                },
+                            ],
+                        },
+                    ],
+                    raw: false,
+                    // nest: true,
+                });
+            }
 
-            locations = await db.Location.findAll({
-                where: { id: locationId },
-                include: [
-                    {
-                        model: db.Vehicle,
-                        attributes: ["id", "arrivalTime", "areaEndId"],
-                        as: "tovehicle",
-                        include: [
-                            {
-                                model: db.User,
-                                attributes: ["id", "name"],
-                            },
-                        ],
-                    },
-                ],
-                raw: true,
-                nest: true,
-            });
-
-            resolve(locations);
+            resolve(vehicles);
         } catch (e) {
             reject(e);
         }
     });
 };
+let getAllVehicleFromOneStation = async (locationId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let vehicles = "";
+            if (locationId === "ALL") {
+                vehicles = await db.Vehicle.findAll({
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ["id", "name"],
+                        },
+                        {
+                            model: db.BusType,
+                        },
+                    ],
+                    raw: false,
+                });
+            }
+            if (locationId && locationId !== "ALL") {
+                vehicles = await db.Vehicle.findAll({
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ["id", "name"],
+                        },
+                        {
+                            model: db.BusType,
+                        },
+                    ],
+                    raw: false,
+                });
+            }
 
+            resolve(vehicles);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let checkName = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -224,4 +275,5 @@ module.exports = {
     editLocations,
     getAllBusTypes,
     getAllCity,
+    getAllVehicleFromOneStation,
 };

@@ -11,7 +11,7 @@ import {
     Col,
 } from "reactstrap";
 import Box from "@mui/material/Box";
-import "./TableDiscount.scss";
+import "../style.scss";
 import DatePicker from "../../../../components/DatePicker";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
@@ -161,11 +161,36 @@ class ModalEdit extends Component {
             description,
             descriptionMarkdown,
         } = this.state;
-        console.log(dayStart);
-        console.log(this.state);
+
+        let str = "00:00";
+        let [hours, minutes] = str.split(":");
+        let startDate, endDate;
+        if (!dayStart.length && !dayEnd.length) {
+            startDate = new Date(dayStart).getTime();
+            endDate = new Date(dayEnd).getTime() + 86399000;
+        } else if (!dayEnd.length && dayStart.length === 10) {
+            endDate = new Date(dayEnd).getTime() + 86399000;
+            let [day1, month1, year1] = dayStart.split("/");
+            let date1 = new Date(+year1, month1 - 1, +day1, +hours, +minutes);
+            startDate = Math.floor(date1.getTime());
+        } else if (!dayStart.length && dayEnd.length === 10) {
+            startDate = new Date(dayStart).getTime();
+            let [day2, month2, year2] = dayEnd.split("/");
+            let date2 = new Date(+year2, month2 - 1, +day2, +hours, +minutes);
+            endDate = Math.floor(date2.getTime()) + 86399000;
+        } else {
+            let [day1, month1, year1] = dayStart.split("/");
+            let [day2, month2, year2] = dayEnd.split("/");
+
+            let date1 = new Date(+year1, month1 - 1, +day1, +hours, +minutes);
+            let date2 = new Date(+year2, month2 - 1, +day2, +hours, +minutes);
+            startDate = Math.floor(date1.getTime());
+            endDate = Math.floor(date2.getTime()) + 86399000;
+        }
+
         let language = this.props.language;
-        let startDate = new Date(dayStart).getTime();
-        let endDatetest = new Date(dayEnd).getTime();
+        // let startDate = new Date(dayStart).getTime();
+        // let endDatetest = new Date(dayEnd).getTime();
         let nameErrVi = "Vui lòng điền tên sự kiện";
         let nameErrEn = "Please enter event name";
         let dateStartErrVi = "Vui lòng chọn thời gian bắt đầu sự kiện";
@@ -267,7 +292,6 @@ class ModalEdit extends Component {
             }
             return;
         } else {
-            let endDate = +endDatetest + 86399000;
             let res = await editCouponService({
                 id,
                 name,

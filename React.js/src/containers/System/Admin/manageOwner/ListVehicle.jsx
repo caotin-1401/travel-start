@@ -18,7 +18,7 @@ import {
     Paper,
     Table,
 } from "@mui/material";
-import "./UserManage.scss";
+import "../style.scss";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
 class ListVehicleOfAdmin extends Component {
     constructor(props) {

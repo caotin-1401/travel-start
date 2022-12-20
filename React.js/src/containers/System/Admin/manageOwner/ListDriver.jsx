@@ -16,7 +16,7 @@ import {
     Paper,
     Table,
 } from "@mui/material";
-import "./UserManage.scss";
+import "../style.scss";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
 class ListDriver extends Component {
     constructor(props) {

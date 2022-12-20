@@ -72,11 +72,6 @@ class TablePassenger extends Component {
         }
     };
 
-    toggleModel = () => {
-        this.setState({
-            isOpenModel: !this.state.isOpenModel,
-        });
-    };
     toggleOpenModel = () => {
         this.setState({
             isOpenModel: !this.state.isOpenModel,

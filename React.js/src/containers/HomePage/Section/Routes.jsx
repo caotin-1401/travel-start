@@ -87,7 +87,7 @@ class Routes extends Component {
 
                                                 <div>
                                                     <div className="section-title">
-                                                        {`${item.from.city} - ${item.to.city} `}
+                                                        {`${item.from.city} -> ${item.to.city} `}
                                                     </div>
                                                 </div>
                                             </div>

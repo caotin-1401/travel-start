@@ -11,7 +11,7 @@ import {
     Col,
 } from "reactstrap";
 import Box from "@mui/material/Box";
-import "./TableStation.scss";
+import "../style.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
 import { toast } from "react-toastify";
@@ -133,7 +133,7 @@ class ModalAdd extends Component {
         let nameInput, addressInput;
         if (language === LANGUAGES.VI) {
             nameInput = "Tên bến xe";
-            addressInput = "Địa chỉ bến xê";
+            addressInput = "Địa chỉ bến xe";
         } else {
             nameInput = "Name bus station";
             addressInput = "Address bus station";

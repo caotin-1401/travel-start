@@ -8,6 +8,7 @@ import TableDiscount from "../containers/System/Admin/Discount/TableDiscount";
 import TableBlog from "../containers/System/Admin/Blog/TableBlog";
 import Dashboard from "../containers/System/Admin/Dashboard/Dashboard";
 import TableStation1 from "./../containers/System/Admin/Station/TableStation";
+import ListVehicleOfStation from "./../containers/System/Admin/Station/ListVehicleOfStation";
 import TableStation from "./../containers/System/Admin/ListStation/TableStation";
 import BusType from "./../containers/System/Admin/BusType/TableType";
 import TableRoutes from "./../containers/System/Admin/ListRoute/TableRoutes";
@@ -29,7 +30,6 @@ class System extends Component {
                                 path="/system/dashboard"
                                 component={Dashboard}
                             />
-
                             <Route
                                 path="/system/admin-manage"
                                 component={UserManage}
@@ -58,16 +58,18 @@ class System extends Component {
                                 path="/system/list-route"
                                 component={TableRoutes}
                             />
-
                             <Route
                                 path="/system/list-location"
                                 component={TableStation}
                             />
                             <Route
+                                path="/system/stationId=:id"
+                                component={ListVehicleOfStation}
+                            />
+                            <Route
                                 path="/system/parking-lot"
                                 component={TableStation1}
                             />
-
                             <Route
                                 path="/system/event"
                                 component={TableEvent}

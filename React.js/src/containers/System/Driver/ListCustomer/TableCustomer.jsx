@@ -27,7 +27,6 @@ import {
     handleStartTrip,
     handleEndTrip,
     handleDriverEndTrip,
-    getInfoDriverRoute,
     handleDriverStartTrip,
     getDriverTicketsRoute,
     getAllRouteFromDateDriver,

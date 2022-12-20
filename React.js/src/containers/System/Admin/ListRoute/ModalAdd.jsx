@@ -104,12 +104,12 @@ class ModalAdd extends Component {
                 areaEndId: selectLocaion2.value,
             });
             if (res && res.errCode === 0) {
+                this.props.createLocation(this.state);
                 if (language === LANGUAGES.VI) {
                     toast.success("Thêm tuyến đường thành công");
                 } else {
                     toast.success("Add successful routes");
                 }
-                this.props.createLocation(this.state);
             } else if (res && res.errCode === 1) {
                 if (language === LANGUAGES.VI) {
                     toast.error("Tuyến đường đã tồn tại");

@@ -93,6 +93,10 @@ let initWebRoutes = (app) => {
         "/api/get-all-vehicle-from-station",
         locationController.getAllVehicleFromStation
     );
+    router.get(
+        "/api/get-all-vehicle-from-one-station",
+        locationController.getAllVehicleFromOneStation
+    );
     router.get("/api/get-all-city", locationController.getAllCity);
 
     router.get("/api/get-all-bustypes", busTypeController.getAllBusTypes);

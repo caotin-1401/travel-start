@@ -57,14 +57,38 @@ let getAllVehicleFromStation = async (req, res) => {
             return res.status(200).json({
                 errCode: 1,
                 errMessage: "Missing required parameters",
-                locations: [],
+                vehicles: [],
             });
         }
-        let locations = await locationService.getAllVehicleFromStation(id);
+        let vehicles = await locationService.getAllVehicleFromStation(id);
         return res.status(200).json({
             errCode: 0,
             errMessage: "OK",
-            locations,
+            vehicles,
+        });
+    } catch (e) {
+        console.error("Get all code error:", e);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let getAllVehicleFromOneStation = async (req, res) => {
+    try {
+        let id = req.query.id; //ALL, id
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameters",
+                vehicles: [],
+            });
+        }
+        let vehicles = await locationService.getAllVehicleFromOneStation(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            vehicles,
         });
     } catch (e) {
         console.error("Get all code error:", e);
@@ -152,4 +176,5 @@ module.exports = {
     handleEditLocations,
     deleteLocations,
     getAllBusTypes,
+    getAllVehicleFromOneStation,
 };

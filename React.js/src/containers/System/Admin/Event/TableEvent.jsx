@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import "./TableEvent.scss";
+import "../style.scss";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
 import moment from "moment";
@@ -338,7 +338,7 @@ class TableEvent extends Component {
                                                                 user
                                                             )
                                                         }>
-                                                        <i class="fas fa-edit"></i>
+                                                        <i className="fas fa-edit"></i>
                                                     </button>
                                                     <button
                                                         className="btn-delete"

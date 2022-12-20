@@ -136,7 +136,7 @@ class ModalInfo extends Component {
                     </h4>
                     <Row>
                         {resultUser.length > 1 ? (
-                            <table class="table table-striped table-hover table-responsive">
+                            <table className="table table-striped table-hover table-responsive">
                                 <thead
                                     style={{ borderBottom: "2px solid black" }}>
                                     <tr>
@@ -160,12 +160,11 @@ class ModalInfo extends Component {
                                         resultUser.map((item, index) => {
                                             let time = moment(
                                                 +item.Trip.timeStart
-                                            ).format("llll");
+                                            ).format("DD/MM/yyyy HH:mm");
                                             let seatNO =
                                                 item.seatNo.join(" - ");
-                                            console.log(seatNO);
                                             return (
-                                                <tr>
+                                                <tr key={index}>
                                                     <td>
                                                         {item.Trip.areaStart} -{" "}
                                                         {item.Trip.areaEnd}
@@ -184,7 +183,7 @@ class ModalInfo extends Component {
                             </table>
                         ) : resultUser.length === 1 &&
                           resultUser[0].totalPrice ? (
-                            <table class="table table-striped table-hover table-responsive">
+                            <table className="table table-striped table-hover table-responsive">
                                 <thead
                                     style={{ borderBottom: "2px solid black" }}>
                                     <tr>
@@ -208,16 +207,24 @@ class ModalInfo extends Component {
                                         resultUser.map((item, index) => {
                                             let time = moment(
                                                 +item.dayStart
-                                            ).format("llll");
+                                            ).format("DD/MM/yyyy HH:mm");
                                             let seatNO =
                                                 item.seatNo.join(" - ");
                                             console.log(seatNO);
                                             return (
-                                                <tr>
-                                                    <td>{item.tripId}</td>
+                                                <tr key={index}>
+                                                    <td>
+                                                        {item.Trip.areaStart} -{" "}
+                                                        {item.Trip.areaEnd}
+                                                    </td>
                                                     <td>{time}</td>
                                                     <td>{seatNO}</td>
-                                                    <td>{item.totalPrice}</td>
+                                                    <td>
+                                                        {" "}
+                                                        {this.currencyFormat(
+                                                            item.totalPrice
+                                                        )}
+                                                    </td>
                                                 </tr>
                                             );
                                         })}

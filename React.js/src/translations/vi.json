@@ -76,7 +76,7 @@
                 "modaladd": "Thêm mới bến xe"
             },
             "listRoute": {
-                "title": "Quản lý danh sách tuyến xe",
+                "title": "Quản lý danh sách tuyến đường",
                 "name": "Tên tuyến xe",
                 "chooseStart": "Chọn bến khởi hành",
                 "chooseEnd": "Chọn bến kết thúc",
@@ -124,7 +124,9 @@
                 "driver": "Danh sách tài xế",
                 "vehicle": "Danh sách phương tiện",
                 "action": "Xóa nhà xe",
-                "add": "Thêm nhà xe"
+                "add": "Thêm nhà xe",
+                "modaltitle" : "Thêm nhà xe"
+                
             },
             "listDriver": {
                 "back": "Quay lại trang quản lý nhà xe",

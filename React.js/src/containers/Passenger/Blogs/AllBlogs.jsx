@@ -135,7 +135,7 @@ class AllBlogs extends Component {
                                                                 }
                                                             </h3>
                                                             <div>
-                                                                <i class="fas fa-calendar-check"></i>
+                                                                <i className="fas fa-calendar-check"></i>
                                                                 {time}
                                                             </div>
                                                         </div>

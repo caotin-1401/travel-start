@@ -127,7 +127,7 @@ class InfoTicket extends Component {
                 <div className="ticket-content">
                     {step === 0 &&
                         (arrTicket.length > 0 ? (
-                            <table class="table table-striped table-hover table-responsive">
+                            <table className="table table-striped table-hover table-responsive">
                                 <thead
                                     style={{ borderBottom: "2px solid black" }}>
                                     <tr>
@@ -188,7 +188,7 @@ class InfoTicket extends Component {
                             </div>
                         ))}
                     {step === 3 && (
-                        <table class="table table-striped table-hover table-responsive">
+                        <table className="table table-striped table-hover table-responsive">
                             <thead style={{ borderBottom: "2px solid black" }}>
                                 <tr>
                                     <th scope="col">Nơi xuất phát</th>

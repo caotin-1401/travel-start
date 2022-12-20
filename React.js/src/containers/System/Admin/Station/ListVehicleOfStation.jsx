@@ -1,16 +1,14 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import "../style.scss";
-import {
-    getAllUsers,
-    deleteUserService,
-} from "../../../../services/userService";
 import _ from "lodash";
-
+import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import * as actions from "../../../../store/actions";
-import ModalUser from "./ModalUser";
-import ModalEditUser from "./ModalEditUser";
+import { LANGUAGES } from "../../../../utils";
+import { withRouter } from "react-router";
+import { changeLanguageApp } from "../../../../store/actions/appActions";
+import localization from "moment/locale/vi";
+import moment from "moment";
 import {
     TableBody,
     TableContainer,
@@ -20,99 +18,82 @@ import {
     Paper,
     Table,
 } from "@mui/material";
-import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
-import { toast } from "react-toastify";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
+import {
+    getAllVehicleFromOneStation,
+    getAllVehicleFromStation,
+} from "../../../../services/userService";
+import ModalInfo from "./ModalInfo";
 
-class UserManage extends Component {
+class ListVehicleOfStation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            arrUsers: [],
-            isOpenModel: false,
-            isOpenModelEditUser: false,
-            userEdit: {},
-            usersRedux: [],
+            listVehicles: [],
             sortBy: "",
             sortField: "",
             keywordNumber: "",
             page: 0,
             rowsPerPage: 5,
+            image: "",
             isTest: false,
             test: [],
             test1: [],
+            nameStation: "",
+            isOpenModel: false,
+            DetailVehicle: [],
         };
     }
 
     async componentDidMount() {
-        await this.getAllAdmin();
+        await this.getAllvehicle();
     }
 
-    getAllAdmin = async () => {
-        let res = await getAllUsers("ALL");
-        let listAdmin;
-        if (res) {
-            if (res.errCode === 0) {
-                listAdmin = res.users.filter((item) => item.roleID === "R1");
+    getAllvehicle = async () => {
+        if (
+            this.props.match &&
+            this.props.match.params &&
+            this.props.match.params.id
+        ) {
+            let driverId = this.props.match.params.id;
+            let res = await getAllVehicleFromOneStation(driverId);
+            let resStation = await getAllVehicleFromStation(driverId);
+            res &&
+                res.vehicles.length > 0 &&
                 this.setState({
-                    usersRedux: listAdmin,
+                    listVehicles: res.vehicles,
+                    nameStation: resStation.vehicles[0].name,
                 });
-            }
         }
     };
-    //open modal
-    toggleUserModel = () => {
+    handleDeleteUser = (user) => {
+        this.props.deleteVehicle(user.id);
+    };
+    toggleOpenModel = () => {
         this.setState({
             isOpenModel: !this.state.isOpenModel,
         });
     };
-    toggleUserEditModel = () => {
-        this.setState({
-            isOpenModelEditUser: !this.state.isOpenModelEditUser,
-        });
-    };
-    handleAddUser = () => {
+
+    handleDetailInfo = (item) => {
         this.setState({
             isOpenModel: true,
-        });
-    };
-    handleEditUser = (user) => {
-        this.setState({
-            isOpenModelEditUser: true,
-            userEdit: user,
-        });
-    };
-
-    handleDeleteUser = async (user) => {
-        let res = await deleteUserService(user.id);
-        if (res && res.errCode === 0) {
-            toast.success("xoa thanh cong");
-            await this.getAllAdmin();
-        } else {
-            toast.error("xoa that bai");
-            await this.getAllAdmin();
-        }
-    };
-
-    createNewUser1 = async (data) => {
-        await this.getAllAdmin();
-        this.setState({
-            isOpenModel: false,
+            DetailVehicle: item,
         });
     };
     handleSort = (a, b) => {
-        this.state.usersRedux = _.orderBy(this.state.usersRedux, [b], [a]);
+        this.state.listVehicles = _.orderBy(this.state.listVehicles, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            usersRedux: this.state.usersRedux,
+            listVehicles: this.state.listVehicles,
         });
     };
     handleKeyword = (e) => {
-        let term = e.target.value;
-        let clone = this.state.usersRedux;
+        let term = e.target.value.toUpperCase();
+        let clone = this.state.listVehicles;
         if (term) {
-            clone = clone.filter((item) => item.email.includes(term));
+            clone = clone.filter((item) => item.number.includes(term));
             this.setState({
                 test1: clone,
                 isTest: true,
@@ -121,15 +102,17 @@ class UserManage extends Component {
             this.setState({
                 isTest: false,
             });
-            this.getAllAdmin();
+            this.props.fetchAllVehicle();
         }
     };
-    handleKeyword1 = async (e) => {
-        let term = e.target.value;
-        let clone = this.state.usersRedux;
+    handleKeyword1 = (e) => {
+        let term = e.target.value.toUpperCase();
+        let clone = this.state.listVehicles;
 
         if (term) {
-            clone = clone.filter((item) => item.phoneNumber.includes(term));
+            clone = clone.filter((item) =>
+                item.BusType.typeName.includes(term)
+            );
             this.setState({
                 test1: clone,
                 isTest: true,
@@ -138,41 +121,53 @@ class UserManage extends Component {
             this.setState({
                 isTest: false,
             });
-            await this.getAllAdmin();
+            this.props.fetchAllVehicle();
+        }
+    };
+    handleBack = () => {
+        if (this.props.history) {
+            this.props.history.push(`/system/parking-lot`);
         }
     };
     render() {
-        let { usersRedux, rowsPerPage, page, test, test1, isTest } = this.state;
-        isTest === true ? (test = test1) : (test = usersRedux);
-
+        let {
+            page,
+            rowsPerPage,
+            listVehicles,
+            test,
+            test1,
+            isTest,
+            nameStation,
+        } = this.state;
+        isTest === true ? (test = test1) : (test = listVehicles);
+        let { language } = this.props;
+        let title;
+        if (test.length > 0) {
+            if (language === LANGUAGES.VI) {
+                title = `Danh sách phương tiện giao thông trong  ${nameStation}`;
+            } else {
+                title = `List of vehicles in ${nameStation}`;
+            }
+        }
         return (
-            <div className="container form-redux">
-                <div className="user-container">
-                    <ModalUser
-                        usersRedux={usersRedux}
+            <>
+                {" "}
+                {this.state.isOpenModel && (
+                    <ModalInfo
                         isOpen={this.state.isOpenModel}
-                        toggleFromParent={this.toggleUserModel}
-                        createNewUser1={this.createNewUser1}
+                        toggleFromParent={this.toggleOpenModel}
+                        currentUser={this.state.DetailVehicle}
                     />
-                    {this.state.isOpenModelEditUser && (
-                        <ModalEditUser
-                            isOpen={this.state.isOpenModelEditUser}
-                            toggleFromParent={this.toggleUserEditModel}
-                            currentUser={this.state.userEdit}
-                        />
-                    )}
-                    <div className="title text-center">
-                        <FormattedMessage id="menu.admin.listAdmin.title" />
-                    </div>
-                    <div className="mx-5 my-3">
-                        <button
-                            className="btn btn-primary px-3"
-                            onClick={() => this.handleAddUser()}>
-                            <i className="fas fa-plus px-1"></i>
-                            <FormattedMessage id="menu.admin.listAdmin.add" />
-                        </button>
-                    </div>
-                    <div className="use-table m-3">
+                )}
+                <div onClick={() => this.handleBack()} className="backsystem">
+                    <i className="fas fa-arrow-left"></i>{" "}
+                    <FormattedMessage id="menu.admin.listDriver.back" />
+                </div>
+                <div className="container form-redux">
+                    <div className="user-container">
+                        <div className="title text-center">{title}</div>
+
+                        <div style={{ marginTop: "50px" }}></div>
                         <TableContainer component={Paper} id="customers">
                             <Table>
                                 <TableBody>
@@ -189,19 +184,20 @@ class UserManage extends Component {
                                         </th>
                                         <th
                                             style={{
-                                                width: "34%",
+                                                width: "20%",
                                             }}>
                                             <div className="section-title">
                                                 <div>
-                                                    <FormattedMessage id="menu.admin.listAdmin.name" />
+                                                    <FormattedMessage id="menu.busOwner.vehicle.bsx" />
                                                 </div>
                                                 <div>
+                                                    {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
                                                             this.handleSort(
                                                                 "asc",
-                                                                "name"
+                                                                "number"
                                                             )
                                                         }
                                                     />
@@ -210,7 +206,7 @@ class UserManage extends Component {
                                                         onClick={() =>
                                                             this.handleSort(
                                                                 "desc",
-                                                                "name"
+                                                                "number"
                                                             )
                                                         }
                                                     />
@@ -218,32 +214,54 @@ class UserManage extends Component {
                                             </div>
                                         </th>
 
-                                        <th>
+                                        <th
+                                            style={{
+                                                width: "20%",
+                                            }}>
                                             <div className="section-title">
-                                                Email
+                                                <div>
+                                                    <FormattedMessage id="menu.busOwner.vehicle.seat" />
+                                                </div>
+                                                <div>
+                                                    {" "}
+                                                    <FaLongArrowAltDown
+                                                        className="iconSortDown"
+                                                        onClick={() =>
+                                                            this.handleSort(
+                                                                "asc",
+                                                                "BusType.numOfSeat"
+                                                            )
+                                                        }
+                                                    />
+                                                    <FaLongArrowAltUp
+                                                        className="iconSortDown"
+                                                        onClick={() =>
+                                                            this.handleSort(
+                                                                "desc",
+                                                                "BusType.numOfSeat"
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
                                             </div>
                                         </th>
-                                        <th>
-                                            <div className="section-title">
-                                                <FormattedMessage id="menu.admin.listAdmin.phone" />
-                                            </div>
+                                        <th
+                                            style={{
+                                                width: "15%",
+                                            }}
+                                            className="section-id-list">
+                                            Thời gian vào bến
                                         </th>
-
-                                        <th style={{ width: "10%" }}>
-                                            <FormattedMessage id="menu.admin.listAdmin.action" />
+                                        <th className="section-id-list">
+                                            Nhà xe
+                                        </th>
+                                        <th className="section-id-list">
+                                            Thông tin chi tiết
                                         </th>
                                     </tr>
                                     <tr style={{ height: "50px" }}>
                                         <td></td>
-                                        <td></td>
-                                        <td>
-                                            <input
-                                                className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword(e)
-                                                }
-                                            />
-                                        </td>
+
                                         <td>
                                             <input
                                                 className="form-control"
@@ -252,42 +270,42 @@ class UserManage extends Component {
                                                 }
                                             />
                                         </td>
-
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                         <td></td>
                                     </tr>
-                                    {(rowsPerPage > 0 && test && test.length > 0
+                                    {(rowsPerPage > 0
                                         ? test.slice(
                                               page * rowsPerPage,
                                               page * rowsPerPage + rowsPerPage
                                           )
                                         : test
-                                    ).map((user, index) => {
+                                    ).map((item, index) => {
+                                        let time = moment(
+                                            +item.arrivalTime
+                                        ).format("DD/MM/YYYY HH:mm");
                                         return (
                                             <tr key={index}>
-                                                <td>{user.id}</td>
-
-                                                <td>{user.name}</td>
-                                                <td>{user.email}</td>
-                                                <td>{user.phoneNumber}</td>
+                                                <td className="section-id-list">
+                                                    {item.id}
+                                                </td>
+                                                <td>{item.number}</td>
                                                 <td>
+                                                    {item.BusType.numOfSeat}
+                                                </td>
+                                                <td>{time}</td>
+                                                <td>{item.User.name}</td>
+                                                <td className="center">
                                                     <button
                                                         title="Infomation Detail"
                                                         className="btn-edit"
                                                         onClick={() =>
-                                                            this.handleEditUser(
-                                                                user
+                                                            this.handleDetailInfo(
+                                                                item
                                                             )
                                                         }>
                                                         <i className="fas fa-info-circle"></i>
-                                                    </button>
-                                                    <button
-                                                        className="btn-delete"
-                                                        onClick={() =>
-                                                            this.handleDeleteUser(
-                                                                user
-                                                            )
-                                                        }>
-                                                        <i className="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
                                             </tr>
@@ -319,7 +337,7 @@ class UserManage extends Component {
                                                 { label: "All", value: -1 },
                                             ]}
                                             colSpan={7}
-                                            count={usersRedux.length}
+                                            count={test.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
@@ -339,27 +357,31 @@ class UserManage extends Component {
                                 </TableFooter>
                             </Table>
                         </TableContainer>
+                        {/* </div> */}
                     </div>
                 </div>
-            </div>
+            </>
         );
     }
 }
 
 const mapStateToProps = (state) => {
     return {
+        listVehicle: state.admin.vehicles,
         language: state.app.language,
-        // genderRedux: state.admin.gender,
-        listUsers: state.admin.users,
+        userInfo: state.user.userInfo,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getGenderStart: () => dispatch(actions.fetchGenderStart()),
-        fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()),
-        deleteUser: (id) => dispatch(actions.deleteUser(id)),
+        fetchAllVehicle: () => dispatch(actions.fetchAllVehicle()),
+        deleteVehicle: (id) => dispatch(actions.deleteVehicle(id)),
+        changeLanguageAppRedux: (language) =>
+            dispatch(changeLanguageApp(language)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserManage);
+export default withRouter(
+    connect(mapStateToProps, mapDispatchToProps)(ListVehicleOfStation)
+);

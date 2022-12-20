@@ -40,6 +40,16 @@ const getInfoDriverRoute = (inputId) => {
         id: inputId,
     });
 };
+const getAllVehicleFromStation = (inputId) => {
+    return axios.get(`/api/get-all-vehicle-from-station?id=${inputId}`, {
+        id: inputId,
+    });
+};
+const getAllVehicleFromOneStation = (inputId) => {
+    return axios.get(`/api/get-all-vehicle-from-one-station?id=${inputId}`, {
+        id: inputId,
+    });
+};
 const handleDriverStartTrip = (inputData) => {
     return axios.put("/api/handle-driver-start-trip", inputData);
 };
@@ -335,6 +345,7 @@ const checkCustomerPresent = (inputData) => {
     return axios.put("/api/check-customer", inputData);
 };
 export {
+    getAllVehicleFromStation,
     getAllBlogsService,
     createNewBlogsService,
     deleteBlogsService,
@@ -405,4 +416,5 @@ export {
     cancelTicket,
     deleteTicket,
     handEditPassenger,
+    getAllVehicleFromOneStation,
 };

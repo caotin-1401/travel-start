@@ -11,7 +11,7 @@ import {
     Col,
 } from "reactstrap";
 import Box from "@mui/material/Box";
-import "./TableEvent.scss";
+import "../style.scss";
 import DatePicker from "../../../../components/DatePicker";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
@@ -43,7 +43,6 @@ class ModalEdit extends Component {
     }
     async componentDidMount() {
         let user = this.props.currentUser;
-        console.log(user);
         if (user && !_.isEmpty(user)) {
             let imageBase64 = "";
             if (user.image) {
@@ -79,8 +78,6 @@ class ModalEdit extends Component {
     };
     handleChangeImage = async (event) => {
         const file = event.target.files[0];
-        console.log(file);
-        console.log(file.preview);
 
         if (file) {
             let base64 = await CommonUtils.getBase64(file);
@@ -118,16 +115,34 @@ class ModalEdit extends Component {
             descriptionMarkdown,
             id,
         } = this.state;
+
         let str = "00:00";
-        let [day1, month1, year1] = dayStart.split("/");
-        let [day2, month2, year2] = dayEnd.split("/");
         let [hours, minutes] = str.split(":");
+        let startDate, endDate;
+        if (!dayStart.length && !dayEnd.length) {
+            startDate = new Date(dayStart).getTime();
+            endDate = new Date(dayEnd).getTime() + 86399000;
+        } else if (!dayEnd.length && dayStart.length === 10) {
+            endDate = new Date(dayEnd).getTime() + 86399000;
+            let [day1, month1, year1] = dayStart.split("/");
+            let date1 = new Date(+year1, month1 - 1, +day1, +hours, +minutes);
+            startDate = Math.floor(date1.getTime());
+        } else if (!dayStart.length && dayEnd.length === 10) {
+            startDate = new Date(dayStart).getTime();
+            let [day2, month2, year2] = dayEnd.split("/");
+            let date2 = new Date(+year2, month2 - 1, +day2, +hours, +minutes);
+            endDate = Math.floor(date2.getTime()) + 86399000;
+        } else {
+            let [day1, month1, year1] = dayStart.split("/");
+            let [day2, month2, year2] = dayEnd.split("/");
 
-        let date1 = new Date(+year1, month1 - 1, +day1, +hours, +minutes);
-        let date2 = new Date(+year2, month2 - 1, +day2, +hours, +minutes);
-        const startDate = Math.floor(date1.getTime());
-        const endDate = Math.floor(date2.getTime()) + 86399000;
-
+            let date1 = new Date(+year1, month1 - 1, +day1, +hours, +minutes);
+            let date2 = new Date(+year2, month2 - 1, +day2, +hours, +minutes);
+            startDate = Math.floor(date1.getTime());
+            endDate = Math.floor(date2.getTime()) + 86399000;
+        }
+        // let startDate = new Date(dayStart).getTime();
+        // let endDate = new Date(dayEnd).getTime();
         let language = this.props.language;
 
         let nameErrVi = "Vui lòng điền tên sự kiện";
@@ -305,7 +320,6 @@ class ModalEdit extends Component {
                                                     id="schedule2"
                                                     value={dayEnd}
                                                     selected={dayEnd}
-                                                    // minDate={new Date()}
                                                 />
                                                 <label
                                                     htmlFor="schedule2"

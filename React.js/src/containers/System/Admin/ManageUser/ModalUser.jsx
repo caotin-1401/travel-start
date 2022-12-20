@@ -10,7 +10,7 @@ import {
     Row,
     Col,
 } from "reactstrap";
-import "./UserManage.scss";
+import "../style.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
 import PropTypes from "prop-types";
