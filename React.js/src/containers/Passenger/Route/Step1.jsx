@@ -16,7 +16,7 @@ class Step1 extends Component {
     }
 
     async componentDidMount() {
-        let { rangeSeat, seatArr, price, totalPrice } = this.state;
+        let { totalPrice } = this.state;
 
         this.props.fetchAllArrSeat();
         this.props.fetchAllTickets();
@@ -71,9 +71,7 @@ class Step1 extends Component {
                 });
             }
         }
-        if (
-            prevProps.listOfTicketDisabled !== this.props.listOfTicketDisabled
-        ) {
+        if (prevProps.listOfTicketDisabled !== this.props.listOfTicketDisabled) {
             this.setState({
                 seatDisable: this.props.listOfTicketDisabled,
             });
@@ -87,10 +85,7 @@ class Step1 extends Component {
                 return item;
             });
             seatArr = rangeSeat.filter((item) => {
-                return (
-                    item.isSelected === true &&
-                    item.tripId === this.props.tripInfoFromParent.id
-                );
+                return item.isSelected === true && item.tripId === this.props.tripInfoFromParent.id;
             });
             if (seatArr && seatArr.length > 0) {
                 totalPrice = seatArr.length * price;
@@ -107,8 +102,7 @@ class Step1 extends Component {
         return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
     }
     render() {
-        let { rangeSeat, dataTicket, totalPrice, seatArr, seatDisable } =
-            this.state;
+        let { rangeSeat, dataTicket, totalPrice, seatArr, seatDisable } = this.state;
         // console.log(totalPrice);
         let lengthArr = rangeSeat.length;
         return (
@@ -122,21 +116,15 @@ class Step1 extends Component {
                                 </div>
                                 <div className="seat__info">
                                     <div className="seat__info--empty"></div>
-                                    <span className="seat__info--name">
-                                        Còn trống
-                                    </span>
+                                    <span className="seat__info--name">Còn trống</span>
                                 </div>
                                 <div className="seat__info">
                                     <div className="seat__info--booked"></div>
-                                    <span className="seat__info--name">
-                                        Đã đặt
-                                    </span>
+                                    <span className="seat__info--name">Đã đặt</span>
                                 </div>
                                 <div className="seat__info">
                                     <div className="seat__info--select"></div>
-                                    <span className="seat__info--name">
-                                        Đang chọn
-                                    </span>
+                                    <span className="seat__info--name">Đang chọn</span>
                                 </div>
                             </div>
                         </div>
@@ -175,213 +163,128 @@ class Step1 extends Component {
                         {lengthArr === 40 && (
                             <div style={{ display: "flex" }}>
                                 <div>
-                                    <span style={{ fontSize: "20px" }}>
-                                        Tầng 1
-                                    </span>
+                                    <span style={{ fontSize: "20px" }}>Tầng 1</span>
                                     <div className="floor1">
                                         <div className="row">
                                             <p className="driver">TÀI XẾ</p>
-                                            {rangeSeat
-                                                .slice(0, lengthArr / 2)
-                                                .map((s, index) => {
-                                                    let a = seatDisable.find(
-                                                        (item) =>
-                                                            item.seatNo ===
-                                                                s.keyMap &&
-                                                            item.tripId ===
-                                                                dataTicket.id
-                                                    );
+                                            {rangeSeat.slice(0, lengthArr / 2).map((s, index) => {
+                                                let a = seatDisable.find(
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
+                                                );
 
-                                                    return (
-                                                        <>
-                                                            {index > 14 ? (
-                                                                <div className="w-17">
-                                                                    <td
-                                                                        className="w-17"
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last_5">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            ) : (
-                                                                <div className="col-4">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    );
-                                                })}
+                                                return (
+                                                    <>
+                                                        {index > 14 ? (
+                                                            <div className="w-17">
+                                                                <td className="w-17" key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last_5">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="col-4">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <span style={{ fontSize: "20px" }}>
-                                        Tầng 2
-                                    </span>
+                                    <span style={{ fontSize: "20px" }}>Tầng 2</span>
                                     <div className="floor2">
                                         <div className="row">
                                             <p className="driver_none"></p>
-                                            {rangeSeat
-                                                .slice(lengthArr / 2, lengthArr)
-                                                .map((s, index) => {
-                                                    let a = seatDisable.find(
-                                                        (item) =>
-                                                            item.seatNo ===
-                                                                s.keyMap &&
-                                                            item.tripId ===
-                                                                dataTicket.id
-                                                    );
-                                                    return (
-                                                        <>
-                                                            {index > 14 ? (
-                                                                <div className="w-17">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last_5">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            ) : (
-                                                                <div className="col-4">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    );
-                                                })}
+                                            {rangeSeat.slice(lengthArr / 2, lengthArr).map((s, index) => {
+                                                let a = seatDisable.find(
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
+                                                );
+                                                return (
+                                                    <>
+                                                        {index > 14 ? (
+                                                            <div className="w-17">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last_5">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="col-4">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -390,289 +293,171 @@ class Step1 extends Component {
                         {lengthArr === 44 && (
                             <div style={{ display: "flex" }}>
                                 <div>
-                                    <span style={{ fontSize: "20px" }}>
-                                        Tầng 1
-                                    </span>
+                                    <span style={{ fontSize: "20px" }}>Tầng 1</span>
                                     <div className="floor1">
                                         <div className="row">
                                             <p className="driver">TÀI XẾ</p>
-                                            {rangeSeat
-                                                .slice(0, lengthArr / 2)
-                                                .map((s, index) => {
-                                                    let a = seatDisable.find(
-                                                        (item) =>
-                                                            item.seatNo ===
-                                                                s.keyMap &&
-                                                            item.tripId ===
-                                                                dataTicket.id
-                                                    );
-                                                    return (
-                                                        <>
-                                                            {index > 16 ? (
-                                                                <div className="w-17">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last_5">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            ) : index === 15 ? (
-                                                                <div className="col-8">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            ) : (
-                                                                <div className="col-4">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    );
-                                                })}
+                                            {rangeSeat.slice(0, lengthArr / 2).map((s, index) => {
+                                                let a = seatDisable.find(
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
+                                                );
+                                                return (
+                                                    <>
+                                                        {index > 16 ? (
+                                                            <div className="w-17">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last_5">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        ) : index === 15 ? (
+                                                            <div className="col-8">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="col-4">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <span style={{ fontSize: "20px" }}>
-                                        Tầng 2
-                                    </span>
+                                    <span style={{ fontSize: "20px" }}>Tầng 2</span>
                                     <div className="floor2">
                                         <div className="row">
                                             <p className="driver_none"></p>
-                                            {rangeSeat
-                                                .slice(lengthArr / 2, lengthArr)
-                                                .map((s, index) => {
-                                                    let a = seatDisable.find(
-                                                        (item) =>
-                                                            item.seatNo ===
-                                                                s.keyMap &&
-                                                            item.tripId ===
-                                                                dataTicket.id
-                                                    );
-                                                    return (
-                                                        <>
-                                                            {index > 16 ? (
-                                                                <div className="w-17">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last_5">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            ) : index === 15 ? (
-                                                                <div className="col-8">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            ) : (
-                                                                <div className="col-4">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    );
-                                                })}
+                                            {rangeSeat.slice(lengthArr / 2, lengthArr).map((s, index) => {
+                                                let a = seatDisable.find(
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
+                                                );
+                                                return (
+                                                    <>
+                                                        {index > 16 ? (
+                                                            <div className="w-17">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last_5">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        ) : index === 15 ? (
+                                                            <div className="col-8">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="col-4">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -681,211 +466,127 @@ class Step1 extends Component {
                         {lengthArr === 34 && (
                             <div style={{ display: "flex" }}>
                                 <div>
-                                    <span style={{ fontSize: "20px" }}>
-                                        Tầng 1
-                                    </span>
+                                    <span style={{ fontSize: "20px" }}>Tầng 1</span>
                                     <div className="floor1">
                                         <div className="row">
                                             <p className="driver">TÀI XẾ</p>
-                                            {rangeSeat
-                                                .slice(0, lengthArr / 2)
-                                                .map((s, index) => {
-                                                    let a = seatDisable.find(
-                                                        (item) =>
-                                                            item.seatNo ===
-                                                                s.keyMap &&
-                                                            item.tripId ===
-                                                                dataTicket.id
-                                                    );
-                                                    return (
-                                                        <>
-                                                            {index === 15 ? (
-                                                                <div className="col-8">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            ) : (
-                                                                <div className="col-4">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    );
-                                                })}
+                                            {rangeSeat.slice(0, lengthArr / 2).map((s, index) => {
+                                                let a = seatDisable.find(
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
+                                                );
+                                                return (
+                                                    <>
+                                                        {index === 15 ? (
+                                                            <div className="col-8">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="col-4">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <span style={{ fontSize: "20px" }}>
-                                        Tầng 2
-                                    </span>
+                                    <span style={{ fontSize: "20px" }}>Tầng 2</span>
                                     <div className="floor2">
                                         <div className="row">
                                             <p className="driver_none"></p>
-                                            {rangeSeat
-                                                .slice(lengthArr / 2, lengthArr)
-                                                .map((s, index) => {
-                                                    let a = seatDisable.find(
-                                                        (item) =>
-                                                            item.seatNo ===
-                                                                s.keyMap &&
-                                                            item.tripId ===
-                                                                dataTicket.id
-                                                    );
-                                                    return (
-                                                        <>
-                                                            {index === 15 ? (
-                                                                <div className="col-8">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            ) : (
-                                                                <div className="col-4">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}
-                                                                            className="seat_last">
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    );
-                                                })}
+                                            {rangeSeat.slice(lengthArr / 2, lengthArr).map((s, index) => {
+                                                let a = seatDisable.find(
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
+                                                );
+                                                return (
+                                                    <>
+                                                        {index === 15 ? (
+                                                            <div className="col-8">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="col-4">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}
+                                                                        className="seat_last">
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -897,141 +598,82 @@ class Step1 extends Component {
                                     <div className="background_28">
                                         <div className="row">
                                             <p className="driver">TÀI XẾ</p>
-                                            {rangeSeat
-                                                .slice(0, lengthArr)
-                                                .map((s, index) => {
-                                                    let a = seatDisable.find(
-                                                        (item) =>
-                                                            item.seatNo ===
-                                                                s.keyMap &&
-                                                            item.tripId ===
-                                                                dataTicket.id
-                                                    );
-                                                    return (
-                                                        <>
-                                                            {index > 23 ? (
-                                                                <div className="col-3">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            className="seat_28"
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}>
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            ) : (index + 2) %
-                                                                  3 ===
-                                                              0 ? (
-                                                                <div className="col-6">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            className="seat_28"
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}>
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            ) : (
-                                                                <div className="col-3">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
-                                                                            disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
-                                                                                    ? true
-                                                                                    : false
-                                                                            }
-                                                                            className="seat_28"
-                                                                            style={{
-                                                                                background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
-                                                                                        ? "#767676"
-                                                                                        : s.isSelected
-                                                                                        ? "#5090e9"
-                                                                                        : "white"
-                                                                                }`,
-                                                                            }}>
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
-                                                                        </button>
-                                                                    </td>
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    );
-                                                })}
+                                            {rangeSeat.slice(0, lengthArr).map((s, index) => {
+                                                let a = seatDisable.find(
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
+                                                );
+                                                return (
+                                                    <>
+                                                        {index > 23 ? (
+                                                            <div className="col-3">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        className="seat_28"
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}>
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        ) : (index + 2) % 3 === 0 ? (
+                                                            <div className="col-6">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        className="seat_28"
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}>
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="col-3">
+                                                                <td key={index}>
+                                                                    <button
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
+                                                                        disabled={
+                                                                            a && a.seatNo === s.keyMap ? true : false
+                                                                        }
+                                                                        className="seat_28"
+                                                                        style={{
+                                                                            background: `${
+                                                                                a && a.seatNo === s.keyMap
+                                                                                    ? "#767676"
+                                                                                    : s.isSelected
+                                                                                    ? "#5090e9"
+                                                                                    : "white"
+                                                                            }`,
+                                                                        }}>
+                                                                        <div>{s.keyMap}</div>
+                                                                    </button>
+                                                                </td>
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -1040,121 +682,71 @@ class Step1 extends Component {
                         {lengthArr === 22 && (
                             <div style={{ display: "flex" }}>
                                 <div>
-                                    <span style={{ fontSize: "20px" }}>
-                                        Tầng 1
-                                    </span>
+                                    <span style={{ fontSize: "20px" }}>Tầng 1</span>
                                     <div className="background_22">
                                         <div className="row">
                                             <p className="driver">TÀI XẾ</p>
-                                            {rangeSeat
-                                                .slice(0, lengthArr / 2)
-                                                .map((s, index) => {
-                                                    let a = seatDisable.find(
-                                                        (item) =>
-                                                            item.seatNo ===
-                                                                s.keyMap &&
-                                                            item.tripId ===
-                                                                dataTicket.id
-                                                    );
-                                                    return (
-                                                        <div className="col-6">
-                                                            <td
-                                                                key={index}
-                                                                className="fcc">
-                                                                <button
-                                                                    onClick={() =>
-                                                                        this.handleClickBtnSeat(
-                                                                            s
-                                                                        )
-                                                                    }
-                                                                    disabled={
-                                                                        a &&
-                                                                        a.seatNo ===
-                                                                            s.keyMap
-                                                                            ? true
-                                                                            : false
-                                                                    }
-                                                                    className="seat_22"
-                                                                    style={{
-                                                                        background: `${
-                                                                            a &&
-                                                                            a.seatNo ===
-                                                                                s.keyMap
-                                                                                ? "#767676"
-                                                                                : s.isSelected
-                                                                                ? "#5090e9"
-                                                                                : "white"
-                                                                        }`,
-                                                                    }}>
-                                                                    <div>
-                                                                        {" "}
-                                                                        {s}
-                                                                    </div>
-                                                                </button>
-                                                            </td>
-                                                        </div>
-                                                    );
-                                                })}
+                                            {rangeSeat.slice(0, lengthArr / 2).map((s, index) => {
+                                                let a = seatDisable.find(
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
+                                                );
+                                                return (
+                                                    <div className="col-6">
+                                                        <td key={index} className="fcc">
+                                                            <button
+                                                                onClick={() => this.handleClickBtnSeat(s)}
+                                                                disabled={a && a.seatNo === s.keyMap ? true : false}
+                                                                className="seat_22"
+                                                                style={{
+                                                                    background: `${
+                                                                        a && a.seatNo === s.keyMap
+                                                                            ? "#767676"
+                                                                            : s.isSelected
+                                                                            ? "#5090e9"
+                                                                            : "white"
+                                                                    }`,
+                                                                }}>
+                                                                <div> {s}</div>
+                                                            </button>
+                                                        </td>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <span style={{ fontSize: "20px" }}>
-                                        Tầng 2
-                                    </span>
+                                    <span style={{ fontSize: "20px" }}>Tầng 2</span>
                                     <div className="background_22">
                                         <div className="row">
                                             <p className="driver_none"></p>
-                                            {rangeSeat
-                                                .slice(lengthArr / 2, lengthArr)
-                                                .map((s, index) => {
-                                                    let a = seatDisable.find(
-                                                        (item) =>
-                                                            item.seatNo ===
-                                                                s.keyMap &&
-                                                            item.tripId ===
-                                                                dataTicket.id
-                                                    );
-                                                    return (
-                                                        <div className="col-6">
-                                                            <td
-                                                                key={index}
-                                                                className="fcc">
-                                                                <button
-                                                                    onClick={() =>
-                                                                        this.handleClickBtnSeat(
-                                                                            s
-                                                                        )
-                                                                    }
-                                                                    disabled={
-                                                                        a &&
-                                                                        a.seatNo ===
-                                                                            s.keyMap
-                                                                            ? true
-                                                                            : false
-                                                                    }
-                                                                    className="seat_22"
-                                                                    style={{
-                                                                        background: `${
-                                                                            a &&
-                                                                            a.seatNo ===
-                                                                                s.keyMap
-                                                                                ? "#767676"
-                                                                                : s.isSelected
-                                                                                ? "#5090e9"
-                                                                                : "white"
-                                                                        }`,
-                                                                    }}>
-                                                                    <div>
-                                                                        {" "}
-                                                                        {s}
-                                                                    </div>
-                                                                </button>
-                                                            </td>
-                                                        </div>
-                                                    );
-                                                })}
+                                            {rangeSeat.slice(lengthArr / 2, lengthArr).map((s, index) => {
+                                                let a = seatDisable.find(
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
+                                                );
+                                                return (
+                                                    <div className="col-6">
+                                                        <td key={index} className="fcc">
+                                                            <button
+                                                                onClick={() => this.handleClickBtnSeat(s)}
+                                                                disabled={a && a.seatNo === s.keyMap ? true : false}
+                                                                className="seat_22"
+                                                                style={{
+                                                                    background: `${
+                                                                        a && a.seatNo === s.keyMap
+                                                                            ? "#767676"
+                                                                            : s.isSelected
+                                                                            ? "#5090e9"
+                                                                            : "white"
+                                                                    }`,
+                                                                }}>
+                                                                <div> {s}</div>
+                                                            </button>
+                                                        </td>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -1165,139 +757,84 @@ class Step1 extends Component {
                                 <div>
                                     <div className="background_16">
                                         <div className="row">
-                                            <p className="col-3 driver_16">
-                                                TÀI XẾ
-                                            </p>
+                                            <p className="col-3 driver_16">TÀI XẾ</p>
                                             {rangeSeat.map((s, index) => {
                                                 let a = seatDisable.find(
-                                                    (item) =>
-                                                        item.seatNo ===
-                                                            s.keyMap &&
-                                                        item.tripId ===
-                                                            dataTicket.id
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
                                                 );
                                                 return (
                                                     <>
-                                                        {index === 15 ?? (
-                                                            <div className="display_none"></div>
-                                                        )}
+                                                        {index === 15 ?? <div className="display_none"></div>}
                                                         {index !== 15 &&
                                                             (index > 10 ? (
                                                                 <div className="col-3">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
+                                                                    <td key={index}>
                                                                         <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
+                                                                            onClick={() => this.handleClickBtnSeat(s)}
                                                                             disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
+                                                                                a && a.seatNo === s.keyMap
                                                                                     ? true
                                                                                     : false
                                                                             }
                                                                             className="seat_16"
                                                                             style={{
                                                                                 background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
+                                                                                    a && a.seatNo === s.keyMap
                                                                                         ? "#767676"
                                                                                         : s.isSelected
                                                                                         ? "#5090e9"
                                                                                         : "white"
                                                                                 }`,
                                                                             }}>
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
+                                                                            <div>{s.keyMap}</div>
                                                                         </button>
                                                                     </td>
                                                                 </div>
-                                                            ) : (index + 2) %
-                                                                  3 ===
-                                                              0 ? (
+                                                            ) : (index + 2) % 3 === 0 ? (
                                                                 <div className="col-6">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
+                                                                    <td key={index}>
                                                                         <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
+                                                                            onClick={() => this.handleClickBtnSeat(s)}
                                                                             disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
+                                                                                a && a.seatNo === s.keyMap
                                                                                     ? true
                                                                                     : false
                                                                             }
                                                                             className="seat_16"
                                                                             style={{
                                                                                 background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
+                                                                                    a && a.seatNo === s.keyMap
                                                                                         ? "#767676"
                                                                                         : s.isSelected
                                                                                         ? "#5090e9"
                                                                                         : "white"
                                                                                 }`,
                                                                             }}>
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
+                                                                            <div>{s.keyMap}</div>
                                                                         </button>
                                                                     </td>
                                                                 </div>
                                                             ) : (
                                                                 <div className="col-3">
-                                                                    <td
-                                                                        key={
-                                                                            index
-                                                                        }>
+                                                                    <td key={index}>
                                                                         <button
-                                                                            onClick={() =>
-                                                                                this.handleClickBtnSeat(
-                                                                                    s
-                                                                                )
-                                                                            }
+                                                                            onClick={() => this.handleClickBtnSeat(s)}
                                                                             disabled={
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
+                                                                                a && a.seatNo === s.keyMap
                                                                                     ? true
                                                                                     : false
                                                                             }
                                                                             className="seat_16"
                                                                             style={{
                                                                                 background: `${
-                                                                                    a &&
-                                                                                    a.seatNo ===
-                                                                                        s.keyMap
+                                                                                    a && a.seatNo === s.keyMap
                                                                                         ? "#767676"
                                                                                         : s.isSelected
                                                                                         ? "#5090e9"
                                                                                         : "white"
                                                                                 }`,
                                                                             }}>
-                                                                            <div>
-                                                                                {
-                                                                                    s.keyMap
-                                                                                }
-                                                                            </div>
+                                                                            <div>{s.keyMap}</div>
                                                                         </button>
                                                                     </td>
                                                                 </div>
@@ -1315,56 +852,32 @@ class Step1 extends Component {
                                 <div>
                                     <div className="background_16">
                                         <div className="row">
-                                            <p className="col-4 driver_16">
-                                                TÀI XẾ
-                                            </p>
+                                            <p className="col-4 driver_16">TÀI XẾ</p>
                                             {rangeSeat.map((s, index) => {
                                                 let a = seatDisable.find(
-                                                    (item) =>
-                                                        item.seatNo ===
-                                                            s.keyMap &&
-                                                        item.tripId ===
-                                                            dataTicket.id
+                                                    (item) => item.seatNo === s.keyMap && item.tripId === dataTicket.id
                                                 );
                                                 return (
                                                     <>
-                                                        {(index > 2 &&
-                                                            index < 6 &&
-                                                            (index + 1) % 2) ===
-                                                        0 ? (
+                                                        {(index > 2 && index < 6 && (index + 1) % 2) === 0 ? (
                                                             <div className="col-8">
                                                                 <td key={index}>
                                                                     <button
-                                                                        onClick={() =>
-                                                                            this.handleClickBtnSeat(
-                                                                                s
-                                                                            )
-                                                                        }
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
                                                                         disabled={
-                                                                            a &&
-                                                                            a.seatNo ===
-                                                                                s.keyMap
-                                                                                ? true
-                                                                                : false
+                                                                            a && a.seatNo === s.keyMap ? true : false
                                                                         }
                                                                         className="seat_16"
                                                                         style={{
                                                                             background: `${
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
+                                                                                a && a.seatNo === s.keyMap
                                                                                     ? "#767676"
                                                                                     : s.isSelected
                                                                                     ? "#5090e9"
                                                                                     : "white"
                                                                             }`,
                                                                         }}>
-                                                                        <div>
-                                                                            {" "}
-                                                                            {
-                                                                                s.keyMap
-                                                                            }
-                                                                        </div>
+                                                                        <div> {s.keyMap}</div>
                                                                     </button>
                                                                 </td>
                                                             </div>
@@ -1372,35 +885,21 @@ class Step1 extends Component {
                                                             <div className="col-4">
                                                                 <td key={index}>
                                                                     <button
-                                                                        onClick={() =>
-                                                                            this.handleClickBtnSeat(
-                                                                                s
-                                                                            )
-                                                                        }
+                                                                        onClick={() => this.handleClickBtnSeat(s)}
                                                                         disabled={
-                                                                            a &&
-                                                                            a.seatNo ===
-                                                                                s.keyMap
-                                                                                ? true
-                                                                                : false
+                                                                            a && a.seatNo === s.keyMap ? true : false
                                                                         }
                                                                         className="seat_16"
                                                                         style={{
                                                                             background: `${
-                                                                                a &&
-                                                                                a.seatNo ===
-                                                                                    s.keyMap
+                                                                                a && a.seatNo === s.keyMap
                                                                                     ? "#767676"
                                                                                     : s.isSelected
                                                                                     ? "#5090e9"
                                                                                     : "white"
                                                                             }`,
                                                                         }}>
-                                                                        <div>
-                                                                            {
-                                                                                s.keyMap
-                                                                            }
-                                                                        </div>
+                                                                        <div>{s.keyMap}</div>
                                                                     </button>
                                                                 </td>
                                                             </div>

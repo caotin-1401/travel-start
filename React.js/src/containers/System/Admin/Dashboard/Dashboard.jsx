@@ -6,7 +6,6 @@ import "./Dashboard.scss";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import CommuteIcon from "@mui/icons-material/Commute";
 import * as actions from "../../../../store/actions";
-import { getAllPassengers } from "../../../../services/userService";
 import DashboardComponent from "./DashboardComponent";
 import EmojiTransportationIcon from "@mui/icons-material/EmojiTransportation";
 class Dashboard extends Component {
@@ -30,9 +29,7 @@ class Dashboard extends Component {
         let users = this.props.listUsers;
         let passengers = this.props.passengers;
         let listBusOwner;
-        users &&
-            users.length &&
-            (listBusOwner = users.filter((item) => item.roleID === "R2"));
+        users && users.length && (listBusOwner = users.filter((item) => item.roleID === "R2"));
 
         return (
             <React.Fragment>
@@ -48,15 +45,7 @@ class Dashboard extends Component {
                                                 <div className="icon-wrapper">
                                                     <i className="fas fa-users"></i>
                                                 </div>
-                                                {users &&
-                                                    users.length > 0 &&
-                                                    passengers &&
-                                                    passengers.length > 0 && (
-                                                        <h3>
-                                                            {users.length +
-                                                                passengers.length}
-                                                        </h3>
-                                                    )}
+                                                {users && passengers && <h3>{users.length + passengers.length}</h3>}
                                                 <h3>Người dùng</h3>
                                             </div>
                                         </div>
@@ -74,12 +63,7 @@ class Dashboard extends Component {
                                                         }}
                                                     />{" "}
                                                 </div>{" "}
-                                                {locations &&
-                                                    locations.length > 0 && (
-                                                        <h3>
-                                                            {locations.length}
-                                                        </h3>
-                                                    )}
+                                                {locations && locations.length > 0 && <h3>{locations.length}</h3>}
                                                 <h3>Bến xe</h3>
                                             </div>
                                         </div>
@@ -96,14 +80,9 @@ class Dashboard extends Component {
                                                         }}
                                                     />
                                                 </div>
-                                                {listBusOwner &&
-                                                    listBusOwner.length > 0 && (
-                                                        <h3>
-                                                            {
-                                                                listBusOwner.length
-                                                            }
-                                                        </h3>
-                                                    )}
+                                                {listBusOwner && listBusOwner.length > 0 && (
+                                                    <h3>{listBusOwner.length}</h3>
+                                                )}
                                                 <h3>Nhà xe</h3>
                                             </div>
                                         </div>
@@ -120,12 +99,7 @@ class Dashboard extends Component {
                                                         }}
                                                     />
                                                 </div>{" "}
-                                                {vehicles &&
-                                                    vehicles.length > 0 && (
-                                                        <h3>
-                                                            {vehicles.length}
-                                                        </h3>
-                                                    )}
+                                                {vehicles && vehicles.length > 0 && <h3>{vehicles.length}</h3>}
                                                 <h3>Phương tiện</h3>
                                             </div>
                                         </div>

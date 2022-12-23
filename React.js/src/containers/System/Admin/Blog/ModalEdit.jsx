@@ -1,22 +1,13 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
 import "../style.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
 import _ from "lodash";
-import moment from "moment";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
 import "react-markdown-editor-lite/lib/index.css";
@@ -40,9 +31,7 @@ class ModalEdit extends Component {
         if (user && !_.isEmpty(user)) {
             let imageBase64 = "";
             if (user.image) {
-                imageBase64 = Buffer.from(user.image, "base64").toString(
-                    "binary"
-                );
+                imageBase64 = Buffer.from(user.image, "base64").toString("binary");
             }
             this.setState({
                 id: user.id,
@@ -139,7 +128,6 @@ class ModalEdit extends Component {
         this.props.doEditUser(this.state);
     };
     render() {
-        let language = this.props.language;
         let { description, contentMarkdown } = this.state;
         return (
             <div>
@@ -165,9 +153,7 @@ class ModalEdit extends Component {
                             <Row>
                                 <Col md={6}>
                                     <Row>
-                                        <label htmlFor="exampleEmail">
-                                            Tên sự kiện
-                                        </label>
+                                        <label htmlFor="exampleEmail">Tên sự kiện</label>
                                         <input
                                             className="form-control mb-4 h-38 "
                                             id="description"
@@ -178,10 +164,7 @@ class ModalEdit extends Component {
                                             }}
                                             value={description}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "description"
-                                                );
+                                                this.onChangeInput(event, "description");
                                             }}
                                         />
                                     </Row>
@@ -194,13 +177,9 @@ class ModalEdit extends Component {
                                             id="img"
                                             type="file"
                                             hidden
-                                            onChange={(event) =>
-                                                this.handleChangeImage(event)
-                                            }
+                                            onChange={(event) => this.handleChangeImage(event)}
                                         />
-                                        <label
-                                            className="upload-img"
-                                            htmlFor="img">
+                                        <label className="upload-img" htmlFor="img">
                                             Tải ảnh
                                             <i className="fas fa-upload"></i>
                                         </label>
@@ -218,9 +197,7 @@ class ModalEdit extends Component {
                                     <label>Thong tin su kien</label>
                                     <MdEditor
                                         style={{ height: "370px" }}
-                                        renderHTML={(text) =>
-                                            mdParser.render(text)
-                                        }
+                                        renderHTML={(text) => mdParser.render(text)}
                                         onChange={this.handleEditorChange}
                                         value={contentMarkdown}
                                     />
@@ -256,7 +233,7 @@ class ModalEdit extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        events: state.admin.events,
+        userInfo: state.user.userInfo,
     };
 };
 

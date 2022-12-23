@@ -1,23 +1,13 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
 import { changeLanguageApp } from "../../../../store/actions/appActions";
 import "../style.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
-import _ from "lodash";
-import { createTheme } from "@mui/material/styles";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
 import "react-markdown-editor-lite/lib/index.css";
@@ -39,7 +29,7 @@ class ModalAdd extends Component {
     componentDidMount() {}
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.listEvents !== this.props.listEvents) {
+        if (prevProps.listBlogs !== this.props.listBlogs) {
             this.setState({
                 description: "",
                 image: "",
@@ -80,8 +70,7 @@ class ModalAdd extends Component {
         });
     };
     handleSave = async () => {
-        let { description, image, previewImgURL, content, contentMarkdown } =
-            this.state;
+        let { description, image, content, contentMarkdown } = this.state;
         let language = this.props.language;
         let author = this.props.userInfo.name;
         let nameErrVi = "Vui lòng điền tên bài viết";
@@ -130,7 +119,6 @@ class ModalAdd extends Component {
         }
     };
     render() {
-        let language = this.props.language;
         let { description, contentMarkdown } = this.state;
         return (
             <div>
@@ -156,9 +144,7 @@ class ModalAdd extends Component {
                             <Row>
                                 <Col md={6}>
                                     <Row>
-                                        <label htmlFor="exampleEmail">
-                                            Tên bài viết
-                                        </label>
+                                        <label htmlFor="exampleEmail">Tên bài viết</label>
                                         <input
                                             className="form-control mb-4 h-38 "
                                             id="description"
@@ -169,10 +155,7 @@ class ModalAdd extends Component {
                                             }}
                                             value={description}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "description"
-                                                );
+                                                this.onChangeInput(event, "description");
                                             }}
                                         />
                                     </Row>
@@ -186,13 +169,9 @@ class ModalAdd extends Component {
                                             id="img"
                                             type="file"
                                             hidden
-                                            onChange={(event) =>
-                                                this.handleChangeImage(event)
-                                            }
+                                            onChange={(event) => this.handleChangeImage(event)}
                                         />
-                                        <label
-                                            className="upload-img"
-                                            htmlFor="img">
+                                        <label className="upload-img" htmlFor="img">
                                             Tải ảnh
                                             <i className="fas fa-upload"></i>
                                         </label>
@@ -207,14 +186,10 @@ class ModalAdd extends Component {
                             </Row>
                             <Row>
                                 <Col>
-                                    <label htmlFor="img">
-                                        Thong tin su kien
-                                    </label>
+                                    <label htmlFor="img">Thong tin su kien</label>
                                     <MdEditor
                                         style={{ height: "350px" }}
-                                        renderHTML={(text) =>
-                                            mdParser.render(text)
-                                        }
+                                        renderHTML={(text) => mdParser.render(text)}
                                         onChange={this.handleEditorChange}
                                         value={contentMarkdown}
                                     />
@@ -258,8 +233,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-        changeLanguageAppRedux: (language) =>
-            dispatch(changeLanguageApp(language)),
+        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
     };
 };
 

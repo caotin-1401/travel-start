@@ -53,7 +53,7 @@ class ModalUser extends Component {
                         : "",
             });
         }
-        if (prevProps.listAdmin !== this.props.listAdmin) {
+        if (prevProps.usersRedux !== this.props.usersRedux) {
             let arrGenders = this.props.genderRedux;
             this.setState({
                 email: "",
@@ -173,9 +173,9 @@ class ModalUser extends Component {
         });
         if (res && res.errCode === 0) {
             if (language === LANGUAGES.VI) {
-                toast.success("Thêm mã giảm giá thành công");
+                toast.success("Thêm người quản lý thành công");
             } else {
-                toast.success("Add successful coupon");
+                toast.success("Add successful admin");
             }
             this.props.createNewUser1(this.state);
         } else if (res && res.errCode === 1) {

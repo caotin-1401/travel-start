@@ -384,7 +384,7 @@ class ModalAdd extends Component {
                                         Thong tin su kien
                                     </label>
                                     <MdEditor
-                                        style={{ height: "350px" }}
+                                        style={{ height: "340px" }}
                                         renderHTML={(text) =>
                                             mdParser.render(text)
                                         }

@@ -1,15 +1,7 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
 import "../style.scss";
 import DatePicker from "../../../../components/DatePicker";
@@ -46,9 +38,7 @@ class ModalEdit extends Component {
         if (user && !_.isEmpty(user)) {
             let imageBase64 = "";
             if (user.image) {
-                imageBase64 = Buffer.from(user.image, "base64").toString(
-                    "binary"
-                );
+                imageBase64 = Buffer.from(user.image, "base64").toString("binary");
             }
             let time1 = moment(+user.startDate).format("L");
             let time2 = moment(+user.endDate).format("L");
@@ -105,16 +95,7 @@ class ModalEdit extends Component {
         });
     };
     handleSave = async () => {
-        let {
-            name,
-            image,
-            previewImgURL,
-            dayStart,
-            dayEnd,
-            description,
-            descriptionMarkdown,
-            id,
-        } = this.state;
+        let { name, image, previewImgURL, dayStart, dayEnd, description, descriptionMarkdown, id } = this.state;
 
         let str = "00:00";
         let [hours, minutes] = str.split(":");
@@ -221,14 +202,7 @@ class ModalEdit extends Component {
     };
     render() {
         let language = this.props.language;
-        let {
-            name,
-            image,
-            dayStart,
-            description,
-            dayEnd,
-            descriptionMarkdown,
-        } = this.state;
+        let { name, image, dayStart, description, dayEnd, descriptionMarkdown } = this.state;
         console.log(this.state);
         return (
             <div>
@@ -254,9 +228,7 @@ class ModalEdit extends Component {
                             <Row>
                                 <Col md={6}>
                                     <Row>
-                                        <label htmlFor="exampleEmail">
-                                            Tên sự kiện
-                                        </label>
+                                        <label htmlFor="exampleEmail">Tên sự kiện</label>
                                         <input
                                             className="form-control mb-4 h-38 "
                                             id="name"
@@ -267,35 +239,26 @@ class ModalEdit extends Component {
                                             }}
                                             value={name}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "name"
-                                                );
+                                                this.onChangeInput(event, "name");
                                             }}
                                         />
                                     </Row>
                                     <Row>
                                         <Col md={6}>
-                                            <label htmlFor="schedule1">
-                                                Ngày bắt đầu
-                                            </label>
+                                            <label htmlFor="schedule1">Ngày bắt đầu</label>
                                             <div
                                                 className="form-control mb-4"
                                                 style={{ height: "38px" }}
                                                 htmlFor="schedule1">
                                                 <DatePicker
                                                     style={{ border: "none" }}
-                                                    onChange={
-                                                        this.handleOnChange1
-                                                    }
+                                                    onChange={this.handleOnChange1}
                                                     id="schedule1"
                                                     value={dayStart}
                                                     selected={dayStart}
                                                     // minDate={new Date()}
                                                 />
-                                                <label
-                                                    htmlFor="schedule1"
-                                                    style={{ float: "right" }}>
+                                                <label htmlFor="schedule1" style={{ float: "right" }}>
                                                     <i
                                                         className="far fa-calendar-alt"
                                                         style={{
@@ -305,25 +268,19 @@ class ModalEdit extends Component {
                                             </div>
                                         </Col>
                                         <Col md={6}>
-                                            <label htmlFor="schedule2">
-                                                Ngày kết thúc
-                                            </label>
+                                            <label htmlFor="schedule2">Ngày kết thúc</label>
                                             <div
                                                 className="form-control mb-4"
                                                 style={{ height: "38px" }}
                                                 htmlFor="schedule2">
                                                 <DatePicker
                                                     style={{ border: "none" }}
-                                                    onChange={
-                                                        this.handleOnChange2
-                                                    }
+                                                    onChange={this.handleOnChange2}
                                                     id="schedule2"
                                                     value={dayEnd}
                                                     selected={dayEnd}
                                                 />
-                                                <label
-                                                    htmlFor="schedule2"
-                                                    style={{ float: "right" }}>
+                                                <label htmlFor="schedule2" style={{ float: "right" }}>
                                                     <i
                                                         className="far fa-calendar-alt"
                                                         style={{
@@ -342,13 +299,9 @@ class ModalEdit extends Component {
                                             id="img"
                                             type="file"
                                             hidden
-                                            onChange={(event) =>
-                                                this.handleChangeImage(event)
-                                            }
+                                            onChange={(event) => this.handleChangeImage(event)}
                                         />
-                                        <label
-                                            className="upload-img"
-                                            htmlFor="img">
+                                        <label className="upload-img" htmlFor="img">
                                             Tải ảnh
                                             <i className="fas fa-upload"></i>
                                         </label>
@@ -365,10 +318,8 @@ class ModalEdit extends Component {
                                 <Col>
                                     <label>Thong tin su kien</label>
                                     <MdEditor
-                                        style={{ height: "370px" }}
-                                        renderHTML={(text) =>
-                                            mdParser.render(text)
-                                        }
+                                        style={{ height: "340px" }}
+                                        renderHTML={(text) => mdParser.render(text)}
                                         onChange={this.handleEditorChange}
                                         value={descriptionMarkdown}
                                     />

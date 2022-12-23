@@ -1,27 +1,14 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import "./UserManage.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
-import PropTypes from "prop-types";
-import { emitter } from "../../../../utils/emitter";
-import Lightbox from "react-image-lightbox";
-import "react-image-lightbox/style.css";
 class ModalUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            roleArr: [],
             genderArr: [],
             previewImgURL: "",
             isOpenImg: false,
@@ -32,7 +19,6 @@ class ModalUser extends Component {
             phone: "",
             address: "",
             gender: "",
-            role: "R3",
             avatar: "",
             action: "",
             userEditId: "",
@@ -49,14 +35,10 @@ class ModalUser extends Component {
             let arrGenders = this.props.genderRedux;
             this.setState({
                 genderArr: arrGenders,
-                gender:
-                    arrGenders && arrGenders.length > 0
-                        ? arrGenders[0].keyMap
-                        : "",
+                gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
             });
         }
         if (prevProps.listUsers !== this.props.listUsers) {
-            let arrRoles = this.props.roleRedux;
             let arrGenders = this.props.genderRedux;
             this.setState({
                 email: "",
@@ -64,10 +46,7 @@ class ModalUser extends Component {
                 name: "",
                 phone: "",
                 address: "",
-                gender:
-                    arrGenders && arrGenders.length > 0
-                        ? arrGenders[0].keyMap
-                        : "",
+                gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
                 avatar: "",
                 action: CRUD_ACTIONS.CREATE,
                 previewImgURL: "",
@@ -124,7 +103,7 @@ class ModalUser extends Component {
                 name: this.state.name,
                 address: this.state.address,
                 phoneNumber: this.state.phone,
-                roleID: this.state.role,
+                roleID: "R3",
                 gender: this.state.gender,
                 avatar: this.state.avatar,
                 busOwnerId: this.props.userInfo.id,
@@ -136,8 +115,7 @@ class ModalUser extends Component {
     render() {
         let language = this.props.language;
         let genders = this.state.genderArr;
-        let { email, password, name, phone, address, gender, role, avatar } =
-            this.state;
+        let { email, password, name, phone, address, gender } = this.state;
         return (
             <div>
                 <Modal
@@ -168,9 +146,7 @@ class ModalUser extends Component {
                                 />
                             </Col>
                             <Col md={6}>
-                                <label htmlFor="examplePassword">
-                                    Mật khẩu
-                                </label>
+                                <label htmlFor="examplePassword">Mật khẩu</label>
                                 <input
                                     className="form-control mb-4"
                                     id="examplePassword"
@@ -225,9 +201,7 @@ class ModalUser extends Component {
                         />
                         <Row>
                             <Col md={3}>
-                                <label htmlFor="exampleAddress">
-                                    Giới tính
-                                </label>
+                                <label htmlFor="exampleAddress">Giới tính</label>
                                 <select
                                     className="form-select mb-4"
                                     onChange={(event) => {
@@ -238,12 +212,8 @@ class ModalUser extends Component {
                                         genders.length > 0 &&
                                         genders.map((item, index) => {
                                             return (
-                                                <option
-                                                    key={index}
-                                                    value={item.keyMap}>
-                                                    {language === LANGUAGES.VI
-                                                        ? item.valueVi
-                                                        : item.valueEn}
+                                                <option key={index} value={item.keyMap}>
+                                                    {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
                                                 </option>
                                             );
                                         })}
@@ -257,9 +227,7 @@ class ModalUser extends Component {
                                         id="img"
                                         type="file"
                                         hidden
-                                        onChange={(event) =>
-                                            this.handleChangeImage(event)
-                                        }
+                                        onChange={(event) => this.handleChangeImage(event)}
                                     />
                                     <label className="upload-img" htmlFor="img">
                                         Tải ảnh<i className="fas fa-upload"></i>
@@ -303,7 +271,6 @@ class ModalUser extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        roleRedux: state.admin.roles,
         genderRedux: state.admin.gender,
         listUsers: state.admin.users,
         userInfo: state.user.userInfo,

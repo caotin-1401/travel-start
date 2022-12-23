@@ -1,21 +1,11 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import "../style.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
-import PropTypes from "prop-types";
 import { emitter } from "../../../../utils/emitter";
-import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import { toast } from "react-toastify";
 import { createNewUserService } from "../../../../services/userService";
@@ -47,13 +37,13 @@ class ModalUser extends Component {
             let arrGenders = this.props.genderRedux;
             this.setState({
                 genderArr: arrGenders,
-                gender:
-                    arrGenders && arrGenders.length > 0
-                        ? arrGenders[0].keyMap
-                        : "",
+                gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
             });
         }
-        if (prevProps.listAdmin !== this.props.listAdmin) {
+        console.log(prevProps.usersRedux);
+        console.log(this.props.usersRedux);
+
+        if (prevProps.usersRedux !== this.props.usersRedux) {
             let arrGenders = this.props.genderRedux;
             this.setState({
                 email: "",
@@ -61,10 +51,7 @@ class ModalUser extends Component {
                 name: "",
                 phone: "",
                 address: "",
-                gender:
-                    arrGenders && arrGenders.length > 0
-                        ? arrGenders[0].keyMap
-                        : "",
+                gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
                 avatar: "",
                 previewImgURL: "",
             });
@@ -88,9 +75,7 @@ class ModalUser extends Component {
     };
 
     checkValidInput = () => {
-        let isValid = true;
         let { language } = this.props;
-        let arrCheck = ["email", "password", "name", "phone", "address"];
         if (language === LANGUAGES.VI) {
             if (!this.state.email) {
                 toast.error("Email không được để trống ! ");
@@ -98,10 +83,7 @@ class ModalUser extends Component {
             } else if (!this.state.password) {
                 toast.error("Mật khẩu không được để trống ! ");
                 return false;
-            } else if (
-                this.state.password.length < 8 ||
-                this.state.password.length > 15
-            ) {
+            } else if (this.state.password.length < 8 || this.state.password.length > 15) {
                 toast.error("Mật khẩu tối thiểu 8 ký tự và tối đa 15 ký tự ");
                 return false;
             } else if (isNaN(this.state.phone)) {
@@ -124,13 +106,8 @@ class ModalUser extends Component {
             } else if (!this.state.password) {
                 toast.error("Please enter your password! ");
                 return false;
-            } else if (
-                this.state.password.length < 8 ||
-                this.state.password.length > 15
-            ) {
-                toast.error(
-                    "Password minimum 8 characters and maximum 15 characters     "
-                );
+            } else if (this.state.password.length < 8 || this.state.password.length > 15) {
+                toast.error("Password minimum 8 characters and maximum 15 characters     ");
                 return false;
             } else if (isNaN(this.state.phone)) {
                 toast.error("Phone Number must be a number");
@@ -167,24 +144,22 @@ class ModalUser extends Component {
             name: this.state.name,
             address: this.state.address,
             phoneNumber: this.state.phone,
-            roleID: "R1",
+            roleID: "R2",
             gender: this.state.gender,
             avatar: this.state.avatar,
         });
         if (res && res.errCode === 0) {
             if (language === LANGUAGES.VI) {
-                toast.success("Thêm mã giảm giá thành công");
+                toast.success("Thêm nhà xe thành công");
             } else {
-                toast.success("Add successful coupon");
+                toast.success("Add successful bus owner");
             }
             this.props.createNewUser1(this.state);
         } else if (res && res.errCode === 1) {
             if (language === LANGUAGES.VI) {
                 toast.error("Email đã tồn tại, vui lòng nhập email khác");
             } else {
-                toast.error(
-                    "Your email already exists, please try another email"
-                );
+                toast.error("Your email already exists, please try another email");
             }
         } else if (res && res.errCode === 6) {
             if (language === LANGUAGES.VI) {
@@ -229,9 +204,7 @@ class ModalUser extends Component {
                                 />
                             </Col>
                             <Col md={6}>
-                                <label htmlFor="examplePassword">
-                                    Password
-                                </label>
+                                <label htmlFor="examplePassword">Password</label>
                                 <input
                                     className="form-control mb-4"
                                     id="examplePassword"
@@ -297,12 +270,8 @@ class ModalUser extends Component {
                                         genders.length > 0 &&
                                         genders.map((item, index) => {
                                             return (
-                                                <option
-                                                    key={index}
-                                                    value={item.keyMap}>
-                                                    {language === LANGUAGES.VI
-                                                        ? item.valueVi
-                                                        : item.valueEn}
+                                                <option key={index} value={item.keyMap}>
+                                                    {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
                                                 </option>
                                             );
                                         })}
@@ -317,9 +286,7 @@ class ModalUser extends Component {
                                         id="img"
                                         type="file"
                                         hidden
-                                        onChange={(event) =>
-                                            this.handleChangeImage(event)
-                                        }
+                                        onChange={(event) => this.handleChangeImage(event)}
                                     />
                                     <label className="upload-img" htmlFor="img">
                                         Tải ảnh<i className="fas fa-upload"></i>

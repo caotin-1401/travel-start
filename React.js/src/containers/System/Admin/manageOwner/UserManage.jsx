@@ -135,6 +135,7 @@ class ManageOwner extends Component {
     render() {
         let { usersRedux, rowsPerPage, page, test, test1, isTest } = this.state;
         isTest === true ? (test = test1) : (test = usersRedux);
+        console.log(usersRedux);
         return (
             <div className="container form-redux">
                 <div className="user-container">
