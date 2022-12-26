@@ -4,11 +4,7 @@ import { push } from "connected-react-router";
 import * as actions from "../../store/actions";
 import "./Login.scss";
 import logo from "../../assets/logo2.png";
-import {
-    getForgotPasswordService,
-    postResetPasswordService,
-    handleLogin,
-} from "../../services/userService";
+import { getForgotPasswordService, postResetPasswordService, handleLogin } from "../../services/userService";
 import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../utils";
@@ -82,7 +78,7 @@ class ResetPassword extends Component {
         } else if (data === "R2") {
             redirectPath = "/busOwner/dashboard";
         } else if (data === "R3") {
-            redirectPath = "/driver/manage-parking";
+            redirectPath = "/driver/seatNo";
         } else {
             redirectPath = "/home";
         }
@@ -124,7 +120,6 @@ class ResetPassword extends Component {
                 token,
             });
             let data = await handleLogin(this.state.email, this.state.password);
-            console.log(data);
 
             if (data && data.errCode === 0) {
                 this.redirectToSystemPage(data.user.roleID);
@@ -162,7 +157,7 @@ class ResetPassword extends Component {
                     <div className="login-content row">
                         <div className="logostyle">
                             <Link to="/home">
-                                <img src={logo} loading="eager" />
+                                <img src={logo} loading="eager" alt="logo" />
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">
@@ -176,12 +171,8 @@ class ResetPassword extends Component {
                             </label>
                             <div className="custom-password">
                                 <input
-                                    type={
-                                        this.state.isShowPassword
-                                            ? "text"
-                                            : "password"
-                                    }
-                                    disabled={errCode == 0 ? false : true}
+                                    type={this.state.isShowPassword ? "text" : "password"}
+                                    disabled={errCode === 0 ? false : true}
                                     className="form-control"
                                     placeholder={input2}
                                     value={password}
@@ -190,12 +181,7 @@ class ResetPassword extends Component {
                                     }}
                                 />
                                 <span onClick={() => this.handleShowPassword()}>
-                                    <i
-                                        className={
-                                            this.state.isShowPassword
-                                                ? "fas fa-eye"
-                                                : "fas fa-eye-slash"
-                                        }></i>
+                                    <i className={this.state.isShowPassword ? "fas fa-eye" : "fas fa-eye-slash"}></i>
                                 </span>
                             </div>
                         </div>
@@ -206,31 +192,19 @@ class ResetPassword extends Component {
                             </label>
                             <div className="custom-password">
                                 <input
-                                    type={
-                                        this.state.isShowconfirmPassword
-                                            ? "text"
-                                            : "password"
-                                    }
-                                    disabled={errCode == 0 ? false : true}
+                                    type={this.state.isShowconfirmPassword ? "text" : "password"}
+                                    disabled={errCode === 0 ? false : true}
                                     className="form-control"
-                                    placeholder={input2}
+                                    placeholder={input3}
                                     value={confirmPassword}
                                     onChange={(event) => {
-                                        this.onChangeInput(
-                                            event,
-                                            "confirmPassword"
-                                        );
+                                        this.onChangeInput(event, "confirmPassword");
                                     }}
                                 />
-                                <span
-                                    onClick={() =>
-                                        this.handleShowconfirmPassword()
-                                    }>
+                                <span onClick={() => this.handleShowconfirmPassword()}>
                                     <i
                                         className={
-                                            this.state.isShowconfirmPassword
-                                                ? "fas fa-eye"
-                                                : "fas fa-eye-slash"
+                                            this.state.isShowconfirmPassword ? "fas fa-eye" : "fas fa-eye-slash"
                                         }></i>
                                 </span>
                             </div>
@@ -240,7 +214,7 @@ class ResetPassword extends Component {
                             {this.state.errMessage}
                         </div>
                         <div className="col-12">
-                            {errCode == 0 ? (
+                            {errCode === 0 ? (
                                 <button
                                     className="btn-login"
                                     onClick={() => {
@@ -255,8 +229,7 @@ class ResetPassword extends Component {
                             )}
                         </div>
                         <div className="row mt-3">
-                            <span
-                                style={{ fontWeight: "500", fontSize: "15px" }}>
+                            <span style={{ fontWeight: "500", fontSize: "15px" }}>
                                 <Link to="/login">
                                     <FormattedMessage id="login.back-login" />
                                 </Link>
@@ -279,8 +252,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         navigate: (path) => dispatch(push(path)),
-        userLoginSuccess: (userInfo) =>
-            dispatch(actions.userLoginSuccess(userInfo)),
+        userLoginSuccess: (userInfo) => dispatch(actions.userLoginSuccess(userInfo)),
     };
 };
 

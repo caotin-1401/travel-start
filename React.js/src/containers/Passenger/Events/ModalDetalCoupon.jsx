@@ -1,15 +1,7 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
 import * as actions from "../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../utils";
@@ -55,17 +47,8 @@ class ModalDetalCoupon extends Component {
 
     render() {
         let language = this.props.language;
-        let {
-            description,
-            count,
-            use,
-            discountMax,
-            endDate,
-            startDate,
-            discount,
-            type,
-            sumMoneyCondition,
-        } = this.state;
+        let { description, count, use, discountMax, endDate, startDate, discount, type, sumMoneyCondition } =
+            this.state;
         console.log(endDate);
         let price;
         +type == 2 ? (price = "%") : (price = "đ");
@@ -92,13 +75,10 @@ class ModalDetalCoupon extends Component {
                             }}>
                             <h6 className="mb0">Ưu đãi: </h6>
                             <span>
-                                Giảm {discount} {price} cho đơn hàng từ{" "}
-                                {sumMoneyCondition} đ
+                                Giảm {discount} {price} cho đơn hàng từ {sumMoneyCondition} đ
                             </span>
-                            <h6 className="mb0">Tổng số mã giảm giá : </h6>{" "}
-                            <span>{count}</span>
-                            <h6 className="mb0">Số lượng còn lại :</h6>{" "}
-                            <span>{count - use}</span>
+                            <h6 className="mb0">Tổng số mã giảm giá : </h6> <span>{count}</span>
+                            <h6 className="mb0">Số lượng còn lại :</h6> <span>{count - use}</span>
                             <h6 className="mb0">Thời gian sử dụng mã: </h6>
                             <span>
                                 {start} - {end}

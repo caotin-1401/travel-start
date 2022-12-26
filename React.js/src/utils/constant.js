@@ -14,6 +14,7 @@ export const path = {
     EVENTS: `/home/events`,
     EVENT: `/home/event/eventId=:id`,
     BLOGS: `/home/blogs`,
+    CONTACTS: `/home/contact`,
     BLOG: `/home/blog/blogId=:id`,
     PROFILE: `/home/profile/userId=:id&:status`,
     PROFILE_ADMIN: `/profile/admin/userId=:id`,

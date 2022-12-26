@@ -12,8 +12,15 @@
         "routes": "Popular routes",
         "more": "More",
         "promotion": "Promotions",
-
-        "welcome": "welcome, "
+        "contact": "CONTACT",
+        "welcome": "welcome, ",
+        "blog": "BLOG"
+    },
+    "modalErr": {
+        "cancel": "Cancel",
+        "send": "Send",
+        "title1": "Report system error",
+        "title2": "Thank you for assisting us in reporting the problem. This issue will be fixed as soon as possible."
     },
     "FAQ": {
         "header": "Frequently Asked Questions",
@@ -52,6 +59,8 @@
             "location": "List Location",
             "route": "List Route",
             "event": "Events",
+            "err": "Error",
+            "err1": "List Error",
             "discount": "Discounts",
             "promotions": "Promotions",
 
@@ -135,6 +144,13 @@
                 "phone": "Phone Number",
                 "status": "Status",
                 "action": "Delete driver"
+            },
+            "listErr": {
+                "title": "Error list",
+                "description": "Error description",
+                "time": "Error reporting time",
+                "done": "Has been fixed",
+                "title1": "The system now has no errors from user feedback"
             }
         },
         "busOwner": {
@@ -163,7 +179,33 @@
         },
         "driver": {
             "customer": "Passenger",
-            "list-customer": "List of Passenger"
+            "list-customer": "List of Passenger",
+            "history": "History",
+            "title1": "List of trips",
+            "selectday": "Select departure date",
+            "route": "Route",
+            "time": "Travel time",
+            "number": "License plates",
+            "status": "Status",
+            "list_passenger": "List of Passenger",
+            "start": "Start",
+            "end": "End",
+            "finished": "Finished",
+            "list": "List",
+            "noData": "The driver didn't have any trips...",
+            "name": "Full Name",
+            "phone": "Phone Number",
+            "seat": "Seat No",
+            "pay": "Payment status",
+            "description": "Request more",
+            "dacomat": "Already present",
+            "total": "Total amount",
+            "month": "Select Month",
+            "timeDe": "Departure time",
+            "timeTotals": "Starting from the date: ",
+            "totalTrip": "Total trips run: ",
+            "info": "Account information",
+            "logout": "Logout"
         }
     },
     "manage-user": {
@@ -185,5 +227,69 @@
         "back-login": "Back to login page",
         "send": "Send",
         "reset": "Reset Password"
+    },
+    "events": {
+        "home": "Home",
+        "event": "Events",
+        "list": "List Events",
+        "blog": "Blog",
+        "listblog": "List Blogs"
+    },
+    "contacts": {
+        "title": "Contact Us",
+        "sub_title": "Let’s Start a Conversation",
+        "title1": "Contact information",
+        "title2": "What You Get When Asking Your Question.",
+        "title3": "Please note: all fields are required.",
+        "phone": "Phone Number",
+        "address": "Address",
+        "comment": "How may we help you?",
+        "li_title1": "Less than 12-hour response to your question.",
+        "li_title2": "See our platform in action.",
+        "li_title3": "Plan of action summarized in an email follow up.",
+        "send": "Send",
+        "name": "Full Name",
+        "link": "Links"
+    },
+    "routes": {
+        "filter": "Filters",
+        "clean": "Clean All",
+        "time": "Departure time",
+        "popular": "Popular filters",
+        "dawn": "Dawn",
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening",
+        "price": "Price",
+        "oparator": "Bus operator",
+        "sort": "Sort by:",
+        "cheap": "Lowest price",
+        "earliest": "Earliest departure",
+        "late": "Latest departure",
+        "select": "Booking",
+        "info": "Infomation",
+        "has": "There are",
+        "trip": "trips",
+        "found": "found",
+        "selectSeat": "Choose a seat",
+        "note": "Note",
+        "emply": "Still empty",
+        "not": "Not availble",
+        "Selected": "Selected"
+    },
+    "account": {
+        "Name": "Full Name",
+        "gender": "Gender",
+        "Role": "Role",
+        "email": "Email address",
+        "phone": "Phone Number",
+        "address": "Address",
+        "saveInfo": "Save Information",
+        "change": "change password",
+        "passOld": "Password Old :",
+        "passNew": "Password New :",
+        "confirm": "Confirm Password",
+        "save": "Save",
+        "cancel": "Cancel"
     }
 }

@@ -3,11 +3,7 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { LANGUAGES, USER_ROLE } from "../utils";
 import { FormattedMessage } from "react-intl";
-import {
-    adminMenu,
-    busOwnerMenu,
-    driverMenu,
-} from "../containers/Header/menuApp";
+import { adminMenu, busOwnerMenu, driverMenu } from "../containers/Header/menuApp";
 import _ from "lodash";
 class Home extends Component {
     constructor(props) {
@@ -28,7 +24,7 @@ class Home extends Component {
                 menu = "/busOwner/dashboard";
             }
             if (role === USER_ROLE.DRIVER) {
-                menu = "/driver/manage-parking";
+                menu = "/driver/seatNo";
             }
             if (role === USER_ROLE.PASSENGER) {
                 menu = "/home";

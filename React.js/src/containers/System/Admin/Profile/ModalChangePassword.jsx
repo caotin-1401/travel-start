@@ -1,18 +1,10 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CommonUtils } from "../../../../utils";
+import { LANGUAGES } from "../../../../utils";
 import { toast } from "react-toastify";
 import { changePasswordService } from "../../../../services/userService";
 class ModalChangePassword extends Component {
@@ -100,7 +92,7 @@ class ModalChangePassword extends Component {
                 errMessage: err,
             });
             return;
-        } else if (newPass != confirmPass) {
+        } else if (newPass !== confirmPass) {
             if (language === LANGUAGES.VI) {
                 err = "Xác nhận mật khẩu phải giống mật khẩu";
             } else {
@@ -158,9 +150,7 @@ class ModalChangePassword extends Component {
         }
     };
     render() {
-        let language = this.props.language;
-        let { oldPass, newPass, confirmPass, id, errMessage } = this.state;
-        console.log(errMessage);
+        let { oldPass, newPass, confirmPass, errMessage } = this.state;
         return (
             <div>
                 <Modal
@@ -186,32 +176,17 @@ class ModalChangePassword extends Component {
                                     </label>
                                     <div className="custom-password mb-4">
                                         <input
-                                            type={
-                                                this.state.isOldPass
-                                                    ? "text"
-                                                    : "password"
-                                            }
+                                            type={this.state.isOldPass ? "text" : "password"}
                                             id="oldPass"
                                             className="form-control"
                                             placeholder="Enter your password"
                                             value={oldPass}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "oldPass"
-                                                );
+                                                this.onChangeInput(event, "oldPass");
                                             }}
                                         />
-                                        <span
-                                            onClick={() =>
-                                                this.handleShowOldPassword()
-                                            }>
-                                            <i
-                                                className={
-                                                    this.state.isOldPass
-                                                        ? "fas fa-eye"
-                                                        : "fas fa-eye-slash"
-                                                }></i>
+                                        <span onClick={() => this.handleShowOldPassword()}>
+                                            <i className={this.state.isOldPass ? "fas fa-eye" : "fas fa-eye-slash"}></i>
                                         </span>
                                     </div>
                                 </Col>
@@ -225,32 +200,17 @@ class ModalChangePassword extends Component {
                                     </label>
                                     <div className="custom-password mb-4">
                                         <input
-                                            type={
-                                                this.state.isNewPass
-                                                    ? "text"
-                                                    : "password"
-                                            }
+                                            type={this.state.isNewPass ? "text" : "password"}
                                             id="newPass"
                                             className="form-control"
                                             placeholder="Enter your password"
                                             value={newPass}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "newPass"
-                                                );
+                                                this.onChangeInput(event, "newPass");
                                             }}
                                         />
-                                        <span
-                                            onClick={() =>
-                                                this.handleShowNewPassword()
-                                            }>
-                                            <i
-                                                className={
-                                                    this.state.isNewPass
-                                                        ? "fas fa-eye"
-                                                        : "fas fa-eye-slash"
-                                                }></i>
+                                        <span onClick={() => this.handleShowNewPassword()}>
+                                            <i className={this.state.isNewPass ? "fas fa-eye" : "fas fa-eye-slash"}></i>
                                         </span>
                                     </div>
                                 </Col>
@@ -259,38 +219,24 @@ class ModalChangePassword extends Component {
                             <Row>
                                 <Col md={1}></Col>
                                 <Col md={10} className="form-group login-input">
-                                    <label
-                                        htmlFor="confirmPass"
-                                        className="mb-2">
+                                    <label htmlFor="confirmPass" className="mb-2">
                                         Confirm password :
                                     </label>
                                     <div className="custom-password mb-4">
                                         <input
-                                            type={
-                                                this.state.isConfirmPass
-                                                    ? "text"
-                                                    : "password"
-                                            }
+                                            type={this.state.isConfirmPass ? "text" : "password"}
                                             id="confirmPass"
                                             className="form-control"
                                             placeholder="Enter your password"
                                             value={confirmPass}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "confirmPass"
-                                                );
+                                                this.onChangeInput(event, "confirmPass");
                                             }}
                                         />
-                                        <span
-                                            onClick={() =>
-                                                this.handleShowConfirmPassword()
-                                            }>
+                                        <span onClick={() => this.handleShowConfirmPassword()}>
                                             <i
                                                 className={
-                                                    this.state.isConfirmPass
-                                                        ? "fas fa-eye"
-                                                        : "fas fa-eye-slash"
+                                                    this.state.isConfirmPass ? "fas fa-eye" : "fas fa-eye-slash"
                                                 }></i>
                                         </span>
                                     </div>
@@ -344,7 +290,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ModalChangePassword);
+export default connect(mapStateToProps, mapDispatchToProps)(ModalChangePassword);

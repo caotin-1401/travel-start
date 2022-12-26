@@ -1,3 +1,24 @@
+// List Customer
+.tatol_price {
+    font-size : 18px;
+    margin-top: 20px;
+}
+
+
+//history
+.section-footer {
+    font-size  : 18px;
+    margin-top : 30px;
+    font-weight: 600;
+
+    .section-footer_item {
+        margin-top    : 20px;
+        padding-bottom: 10px;
+        border-bottom : 1px solid black;
+    }
+}
+
+//Profile
 .backgroundColor {
     background-color: #fafafa;
     height          : calc(100vh - 60px);

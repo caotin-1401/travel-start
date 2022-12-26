@@ -1,21 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
 import * as actions from "../../store/actions";
 import Navigator from "../../components/Navigator";
-import HeaderPage from "../HomePage/Header";
 import { adminMenu, busOwnerMenu, driverMenu } from "./menuApp";
 import "./Header.scss";
 import { withRouter } from "react-router";
 import { LANGUAGES, USER_ROLE } from "../../utils";
-import { FormattedMessage } from "react-intl";
 import _ from "lodash";
-import {
-    Dropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-} from "reactstrap";
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 class Header extends Component {
     constructor(props) {
         super(props);
@@ -82,11 +74,7 @@ class Header extends Component {
         let name = test[0];
         if (userInfo && !_.isEmpty(userInfo)) {
             let role = userInfo.roleID;
-            if (
-                role === USER_ROLE.ADMIN ||
-                role === USER_ROLE.BUSOWNER ||
-                role === USER_ROLE.DRIVER
-            ) {
+            if (role === USER_ROLE.ADMIN || role === USER_ROLE.BUSOWNER || role === USER_ROLE.DRIVER) {
                 return (
                     <div className="header-container">
                         <div className="header-tabs-container">
@@ -94,59 +82,31 @@ class Header extends Component {
                         </div>
 
                         <div className="right-content">
-                            <div
-                                className={
-                                    language === LANGUAGES.VI
-                                        ? "language-vi active"
-                                        : "language-vi"
-                                }>
-                                <span
-                                    onClick={() =>
-                                        this.changeLanguage(LANGUAGES.VI)
-                                    }>
-                                    VI
-                                </span>
+                            <div className={language === LANGUAGES.VI ? "language-vi active" : "language-vi"}>
+                                <span onClick={() => this.changeLanguage(LANGUAGES.VI)}>VI</span>
                             </div>
-                            <div
-                                className={
-                                    language === LANGUAGES.VI
-                                        ? "language-en "
-                                        : "language-en active"
-                                }>
-                                <span
-                                    onClick={() =>
-                                        this.changeLanguage(LANGUAGES.EN)
-                                    }>
-                                    EN
-                                </span>
+                            <div className={language === LANGUAGES.VI ? "language-en " : "language-en active"}>
+                                <span onClick={() => this.changeLanguage(LANGUAGES.EN)}>EN</span>
                             </div>
 
-                            <Dropdown
-                                isOpen={dropdownOpen}
-                                toggle={this.toggle}>
+                            <Dropdown isOpen={dropdownOpen} toggle={this.toggle}>
                                 <DropdownToggle caret color="primary">
-                                    <i className="fas fa-user-circle"></i>{" "}
-                                    {name}
+                                    <i className="fas fa-user-circle"></i> {name}
                                 </DropdownToggle>
                                 <DropdownMenu>
                                     <DropdownItem onClick={this.handleProfile}>
-                                        <i className="fas fa-user-circle"></i>{" "}
-                                        Thông tin tài khoản
+                                        <i className="fas fa-user-circle"></i> Thông tin tài khoản
                                     </DropdownItem>
 
                                     <DropdownItem divider />
                                     <DropdownItem>
-                                        <div
-                                            onClick={processLogout}
-                                            title="Log out">
-                                            <i className="fas fa-sign-out-alt"></i>{" "}
-                                            Đăng xuất
+                                        <div onClick={processLogout} title="Log out">
+                                            <i className="fas fa-sign-out-alt"></i> Đăng xuất
                                         </div>
                                     </DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         </div>
-                        {/* nút logout */}
                     </div>
                 );
             }
@@ -165,8 +125,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         processLogout: () => dispatch(actions.processLogout()),
-        changeLanguageAppRedux: (language) =>
-            dispatch(actions.changeLanguageApp(language)),
+        changeLanguageAppRedux: (language) => dispatch(actions.changeLanguageApp(language)),
     };
 };
 

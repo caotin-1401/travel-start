@@ -4,9 +4,25 @@ let getAllEvents = (eventId) => {
     return new Promise(async (resolve, reject) => {
         try {
             let events = [];
+            let arrEvents = [];
             if (eventId === "ALL") {
                 events = await db.Event.findAll();
                 events.reverse();
+                let arr = [];
+                let count = 0;
+                arrEvents = [...events];
+                events.map((item, index) => {
+                    let current = new Date().getTime();
+                    if (+item.startDate < current && current < +item.endDate) {
+                        console.log(1);
+                        arr.push(item);
+                        arrEvents.splice(index - count, 1);
+                        count = count + 1;
+                    }
+                });
+                console.log(arrEvents);
+                console.log(arr);
+                events = arr.concat(arrEvents);
             } else if (eventId && eventId !== "ALL") {
                 events = await db.Event.findAll({
                     where: { id: eventId },
@@ -48,16 +64,7 @@ let createNewEvent = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let check = await checkName(data.name);
-            let {
-                name,
-                type,
-                image,
-                description,
-                startDate,
-                endDate,
-                busOwnerId,
-                descriptionMarkdown,
-            } = data;
+            let { name, type, image, description, startDate, endDate, busOwnerId, descriptionMarkdown } = data;
             if (
                 !name ||
                 !description ||

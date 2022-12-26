@@ -14,10 +14,7 @@ import { saveBulkTicket } from "../../../services/userService";
 import moment from "moment";
 import localization from "moment/locale/vi";
 import { toast } from "react-toastify";
-import {
-    CouponService,
-    changeUserFirstCouponService,
-} from "../../../services/userService";
+import { CouponService, changeUserFirstCouponService } from "../../../services/userService";
 class BookingModal extends Component {
     constructor(props) {
         super(props);
@@ -95,7 +92,6 @@ class BookingModal extends Component {
         } else if (!email) {
             toast.error("Please enter your email!");
         } else {
-            console.log(finalPrice);
             if (seatArr && seatArr.length > 0) {
                 seatArr.map((item) => {
                     let obj = {};
@@ -112,9 +108,7 @@ class BookingModal extends Component {
                     obj.busOwner = tripInfo.User.Driver.busOwner;
                     obj.station = tripInfo.Route.from.name;
                     obj.address = tripInfo.Route.from.address;
-                    obj.time = moment(+tripInfo.timeStart).format(
-                        "ddd DD/MM hh:mm"
-                    );
+                    obj.time = moment(+tripInfo.timeStart).format("ddd DD/MM hh:mm");
                     obj.status = "S1";
                     result.push(obj);
                 });
@@ -220,19 +214,8 @@ class BookingModal extends Component {
         });
     };
     render() {
-        let {
-            current,
-            tripInfo,
-            seatArr,
-            totalPrice,
-            name,
-            phone,
-            email,
-            description,
-            isActive,
-            isCleanData,
-        } = this.state;
-        console.log(totalPrice);
+        let { current, tripInfo, seatArr, totalPrice, name, phone, email, description, isActive, isCleanData } =
+            this.state;
         const steps = [
             {
                 label: "Chọn ghế",
@@ -302,9 +285,7 @@ class BookingModal extends Component {
                                     width: "100%",
                                     p: 2,
                                 }}>
-                                {current >= 0 &&
-                                    current < 3 &&
-                                    steps[current].description}
+                                {current >= 0 && current < 3 && steps[current].description}
                             </Box>
                         </Box>
                     </ModalBody>
@@ -322,10 +303,7 @@ class BookingModal extends Component {
                             activeStep={current}
                             nextButton={
                                 <>
-                                    <Button
-                                        size="small"
-                                        onClick={() => this.next()}
-                                        disabled={current === maxSteps}>
+                                    <Button size="small" onClick={() => this.next()} disabled={current === maxSteps}>
                                         {current === 2 ? (
                                             <span
                                                 color="primary"

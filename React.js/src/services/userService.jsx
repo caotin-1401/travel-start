@@ -202,6 +202,9 @@ const editVehicleService = (inputData) => {
 const getAllScheduleService = (inputId) => {
     return axios.get(`/api/get-all-schedule?id=${inputId}`);
 };
+const getDriverTrips = (inputId) => {
+    return axios.get(`/api/get-driver-schedule?driverId=${inputId}`);
+};
 
 const saveBulkScheduleTrip = (data) => {
     return axios.post("/api/create-new-schedule", data);
@@ -216,9 +219,7 @@ const deleteScheduleService = (userId) => {
 };
 
 const getAllTripHomeService = (areaStartId, areaEndId, dateStart) => {
-    return axios.get(
-        `/api/show-all-schedule?areaStartId=${areaStartId}&areaEndId=${areaEndId}&dateStart=${dateStart}`
-    );
+    return axios.get(`/api/show-all-schedule?areaStartId=${areaStartId}&areaEndId=${areaEndId}&dateStart=${dateStart}`);
 };
 const getForgotPasswordService = (email, token) => {
     return axios.get(`/api/get-forgot-password?email=${email}&token=${token}`);
@@ -239,19 +240,13 @@ const getUserTickets = (inputId) => {
     return axios.get(`/api/get-user-ticket?id=${inputId}`);
 };
 const getDriverTickets = (inputId, dayStart) => {
-    return axios.get(
-        `/api/get-driver-ticket?driverId=${inputId}&dayStart=${dayStart}`
-    );
+    return axios.get(`/api/get-driver-ticket?driverId=${inputId}&dayStart=${dayStart}`);
 };
 const getDriverTicketsRoute = (inputId, dayStart, tripId) => {
-    return axios.get(
-        `/api/get-driver-ticket-route?driverId=${inputId}&dayStart=${dayStart}&tripId=${tripId}`
-    );
+    return axios.get(`/api/get-driver-ticket-route?driverId=${inputId}&dayStart=${dayStart}&tripId=${tripId}`);
 };
 const getAllRouteFromDateDriver = (inputId, dayStart) => {
-    return axios.get(
-        `/api/get-all-route-from-date-driver?driverId=${inputId}&dayStart=${dayStart}`
-    );
+    return axios.get(`/api/get-all-route-from-date-driver?driverId=${inputId}&dayStart=${dayStart}`);
 };
 
 //verify
@@ -344,7 +339,29 @@ const CouponService = (inputData) => {
 const checkCustomerPresent = (inputData) => {
     return axios.put("/api/check-customer", inputData);
 };
+
+//err
+const getAllErrService = (inputId) => {
+    return axios.get(`/api/get-all-err?id=${inputId}`);
+};
+
+const createNewErrService = (data) => {
+    return axios.post("/api/create-new-err", data);
+};
+
+const deleteErrService = (userId) => {
+    return axios.delete("/api/delete-err", {
+        data: {
+            id: userId,
+        },
+    });
+};
+
 export {
+    getDriverTrips,
+    getAllErrService,
+    deleteErrService,
+    createNewErrService,
     getAllVehicleFromStation,
     getAllBlogsService,
     createNewBlogsService,

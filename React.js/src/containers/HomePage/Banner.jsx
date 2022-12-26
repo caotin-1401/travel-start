@@ -2,22 +2,16 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import "./Banner.scss";
 import { FormattedMessage } from "react-intl";
-import { LANGUAGES } from "../../utils";
 import { changeLanguageApp } from "../../store/actions/appActions";
 import Select from "react-select";
 import DatePicker from "../../components/DatePicker";
-import dayjs from "dayjs";
 import moment from "moment";
 import localization from "moment/locale/vi";
 import * as actions from "../../store/actions";
 import { getAllTripHomeService } from "../../services/userService";
 import { toast } from "react-toastify";
 import { withRouter, Link } from "react-router-dom";
-import { push } from "connected-react-router";
-const styles = {
-    fontSize: 14,
-    color: "blue",
-};
+
 const customStyles = {
     control: (base) => ({
         // ...base,
@@ -119,11 +113,7 @@ class Banner extends Component {
         } else if (!dateStart) {
             toast.error("Please select departure date!");
         } else {
-            let res = await getAllTripHomeService(
-                areaStart,
-                areaEnd,
-                dateStart
-            );
+            let res = await getAllTripHomeService(areaStart, areaEnd, dateStart);
             let arr = res.trips;
             console.log(arr);
             if (res && res.errCode === 0 && !arr.length) {
@@ -137,9 +127,7 @@ class Banner extends Component {
                 let end = arr[0].areaEnd;
                 let date = arr[0].dateStart;
                 if (this.props.history) {
-                    this.props.history.push(
-                        `/home/route/${start}&${end}&${date}`
-                    );
+                    this.props.history.push(`/home/route/${start}&${end}&${date}`);
                 }
             }
         }
@@ -147,7 +135,6 @@ class Banner extends Component {
 
     render() {
         let { selectLocaion1, selectLocaion2, info } = this.state;
-        let language = this.props.language;
         return (
             <React.Fragment>
                 <div className="home-header-banner">
@@ -180,12 +167,8 @@ class Banner extends Component {
                                     />
                                 </div>
                                 <div className="inputItem">
-                                    <label
-                                        htmlFor="schedule1"
-                                        style={{ float: "right" }}>
-                                        <i
-                                            className="far fa-calendar-alt"
-                                            style={{ fontSize: "20px" }}></i>
+                                    <label htmlFor="schedule1" style={{ float: "right" }}>
+                                        <i className="far fa-calendar-alt" style={{ fontSize: "20px" }}></i>
                                     </label>
                                     <DatePicker
                                         placeholder={"Chọn ngày"}
@@ -193,30 +176,18 @@ class Banner extends Component {
                                         onChange={this.handleOnChange1}
                                         id="schedule1"
                                         selected={this.state.dateStartTrip}
-                                        minDate={
-                                            new Date(
-                                                new Date().setDate(
-                                                    new Date().getDate() - 1
-                                                )
-                                            )
-                                        }
+                                        minDate={new Date(new Date().setDate(new Date().getDate() - 1))}
                                     />
                                 </div>
                             </div>
                             <div className="search">
                                 {info && info.roleID && info.roleID === "R4" ? (
-                                    <button
-                                        onClick={(item) =>
-                                            this.handleTrip(item)
-                                        }>
+                                    <button onClick={(item) => this.handleTrip(item)}>
                                         <FormattedMessage id="header.search" />
                                     </button>
                                 ) : (
                                     <Link to="/login">
-                                        <button
-                                            onClick={(item) =>
-                                                this.handleTrip(item)
-                                            }>
+                                        <button onClick={(item) => this.handleTrip(item)}>
                                             <FormattedMessage id="header.search" />
                                         </button>
                                     </Link>
@@ -242,8 +213,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeLanguageAppRedux: (language) =>
-            dispatch(changeLanguageApp(language)),
+        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
         fetchAllRoute: () => dispatch(actions.fetchAllRoute()),
         fetchAllLocation: () => dispatch(actions.fetchAllLocation()),
     };

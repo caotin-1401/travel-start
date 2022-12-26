@@ -22,7 +22,7 @@ class HomePage extends Component {
             slidesToScroll: 1,
         };
         return (
-            <div>
+            <div style={{ overflowX: "hidden" }}>
                 <Suspense fallback={<Loading />}>
                     <HeaderPage />
                     <Banner />

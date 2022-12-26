@@ -7,26 +7,11 @@ import _ from "lodash";
 import moment from "moment";
 import localization from "moment/locale/vi";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
-import Lightbox from "react-image-lightbox";
-import "react-image-lightbox/style.css"; // This only needs to be imported once in your app
+import { LANGUAGES } from "../../../../utils";
 import ModalAdd from "./ModalAdd";
-import {
-    TableBody,
-    TableContainer,
-    TableFooter,
-    TablePagination,
-    TableRow,
-    Paper,
-    Table,
-} from "@mui/material";
+import { TableBody, TableContainer, TableFooter, TablePagination, TableRow, Paper, Table } from "@mui/material";
 import { toast } from "react-toastify";
-import {
-    getAllEventsService,
-    createNewEventsService,
-    deleteEventsService,
-    editEventsService,
-} from "../../../../services/userService";
+import { getAllEventsService, deleteEventsService } from "../../../../services/userService";
 import ModalEdit from "./ModalEdit";
 
 import TablePaginationActions from "../../../../components/TablePaginationActions";
@@ -145,9 +130,7 @@ class TableEvent extends Component {
         let term = e.target.value.toUpperCase();
         let clone = this.state.listEvents;
         if (term) {
-            clone = clone.filter((item) =>
-                item.BusType.typeName.includes(term)
-            );
+            clone = clone.filter((item) => item.BusType.typeName.includes(term));
             this.setState({
                 listEvents: clone,
             });
@@ -177,9 +160,7 @@ class TableEvent extends Component {
                     )}
                     <div className="title text-center">Quan ly su kien</div>
                     <div className="mx-5 my-3">
-                        <button
-                            className="btn btn-primary px-3"
-                            onClick={() => this.handleAddUser()}>
+                        <button className="btn btn-primary px-3" onClick={() => this.handleAddUser()}>
                             <i className="fas fa-plus px-1"></i>
                             Them su kien
                         </button>
@@ -194,9 +175,7 @@ class TableEvent extends Component {
                                             style={{
                                                 width: "5%",
                                             }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            onClick={() => this.handleSort("asc", "id")}>
                                             Id
                                         </th>
                                         <th
@@ -209,21 +188,11 @@ class TableEvent extends Component {
                                                     {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "name"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("asc", "name")}
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "name"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("desc", "name")}
                                                     />
                                                 </div>
                                             </div>
@@ -236,21 +205,11 @@ class TableEvent extends Component {
                                                     {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "startDate"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("asc", "startDate")}
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "startDate"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("desc", "startDate")}
                                                     />
                                                 </div>
                                             </div>
@@ -262,67 +221,36 @@ class TableEvent extends Component {
                                                     {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "endDate"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("asc", "endDate")}
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "endDate"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("desc", "endDate")}
                                                     />
                                                 </div>
                                             </div>
                                         </th>
 
-                                        <th style={{ width: "10%" }}>
-                                            Hành động
-                                        </th>
+                                        <th style={{ width: "10%" }}>Hành động</th>
                                     </tr>
                                     <tr style={{ height: "50px" }}>
                                         <td></td>
                                         <td></td>
                                         <td>
-                                            <input
-                                                className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword(e)
-                                                }
-                                            />
+                                            <input className="form-control" onChange={(e) => this.handleKeyword(e)} />
                                         </td>
                                         <td>
-                                            <input
-                                                className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword1(e)
-                                                }
-                                            />
+                                            <input className="form-control" onChange={(e) => this.handleKeyword1(e)} />
                                         </td>
 
                                         <td></td>
                                     </tr>
-                                    {(rowsPerPage > 0 &&
-                                    listEvents &&
-                                    listEvents.length > 0
-                                        ? listEvents.slice(
-                                              page * rowsPerPage,
-                                              page * rowsPerPage + rowsPerPage
-                                          )
+                                    {(rowsPerPage > 0 && listEvents && listEvents.length > 0
+                                        ? listEvents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         : listEvents
                                     ).map((user, index) => {
-                                        let start = moment(
-                                            +user.startDate
-                                        ).format("ddd DD-MM-YYYY HH:mm");
-                                        let end = moment(
-                                            new Date(+user.endDate)
-                                        ).format("ddd  DD-MM-YYYY  HH:mm");
+                                        let start = moment(+user.startDate).format("ddd DD-MM-YYYY HH:mm");
+                                        let end = moment(new Date(+user.endDate)).format("ddd  DD-MM-YYYY  HH:mm");
                                         return (
                                             <tr key={index}>
                                                 <td>{user.id}</td>
@@ -333,20 +261,12 @@ class TableEvent extends Component {
                                                 <td>
                                                     <button
                                                         className="btn-edit"
-                                                        onClick={() =>
-                                                            this.handleEditUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleEditUser(user)}>
                                                         <i className="fas fa-edit"></i>
                                                     </button>
                                                     <button
                                                         className="btn-delete"
-                                                        onClick={() =>
-                                                            this.handleDeleteUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleDeleteUser(user)}>
                                                         <i className="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
@@ -357,20 +277,13 @@ class TableEvent extends Component {
                                 <TableFooter>
                                     <TableRow>
                                         <TablePagination
-                                            rowsPerPageOptions={[
-                                                5,
-                                                10,
-                                                25,
-                                                { label: "All", value: -1 },
-                                            ]}
+                                            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                                             colSpan={7}
                                             count={listEvents.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
+                                            onRowsPerPageChange={this.handleChangeRowsPerPage}
                                             ActionsComponent={(subProps) => (
                                                 <TablePaginationActions
                                                     style={{

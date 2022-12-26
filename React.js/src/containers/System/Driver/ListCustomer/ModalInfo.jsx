@@ -1,56 +1,15 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
-import Box from "@mui/material/Box";
-import * as actions from "../../../../store/actions";
-import { LANGUAGES, CommonUtils } from "../../../../utils";
-import { toast } from "react-toastify";
-import _ from "lodash";
-import {
-    TableBody,
-    TableContainer,
-    TableFooter,
-    TablePagination,
-    TableRow,
-    Paper,
-    Table,
-} from "@mui/material";
-import localization from "moment/locale/vi";
-import moment from "moment";
-import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
-import TablePaginationActions from "../../../../components/TablePaginationActions";
-import {
-    getDriverTickets,
-    checkCustomerPresent,
-    getDriverTicketsRoute,
-} from "../../../../services/userService";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import "../style.scss";
+import { TableBody, TableContainer, Paper, Table } from "@mui/material";
+import { checkCustomerPresent, getDriverTicketsRoute } from "../../../../services/userService";
 class ModalInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
             listUser: [],
-            sortBy: "",
-            sortField: "",
-            keywordNumber: "",
-            page: 0,
-            rowsPerPage: 5,
-            isTest: false,
-            test: [],
-            test1: [],
-            time: "",
-            isCheckPresent: false,
-            selectRoute: "",
-            listCoupons: [],
-            isOpenModel: false,
         };
     }
 
@@ -61,21 +20,8 @@ class ModalInfo extends Component {
         } else this.setState({ listUser: listUser });
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {}
-
     toggle = () => {
         this.props.toggleFromParent();
-    };
-    handleChangePage = (event, newPage) => {
-        this.setState({
-            page: newPage,
-        });
-    };
-    handleChangeRowsPerPage = (event) => {
-        this.setState({
-            rowsPerPage: parseInt(event.target.value),
-            page: 0,
-        });
     };
 
     handleCheck = async (item) => {
@@ -93,9 +39,7 @@ class ModalInfo extends Component {
                 if (resUser.tickets.length > 0) {
                     resUser.tickets.forEach((ticket) => {
                         if (tempUser[`${ticket.token}`]) {
-                            tempUser[`${ticket.token}`].seatNo.push(
-                                ticket.seatNo
-                            );
+                            tempUser[`${ticket.token}`].seatNo.push(ticket.seatNo);
                         } else {
                             tempUser[`${ticket.token}`] = {
                                 Trip: ticket.Trip,
@@ -112,7 +56,6 @@ class ModalInfo extends Component {
                                 description: ticket.description,
                                 isPresent: ticket.isPresent,
                                 dayStart: ticket.dayStart,
-                                status: ticket.status,
                             };
                         }
                     });
@@ -123,18 +66,16 @@ class ModalInfo extends Component {
             this.setState({ listUser: resultUser });
         }
     };
-
-    handleSort = (a, b) => {
-        this.state.listUser = _.orderBy(this.state.listUser, [b], [a]);
-        this.setState({
-            sortBy: a,
-            sortField: b,
-            listUser: this.state.listUser,
-        });
-    };
+    currencyFormat(num) {
+        return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
+    }
+    currencyFormatEn(num) {
+        return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " VNĐ";
+    }
     render() {
         let language = this.props.language;
-        let { page, rowsPerPage, listUser, test, test1, isTest } = this.state;
+        let { listUser } = this.state;
+        let totalPrice = 0;
         return (
             <div>
                 <Modal
@@ -148,7 +89,7 @@ class ModalInfo extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Danh sách hành khách
+                        <FormattedMessage id="menu.driver.list_passenger" />
                     </ModalHeader>
 
                     <ModalBody>
@@ -156,182 +97,90 @@ class ModalInfo extends Component {
                             <Table>
                                 <TableBody>
                                     <tr>
-                                        <th
-                                            className="section-id"
-                                            style={{
-                                                width: "5%",
-                                            }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
-                                            Id
-                                        </th>
-                                        <th>
-                                            <div className="section-title">
-                                                <div> Tên</div>
-                                                <div>
-                                                    <FaLongArrowAltDown
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "number"
-                                                            )
-                                                        }
-                                                    />
-                                                    <FaLongArrowAltUp
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "number"
-                                                            )
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
-                                        </th>
-                                        <th
-                                            style={{
-                                                width: "15%",
-                                            }}>
-                                            Số điện thoại
-                                        </th>
-                                        <th
-                                            style={{
-                                                width: "15%",
-                                            }}>
-                                            <div className="section-title">
-                                                <div> Chỗ ngồi</div>
-                                                <div>
-                                                    <FaLongArrowAltDown
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "seatNo"
-                                                            )
-                                                        }
-                                                    />
-                                                    <FaLongArrowAltUp
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "seatNo"
-                                                            )
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
+                                        <th>Id</th>
+                                        <th className="section-id-list">
+                                            {" "}
+                                            <FormattedMessage id="menu.driver.name" />
                                         </th>
                                         <th className="section-id-list">
-                                            Thanh toán
+                                            {" "}
+                                            <FormattedMessage id="menu.driver.phone" />
                                         </th>
-
-                                        <th>
-                                            <div className="section-title">
-                                                <div>Yeu cau them</div>
-                                            </div>
+                                        <th className="section-id-list">
+                                            {" "}
+                                            <FormattedMessage id="menu.driver.seat" />
+                                        </th>
+                                        <th className="section-id-list">
+                                            {" "}
+                                            <FormattedMessage id="menu.driver.pay" />
+                                        </th>
+                                        <th className="section-id-list">
+                                            {" "}
+                                            <FormattedMessage id="menu.driver.description" />
                                         </th>
                                         <th
+                                            className="section-id-list"
                                             style={{
                                                 width: "10%",
-                                            }}
-                                            className="section-id-list">
-                                            Da len xe
+                                            }}>
+                                            <FormattedMessage id="menu.driver.dacomat" />
                                         </th>
                                     </tr>
 
-                                    {(listUser &&
-                                    listUser.length > 0 &&
-                                    rowsPerPage > 0
-                                        ? listUser.slice(
-                                              page * rowsPerPage,
-                                              page * rowsPerPage + rowsPerPage
-                                          )
-                                        : listUser
-                                    ).map((item, index) => {
-                                        let test = item.seatNo.join(" - ");
-                                        return (
-                                            <tr key={index}>
-                                                <td className="section-id-list">
-                                                    {index + 1}
-                                                </td>
-                                                <td>{item.name}</td>
-                                                <td>{item.phone}</td>
-                                                <td>{test}</td>
-                                                <td>{item.totalPrice}</td>
-                                                <td>{item.description}</td>
-                                                <td>
-                                                    {item.Trip.status === 3 ? (
-                                                        <></>
-                                                    ) : !item.isPresent ? (
-                                                        <>
-                                                            <button className="btn-delete">
-                                                                <i className="fas fa-window-close"></i>
-                                                            </button>
-                                                            <button
-                                                                className="btn-edit"
-                                                                onClick={() =>
-                                                                    this.handleCheck(
-                                                                        item
-                                                                    )
-                                                                }>
-                                                                <i className="fas fa-check"></i>
-                                                            </button>
-                                                        </>
-                                                    ) : (
-                                                        "Da co mawt"
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
+                                    {listUser &&
+                                        listUser.length > 0 &&
+                                        listUser.map((item, index) => {
+                                            let test = item.seatNo.join(" - ");
+                                            totalPrice = totalPrice + item.totalPrice;
+                                            return (
+                                                <tr key={index}>
+                                                    <td className="section-id-list">{item.id}</td>
+                                                    <td>{item.name}</td>
+                                                    <td>{item.phone}</td>
+                                                    <td>{test}</td>
+                                                    <td>
+                                                        {language === "vi"
+                                                            ? this.currencyFormat(item.totalPrice)
+                                                            : this.currencyFormatEn(item.totalPrice)}
+                                                    </td>
+                                                    <td>{item.description}</td>
+                                                    <td>
+                                                        {item.Trip.status === 3 ? (
+                                                            <></>
+                                                        ) : !item.isPresent ? (
+                                                            <>
+                                                                <button className="btn-delete">
+                                                                    <i className="fas fa-window-close"></i>
+                                                                </button>
+                                                                <button
+                                                                    className="btn-edit"
+                                                                    onClick={() => this.handleCheck(item)}>
+                                                                    <i className="fas fa-check"></i>
+                                                                </button>
+                                                            </>
+                                                        ) : (
+                                                            <FormattedMessage id="menu.driver.dacomat" />
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                 </TableBody>
-                                {listUser && listUser.length === 0 ? (
-                                    <td
-                                        colSpan="8"
-                                        style={{ textAlign: "center" }}>
+                                {listUser && listUser.length === 0 && (
+                                    <td colSpan="8" style={{ textAlign: "center" }}>
                                         No data
                                     </td>
-                                ) : (
-                                    <TableFooter>
-                                        <TableRow>
-                                            <TablePagination
-                                                rowsPerPageOptions={[
-                                                    5,
-                                                    10,
-                                                    25,
-                                                    { label: "All", value: -1 },
-                                                ]}
-                                                colSpan={7}
-                                                count={listUser.length}
-                                                rowsPerPage={rowsPerPage}
-                                                page={page}
-                                                onPageChange={
-                                                    this.handleChangePage
-                                                }
-                                                onRowsPerPageChange={
-                                                    this.handleChangeRowsPerPage
-                                                }
-                                                ActionsComponent={(
-                                                    subProps
-                                                ) => (
-                                                    <TablePaginationActions
-                                                        style={{
-                                                            marginBottom:
-                                                                "12px",
-                                                        }}
-                                                        {...subProps}
-                                                    />
-                                                )}
-                                            />
-                                        </TableRow>
-                                    </TableFooter>
                                 )}
                             </Table>
                         </TableContainer>
+                        <div className="tatol_price">
+                            <FormattedMessage id="menu.driver.total" />:{" "}
+                            <b>
+                                {language === "vi"
+                                    ? this.currencyFormat(totalPrice)
+                                    : this.currencyFormatEn(totalPrice)}
+                            </b>
+                        </div>
                     </ModalBody>
 
                     <ModalFooter>
@@ -341,7 +190,7 @@ class ModalInfo extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            OK
+                            Close
                         </Button>
                     </ModalFooter>
                 </Modal>
@@ -353,15 +202,12 @@ class ModalInfo extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        events: state.admin.events,
         userInfo: state.user.userInfo,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalInfo);

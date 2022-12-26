@@ -1,32 +1,31 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { connect } from "react-redux";
 import Header from "../../HomePage/Header";
-import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
-import { LANGUAGES } from "../../../utils";
-import { changeLanguageApp } from "../../../store/actions/appActions";
-import dayjs from "dayjs";
 import moment from "moment";
 import localization from "moment/locale/vi";
 import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
 import "./style.scss";
-import Typography from "@mui/material/Typography";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
-import Link from "@mui/material/Link";
-// import { Link } from "react-router-dom";
-
+import { Typography, Breadcrumbs, Link, Box, Skeleton } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
-import HomeFooter from "./../../HomePage/Section/HomeFooter";
 import { Row, Col } from "reactstrap";
+import Loading from "../../../components/Loading";
+const HomeFooter = lazy(() => import("../../HomePage/Section/HomeFooter"));
 class AllBlogs extends Component {
     constructor(props) {
         super(props);
         this.state = {
             listBlogs: [],
+            loading: false,
         };
     }
     componentDidMount() {
+        setTimeout(() => {
+            this.setState({
+                loading: true,
+            });
+        }, 500);
         this.props.fetchAllBlogs();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -40,13 +39,11 @@ class AllBlogs extends Component {
         }
     };
     render() {
-        let language = this.props.language;
-        let { listBlogs } = this.state;
+        let { listBlogs, loading } = this.state;
 
         return (
             <React.Fragment>
                 <Header />
-                {/* <div className="container"> */}
                 <div className="header-events">
                     <div className="container">
                         <Row>
@@ -54,22 +51,17 @@ class AllBlogs extends Component {
 
                             <Col md={9}>
                                 <div>
-                                    <Breadcrumbs
-                                        aria-label="breadcrumb"
-                                        sx={{ pt: 2 }}>
+                                    <Breadcrumbs aria-label="breadcrumb" sx={{ pt: 2 }}>
                                         <Link
                                             underline="hover"
                                             sx={{
                                                 display: "flex",
                                                 alignItems: "center",
-                                                // mt: 2,
                                             }}
                                             color="inherit"
                                             href="/home">
-                                            <HomeIcon
-                                                sx={{ mr: 0.5, ml: 3.5 }}
-                                            />
-                                            Home
+                                            <HomeIcon sx={{ mr: 0.5, ml: 3.5 }} />
+                                            <FormattedMessage id="events.home" />
                                         </Link>
                                         <Typography
                                             sx={{
@@ -78,12 +70,12 @@ class AllBlogs extends Component {
                                                 mt: 0.25,
                                             }}
                                             color="text.primary">
-                                            Sự kiện
+                                            <FormattedMessage id="events.blog" />
                                         </Typography>
                                     </Breadcrumbs>
                                 </div>
                                 <h2 className="title-events">
-                                    Danh sashc bai viet
+                                    <FormattedMessage id="events.listblog" />
                                 </h2>
                             </Col>
                             <Col md={2}></Col>
@@ -97,31 +89,87 @@ class AllBlogs extends Component {
                             <Row>
                                 <Col md={1}></Col>
                                 <Col md={9}>
-                                    {listBlogs &&
+                                    {loading === false && (
+                                        <>
+                                            <li>
+                                                <div className="content-events">
+                                                    <div className="bg-img">
+                                                        <Box>
+                                                            {loading === false && <Skeleton height={140}></Skeleton>}
+                                                        </Box>
+                                                    </div>
+                                                    <div className="content-right">
+                                                        <Typography variant="h3" sx={{ mb: 1 }}>
+                                                            {loading === false && <Skeleton width="500px" />}
+                                                        </Typography>
+                                                        <Typography variant="caption">
+                                                            {loading === false && <Skeleton width="200px" />}
+                                                        </Typography>
+                                                        <Typography variant="h2" sx={{ mt: 1 }}>
+                                                            {loading === false && <Skeleton width="200px" />}
+                                                        </Typography>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div className="content-events">
+                                                    <div className="bg-img">
+                                                        <Box>
+                                                            {loading === false && <Skeleton height={140}></Skeleton>}
+                                                        </Box>
+                                                    </div>
+                                                    <div className="content-right">
+                                                        <Typography variant="h3" sx={{ mb: 1 }}>
+                                                            {loading === false && <Skeleton width="500px" />}
+                                                        </Typography>
+                                                        <Typography variant="caption">
+                                                            {loading === false && <Skeleton width="200px" />}
+                                                        </Typography>
+                                                        <Typography variant="h2" sx={{ mt: 1 }}>
+                                                            {loading === false && <Skeleton width="200px" />}
+                                                        </Typography>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div className="content-events">
+                                                    <div className="bg-img">
+                                                        <Box>
+                                                            {loading === false && <Skeleton height={140}></Skeleton>}
+                                                        </Box>
+                                                    </div>
+                                                    <div className="content-right">
+                                                        <Typography variant="h3" sx={{ mb: 1 }}>
+                                                            {loading === false && <Skeleton width="500px" />}
+                                                        </Typography>
+                                                        <Typography variant="caption">
+                                                            {loading === false && <Skeleton width="200px" />}
+                                                        </Typography>
+                                                        <Typography variant="h2" sx={{ mt: 1 }}>
+                                                            {loading === false && <Skeleton width="200px" />}
+                                                        </Typography>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </>
+                                    )}
+                                    {loading === true &&
+                                        listBlogs &&
                                         listBlogs.length > 0 &&
                                         listBlogs.map((item, index) => {
-                                            let time = moment(
-                                                new Date(
-                                                    item.createdAt
-                                                ).getTime()
-                                            ).format("ddd DD-MM-YYYY HH:mm:ss");
+                                            let time = moment(new Date(item.createdAt).getTime()).format(
+                                                "DD-MM-YYYY HH:mm:ss"
+                                            );
                                             let imageBase64 = "";
                                             if (item.image) {
-                                                imageBase64 = Buffer.from(
-                                                    item.image,
-                                                    "base64"
-                                                ).toString("binary");
+                                                imageBase64 = Buffer.from(item.image, "base64").toString("binary");
                                             }
 
                                             return (
                                                 <li key={index}>
                                                     <div
                                                         className="content-events"
-                                                        onClick={() =>
-                                                            this.handleViewDetail(
-                                                                item
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleViewDetail(item)}>
                                                         <div
                                                             className="bg-img"
                                                             style={{
@@ -129,15 +177,8 @@ class AllBlogs extends Component {
                                                             }}
                                                         />
                                                         <div className="content-right">
-                                                            <h3>
-                                                                {
-                                                                    item.description
-                                                                }
-                                                            </h3>
-                                                            <div>
-                                                                <i className="fas fa-calendar-check"></i>
-                                                                {time}
-                                                            </div>
+                                                            <h3>{item.description}</h3>
+                                                            <div>{time}</div>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -148,7 +189,9 @@ class AllBlogs extends Component {
                         </ul>
                     </div>
                 </div>
-                <HomeFooter />
+                <Suspense fallback={<Loading />}>
+                    <HomeFooter />
+                </Suspense>
             </React.Fragment>
         );
     }
@@ -162,11 +205,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeLanguageAppRedux: (language) =>
-            dispatch(changeLanguageApp(language)),
         fetchAllBlogs: () => dispatch(actions.fetchAllBlogs()),
     };
 };
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(AllBlogs)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AllBlogs));

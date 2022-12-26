@@ -27,11 +27,7 @@ class DetailEvent extends Component {
     }
     async componentDidMount() {
         this.props.fetchAllEvents();
-        if (
-            this.props.match &&
-            this.props.match.params &&
-            this.props.match.params.id
-        ) {
+        if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let id = this.props.match.params.id;
             let res = await getAllEventsService(id);
             let data = [];
@@ -86,8 +82,7 @@ class DetailEvent extends Component {
         return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
     }
     render() {
-        let { name, description, startDate, endDate, image, listCoupons } =
-            this.state;
+        let { name, description, startDate, endDate, image, listCoupons } = this.state;
         let language = this.props.language;
         let start = moment(+startDate).format(" DD/MM/YYYY");
         let end = moment(+endDate).format(" DD/MM/YYYY");
@@ -97,7 +92,7 @@ class DetailEvent extends Component {
         }
         console.log(listCoupons);
         return (
-            <React.Fragment style={{ overflowX: "hidden" }}>
+            <React.Fragment>
                 <Header />
                 {this.state.isOpenModelEditUser && (
                     <ModalDetalCoupon
@@ -114,14 +109,8 @@ class DetailEvent extends Component {
                     <div className="container">
                         <Row>
                             <Col lg={3} md={2} sm={1}></Col>
-                            <Col
-                                lg={6}
-                                md={8}
-                                sm={10}
-                                className="content_event">
-                                <div className="title_header">
-                                    Uu dai noi bac
-                                </div>
+                            <Col lg={6} md={8} sm={10} className="content_event">
+                                <div className="title_header">Uu dai noi bac</div>
                                 <h2
                                     style={{
                                         marginBottom: "22px",
@@ -130,8 +119,7 @@ class DetailEvent extends Component {
                                     {name}
                                 </h2>
                                 <div style={{ marginBottom: "22px" }}>
-                                    Thời gian: Từ <b>{start}</b> đến hết{" "}
-                                    <b>{end} </b>
+                                    Thời gian: Từ <b>{start}</b> đến hết <b>{end} </b>
                                 </div>
                                 <div className="t-box">
                                     <div
@@ -162,21 +150,13 @@ class DetailEvent extends Component {
                                     backgroundColor: "#D3D6D8",
                                     marginTop: "40px",
                                 }}>
-                                {listCoupons &&
-                                listCoupons.length > 0 &&
-                                listCoupons[0].id ? (
+                                {listCoupons && listCoupons.length > 0 && listCoupons[0].id ? (
                                     listCoupons.map((item, index) => {
                                         if (index % 2 === 0) {
                                             let price;
-                                            +item.type == 2
-                                                ? (price = "%")
-                                                : (price = "đ");
-                                            let start = moment(
-                                                +item.startDate
-                                            ).format("L");
-                                            let end = moment(
-                                                +item.endDate
-                                            ).format("L");
+                                            +item.type == 2 ? (price = "%") : (price = "đ");
+                                            let start = moment(+item.startDate).format("L");
+                                            let end = moment(+item.endDate).format("L");
                                             let text = item.name;
                                             return (
                                                 <>
@@ -186,23 +166,15 @@ class DetailEvent extends Component {
                                                             <div className="coupon">
                                                                 <div className="main-coupon">
                                                                     <p className="coupon-value">
-                                                                        Giảm{" "}
-                                                                        {
-                                                                            item.discount
-                                                                        }{" "}
-                                                                        {price}
+                                                                        Giảm {item.discount} {price}
                                                                     </p>
 
                                                                     <p className="coupon-required">
-                                                                        Cho đơn
-                                                                        từ{" "}
-                                                                        {this.currencyFormat(
-                                                                            item.discountMax
-                                                                        )}
+                                                                        Cho đơn từ{" "}
+                                                                        {this.currencyFormat(item.discountMax)}
                                                                     </p>
                                                                     <p className="start-date">
-                                                                        {start}{" "}
-                                                                        - {end}
+                                                                        {start} - {end}
                                                                     </p>
                                                                 </div>
                                                                 <div className="vice-coupon">
@@ -214,16 +186,10 @@ class DetailEvent extends Component {
                                                                             <button
                                                                                 className="btn-coupon"
                                                                                 onClick={() => {
-                                                                                    navigator.clipboard.writeText(
-                                                                                        text
-                                                                                    );
-                                                                                    alert(
-                                                                                        "Lấy mã giảm giá thành công"
-                                                                                    );
+                                                                                    navigator.clipboard.writeText(text);
+                                                                                    alert("Lấy mã giảm giá thành công");
                                                                                 }}>
-                                                                                {
-                                                                                    text
-                                                                                }
+                                                                                {text}
                                                                             </button>
                                                                             {/* {" "}
                                                                     NEWFREND2022 */}
@@ -231,13 +197,8 @@ class DetailEvent extends Component {
                                                                     </p>
                                                                     <p
                                                                         className="condition"
-                                                                        onClick={() =>
-                                                                            this.handleEditUser(
-                                                                                item
-                                                                            )
-                                                                        }>
-                                                                        Điều
-                                                                        kiện
+                                                                        onClick={() => this.handleEditUser(item)}>
+                                                                        Điều kiện
                                                                     </p>
                                                                 </div>
                                                                 <i></i>
@@ -248,15 +209,9 @@ class DetailEvent extends Component {
                                             );
                                         } else {
                                             let price;
-                                            +item.type == 2
-                                                ? (price = "%")
-                                                : (price = "đ");
-                                            let start = moment(
-                                                +item.startDate
-                                            ).format("L");
-                                            let end = moment(
-                                                +item.endDate
-                                            ).format("L");
+                                            +item.type == 2 ? (price = "%") : (price = "đ");
+                                            let start = moment(+item.startDate).format("L");
+                                            let end = moment(+item.endDate).format("L");
                                             let text = item.name;
                                             return (
                                                 <>
@@ -265,24 +220,15 @@ class DetailEvent extends Component {
                                                             <div className="coupon">
                                                                 <div className="main-coupon">
                                                                     <p className="coupon-value">
-                                                                        Giảm{" "}
-                                                                        {
-                                                                            item.discount
-                                                                        }{" "}
-                                                                        {price}
+                                                                        Giảm {item.discount} {price}
                                                                     </p>
 
                                                                     <p className="coupon-required">
-                                                                        Cho đơn
-                                                                        từ{" "}
-                                                                        {this.currencyFormat(
-                                                                            item.discountMax
-                                                                        )}
-                                                                        đ
+                                                                        Cho đơn từ{" "}
+                                                                        {this.currencyFormat(item.discountMax)}đ
                                                                     </p>
                                                                     <p className="start-date">
-                                                                        {start}{" "}
-                                                                        - {end}
+                                                                        {start} - {end}
                                                                     </p>
                                                                 </div>
                                                                 <div className="vice-coupon">
@@ -294,28 +240,17 @@ class DetailEvent extends Component {
                                                                             <button
                                                                                 className="btn-coupon"
                                                                                 onClick={() => {
-                                                                                    navigator.clipboard.writeText(
-                                                                                        text
-                                                                                    );
-                                                                                    alert(
-                                                                                        "Lấy mã giảm giá thành công"
-                                                                                    );
+                                                                                    navigator.clipboard.writeText(text);
+                                                                                    alert("Lấy mã giảm giá thành công");
                                                                                 }}>
-                                                                                {
-                                                                                    text
-                                                                                }
+                                                                                {text}
                                                                             </button>
                                                                         </p>
                                                                     </p>
                                                                     <p
                                                                         className="condition"
-                                                                        onClick={() =>
-                                                                            this.handleEditUser(
-                                                                                item
-                                                                            )
-                                                                        }>
-                                                                        Điều
-                                                                        kiện
+                                                                        onClick={() => this.handleEditUser(item)}>
+                                                                        Điều kiện
                                                                     </p>
                                                                 </div>
                                                                 <i></i>
@@ -330,8 +265,7 @@ class DetailEvent extends Component {
                                 ) : (
                                     <div>
                                         <div style={{ textAlign: "center" }}>
-                                            Hiện tại không có mã giảm giá của sự
-                                            kiện này
+                                            Hiện tại không có mã giảm giá của sự kiện này
                                         </div>
                                     </div>
                                 )}
@@ -350,17 +284,15 @@ const mapStateToProps = (state) => {
     return {
         listRoutes: state.admin.routes,
         events: state.admin.events,
+        language: state.app.language,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeLanguageAppRedux: (language) =>
-            dispatch(changeLanguageApp(language)),
+        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
         fetchAllRoute: () => dispatch(actions.fetchAllRoute()),
         fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
     };
 };
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(DetailEvent)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DetailEvent));

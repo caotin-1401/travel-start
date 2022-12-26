@@ -75,6 +75,17 @@ export const adminMenu = [
             },
         ],
     },
+    {
+        //quản lý cẩm nang
+        name: "menu.admin.err",
+        link: "/system/error",
+        menus: [
+            {
+                name: "menu.admin.err1",
+                link: "/system/error",
+            },
+        ],
+    },
 ];
 
 export const busOwnerMenu = [
@@ -105,9 +116,7 @@ export const busOwnerMenu = [
     {
         //quản lý sự kiện
         name: "menu.busOwner.events",
-        menus: [
-            { name: "menu.busOwner.event", link: "/busOwner/event-manage" },
-        ],
+        menus: [{ name: "menu.busOwner.event", link: "/busOwner/event-manage" }],
     },
     {
         //quản lý khu vuc do xe
@@ -137,21 +146,21 @@ export const busOwnerMenu = [
 
 export const driverMenu = [
     {
-        //quản lý khu vuc do xe
-        name: "menu.admin.parking",
-        menus: [
-            {
-                name: "menu.admin.parking-lot",
-                link: "/driver/manage-parking",
-            },
-        ],
-    },
-    {
         //quản lý hanh khach
         name: "menu.driver.customer",
         menus: [
             { name: "menu.driver.list-customer", link: "/driver/seatNo" },
             // { name: "menu.admin.location", link: "/driver/dashboard" },
+        ],
+    },
+    {
+        //quản lý khu vuc do xe
+        name: "menu.driver.history",
+        menus: [
+            {
+                name: "menu.driver.history",
+                link: "/driver/history",
+            },
         ],
     },
 ];

@@ -16,69 +16,32 @@ import TablePassenger from "./../containers/System/Admin/ManagePassenger/TablePa
 import ManageOwner from "./../containers/System/Admin/manageOwner/UserManage";
 import ListDriver from "./../containers/System/Admin/manageOwner/ListDriver";
 import ListVehicleOfAdmin from "./../containers/System/Admin/manageOwner/ListVehicle";
+import Error from "./../containers/System/Admin/Error/Error";
 
 class System extends Component {
     render() {
-        const { systemMenuPath, isLoggedIn } = this.props;
+        const { systemMenuPath } = this.props;
         return (
             <React.Fragment>
                 {this.props.isLoggedIn && <Header />}
                 <div className="system-container">
                     <div className="system-list">
                         <Switch>
-                            <Route
-                                path="/system/dashboard"
-                                component={Dashboard}
-                            />
-                            <Route
-                                path="/system/admin-manage"
-                                component={UserManage}
-                            />
-                            <Route
-                                path="/system/busOnwer-manage"
-                                component={ManageOwner}
-                            />
-                            <Route
-                                path="/system/busOnwer/driver_busOnwer=:id"
-                                component={ListDriver}
-                            />
-                            <Route
-                                path="/system/busOnwer/vehicle_busOnwer=:id"
-                                component={ListVehicleOfAdmin}
-                            />
-                            <Route
-                                path="/system/passenger-manage"
-                                component={TablePassenger}
-                            />
-                            <Route
-                                path="/system/list-bus"
-                                component={BusType}
-                            />
-                            <Route
-                                path="/system/list-route"
-                                component={TableRoutes}
-                            />
-                            <Route
-                                path="/system/list-location"
-                                component={TableStation}
-                            />
-                            <Route
-                                path="/system/stationId=:id"
-                                component={ListVehicleOfStation}
-                            />
-                            <Route
-                                path="/system/parking-lot"
-                                component={TableStation1}
-                            />
-                            <Route
-                                path="/system/event"
-                                component={TableEvent}
-                            />
-                            <Route
-                                path="/system/discount"
-                                component={TableDiscount}
-                            />
+                            <Route path="/system/dashboard" component={Dashboard} />
+                            <Route path="/system/admin-manage" component={UserManage} />
+                            <Route path="/system/busOnwer-manage" component={ManageOwner} />
+                            <Route path="/system/busOnwer/driver_busOnwer=:id" component={ListDriver} />
+                            <Route path="/system/busOnwer/vehicle_busOnwer=:id" component={ListVehicleOfAdmin} />
+                            <Route path="/system/passenger-manage" component={TablePassenger} />
+                            <Route path="/system/list-bus" component={BusType} />
+                            <Route path="/system/list-route" component={TableRoutes} />
+                            <Route path="/system/list-location" component={TableStation} />
+                            <Route path="/system/stationId=:id" component={ListVehicleOfStation} />
+                            <Route path="/system/parking-lot" component={TableStation1} />
+                            <Route path="/system/event" component={TableEvent} />
+                            <Route path="/system/discount" component={TableDiscount} />
                             <Route path="/system/blog" component={TableBlog} />
+                            <Route path="/system/error" component={Error} />
                             <Route
                                 component={() => {
                                     return <Redirect to={systemMenuPath} />;

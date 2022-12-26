@@ -4,16 +4,12 @@ import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import { ConnectedRouter as Router } from "connected-react-router";
 import { history } from "../redux";
 import { ToastContainer } from "react-toastify";
-import {
-    userIsAuthenticated,
-    userIsNotAuthenticated,
-} from "../hoc/authentication";
+import { userIsAuthenticated, userIsNotAuthenticated } from "../hoc/authentication";
 import { path } from "../utils";
 import BusRoute from "./Passenger/Route/Route";
 import Home from "../routes/Home";
 import Login from "./Auth/Login";
 import Register from "./Auth/Register";
-import Header from "./Header/Header";
 import System from "../routes/system";
 import HomePage from "./HomePage/HomePage";
 import AdapterJalaali from "@date-io/jalaali";
@@ -32,6 +28,7 @@ import ForgotPassword from "./Auth/ForgotPassword";
 import ResetPassword from "./Auth/ResetPassword";
 import DetailBlog from "./Passenger/Blogs/DetailBlog";
 import AllBlogs from "./Passenger/Blogs/AllBlogs";
+import Contact from "./Passenger/Contact/Contact";
 
 class App extends Component {
     handlePersistorState = () => {
@@ -58,116 +55,46 @@ class App extends Component {
                     <LocalizationProvider dateAdapter={AdapterJalaali}>
                         <div className="main-container">
                             <div className="content-container">
-                                <CustomScrollbars
-                                    style={{ height: "100vh", with: "100%" }}>
+                                <CustomScrollbars style={{ height: "100vh", with: "100%" }}>
                                     <Switch>
-                                        <Route
-                                            path={path.HOME}
-                                            exact
-                                            component={Home}
-                                        />
-                                        <Route
-                                            path={path.LOGIN}
-                                            component={userIsNotAuthenticated(
-                                                Login
-                                            )}
-                                        />{" "}
+                                        <Route path={path.HOME} exact component={Home} />
+                                        <Route path={path.LOGIN} component={userIsNotAuthenticated(Login)} />{" "}
                                         <Route
                                             path={path.FORGOT_PASSWORD}
-                                            component={userIsNotAuthenticated(
-                                                ForgotPassword
-                                            )}
+                                            component={userIsNotAuthenticated(ForgotPassword)}
                                         />
                                         <Route
                                             path={path.RESET_PASSWORD}
-                                            component={userIsNotAuthenticated(
-                                                ResetPassword
-                                            )}
+                                            component={userIsNotAuthenticated(ResetPassword)}
                                         />
-                                        <Route
-                                            path={path.REGISTER}
-                                            component={userIsNotAuthenticated(
-                                                Register
-                                            )}
-                                        />
-                                        <Route
-                                            path={path.HOMEPAGE}
-                                            exact
-                                            component={HomePage}
-                                        />
-                                        <Route
-                                            path={path.SYSTEM}
-                                            component={userIsAuthenticated(
-                                                System
-                                            )}
-                                        />
-                                        <Route
-                                            path={path.BUSOWNER}
-                                            component={userIsAuthenticated(
-                                                BusOnwer
-                                            )}
-                                        />
-                                        <Route
-                                            path={path.DRIVER}
-                                            component={userIsAuthenticated(
-                                                Driver
-                                            )}
-                                        />
-                                        <Route
-                                            path={path.ROUTE}
-                                            component={userIsAuthenticated(
-                                                BusRoute
-                                            )}
-                                        />
-                                        <Route
-                                            path={path.VERIFY_EMAIL}
-                                            component={VerifyEmail}
-                                        />
-                                        <Route
-                                            path={path.EVENTS}
-                                            component={AllEvents}
-                                        />
-                                        <Route
-                                            path={path.EVENT}
-                                            component={DetailEvent}
-                                        />
-                                        <Route
-                                            path={path.BLOGS}
-                                            component={AllBlogs}
-                                        />
-                                        <Route
-                                            path={path.BLOG}
-                                            component={DetailBlog}
-                                        />
+                                        <Route path={path.REGISTER} component={userIsNotAuthenticated(Register)} />
+                                        <Route path={path.HOMEPAGE} exact component={HomePage} />
+                                        <Route path={path.SYSTEM} component={userIsAuthenticated(System)} />
+                                        <Route path={path.BUSOWNER} component={userIsAuthenticated(BusOnwer)} />
+                                        <Route path={path.DRIVER} component={userIsAuthenticated(Driver)} />
+                                        <Route path={path.ROUTE} component={userIsAuthenticated(BusRoute)} />
+                                        <Route path={path.VERIFY_EMAIL} component={VerifyEmail} />
+                                        <Route path={path.EVENTS} component={AllEvents} />
+                                        <Route path={path.EVENT} component={DetailEvent} />
+                                        <Route path={path.BLOGS} component={AllBlogs} />
+                                        <Route path={path.CONTACTS} component={Contact} />
+                                        <Route path={path.BLOG} component={DetailBlog} />
                                         <Route
                                             path={path.PROFILE_ADMIN}
-                                            component={userIsAuthenticated(
-                                                ProfileAdmin
-                                            )}
+                                            component={userIsAuthenticated(ProfileAdmin)}
                                         />
                                         <Route
                                             path={path.PROFILE_BUS}
-                                            component={userIsAuthenticated(
-                                                ProfileBusOwner
-                                            )}
+                                            component={userIsAuthenticated(ProfileBusOwner)}
                                         />
                                         <Route
                                             path={path.PROFILE_DRIVER}
-                                            component={userIsAuthenticated(
-                                                ProfileDriver
-                                            )}
+                                            component={userIsAuthenticated(ProfileDriver)}
                                         />
-                                        <Route
-                                            path={path.PROFILE}
-                                            component={userIsAuthenticated(
-                                                Profile
-                                            )}
-                                        />{" "}
+                                        <Route path={path.PROFILE} component={userIsAuthenticated(Profile)} />{" "}
                                         <Route
                                             component={() => {
-                                                return (
-                                                    <Redirect to={BusRoute} />
-                                                );
+                                                return <Redirect to={BusRoute} />;
                                             }}
                                         />
                                     </Switch>

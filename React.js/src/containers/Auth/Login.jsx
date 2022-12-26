@@ -1,4 +1,4 @@
-import React, { Component, Suspense, lazy } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import * as actions from "../../store/actions";
@@ -44,7 +44,7 @@ class Login extends Component {
         } else if (data === "R2") {
             redirectPath = "/busOwner/dashboard";
         } else if (data === "R3") {
-            redirectPath = "/driver/manage-parking";
+            redirectPath = "/driver/seatNo";
         } else {
             redirectPath = "/home";
         }
@@ -54,7 +54,7 @@ class Login extends Component {
     handleLogin = async () => {
         let { email, password } = this.state;
         let language = this.props.language;
-        let message1, message2;
+        let message1;
         if (!email) {
             if (language === LANGUAGES.VI) {
                 message1 = "Vui lòng nhập email";
@@ -69,10 +69,7 @@ class Login extends Component {
             }
         } else {
             try {
-                let data = await handleLogin(
-                    this.state.email,
-                    this.state.password
-                );
+                let data = await handleLogin(this.state.email, this.state.password);
                 console.log(data);
                 if (data && data.errCode !== 0) {
                     if (data.errCode === 3) {
@@ -156,11 +153,7 @@ class Login extends Component {
                             </label>
                             <div className="custom-password">
                                 <input
-                                    type={
-                                        this.state.isShowPassword
-                                            ? "text"
-                                            : "password"
-                                    }
+                                    type={this.state.isShowPassword ? "text" : "password"}
                                     className="form-control"
                                     placeholder={input2}
                                     value={this.state.password}
@@ -168,12 +161,7 @@ class Login extends Component {
                                     onKeyDown={this.handleKeyDown}
                                 />
                                 <span onClick={() => this.handleShowPassword()}>
-                                    <i
-                                        className={
-                                            this.state.isShowPassword
-                                                ? "fas fa-eye"
-                                                : "fas fa-eye-slash"
-                                        }></i>
+                                    <i className={this.state.isShowPassword ? "fas fa-eye" : "fas fa-eye-slash"}></i>
                                 </span>
                             </div>
                         </div>
@@ -181,9 +169,7 @@ class Login extends Component {
                             {this.state.errMessage}
                         </div>
                         <div className="col-12">
-                            <button
-                                className="btn-login"
-                                onClick={this.handleLogin}>
+                            <button className="btn-login" onClick={this.handleLogin}>
                                 <FormattedMessage id="login.login" />
                             </button>
                         </div>
@@ -212,8 +198,7 @@ class Login extends Component {
                             <div className="col-6 left-forgot">
                                 <span className="forgot-pass">
                                     <Link to="/home">
-                                        &#60; &#60;{" "}
-                                        <FormattedMessage id="login.home" />
+                                        &#60; &#60; <FormattedMessage id="login.home" />
                                     </Link>
                                 </span>
                             </div>
@@ -235,8 +220,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         navigate: (path) => dispatch(push(path)),
-        userLoginSuccess: (userInfo) =>
-            dispatch(actions.userLoginSuccess(userInfo)),
+        userLoginSuccess: (userInfo) => dispatch(actions.userLoginSuccess(userInfo)),
     };
 };
 

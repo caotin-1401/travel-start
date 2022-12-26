@@ -1,22 +1,18 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import { withRouter } from "react-router";
 import * as actions from "../../../../store/actions";
 import Header from "../../../Header/Header";
 import { Row, Col } from "reactstrap";
-import "./ProfileAdmin.scss";
-import InfoUser from "./InfoUser";
-class ProfileDriver extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    componentDidMount() {}
-    componentDidUpdate(prevProps, prevState, snapshot) {}
+import "../style.scss";
+import Loading from "../../../../components/Loading";
 
+const InfoUser = lazy(() => import("./InfoUser"));
+
+class ProfileDriver extends Component {
     render() {
-        const { processLogout, language } = this.props;
+        const { processLogout } = this.props;
         return (
             <React.Fragment>
                 <Header />
@@ -27,33 +23,35 @@ class ProfileDriver extends Component {
                             <Col md={3} className="container-left__admin">
                                 <div className="contentProfile">
                                     <div>
-                                        <Row
-                                            className="active"
-                                            onClick={this.handleSelection1}>
+                                        <Row className="active" onClick={this.handleSelection1}>
                                             <Col md={2}>
                                                 <i className="fas fa-user-circle"></i>
                                             </Col>
                                             <Col md={10}>
-                                                <p>Thông tin tài khoản</p>
+                                                <p>
+                                                    <FormattedMessage id="menu.driver.info" />
+                                                </p>
                                             </Col>
                                         </Row>
                                     </div>
                                     <div>
-                                        <Row
-                                            onClick={processLogout}
-                                            title="Log out">
+                                        <Row onClick={processLogout} title="Log out">
                                             <Col md={2}>
                                                 <i className="fas fa-sign-out-alt"></i>
                                             </Col>
                                             <Col md={10}>
-                                                <p>Đăng xuất</p>
+                                                <p>
+                                                    <FormattedMessage id="menu.driver.logout" />
+                                                </p>
                                             </Col>
                                         </Row>
                                     </div>
                                 </div>
                             </Col>
                             <Col md={7} className="container-right__admin">
-                                <InfoUser />
+                                <Suspense fallback={<Loading />}>
+                                    <InfoUser />
+                                </Suspense>
                             </Col>
                             <Col md={1} className="none"></Col>
                         </Row>
@@ -65,20 +63,12 @@ class ProfileDriver extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return {
-        language: state.app.language,
-        genderRedux: state.admin.gender,
-        isLoggedIn: state.user.isLoggedIn,
-        userInfo: state.user.userInfo,
-    };
+    return {};
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getGenderStart: () => dispatch(actions.fetchGenderStart()),
         processLogout: () => dispatch(actions.processLogout()),
     };
 };
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(ProfileDriver)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProfileDriver));

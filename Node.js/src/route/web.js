@@ -10,6 +10,7 @@ import couponController from "../controllers/couponController";
 import eventController from "../controllers/eventController";
 import blogController from "../controllers/blogController";
 import homeController from "../controllers/homeController";
+import errController from "../controllers/errController";
 
 let router = express.Router();
 
@@ -26,77 +27,35 @@ let initWebRoutes = (app) => {
 
     router.post("/api/login", userController.handleLogin);
     router.post("/api/register", userController.handleRegister);
-    router.post(
-        "/api/post-forgot-password",
-        userController.handlePostForgotPassword
-    );
-    router.get(
-        "/api/get-forgot-password",
-        userController.handleGetForgotPassword
-    );
-    router.post(
-        "/api/post-reset-password",
-        userController.handlePostResetPassword
-    );
+    router.post("/api/post-forgot-password", userController.handlePostForgotPassword);
+    router.get("/api/get-forgot-password", userController.handleGetForgotPassword);
+    router.post("/api/post-reset-password", userController.handlePostResetPassword);
     router.get("/api/get-all-users", userController.handleGetAllUsers);
     router.get("/api/get-all-drivers", userController.getAllDrivers);
     router.get("/api/get-all-passengers", userController.getAllPassengers);
-    router.get(
-        "/api/get-all-passengers-ticket",
-        userController.getAllPassengersTicket
-    );
+    router.get("/api/get-all-passengers-ticket", userController.getAllPassengersTicket);
     router.post("/api/create-new-user", userController.handleCreateNewUser);
     router.put("/api/edit-user", userController.handleEditUser);
     router.put("/api/edit-passenger", userController.handEditPassenger);
     router.put("/api/use-coupon-isFirst", userController.useCouponIsFirst);
     router.put("/api/change-password", userController.handleChangePassword);
-    router.put(
-        "/api/change-password-passenger",
-        userController.handleChangePasswordPassenger
-    );
+    router.put("/api/change-password-passenger", userController.handleChangePasswordPassenger);
     router.delete("/api/delete-user", userController.handleDeleteUser);
     router.get("/api/allcode", userController.getAllCode);
     router.get("/api/get-info-driver-route", userController.getInfoDriverRoute);
-    router.put(
-        "/api/handle-driver-start-trip",
-        userController.handleDriverStartTrip
-    );
-    router.put(
-        "/api/handle-driver-end-trip",
-        userController.handleDriverEndTrip
-    );
-    router.put(
-        "/api/handle-vehicle-start-trip",
-        busController.handleVehicleStartTrip
-    );
-    router.put(
-        "/api/handle-vehicle-end-trip",
-        busController.handleVehicleEndTrip
-    );
-    router.get(
-        "/api/get-driver-ticket-route",
-        ticketController.getDriverTicketRoute
-    );
-    router.get(
-        "/api/get-all-route-from-date-driver",
-        ticketController.getAllRouteFromDateDriver
-    );
+    router.put("/api/handle-driver-start-trip", userController.handleDriverStartTrip);
+    router.put("/api/handle-driver-end-trip", userController.handleDriverEndTrip);
+    router.put("/api/handle-vehicle-start-trip", busController.handleVehicleStartTrip);
+    router.put("/api/handle-vehicle-end-trip", busController.handleVehicleEndTrip);
+    router.get("/api/get-driver-ticket-route", ticketController.getDriverTicketRoute);
+    router.get("/api/get-all-route-from-date-driver", ticketController.getAllRouteFromDateDriver);
 
     router.get("/api/get-all-locations", locationController.getAllLocations);
-    router.post(
-        "/api/create-new-locations",
-        locationController.handleCreateNewLocations
-    );
+    router.post("/api/create-new-locations", locationController.handleCreateNewLocations);
     router.put("/api/edit-locations", locationController.handleEditLocations);
     router.delete("/api/delete-locations", locationController.deleteLocations);
-    router.get(
-        "/api/get-all-vehicle-from-station",
-        locationController.getAllVehicleFromStation
-    );
-    router.get(
-        "/api/get-all-vehicle-from-one-station",
-        locationController.getAllVehicleFromOneStation
-    );
+    router.get("/api/get-all-vehicle-from-station", locationController.getAllVehicleFromStation);
+    router.get("/api/get-all-vehicle-from-one-station", locationController.getAllVehicleFromOneStation);
     router.get("/api/get-all-city", locationController.getAllCity);
 
     router.get("/api/get-all-bustypes", busTypeController.getAllBusTypes);
@@ -116,6 +75,7 @@ let initWebRoutes = (app) => {
 
     router.get("/api/get-all-schedule", scheduleController.getAllSchedule);
     router.get("/api/show-all-schedule", scheduleController.shouldAllSchedule);
+    router.get("/api/get-driver-schedule", scheduleController.getDriverTrips);
     router.post("/api/create-new-schedule", scheduleController.createSchedule);
     router.delete("/api/delete-schedule", scheduleController.deleteSchedule);
     router.put("/api/handle-start-trip", scheduleController.handleStartTrip);
@@ -148,6 +108,10 @@ let initWebRoutes = (app) => {
     router.post("/api/create-new-blog", blogController.createNewBlog);
     router.put("/api/edit-blog", blogController.editBlog);
     router.delete("/api/delete-blog", blogController.deleteBlog);
+
+    router.get("/api/get-all-err", errController.getAllErr);
+    router.post("/api/create-new-err", errController.createNewErr);
+    router.delete("/api/delete-err", errController.deleteErr);
 
     return app.use("/", router);
 };

@@ -97,7 +97,7 @@
         }
 
         .route-result-count {
-            margin   : 10px;
+            margin   : 10px 10px 200px 10px;
             // border: 1px solid black;
 
             .route-sort {
@@ -110,7 +110,7 @@
                     font-size: 18px;
 
                     .w-30 {
-                        width: 30%;
+                        width: 35%;
 
                         .f-bold {
                             font-weight: 700;
@@ -118,11 +118,28 @@
                     }
 
                     .w-70 {
-                        width  : 70%;
+                        width  : 65%;
                         display: flex;
 
                         .w-20 {
-                            width        : 20%;
+                            width        : 25%;
+                            border-radius: 5px;
+                            cursor       : pointer;
+
+                            &:hover {
+                                opacity: 0.8;
+                            }
+
+                            .test__ {
+                                margin         : 3px;
+                                display        : flex;
+                                align-items    : center;
+                                justify-content: center;
+                            }
+                        }
+
+                        .w-30 {
+                            width        : 25%;
                             border-radius: 5px;
                             cursor       : pointer;
 
@@ -267,7 +284,10 @@
                                 }
 
                                 .fr {
-                                    float: right;
+                                    float      : right;
+                                    width      : 125px;
+                                    font-size  : 17px;
+                                    font-weight: 500;
                                 }
                             }
                         }
@@ -275,5 +295,85 @@
                 }
             }
         }
+    }
+}
+
+.filter {
+    margin-bottom: 100px;
+}
+
+.filter_a {
+    height  : 55px;
+    position: relative;
+}
+
+.filter_b {
+    position: relative;
+}
+
+.filter .boloctimkiem {
+    font-weight  : 500;
+    margin-top   : 20px;
+    margin-bottom: 20px;
+    position     : absolute;
+    left         : 0;
+}
+
+.filter .xoaloc {
+    font-size    : 14px;
+    color        : rgb(0, 96, 196);
+    cursor       : pointer;
+    margin-top   : 20px;
+    margin-bottom: 20px;
+    position     : absolute;
+    right        : 0;
+}
+
+.filter .filter_content {
+    padding: 15px;
+    border : 1px solid rgb(192, 192, 192);
+}
+
+.filter .filter_rate i {
+    margin-right: 3px;
+}
+
+.item_choose {
+    height                 : auto;
+    display                : flex;
+    flex-direction         : column;
+    -webkit-box-align      : center;
+    align-items            : center;
+    -webkit-box-pack       : center;
+    justify-content        : center;
+    width                  : 100%;
+    // height              : inherit;
+    padding                : 8px;
+    border                 : 1px solid rgb(192, 192, 192);
+    border-radius          : 4px;
+    box-shadow             : none;
+    background             : white;
+}
+
+@media (max-width: 1050px) {
+
+    .filter,
+    .filter h6,
+    .filter input::placeholder,
+    .filter span.xoaloc,
+    .filter input {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 850px) {
+    .filter .filter_content {
+        padding: 3px;
+    }
+}
+
+@media (max-width: 576px) {
+    .filter {
+        display: none;
     }
 }

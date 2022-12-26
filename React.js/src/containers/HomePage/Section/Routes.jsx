@@ -4,7 +4,6 @@ import { FormattedMessage } from "react-intl";
 import Slider from "react-slick";
 import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
-import dayjs from "dayjs";
 import moment from "moment";
 import localization from "moment/locale/vi";
 class Routes extends Component {
@@ -18,8 +17,6 @@ class Routes extends Component {
         this.props.fetchAllRoute();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
-        // neu props hien tai khac props trc do
-        // gan props hien tai vo bien state
         if (prevProps.routes !== this.props.routes) {
             this.setState({
                 arrRoute: this.props.routes,
@@ -28,9 +25,7 @@ class Routes extends Component {
     }
 
     handleViewDetail = (route) => {
-        let test = moment(
-            new Date(new Date().setDate(new Date().getDate() + 1))
-        ).format("L");
+        let test = moment(new Date(new Date().setDate(new Date().getDate() + 1))).format("L");
         let test1 = moment(1667926800000).format("LT");
         let [hours, minutes] = test1.split(":");
         let [day, month, year] = test.split("/");
@@ -38,9 +33,7 @@ class Routes extends Component {
         let unixTimestamp = Math.floor(date.getTime());
 
         if (this.props.history) {
-            this.props.history.push(
-                `/home/route/${route.from.name}&${route.to.name}&${unixTimestamp}`
-            );
+            this.props.history.push(`/home/route/${route.from.name}&${route.to.name}&${unixTimestamp}`);
         }
     };
     render() {
@@ -57,42 +50,60 @@ class Routes extends Component {
                         </div>
                         <div className="section-body">
                             <Slider {...this.props.settings}>
-                                {newArr &&
-                                    newArr.length > 0 &&
-                                    newArr.map((item, index) => {
-                                        let imageBase64 = "";
-                                        if (item.image) {
-                                            imageBase64 = Buffer.from(
-                                                item.image,
-                                                "base64"
-                                            ).toString("binary");
-                                        }
-                                        // let nameVi = `${item.genderData.valueVi}, ${item.name}`;
-                                        // let nameEn = `${item.genderData.valueEn}, ${item.name}`;
+                                {newArr && newArr.length > 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[0])}>
+                                        <div className="bg-img1"></div>
 
-                                        return (
-                                            <div
-                                                key={index}
-                                                className=" section-custom"
-                                                onClick={() =>
-                                                    this.handleViewDetail(item)
-                                                }>
-                                                <div
-                                                    className="bg-img"
-                                                    style={{
-                                                        backgroundImage: `url(${imageBase64})`,
-                                                        borderBottom:
-                                                            "1px solid gray ",
-                                                    }}></div>
+                                        <div>
+                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Vũng Tàu</div>
+                                        </div>
+                                    </div>
+                                )}
+                                {newArr && newArr.length > 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[1])}>
+                                        <div className="bg-img2"></div>
 
-                                                <div>
-                                                    <div className="section-title">
-                                                        {`${item.from.city} -> ${item.to.city} `}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                                        <div>
+                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Lâm Đồng</div>
+                                        </div>
+                                    </div>
+                                )}
+                                {newArr && newArr.length > 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[2])}>
+                                        <div className="bg-img3"></div>
+
+                                        <div>
+                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Đà Nẵng</div>
+                                        </div>
+                                    </div>
+                                )}
+                                {newArr && newArr.length > 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[3])}>
+                                        <div className="bg-img4"></div>
+
+                                        <div>
+                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Khánh Hòa</div>
+                                        </div>
+                                    </div>
+                                )}
+                                {newArr && newArr.length > 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[4])}>
+                                        <div className="bg-img5"></div>
+
+                                        <div>
+                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Bình Định</div>
+                                        </div>
+                                    </div>
+                                )}
+                                {newArr && newArr.length > 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[5])}>
+                                        <div className="bg-img6"></div>
+
+                                        <div>
+                                            <div className="section-title">Lâm Đồng -{">"} TP.Hồ Chí Minh</div>
+                                        </div>
+                                    </div>
+                                )}
                             </Slider>
                         </div>
                     </div>

@@ -1,23 +1,11 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    TableBody,
-    TableContainer,
-    TableFooter,
-    TablePagination,
-    TableRow,
-    Paper,
-    Table,
-} from "@mui/material";
+import { TableBody, TableContainer, Paper, Table } from "@mui/material";
 import localization from "moment/locale/vi";
 import moment from "moment";
 import DatePicker from "../../../../components/DatePicker";
 import { Row, Col } from "reactstrap";
-import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
-import TablePaginationActions from "../../../../components/TablePaginationActions";
-import _ from "lodash";
-import Select from "react-select";
 import ModalInfo from "./ModalInfo";
 import { toast } from "react-toastify";
 import { LANGUAGES } from "../../../../utils";
@@ -38,8 +26,6 @@ class TableCustomer extends Component {
             idDriver: "",
             time: "",
             listRoute: [],
-            isCheckPresent: false,
-            selectRoute: "",
             isOpenModel: false,
             listUser: {},
             dateStartTrip: "",
@@ -49,7 +35,7 @@ class TableCustomer extends Component {
 
     async componentDidMount() {
         this.setState({ idDriver: this.props.userInfo.id });
-        this.getAllTickets();
+        await this.getAllTickets();
     }
 
     getAllTickets = async () => {
@@ -69,10 +55,10 @@ class TableCustomer extends Component {
     };
 
     handleOnChange = async (data) => {
+        console.log(data[0].getTime());
         if (data.length === 1) {
             this.setState({
                 listRoute: [],
-                selectRoute: "",
                 time: data[0].getTime(),
             });
             let test;
@@ -94,15 +80,10 @@ class TableCustomer extends Component {
         let { idDriver, time } = this.state;
         let { language } = this.props;
         let vehicleId = item.Vehicle.id;
-        let resTrip = await handleStartTrip({ id: item.id });
+        let resTrip = await handleDriverStartTrip({ id: idDriver });
         if (resTrip && resTrip.errCode === 0) {
-            let resDriver = await handleDriverStartTrip({ id: idDriver });
+            let resDriver = await handleStartTrip({ id: item.id });
             if (resDriver && resDriver.errCode !== 0) {
-                if (language === LANGUAGES.VI) {
-                    toast.error("Tài xế hiện đang trong chuyến khác");
-                } else {
-                    toast.error("The driver is currently on another trip");
-                }
                 return;
             }
             let resVehicle = await handleVehicleStartTrip({
@@ -126,6 +107,13 @@ class TableCustomer extends Component {
             } else {
                 toast.success("Start the trip");
             }
+        } else {
+            if (language === LANGUAGES.VI) {
+                toast.error("Tài xế hiện đang trong chuyến khác");
+            } else {
+                toast.error("The driver is currently on another trip");
+            }
+            return;
         }
     };
     handleEndTrip = async (item) => {
@@ -133,11 +121,10 @@ class TableCustomer extends Component {
         let { language } = this.props;
         let vehicleId = item.Vehicle.id;
         let station = item.areaEnd;
-        console.log(station);
         let resTrip = await handleEndTrip({ id: item.id });
         if (resTrip && resTrip.errCode === 0) {
-            let resDriver = await handleDriverEndTrip({ id: idDriver });
-            let resVehicle = await handleVehicleEndTrip({
+            await handleDriverEndTrip({ id: idDriver });
+            await handleVehicleEndTrip({
                 id: vehicleId,
                 areaEndId: station,
             });
@@ -153,7 +140,7 @@ class TableCustomer extends Component {
         }
     };
     handleCheck = async (item) => {
-        let { dateStartTrip, time, idDriver } = this.state;
+        let { dateStartTrip, idDriver } = this.state;
         let res;
         if (!dateStartTrip) {
             let test = moment(new Date().getTime()).format("L");
@@ -161,11 +148,7 @@ class TableCustomer extends Component {
             let [day, month, year] = test.split("/");
             let [hours, minutes] = str.split(":");
             let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
-            res = await getDriverTicketsRoute(
-                idDriver,
-                date1.getTime(),
-                item.id
-            );
+            res = await getDriverTicketsRoute(idDriver, date1.getTime(), item.id);
         } else {
             res = await getDriverTicketsRoute(idDriver, dateStartTrip, item.id);
         }
@@ -176,9 +159,7 @@ class TableCustomer extends Component {
                 res.tickets.forEach((ticket) => {
                     if (ticket.status !== "S4")
                         if (tempUser[`${ticket.token}`]) {
-                            tempUser[`${ticket.token}`].seatNo.push(
-                                ticket.seatNo
-                            );
+                            tempUser[`${ticket.token}`].seatNo.push(ticket.seatNo);
                         } else {
                             tempUser[`${ticket.token}`] = {
                                 Trip: ticket.Trip,
@@ -195,7 +176,6 @@ class TableCustomer extends Component {
                                 description: ticket.description,
                                 isPresent: ticket.isPresent,
                                 dayStart: ticket.dayStart,
-                                status: ticket.status,
                             };
                         }
                 });
@@ -203,18 +183,9 @@ class TableCustomer extends Component {
                 resultUser = Object.values(tempUser);
             }
         }
-        console.log(resultUser);
         this.setState({
             isOpenModel: true,
             listUser: resultUser,
-        });
-    };
-    handleSort = (a, b) => {
-        this.state.listRoute = _.orderBy(this.state.listRoute, [b], [a]);
-        this.setState({
-            sortBy: a,
-            sortField: b,
-            listRoute: this.state.listRoute,
         });
     };
     toggleUserModel = () => {
@@ -224,6 +195,7 @@ class TableCustomer extends Component {
     };
 
     render() {
+        let { language } = this.props;
         let { time, listRoute, isOpenModel, listUser } = this.state;
         return (
             <div className="user-redux-container">
@@ -235,16 +207,17 @@ class TableCustomer extends Component {
                     />
                 )}
                 <div className="title">
-                    <p style={{ marginBottom: "20px" }}>Quản lý vé</p>
+                    <p style={{ marginBottom: "20px" }}>
+                        <FormattedMessage id="menu.driver.title1" />
+                    </p>
                 </div>
                 <div className="container form-reux">
                     <Row>
                         <Col md={3}>
-                            <label htmlFor="schedule1">Chọn ngày chạy</label>
-                            <span
-                                className="form-control mb-4"
-                                style={{ height: "38px" }}
-                                htmlFor="schedule1">
+                            <label htmlFor="schedule1">
+                                <FormattedMessage id="menu.driver.selectday" />
+                            </label>
+                            <span className="form-control mb-4" style={{ height: "38px" }} htmlFor="schedule1">
                                 <DatePicker
                                     locale="vi"
                                     style={{ border: "none" }}
@@ -253,9 +226,7 @@ class TableCustomer extends Component {
                                     value={time}
                                     selected={time}
                                 />
-                                <label
-                                    htmlFor="schedule1"
-                                    style={{ float: "right" }}>
+                                <label htmlFor="schedule1" style={{ float: "right" }}>
                                     <i
                                         className="far fa-calendar-alt"
                                         style={{
@@ -274,83 +245,74 @@ class TableCustomer extends Component {
                                             className="section-id"
                                             style={{
                                                 width: "5%",
-                                            }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            }}>
                                             Id
                                         </th>
                                         <th
                                             className="section-id-list"
                                             style={{
-                                                width: "30%",
+                                                width: "35%",
                                             }}>
-                                            <div className="section-title">
-                                                <div> Tuyến đường</div>
-                                                <div>
-                                                    <FaLongArrowAltDown
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "number"
-                                                            )
-                                                        }
-                                                    />
-                                                    <FaLongArrowAltUp
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "number"
-                                                            )
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
-                                        </th>
-                                        <th className="section-id-list">
-                                            Thời gian chạy
+                                            <FormattedMessage id="menu.driver.route" />
                                         </th>
                                         <th
                                             className="section-id-list"
                                             style={{
                                                 width: "12%",
                                             }}>
-                                            Biển số xe
+                                            <FormattedMessage id="menu.driver.time" />
                                         </th>
-                                        <th className="section-id-list">
-                                            Trạng thái
+                                        <th
+                                            className="section-id-list"
+                                            style={{
+                                                width: "12%",
+                                            }}>
+                                            <FormattedMessage id="menu.driver.number" />
                                         </th>
-                                        <th className="section-id-list">
-                                            Danh sách hành khách
+                                        <th
+                                            className="section-id-list"
+                                            style={{
+                                                width: "18%",
+                                            }}>
+                                            <FormattedMessage id="menu.driver.status" />
+                                        </th>
+                                        <th
+                                            className="section-id-list"
+                                            style={{
+                                                width: "18%",
+                                            }}>
+                                            <FormattedMessage id="menu.driver.list_passenger" />
                                         </th>
                                     </tr>
                                     <tr>
-                                        {listRoute &&
-                                            listRoute.length === 0 && (
-                                                <td
-                                                    colSpan="8"
-                                                    style={{
-                                                        textAlign: "center",
-                                                    }}>
-                                                    No data
-                                                </td>
-                                            )}
+                                        {listRoute && listRoute.length === 0 && (
+                                            <td
+                                                colSpan="8"
+                                                style={{
+                                                    fontSize: "18px",
+                                                    textAlign: "center",
+                                                }}>
+                                                <FormattedMessage id="menu.driver.noData" />
+                                            </td>
+                                        )}
                                     </tr>
                                     {listRoute.map((item, index) => {
-                                        let time = ` ${moment(
-                                            +item.timeStart
-                                        ).format("LT")}${" - "} ${moment(
-                                            +item.timeEnd
-                                        ).format("LT")}`;
-                                        let statusDriver = +item.status;
+                                        let time;
+                                        if (language === "vi") {
+                                            time = ` ${moment(+item.timeStart).format("LT")}${" - "} ${moment(
+                                                +item.timeEnd
+                                            ).format("LT")}`;
+                                        } else {
+                                            time = ` ${moment(+item.timeStart)
+                                                .locale("en")
+                                                .format("LT")}${" - "} ${moment(+item.timeEnd)
+                                                .locale("en")
+                                                .format("LT")}`;
+                                        }
 
                                         return (
                                             <tr key={index}>
-                                                <td className="section-id-list">
-                                                    {index + 1}
-                                                </td>
+                                                <td className="section-id-list">{item.id}</td>
                                                 <td>
                                                     {item.areaStart} {" - "}
                                                     {item.areaEnd}
@@ -367,12 +329,8 @@ class TableCustomer extends Component {
                                                                 width: "100px",
                                                             }}
                                                             className="btn btn-primary"
-                                                            onClick={() =>
-                                                                this.handleBeginTrip(
-                                                                    item
-                                                                )
-                                                            }>
-                                                            Xuất phát
+                                                            onClick={() => this.handleBeginTrip(item)}>
+                                                            <FormattedMessage id="menu.driver.start" />
                                                         </button>
                                                     ) : +item.status === 2 ? (
                                                         <button
@@ -380,12 +338,8 @@ class TableCustomer extends Component {
                                                                 width: "100px",
                                                             }}
                                                             className="btn btn-warning"
-                                                            onClick={() =>
-                                                                this.handleEndTrip(
-                                                                    item
-                                                                )
-                                                            }>
-                                                            Về bến
+                                                            onClick={() => this.handleEndTrip(item)}>
+                                                            <FormattedMessage id="menu.driver.end" />
                                                         </button>
                                                     ) : (
                                                         <button
@@ -394,7 +348,7 @@ class TableCustomer extends Component {
                                                             }}
                                                             className="btn btn-primary"
                                                             disabled>
-                                                            Đã két thúc
+                                                            <FormattedMessage id="menu.driver.finished" />
                                                         </button>
                                                     )}
                                                 </td>
@@ -403,13 +357,12 @@ class TableCustomer extends Component {
                                                         textAlign: "center",
                                                     }}>
                                                     <button
+                                                        style={{
+                                                            width: "100px",
+                                                        }}
                                                         className="btn btn-primary"
-                                                        onClick={() =>
-                                                            this.handleCheck(
-                                                                item
-                                                            )
-                                                        }>
-                                                        Danh sách
+                                                        onClick={() => this.handleCheck(item)}>
+                                                        <FormattedMessage id="menu.driver.list" />
                                                     </button>
                                                 </td>
                                             </tr>
@@ -418,7 +371,6 @@ class TableCustomer extends Component {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        {/* </div> */}
                     </div>
                 </div>
             </div>

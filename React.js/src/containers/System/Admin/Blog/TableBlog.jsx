@@ -7,24 +7,11 @@ import _ from "lodash";
 import moment from "moment";
 import localization from "moment/locale/vi";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
-import Lightbox from "react-image-lightbox";
-import "react-image-lightbox/style.css"; // This only needs to be imported once in your app
+import { LANGUAGES } from "../../../../utils";
 import ModalAdd from "./ModalAdd";
-import {
-    TableBody,
-    TableContainer,
-    TableFooter,
-    TablePagination,
-    TableRow,
-    Paper,
-    Table,
-} from "@mui/material";
+import { TableBody, TableContainer, TableFooter, TablePagination, TableRow, Paper, Table } from "@mui/material";
 import { toast } from "react-toastify";
-import {
-    getAllBlogsService,
-    deleteBlogsService,
-} from "../../../../services/userService";
+import { getAllBlogsService, deleteBlogsService } from "../../../../services/userService";
 import ModalEdit from "./ModalEdit";
 
 import TablePaginationActions from "../../../../components/TablePaginationActions";
@@ -136,9 +123,7 @@ class TableBlog extends Component {
         let term = e.target.value.toUpperCase();
         let clone = this.state.listBlogs;
         if (term) {
-            clone = clone.filter((item) =>
-                item.BusType.typeName.includes(term)
-            );
+            clone = clone.filter((item) => item.BusType.typeName.includes(term));
             this.setState({
                 listBlogs: clone,
             });
@@ -168,9 +153,7 @@ class TableBlog extends Component {
                     )}
                     <div className="title text-center">Quan ly su kien</div>
                     <div className="mx-5 my-3">
-                        <button
-                            className="btn btn-primary px-3"
-                            onClick={() => this.handleAddUser()}>
+                        <button className="btn btn-primary px-3" onClick={() => this.handleAddUser()}>
                             <i className="fas fa-plus px-1"></i>
                             Them su kien
                         </button>
@@ -185,9 +168,7 @@ class TableBlog extends Component {
                                             style={{
                                                 width: "5%",
                                             }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            onClick={() => this.handleSort("asc", "id")}>
                                             Id
                                         </th>
                                         <th
@@ -200,55 +181,32 @@ class TableBlog extends Component {
                                                     {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "name"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("asc", "name")}
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "name"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("desc", "name")}
                                                     />
                                                 </div>
                                             </div>
                                         </th>
 
                                         <th>
-                                            <div className="section-title">
-                                                Thời gian tạo bài viết
-                                            </div>
+                                            <div className="section-title">Thời gian tạo bài viết</div>
                                         </th>
 
                                         <th>
-                                            <div className="section-title">
-                                                Người tạo bài viết
-                                            </div>
+                                            <div className="section-title">Người tạo bài viết</div>
                                         </th>
 
-                                        <th style={{ width: "10%" }}>
-                                            Hành động
-                                        </th>
+                                        <th style={{ width: "10%" }}>Hành động</th>
                                     </tr>
 
-                                    {(rowsPerPage > 0 &&
-                                    listBlogs &&
-                                    listBlogs.length > 0
-                                        ? listBlogs.slice(
-                                              page * rowsPerPage,
-                                              page * rowsPerPage + rowsPerPage
-                                          )
+                                    {(rowsPerPage > 0 && listBlogs && listBlogs.length > 0
+                                        ? listBlogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         : listBlogs
                                     ).map((user, index) => {
-                                        let start = moment(
-                                            user.createdAt
-                                        ).format("ddd DD-MM-YYYY HH:mm:ss");
+                                        let start = moment(user.createdAt).format("ddd DD-MM-YYYY HH:mm:ss");
                                         return (
                                             <tr key={index}>
                                                 <td>{user.id}</td>
@@ -259,20 +217,12 @@ class TableBlog extends Component {
                                                 <td>
                                                     <button
                                                         className="btn-edit"
-                                                        onClick={() =>
-                                                            this.handleEditUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleEditUser(user)}>
                                                         <i className="fas fa-edit"></i>
                                                     </button>
                                                     <button
                                                         className="btn-delete"
-                                                        onClick={() =>
-                                                            this.handleDeleteUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleDeleteUser(user)}>
                                                         <i className="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
@@ -283,20 +233,13 @@ class TableBlog extends Component {
                                 <TableFooter>
                                     <TableRow>
                                         <TablePagination
-                                            rowsPerPageOptions={[
-                                                5,
-                                                10,
-                                                25,
-                                                { label: "All", value: -1 },
-                                            ]}
+                                            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                                             colSpan={4}
                                             count={listBlogs.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
+                                            onRowsPerPageChange={this.handleChangeRowsPerPage}
                                             ActionsComponent={(subProps) => (
                                                 <TablePaginationActions
                                                     style={{

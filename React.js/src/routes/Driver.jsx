@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Header from "../containers/Header/Header";
 import TableCustomer from "./../containers/System/Driver/ListCustomer/TableCustomer";
-import ParkingLot from "./../containers/System/BusOwner/ParkingLot";
+import History from "./../containers/System/Driver/History/History";
 class Driver extends Component {
     constructor(props) {
         super(props);
@@ -26,14 +26,8 @@ class Driver extends Component {
                 <div className="system-container">
                     <div className="system-list">
                         <Switch>
-                            <Route
-                                path="/driver/manage-parking"
-                                component={ParkingLot}
-                            />
-                            <Route
-                                path="/driver/seatNo"
-                                component={TableCustomer}
-                            />
+                            <Route path="/driver/history" component={History} />
+                            <Route path="/driver/seatNo" component={TableCustomer} />
                             <Route
                                 component={() => {
                                     return <Redirect to={this.state.link} />;

@@ -62,28 +62,20 @@ class Register extends Component {
             }
         } else if (password.length < 8 || password.length > 15) {
             if (language === LANGUAGES.VI) {
-                message =
-                    "Mật khẩu phải có ít nhất 8 ký tự và nhiều nhất 15 ký tự";
+                message = "Mật khẩu phải có ít nhất 8 ký tự và nhiều nhất 15 ký tự";
             } else {
-                message =
-                    "Password must be at least 8 characters and maximum 15 characters";
+                message = "Password must be at least 8 characters and maximum 15 characters";
             }
         } else {
             try {
-                let data = await handleRegister(
-                    email,
-                    password,
-                    confirmPassword,
-                    name
-                );
+                let data = await handleRegister(email, password, confirmPassword, name);
                 if (data && data.errCode === 0) {
                     this.props.userLoginSuccess(data.user);
                 } else if (data && data.errCode === 1) {
                     if (language === LANGUAGES.VI) {
                         message = "Email đã tồn tại, vui lòng thử email khác";
                     } else {
-                        message =
-                            "Your email already exists, please try another email";
+                        message = "Your email already exists, please try another email";
                     }
                 } else if (data && data.errCode === 5) {
                     if (language === LANGUAGES.VI) {
@@ -139,7 +131,7 @@ class Register extends Component {
                     <div className="login-content row">
                         <div className="logostyle">
                             <Link to="/home">
-                                <img src={logo} loading="eager" />
+                                <img src={logo} loading="eager" alt="logo" />
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">
@@ -163,11 +155,7 @@ class Register extends Component {
                             </label>
                             <div className="custom-password">
                                 <input
-                                    type={
-                                        this.state.isShowPassword
-                                            ? "text"
-                                            : "password"
-                                    }
+                                    type={this.state.isShowPassword ? "text" : "password"}
                                     className="form-control"
                                     placeholder={input2}
                                     value={password}
@@ -176,12 +164,7 @@ class Register extends Component {
                                     }}
                                 />
                                 <span onClick={() => this.handleShowPassword()}>
-                                    <i
-                                        className={
-                                            this.state.isShowPassword
-                                                ? "fas fa-eye"
-                                                : "fas fa-eye-slash"
-                                        }></i>
+                                    <i className={this.state.isShowPassword ? "fas fa-eye" : "fas fa-eye-slash"}></i>
                                 </span>
                             </div>
                         </div>
@@ -192,30 +175,18 @@ class Register extends Component {
                             </label>
                             <div className="custom-password">
                                 <input
-                                    type={
-                                        this.state.isShowconfirmPassword
-                                            ? "text"
-                                            : "password"
-                                    }
+                                    type={this.state.isShowconfirmPassword ? "text" : "password"}
                                     className="form-control"
                                     placeholder={input3}
                                     value={confirmPassword}
                                     onChange={(event) => {
-                                        this.onChangeInput(
-                                            event,
-                                            "confirmPassword"
-                                        );
+                                        this.onChangeInput(event, "confirmPassword");
                                     }}
                                 />
-                                <span
-                                    onClick={() =>
-                                        this.handleShowconfirmPassword()
-                                    }>
+                                <span onClick={() => this.handleShowconfirmPassword()}>
                                     <i
                                         className={
-                                            this.state.isShowconfirmPassword
-                                                ? "fas fa-eye"
-                                                : "fas fa-eye-slash"
+                                            this.state.isShowconfirmPassword ? "fas fa-eye" : "fas fa-eye-slash"
                                         }></i>
                                 </span>
                             </div>
@@ -279,8 +250,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         navigate: (path) => dispatch(push(path)),
         // userLoginFail: () => dispatch(actions.adminLoginFail()),
-        userLoginSuccess: (userInfo) =>
-            dispatch(actions.userLoginSuccess(userInfo)),
+        userLoginSuccess: (userInfo) => dispatch(actions.userLoginSuccess(userInfo)),
     };
 };
 

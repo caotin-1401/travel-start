@@ -260,12 +260,7 @@ let getAllSchedule = (tripId) => {
                         },
                         {
                             model: db.Route,
-                            attributes: [
-                                "id",
-                                "name",
-                                "areaStartId",
-                                "areaEndId",
-                            ],
+                            attributes: ["id", "name", "areaStartId", "areaEndId"],
                         },
                         {
                             model: db.User,
@@ -301,12 +296,7 @@ let getAllSchedule = (tripId) => {
                         },
                         {
                             model: db.Route,
-                            attributes: [
-                                "id",
-                                "name",
-                                "areaStartId",
-                                "areaEndId",
-                            ],
+                            attributes: ["id", "name", "areaStartId", "areaEndId"],
                         },
                         {
                             model: db.User,
@@ -317,12 +307,32 @@ let getAllSchedule = (tripId) => {
                     nest: true,
                 });
                 if (bus && bus.image) {
-                    bus.image = Buffer.from(bus.image, "base64").toString(
-                        "binary"
-                    );
+                    bus.image = Buffer.from(bus.image, "base64").toString("binary");
                 }
                 resolve(bus);
             }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let getDriverTrips = (tripId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let trip = await db.Trip.findAll({
+                where: { driverId: tripId },
+                include: [
+                    {
+                        model: db.Vehicle,
+                        attributes: ["id", "number", "busTypeId"],
+                    },
+                ],
+                raw: false,
+                nest: true,
+            });
+            trip = _.sortBy(trip, ["timeStart"]);
+            console.log(trip);
+            resolve(trip);
         } catch (e) {
             reject(e);
         }
@@ -394,39 +404,23 @@ let bulkCreateSchedule = (data) => {
                 areaEndId,
                 busOwnerId,
             } = data;
-            if (
-                !routeId ||
-                !driverId ||
-                !busId ||
-                !unixTimestamp1 ||
-                !unixTimestamp2
-            ) {
+            if (!routeId || !driverId || !busId || !unixTimestamp1 || !unixTimestamp2) {
                 resolve({
                     errCode: 1,
                     errMessage: "Missing required parameter",
                 });
             } else if (dayStart !== dayEnd) {
-                let isDayDriverStart = await checkDateStartDriver(
-                    routeId,
-                    dayStart,
-                    driverId
-                );
-                let isDayBusStart = await checkDateStartBus(
-                    routeId,
-                    dayStart,
-                    busId
-                );
+                let isDayDriverStart = await checkDateStartDriver(routeId, dayStart, driverId);
+                let isDayBusStart = await checkDateStartBus(routeId, dayStart, busId);
                 if (isDayDriverStart) {
                     resolve({
                         errCode: 1,
-                        errMessage:
-                            "The current driver is not available at the starting point",
+                        errMessage: "The current driver is not available at the starting point",
                     });
                 } else if (isDayBusStart) {
                     resolve({
                         errCode: 1,
-                        errMessage:
-                            "The current vehicle is not available at the starting point",
+                        errMessage: "The current vehicle is not available at the starting point",
                     });
                 } else {
                     await db.Trip.create({
@@ -449,20 +443,8 @@ let bulkCreateSchedule = (data) => {
                     errMessage: "OK",
                 });
             } else {
-                let isCheckBusOut = await checkBusTime1(
-                    routeId,
-                    busId,
-                    dayStart,
-                    unixTimestamp1,
-                    unixTimestamp2
-                );
-                let isCheckBusIn = await checkBusTime2(
-                    routeId,
-                    busId,
-                    dayStart,
-                    unixTimestamp1,
-                    unixTimestamp2
-                );
+                let isCheckBusOut = await checkBusTime1(routeId, busId, dayStart, unixTimestamp1, unixTimestamp2);
+                let isCheckBusIn = await checkBusTime2(routeId, busId, dayStart, unixTimestamp1, unixTimestamp2);
                 let isCheckDriverOut = await checkDriverTime1(
                     routeId,
                     driverId,
@@ -485,8 +467,7 @@ let bulkCreateSchedule = (data) => {
                 } else if (isCheckBusIn) {
                     resolve({
                         errCode: 1,
-                        errMessage:
-                            "The current vehicle is not available at the starting point",
+                        errMessage: "The current vehicle is not available at the starting point",
                     });
                 } else if (isCheckDriverOut) {
                     resolve({
@@ -496,8 +477,7 @@ let bulkCreateSchedule = (data) => {
                 } else if (isCheckDriverIn) {
                     resolve({
                         errCode: 1,
-                        errMessage:
-                            "The current driver is not available at the starting point",
+                        errMessage: "The current driver is not available at the starting point",
                     });
                 } else {
                     await db.Trip.create({
@@ -619,4 +599,5 @@ module.exports = {
     deleteSchedule,
     handleEndTrip,
     handleStartTrip,
+    getDriverTrips,
 };

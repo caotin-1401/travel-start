@@ -36,11 +36,32 @@ let shouldAllSchedule = async (req, res) => {
                 trips: [],
             });
         }
-        let trips = await scheduleService.getAllSchedules(
-            areaStartId,
-            areaEndId,
-            dateStart
-        );
+        let trips = await scheduleService.getAllSchedules(areaStartId, areaEndId, dateStart);
+
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            trips,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let getDriverTrips = async (req, res) => {
+    try {
+        let driverId = req.query.driverId;
+        console.log(driverId);
+        if (!driverId) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+                trips: [],
+            });
+        }
+        let trips = await scheduleService.getDriverTrips(driverId);
 
         return res.status(200).json({
             errCode: 0,
@@ -127,4 +148,5 @@ module.exports = {
     shouldAllSchedule,
     handleEndTrip,
     handleStartTrip,
+    getDriverTrips,
 };

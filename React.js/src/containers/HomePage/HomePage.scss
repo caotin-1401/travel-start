@@ -113,17 +113,95 @@
                     margin-left        : auto;
                     margin-right       : auto;
 
-                    &.img-routes {
-                        background-image: url("../../assets/busStation1.jpg");
-                    }
+                    // &.img-routes {
+                    //     background-image: url("../../assets/busStation1.jpg");
+                    // }
 
-                    &.img-events {
-                        background-image: url("../../assets/event1.jpg");
-                    }
+                    // &.img-events {
+                    //     background-image: url("../../assets/event1.jpg");
+                    // }
 
-                    &.img-blog {
-                        background-image: url("../../assets/defaultBcg.jpeg");
-                    }
+                    // &.img-blog {
+                    //     background-image: url("../../assets/defaultBcg.jpeg");
+                    // }
+                }
+
+                .bg-img1 {
+                    width              : 100%;
+                    height             : 190px;
+                    background-position: center;
+                    background-repeat  : no-repeat;
+                    background-size    : cover;
+                    border-radius      : 5px 5px 0 0 !important;
+                    margin-left        : auto;
+                    margin-right       : auto;
+                    border-bottom      : 1px solid gray;
+                    background-image   : url("../../assets/vungtau.jpg");
+                }
+
+                .bg-img2 {
+                    width              : 100%;
+                    height             : 190px;
+                    background-position: center;
+                    background-repeat  : no-repeat;
+                    background-size    : cover;
+                    border-radius      : 5px 5px 0 0 !important;
+                    margin-left        : auto;
+                    margin-right       : auto;
+                    border-bottom      : 1px solid gray;
+                    background-image   : url("../../assets/dalat.jpg");
+                }
+
+                .bg-img3 {
+                    width              : 100%;
+                    height             : 190px;
+                    background-position: center;
+                    background-repeat  : no-repeat;
+                    background-size    : cover;
+                    border-radius      : 5px 5px 0 0 !important;
+                    margin-left        : auto;
+                    margin-right       : auto;
+                    border-bottom      : 1px solid gray;
+                    background-image   : url("../../assets/danang.jpg");
+                }
+
+                .bg-img4 {
+                    width              : 100%;
+                    height             : 190px;
+                    background-position: center;
+                    background-repeat  : no-repeat;
+                    background-size    : cover;
+                    border-radius      : 5px 5px 0 0 !important;
+                    margin-left        : auto;
+                    margin-right       : auto;
+                    border-bottom      : 1px solid gray;
+                    background-image   : url("../../assets/khanhhoa.jpg");
+                }
+
+                .bg-img5 {
+                    width              : 100%;
+                    height             : 190px;
+                    background-position: center;
+                    background-repeat  : no-repeat;
+                    background-size    : cover;
+                    border-radius      : 5px 5px 0 0 !important;
+                    margin-left        : auto;
+                    margin-right       : auto;
+                    border-bottom      : 1px solid gray;
+                    background-image   : url("../../assets/quynhon.jpg");
+                }
+
+                .bg-img6 {
+                    width              : 100%;
+                    height             : 190px;
+                    background-position: center;
+                    background-repeat  : no-repeat;
+                    background-size    : cover;
+                    border-radius      : 5px 5px 0 0 !important;
+                    margin-left        : auto;
+                    margin-right       : auto;
+                    border-bottom      : 1px solid gray;
+                    background-image   : url("../../assets/hcm3.jpg");
                 }
 
                 .section-title {
@@ -161,11 +239,87 @@
     }
 }
 
-.home-footer {
-    text-align : center;
-    padding-top: 8px;
 
-    a {
+
+.home-footer {
+    background-color: #DCE2E5;
+
+    padding-top   : 8px;
+    padding-bottom: 10px;
+
+    .title_h3 {
+        margin-left: 0.2rem;
+        font-size  : 1.5rem;
+        color      : #130f40;
+        padding    : 1rem 0;
+    }
+
+    .links {
+        display  : block;
+        font-size: 16px;
+        color    : #666;
+        padding  : 0.5rem 0;
+
+        i {
+            color        : #ff7800;
+            padding-right: 0.5rem;
+        }
+    }
+
+    .fa-facebook {
+        height       : 4rem;
+        width        : 4rem;
+        line-height  : 4rem;
+        border-radius: 50px;
+        font-size    : 2rem;
+        color        : #130f40;
+        margin-left  : 0.2rem;
+        background   : #DCE2E5;
+        text-align   : center;
+    }
+
+    .fa-twitter {
+        height       : 4rem;
+        width        : 4rem;
+        line-height  : 4rem;
+        border-radius: 50px;
+        font-size    : 2rem;
+        color        : #130f40;
+        margin-left  : 0.2rem;
+        background   : #DCE2E5;
+        text-align   : center;
+    }
+
+    .fa-linkedin {
+        height       : 4rem;
+        width        : 4rem;
+        line-height  : 4rem;
+        border-radius: 50px;
+        font-size    : 2rem;
+        color        : #130f40;
+        margin-left  : 0.2rem;
+        background   : #DCE2E5;
+        text-align   : center;
+    }
+
+    .fa-instagram {
+        height       : 4rem;
+        width        : 4rem;
+        line-height  : 4rem;
+        border-radius: 50px;
+        font-size    : 2rem;
+        color        : #130f40;
+        margin-left  : 0.2rem;
+        background   : #DCE2E5;
+        text-align   : center;
+    }
+
+    .a_footer {
+        text-align     : center;
+        margin-top     : 30px;
         text-decoration: none;
+        margin-bottom  : 0;
+        font-weight    : 500;
+        font-size      : 15px;
     }
 }

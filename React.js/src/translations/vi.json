@@ -3,7 +3,7 @@
         "home": "TRANG CHỦ",
         "search-bus": "TÌM XE",
         "events": "SỰ KIỆN",
-        "supports": "Hỗ trợ",
+        "supports": "Báo lỗi",
         "sologan": "Tìm kiếm các ưu đãi vé xe tốt nhất",
         "destination": "Điểm đến",
         "place-of-departure": "Điểm đón",
@@ -12,8 +12,15 @@
         "routes": "Tuyến đường phổ biến",
         "more": "Xem thêm",
         "promotion": "Khuyến mãi đặc biệt",
-
-        "welcome": "Xin chào, "
+        "contact": "LIÊN HỆ",
+        "welcome": "Xin chào, ",
+        "blog": "BÀI VIẾT"
+    },
+    "modalErr": {
+        "cancel": "Hủy",
+        "send": "Gửi",
+        "title1": "Báo lỗi hệ thống",
+        "title2": "Cảm ơn bạn đã hỗ trợ chúng tôi trong việc thông báo sự cố xảy ra. Sự cố này sẽ được khắc phục sớm nhất có thể."
     },
     "FAQ": {
         "header": "Các câu hỏi thường gặp",
@@ -52,6 +59,8 @@
             "location": "Danh sách bến xe",
             "route": "Danh sách tuyến đường",
             "event": "Sự kiện",
+            "err": "Lỗi",
+            "err1": "Danh sách lỗi",
             "discount": "Mã giảm giá",
             "promotions": "Khuyến mãi",
             "listBusType": {
@@ -125,8 +134,7 @@
                 "vehicle": "Danh sách phương tiện",
                 "action": "Xóa nhà xe",
                 "add": "Thêm nhà xe",
-                "modaltitle" : "Thêm nhà xe"
-                
+                "modaltitle": "Thêm nhà xe"
             },
             "listDriver": {
                 "back": "Quay lại trang quản lý nhà xe",
@@ -134,6 +142,13 @@
                 "phone": "Số điện thoại",
                 "status": "Tình trạng",
                 "action": "Xóa tài xế"
+            },
+            "listErr": {
+                "title": "Danh sách lỗi",
+                "description": "Mô tả lỗi",
+                "time": "Thời gian phản ánh lỗi",
+                "done": "Đã sửa xong",
+                "title1": "Hệ thống hiện không còn lỗi nào từ phản ánh người dùng"
             }
         },
         "busOwner": {
@@ -162,7 +177,33 @@
         },
         "driver": {
             "customer": "Hành khách",
-            "list-customer": "Danh sách hành khách"
+            "list-customer": "Danh sách hành khách",
+            "history": "Lịch sử chạy",
+            "title1": "Danh sách chuyến đi",
+            "selectday": "Chọn ngày khởi hành",
+            "route": "Tuyến đường",
+            "time": "Thời gian chạy",
+            "number": "Biển số xe",
+            "status": "Trạng thái",
+            "list_passenger": "Danh sách hành khách",
+            "start": "Bắt đầu",
+            "end": "Về bến",
+            "finished": "Đã kết thúc",
+            "list": "Danh sách",
+            "noData": "Tài xế không có chuyến đi nào...",
+            "name": "Họ Tên",
+            "phone": "Số điện thoại",
+            "seat": "Vị trí ngồi",
+            "pay": "Tình trạng thanh toán",
+            "description": "Yêu cần thêm",
+            "dacomat": "Đã lên xe",
+            "total": "Tổng tiền",
+            "month": "Chọn tháng",
+            "timeDe": "Thời gian khởi hành",
+            "timeTotals": "Thời gian từ: ",
+            "totalTrip": "Tổng chuyến đi : ",
+            "info": "Thông tin tài khoản",
+            "logout": "Đăng xuất"
         }
     },
     "manage-user": {
@@ -184,5 +225,69 @@
         "back-login": "Quay lại trang đăng nhập",
         "send": "Gửi",
         "reset": "Thay đổi mật khẩu"
+    },
+    "events": {
+        "home": "Trang chủ",
+        "event": "Sự kiện",
+        "list": "Danh sách sự kiện",
+        "blog": "Bài viết",
+        "listblog": "Danh sách bài viết"
+    },
+    "contacts": {
+        "title": "Liên lạc",
+        "sub_title": "Bắt đầu cuộc hội thoại với chúng tôi",
+        "title1": "Địa chỉ liên hệ",
+        "title2": "Những gì bạn nhận được khi đặt câu hỏi với chúng tôi",
+        "title3": "Lưu ý: Điền tất cả các thông tin được yêu cầu",
+        "phone": "Số điện thoại",
+        "address": "Địa chỉ",
+        "comment": "Chúng tôi có thể giúp gì cho bạn?",
+        "li_title1": "Thời gian phản hồi cho câu hỏi của bạn ít hơn 12 giờ.",
+        "li_title2": "Xem nền tảng chúng tôi hoạt động.",
+        "li_title3": "Kê hoạch được tóm tắt trong email phản hồi.",
+        "send": "Gửi",
+        "name": "Họ Tên",
+        "link": "Liên kết"
+    },
+    "routes": {
+        "filter": "Bộ lọc tìm kiếm",
+        "clean": "Xóa lọc",
+        "time": "Thời gian khởi hành",
+        "popular": "Tiêu chí phổ biến",
+        "dawn": "Sáng sớm",
+        "morning": "Buổi sáng",
+        "afternoon": "Buổi chiều",
+        "evening": "Buổi tối",
+        "price": "Giá vé",
+        "oparator": "Nhà xe",
+        "sort": "Sắp xếp theo:",
+        "cheap": "Rẻ nhất",
+        "earliest": "Sớm nhất",
+        "late": "Muộn nhất",
+        "select": "Chọn chuyến",
+        "info": "Thông tin chi tiết",
+        "has": "Có ",
+        "trip": " chuyến đi ",
+        "found": " được tìm thấy.",
+        "selectSeat": "Chọn ghế",
+        "note": "Chú thích",
+        "emply": "Ghế trống",
+        "not": "Ghế không bán",
+        "Selected": "Đang chọn"
+    },
+    "account": {
+        "Name": "Họ và tên",
+        "gender": "Giới tính",
+        "Role": "Vai trò",
+        "email": "Địa chỉ email",
+        "phone": "Số điện thoại",
+        "address": "Địa chỉ",
+        "saveInfo": "Lưu thông tin",
+        "change": "Thay đổi mật khẩu",
+        "passOld": "Mật khẩu cũ :",
+        "passNew": "Mật khẩu mới :",
+        "confirm": "Xác nhận mật khẩu :",
+        "save": "Lưu",
+        "cancel": "Hủy"
     }
 }
