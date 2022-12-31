@@ -103,8 +103,8 @@ class Step1 extends Component {
     }
     render() {
         let { rangeSeat, dataTicket, totalPrice, seatArr, seatDisable } = this.state;
-        // console.log(totalPrice);
         let lengthArr = rangeSeat.length;
+        console.log(seatArr);
         return (
             <div>
                 <Row style={{ marginBottom: "30px" }}>

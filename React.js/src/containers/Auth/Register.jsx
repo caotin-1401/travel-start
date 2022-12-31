@@ -15,7 +15,7 @@ class Register extends Component {
             email: "",
             password: "",
             confirmPassword: "",
-            name: "",
+            phoneNumber: "",
             isShowPassword: false,
             isShowconfirmPassword: false,
             errMessage: "",
@@ -31,16 +31,16 @@ class Register extends Component {
 
     handleRegister = async () => {
         let { language } = this.props;
-        let { email, password, confirmPassword, name } = this.state;
+        let { email, password, confirmPassword, phoneNumber } = this.state;
         let message;
         this.setState({
             errMessage: "",
         });
-        if (!email) {
+        if (!phoneNumber) {
             if (language === LANGUAGES.VI) {
-                message = "Vui lòng nhập email";
+                message = "Vui lòng nhập số điện thoại";
             } else {
-                message = "Please enter your email";
+                message = "Please enter phone number";
             }
         } else if (!password) {
             if (language === LANGUAGES.VI) {
@@ -68,7 +68,7 @@ class Register extends Component {
             }
         } else {
             try {
-                let data = await handleRegister(email, password, confirmPassword, name);
+                let data = await handleRegister(email, password, confirmPassword, phoneNumber);
                 if (data && data.errCode === 0) {
                     this.props.userLoginSuccess(data.user);
                 } else if (data && data.errCode === 1) {
@@ -76,6 +76,12 @@ class Register extends Component {
                         message = "Email đã tồn tại, vui lòng thử email khác";
                     } else {
                         message = "Your email already exists, please try another email";
+                    }
+                } else if (data && data.errCode === 6) {
+                    if (language === LANGUAGES.VI) {
+                        message = "Số điện thoại đã tồn tại, vui lòng thử số khác";
+                    } else {
+                        message = "Phone number already exists, please try another ";
                     }
                 } else if (data && data.errCode === 5) {
                     if (language === LANGUAGES.VI) {
@@ -111,19 +117,19 @@ class Register extends Component {
     };
 
     render() {
-        let { email, password, name, confirmPassword } = this.state;
+        let { email, password, phoneNumber, confirmPassword } = this.state;
         let language = this.props.language;
         let input1, input2, input3, input4;
         if (language === LANGUAGES.VI) {
             input1 = "Nhập email";
             input2 = "Nhập mật khẩu";
             input3 = "Nhập xác nhận mật khẩu";
-            input4 = "Nhập họ tên đầy đủ";
+            input4 = "Nhập số điện thoại";
         } else {
             input1 = "Enter your email";
             input2 = "Enter your password";
             input3 = "Enter your comfirm password";
-            input4 = "Enter your full name";
+            input4 = "Enter your phone number";
         }
         return (
             <div className="login-background">
@@ -138,7 +144,21 @@ class Register extends Component {
                             <FormattedMessage id="login.register" />
                         </div>
                         <div className="col-12 form-group login-input">
-                            <label>Email (*) : </label>
+                            <label>
+                                <FormattedMessage id="account.phone" /> (*) :
+                            </label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder={input4}
+                                value={phoneNumber}
+                                onChange={(event) => {
+                                    this.onChangeInput(event, "phoneNumber");
+                                }}
+                            />
+                        </div>
+                        <div className="col-12 form-group login-input">
+                            <label>Email : </label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -190,20 +210,6 @@ class Register extends Component {
                                         }></i>
                                 </span>
                             </div>
-                        </div>
-                        <div className="col-12 form-group login-input">
-                            <label>
-                                <FormattedMessage id="login.name" /> (*) :
-                            </label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder={input4}
-                                value={name}
-                                onChange={(event) => {
-                                    this.onChangeInput(event, "name");
-                                }}
-                            />
                         </div>
 
                         <div className="col-12" style={{ color: "red" }}>

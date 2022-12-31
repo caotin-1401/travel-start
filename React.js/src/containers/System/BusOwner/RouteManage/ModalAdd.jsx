@@ -1,17 +1,9 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Select from "react-select";
-import "./RouteManage.scss";
+import "../style.scss";
 import DatePicker from "../../../../components/DatePicker";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
@@ -58,9 +50,7 @@ class ModalUser extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.vehicles !== this.props.vehicles) {
-            let test = this.props.vehicles.filter(
-                (item) => item.busOwnerId === this.props.userInfo.id
-            );
+            let test = this.props.vehicles.filter((item) => item.busOwnerId === this.props.userInfo.id);
             let dataSelect = this.buildDataSelectVehicles(test);
             this.setState({
                 listVehicles: dataSelect,
@@ -75,9 +65,7 @@ class ModalUser extends Component {
         }
         if (prevProps.listUsers !== this.props.listUsers) {
             let test = this.props.listUsers.filter(
-                (item) =>
-                    item.Driver.busOwnerId &&
-                    item.Driver.busOwnerId === this.props.userInfo.id
+                (item) => item.Driver.busOwnerId && item.Driver.busOwnerId === this.props.userInfo.id
             );
             let dataSelect2 = this.buildDataSelectDrivers(test);
             this.setState({
@@ -194,13 +182,9 @@ class ModalUser extends Component {
         let areaStartId = a[0].from.name;
         let areaEndId = a[0].to.name;
         // let result = [];
-        let dateUnixTime1 = moment(new Date(currentDateStart).getTime()).format(
-            "L"
-        );
+        let dateUnixTime1 = moment(new Date(currentDateStart).getTime()).format("L");
         let timeUnixTime1 = moment(new Date(timeStart).getTime()).format("LT");
-        let dateUnixTime2 = moment(new Date(currentDateEnd).getTime()).format(
-            "L"
-        );
+        let dateUnixTime2 = moment(new Date(currentDateEnd).getTime()).format("L");
         let timeUnixTime2 = moment(new Date(timeEnd).getTime()).format("LT");
 
         let [day1, month1, year1] = dateUnixTime1.split("/");
@@ -219,16 +203,10 @@ class ModalUser extends Component {
         // let timeScheduleStart = new Date(timeStart).getTime();
         // let timeScheduleEnd = new Date(timeEnd).getTime();
 
-        if (
-            new Date(currentDateStart).getTime() >
-            new Date(currentDateEnd).getTime()
-        ) {
+        if (new Date(currentDateStart).getTime() > new Date(currentDateEnd).getTime()) {
             toast.error("date selection error!");
             return;
-        } else if (
-            new Date(currentDateStart).getTime() ==
-            new Date(currentDateEnd).getTime()
-        ) {
+        } else if (new Date(currentDateStart).getTime() == new Date(currentDateEnd).getTime()) {
             if (new Date(timeStart).getTime() > new Date(timeEnd).getTime()) {
                 toast.error("time selection error!");
                 return;
@@ -375,46 +353,27 @@ class ModalUser extends Component {
                         <Row>
                             {" "}
                             <Col md={6}>
-                                <label htmlFor="schedule1">
-                                    Chọn ngày/giờ đi
-                                </label>
-                                <div
-                                    className="form-control mb-2"
-                                    style={{ height: "38px" }}
-                                    htmlFor="schedule1">
+                                <label htmlFor="schedule1">Chọn ngày/giờ đi</label>
+                                <div className="form-control mb-2" style={{ height: "38px" }} htmlFor="schedule1">
                                     <DatePicker
                                         style={{ border: "none" }}
                                         onChange={this.handleOnChange1}
                                         id="schedule1"
                                         selected={currentDateStart}
-                                        minDate={
-                                            new Date(
-                                                new Date().setDate(
-                                                    new Date().getDate() - 1
-                                                )
-                                            )
-                                        }
+                                        minDate={new Date(new Date().setDate(new Date().getDate() - 1))}
                                     />
-                                    <label
-                                        htmlFor="schedule1"
-                                        style={{ float: "right" }}>
-                                        <i
-                                            className="far fa-calendar-alt"
-                                            style={{ fontSize: "20px" }}></i>
+                                    <label htmlFor="schedule1" style={{ float: "right" }}>
+                                        <i className="far fa-calendar-alt" style={{ fontSize: "20px" }}></i>
                                     </label>
                                 </div>
                                 <ThemeProvider theme={this.theme}>
-                                    <LocalizationProvider
-                                        dateAdapter={AdapterDayjs}
-                                        locale="vi">
+                                    <LocalizationProvider dateAdapter={AdapterDayjs} locale="vi">
                                         {" "}
                                         <Stack>
                                             <TimePicker
                                                 value={timeStart}
                                                 onChange={this.changeTime1}
-                                                renderInput={(params) => (
-                                                    <TextField {...params} />
-                                                )}
+                                                renderInput={(params) => <TextField {...params} />}
                                             />
                                         </Stack>
                                     </LocalizationProvider>
@@ -422,42 +381,25 @@ class ModalUser extends Component {
                             </Col>{" "}
                             <Col md={6}>
                                 <label htmlFor="schedule2">Chọn ngày đến</label>
-                                <div
-                                    className="form-control mb-2"
-                                    style={{ height: "38px" }}
-                                    htmlFor="schedule2">
+                                <div className="form-control mb-2" style={{ height: "38px" }} htmlFor="schedule2">
                                     <DatePicker
                                         style={{ border: "none" }}
                                         onChange={this.handleOnChange2}
                                         id="schedule2"
                                         selected={currentDateEnd}
-                                        minDate={
-                                            new Date(
-                                                new Date().setDate(
-                                                    new Date().getDate() - 1
-                                                )
-                                            )
-                                        }
+                                        minDate={new Date(new Date().setDate(new Date().getDate() - 1))}
                                     />
-                                    <label
-                                        htmlFor="schedule2"
-                                        style={{ float: "right" }}>
-                                        <i
-                                            className="far fa-calendar-alt"
-                                            style={{ fontSize: "20px" }}></i>
+                                    <label htmlFor="schedule2" style={{ float: "right" }}>
+                                        <i className="far fa-calendar-alt" style={{ fontSize: "20px" }}></i>
                                     </label>
                                 </div>
                                 <ThemeProvider theme={this.theme}>
-                                    <LocalizationProvider
-                                        dateAdapter={AdapterDayjs}
-                                        locale="vi">
+                                    <LocalizationProvider dateAdapter={AdapterDayjs} locale="vi">
                                         <Stack>
                                             <TimePicker
                                                 value={timeEnd}
                                                 onChange={this.changeTime2}
-                                                renderInput={(params) => (
-                                                    <TextField {...params} />
-                                                )}
+                                                renderInput={(params) => <TextField {...params} />}
                                             />
                                         </Stack>
                                     </LocalizationProvider>

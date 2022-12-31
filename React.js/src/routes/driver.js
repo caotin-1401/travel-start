@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Header from "../containers/Header/Header";
-import TableCustomer from "./../containers/System/Driver/ListCustomer/TableCustomer";
-import History from "./../containers/System/Driver/History/History";
+import TableCustomer from "../containers/System/Driver/ListCustomer/TableCustomer";
+import History from "../containers/System/Driver/History/History";
+
 class Driver extends Component {
     constructor(props) {
         super(props);
@@ -19,7 +20,6 @@ class Driver extends Component {
         }
     }
     render() {
-        const { systemMenuPath, isLoggedIn } = this.props;
         return (
             <React.Fragment>
                 {this.props.isLoggedIn && <Header />}

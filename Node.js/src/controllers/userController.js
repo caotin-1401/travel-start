@@ -38,21 +38,16 @@ let handleRegister = async (req, res) => {
         let email = req.body.email;
         let password = req.body.password;
         let confirmPassword = req.body.confirmPassword;
-        let name = req.body.name;
+        let phoneNumber = req.body.phoneNumber;
 
-        if (!email || !password || !confirmPassword) {
+        if (!phoneNumber || !password || !confirmPassword) {
             return res.status(500).json({
                 errCode: 1,
                 message: "Missing inputs parameter",
             });
         }
 
-        let userData = await userService.createNewUserByRegister(
-            email,
-            password,
-            confirmPassword,
-            name
-        );
+        let userData = await userService.createNewUserByRegister(email, password, confirmPassword, phoneNumber);
 
         return res.status(200).json({
             errCode: userData.errCode,
@@ -393,11 +388,7 @@ let handlePostResetPassword = async (req, res) => {
             });
         }
 
-        let userData = await userService.handlePostResetPassword(
-            email,
-            req.body.token,
-            req.body.password
-        );
+        let userData = await userService.handlePostResetPassword(email, req.body.token, req.body.password);
 
         return res.status(200).json({
             errCode: 0,

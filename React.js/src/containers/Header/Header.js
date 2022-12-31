@@ -8,6 +8,7 @@ import { withRouter } from "react-router";
 import { LANGUAGES, USER_ROLE } from "../../utils";
 import _ from "lodash";
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
+import { FormattedMessage } from "react-intl";
 class Header extends Component {
     constructor(props) {
         super(props);
@@ -95,13 +96,15 @@ class Header extends Component {
                                 </DropdownToggle>
                                 <DropdownMenu>
                                     <DropdownItem onClick={this.handleProfile}>
-                                        <i className="fas fa-user-circle"></i> Thông tin tài khoản
+                                        <i className="fas fa-user-circle"></i>{" "}
+                                        <FormattedMessage id="menu.driver.info" />
                                     </DropdownItem>
 
                                     <DropdownItem divider />
                                     <DropdownItem>
                                         <div onClick={processLogout} title="Log out">
-                                            <i className="fas fa-sign-out-alt"></i> Đăng xuất
+                                            <i className="fas fa-sign-out-alt"></i>{" "}
+                                            <FormattedMessage id="menu.driver.logout" />
                                         </div>
                                     </DropdownItem>
                                 </DropdownMenu>

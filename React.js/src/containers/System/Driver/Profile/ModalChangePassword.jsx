@@ -150,7 +150,7 @@ class ModalChangePassword extends Component {
         let mes;
         if (language === LANGUAGES.VI) {
             mes = "Nhập mật khẩu";
-        } else mes = { mes };
+        } else mes = "Enter your password";
         let { oldPass, newPass, confirmPass, errMessage } = this.state;
         return (
             <div>

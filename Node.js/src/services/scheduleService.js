@@ -338,6 +338,65 @@ let getDriverTrips = (tripId) => {
         }
     });
 };
+let getTripsFromBusCompany = (tripId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let trip = await db.Trip.findAll({
+                where: { busOwnerId: tripId },
+                include: [
+                    {
+                        model: db.User,
+                        attributes: ["id", "name"],
+                    },
+                    {
+                        model: db.Ticket,
+                        attributes: ["id", "token", "totalPrice"],
+                    },
+                ],
+                raw: false,
+                nest: true,
+            });
+            trip = _.sortBy(trip, ["timeStart"]);
+            console.log(trip);
+            resolve(trip);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let getTripsFromCompany = (busOwnerId, driverId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let trip = await db.Driver.findAll({
+                where: { busOwnerId: busOwnerId },
+                include: [
+                    {
+                        model: db.User,
+                        attributes: ["id", "name"],
+                        include: [
+                            {
+                                model: db.Trip,
+                                attributes: ["timeStart", "timeEnd"],
+                                include: [
+                                    {
+                                        model: db.Ticket,
+                                        attributes: ["id", "token", "totalPrice"],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                raw: false,
+                nest: true,
+            });
+            trip = _.sortBy(trip, ["id"]);
+            resolve(trip);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let getAllSchedules = (areaStart, areaEnd, dateStart) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -600,4 +659,6 @@ module.exports = {
     handleEndTrip,
     handleStartTrip,
     getDriverTrips,
+    getTripsFromBusCompany,
+    getTripsFromCompany,
 };

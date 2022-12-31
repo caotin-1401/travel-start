@@ -155,6 +155,8 @@
         },
         "busOwner": {
             "dashboard": "Dashboard",
+            "drivers": "Driver",
+            "vehicles": "vehicles",
             "manage-bus": "Manage Bus",
             "bus": "Manage Bus",
             "driver": "Manage Driver",
@@ -163,6 +165,7 @@
             "parking": "Parking",
             "parking-lot": "Manage Parking",
             "routes": "Routes",
+            "passenger": "Passenger",
             "route": "Manage Route",
             "tickets": "Manage Ticket",
             "vehicle": {
@@ -175,6 +178,18 @@
                 "upload": "Upload",
                 "name": "transport service name",
                 "status": "Status"
+            },
+            "ticket": {
+                "title": "Send tickets",
+                "email": "Passenger's email",
+                "upload": "Upload",
+                "cancel": "Cancel",
+                "send": "Send"
+            },
+            "dashboards": {
+                "name": "Name driver",
+                "trips": "Total trips",
+                "total": "Revenue"
             }
         },
         "driver": {
@@ -226,7 +241,8 @@
         "title2": "Enter the email address you signed up with here. We'll send you an email so you can retrieve your password.",
         "back-login": "Back to login page",
         "send": "Send",
-        "reset": "Reset Password"
+        "reset": "Reset Password",
+        "username": "Email or Phone Number"
     },
     "events": {
         "home": "Home",
@@ -285,7 +301,7 @@
         "phone": "Phone Number",
         "address": "Address",
         "saveInfo": "Save Information",
-        "change": "change password",
+        "change": "Change password",
         "passOld": "Password Old :",
         "passNew": "Password New :",
         "confirm": "Confirm Password",

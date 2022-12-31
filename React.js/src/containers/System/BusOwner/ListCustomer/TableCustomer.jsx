@@ -2,37 +2,22 @@ import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { TableBody, TableContainer, Paper, Table } from "@mui/material";
-// import "./style.scss";
 import localization from "moment/locale/vi";
 import moment from "moment";
 import DatePicker from "../../../../components/DatePicker";
 import { Row, Col } from "reactstrap";
-import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
-import _, { isBuffer } from "lodash";
 import Select from "react-select";
-import {
-    getDriverTicketsRoute,
-    deleteTicket,
-    getAllRouteFromDateDriver,
-} from "../../../../services/userService";
+import { getDriverTicketsRoute, deleteTicket, getAllRouteFromDateDriver } from "../../../../services/userService";
 import * as actions from "../../../../store/actions";
 import ModalTicket from "./ModalTicket";
 import { toast } from "react-toastify";
 import LoadingOverlay from "react-loading-overlay-ts";
-
+import "../style.scss";
 class TableCustomer extends Component {
     constructor(props) {
         super(props);
         this.state = {
             listUser: [],
-            sortBy: "",
-            sortField: "",
-            keywordNumber: "",
-            page: 0,
-            rowsPerPage: 5,
-            isTest: false,
-            test: [],
-            test1: [],
             time: "",
             listRoute: [],
             isCheckPresent: false,
@@ -40,7 +25,6 @@ class TableCustomer extends Component {
             listDrivers: [],
             selectDriver: "",
             isOpenModel: false,
-            // dateStartTrip: "",
             userEdit: {},
             isActive: false,
         };
@@ -55,9 +39,7 @@ class TableCustomer extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.listUsers !== this.props.listUsers) {
             let test = this.props.listUsers.filter(
-                (item) =>
-                    item.Driver.busOwnerId &&
-                    item.Driver.busOwnerId === this.props.userInfo.id
+                (item) => item.Driver.busOwnerId && item.Driver.busOwnerId === this.props.userInfo.id
             );
             let dataSelect2 = this.buildDataSelectDrivers(test);
             this.setState({
@@ -88,19 +70,14 @@ class TableCustomer extends Component {
             });
             let { selectDriver } = this.state;
             if (selectDriver.value) {
-                let res = await getAllRouteFromDateDriver(
-                    selectDriver.value,
-                    data[0].getTime()
-                );
+                let res = await getAllRouteFromDateDriver(selectDriver.value, data[0].getTime());
                 if (res && res.tickets && res.tickets.length > 0) {
                     let listRoute = [];
                     if (res.tickets && res.tickets.length > 0) {
                         res.tickets.map((item) => {
                             let obj = {};
                             obj.value = item.id;
-                            obj.label = `${item.areaStart} - ${moment(
-                                +item.timeStart
-                            ).format("LT")} - Biển số xe: ${
+                            obj.label = `${item.areaStart} - ${moment(+item.timeStart).format("LT")} - Biển số xe: ${
                                 item.Vehicle.number
                             }`;
                             listRoute.push(obj);
@@ -122,7 +99,7 @@ class TableCustomer extends Component {
             selectRoute: "",
             listUser: [],
         });
-        let { dateStartTrip, time } = this.state;
+        let { dateStartTrip } = this.state;
         if (!dateStartTrip) {
             let date = moment(new Date().getTime()).format("L");
             let str = "00:00";
@@ -131,19 +108,16 @@ class TableCustomer extends Component {
             let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
             dateStartTrip = date1.getTime();
         }
-        let res = await getAllRouteFromDateDriver(
-            selectDriver.value,
-            dateStartTrip
-        );
+        let res = await getAllRouteFromDateDriver(selectDriver.value, dateStartTrip);
         if (res && res.tickets && res.tickets.length > 0) {
             let listRoute = [];
             if (res.tickets && res.tickets.length > 0) {
                 res.tickets.map((item) => {
                     let obj = {};
                     obj.value = item.id;
-                    obj.label = `${item.areaStart} - ${moment(
-                        +item.timeStart
-                    ).format("LT")} - Biển số xe: ${item.Vehicle.number}`;
+                    obj.label = `${item.areaStart} - ${moment(+item.timeStart).format("LT")} - Biển số xe: ${
+                        item.Vehicle.number
+                    }`;
                     listRoute.push(obj);
                 });
             }
@@ -155,7 +129,7 @@ class TableCustomer extends Component {
         this.setState({ selectDriver });
     };
     onChangeInputStart = async (selectRoute) => {
-        let { dateStartTrip, time, selectDriver } = this.state;
+        let { dateStartTrip, selectDriver } = this.state;
         let res;
         if (!dateStartTrip) {
             let test = moment(new Date().getTime()).format("L");
@@ -163,17 +137,9 @@ class TableCustomer extends Component {
             let [day, month, year] = test.split("/");
             let [hours, minutes] = str.split(":");
             let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
-            res = await getDriverTicketsRoute(
-                selectDriver.value,
-                date1.getTime(),
-                selectRoute.value
-            );
+            res = await getDriverTicketsRoute(selectDriver.value, date1.getTime(), selectRoute.value);
         } else {
-            res = await getDriverTicketsRoute(
-                selectDriver.value,
-                dateStartTrip,
-                selectRoute.value
-            );
+            res = await getDriverTicketsRoute(selectDriver.value, dateStartTrip, selectRoute.value);
         }
         let tempUser = {};
         let resultUser;
@@ -216,7 +182,7 @@ class TableCustomer extends Component {
         });
     };
     sendEmail = async (data) => {
-        let { dateStartTrip, time, selectDriver, selectRoute } = this.state;
+        let { dateStartTrip, selectDriver, selectRoute } = this.state;
         let res;
         if (!dateStartTrip) {
             let test = moment(new Date().getTime()).format("L");
@@ -224,17 +190,9 @@ class TableCustomer extends Component {
             let [day, month, year] = test.split("/");
             let [hours, minutes] = str.split(":");
             let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
-            res = await getDriverTicketsRoute(
-                selectDriver.value,
-                date1.getTime(),
-                selectRoute.value
-            );
+            res = await getDriverTicketsRoute(selectDriver.value, date1.getTime(), selectRoute.value);
         } else {
-            res = await getDriverTicketsRoute(
-                selectDriver.value,
-                dateStartTrip,
-                selectRoute.value
-            );
+            res = await getDriverTicketsRoute(selectDriver.value, dateStartTrip, selectRoute.value);
         }
         let tempUser = {};
         let resultUser;
@@ -289,17 +247,9 @@ class TableCustomer extends Component {
                 let [day, month, year] = test.split("/");
                 let [hours, minutes] = str.split(":");
                 let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
-                res = await getDriverTicketsRoute(
-                    selectDriver.value,
-                    date1.getTime(),
-                    selectRoute.value
-                );
+                res = await getDriverTicketsRoute(selectDriver.value, date1.getTime(), selectRoute.value);
             } else {
-                res = await getDriverTicketsRoute(
-                    selectDriver.value,
-                    dateStartTrip,
-                    selectRoute.value
-                );
+                res = await getDriverTicketsRoute(selectDriver.value, dateStartTrip, selectRoute.value);
             }
             let tempUser = {};
             let resultUser;
@@ -307,9 +257,7 @@ class TableCustomer extends Component {
                 if (res.tickets.length > 0) {
                     res.tickets.forEach((ticket) => {
                         if (tempUser[`${ticket.token}`]) {
-                            tempUser[`${ticket.token}`].seatNo.push(
-                                ticket.seatNo
-                            );
+                            tempUser[`${ticket.token}`].seatNo.push(ticket.seatNo);
                         } else {
                             tempUser[`${ticket.token}`] = {
                                 userId: ticket.userId,
@@ -351,13 +299,8 @@ class TableCustomer extends Component {
         let {
             page,
             rowsPerPage,
-            listVehicles,
             listUser,
-            test,
-            test1,
-            isTest,
             time,
-            isCheckPresent,
             listRoute,
             selectRoute,
             listDrivers,
@@ -366,10 +309,7 @@ class TableCustomer extends Component {
             userEdit,
         } = this.state;
         return (
-            <LoadingOverlay
-                active={this.state.isActive}
-                spinner
-                text="Loading ...">
+            <LoadingOverlay active={this.state.isActive} spinner text="Loading ...">
                 <div className="user-redux-container">
                     {isOpenModel && (
                         <ModalTicket
@@ -389,13 +329,8 @@ class TableCustomer extends Component {
                     <div className="container form-reux">
                         <Row>
                             <Col md={3}>
-                                <label htmlFor="schedule1">
-                                    Chọn ngày chạy
-                                </label>
-                                <span
-                                    className="form-control mb-4"
-                                    style={{ height: "38px" }}
-                                    htmlFor="schedule1">
+                                <label htmlFor="schedule1">Chọn ngày chạy</label>
+                                <span className="form-control mb-4" style={{ height: "38px" }} htmlFor="schedule1">
                                     <DatePicker
                                         locale="vi"
                                         style={{ border: "none" }}
@@ -404,9 +339,7 @@ class TableCustomer extends Component {
                                         value={time}
                                         selected={time}
                                     />
-                                    <label
-                                        htmlFor="schedule1"
-                                        style={{ float: "right" }}>
+                                    <label htmlFor="schedule1" style={{ float: "right" }}>
                                         <i
                                             className="far fa-calendar-alt"
                                             style={{
@@ -425,9 +358,7 @@ class TableCustomer extends Component {
                                 />
                             </Col>
                             <Col md={6}>
-                                <label>
-                                    Chọn địa điểm /thời gian xuất phát:
-                                </label>
+                                <label>Chọn địa điểm /thời gian xuất phát:</label>
                                 <Select
                                     className="mb-4"
                                     value={selectRoute}
@@ -446,35 +377,11 @@ class TableCustomer extends Component {
                                                 style={{
                                                     width: "5%",
                                                 }}
-                                                onClick={() =>
-                                                    this.handleSort("asc", "id")
-                                                }>
+                                                onClick={() => this.handleSort("asc", "id")}>
                                                 Id
                                             </th>
                                             <th>
-                                                <div className="section-title">
-                                                    <div> Tên</div>
-                                                    <div>
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "number"
-                                                                )
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "number"
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
+                                                <div className="section-title">Tên</div>
                                             </th>
                                             <th
                                                 style={{
@@ -489,9 +396,7 @@ class TableCustomer extends Component {
                                                 }}>
                                                 Chỗ ngồi
                                             </th>
-                                            <th className="section-id-list">
-                                                Thanh toán
-                                            </th>
+                                            <th className="section-id-list">Thanh toán</th>
 
                                             <th>
                                                 <div className="section-title">
@@ -512,14 +417,8 @@ class TableCustomer extends Component {
                                             </th>
                                         </tr>
 
-                                        {(listUser &&
-                                        listUser.length > 0 &&
-                                        rowsPerPage > 0
-                                            ? listUser.slice(
-                                                  page * rowsPerPage,
-                                                  page * rowsPerPage +
-                                                      rowsPerPage
-                                              )
+                                        {(listUser && listUser.length > 0 && rowsPerPage > 0
+                                            ? listUser.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                             : listUser
                                         ).map((item, index) => {
                                             let test = item.seatNo.join(" - ");
@@ -535,9 +434,7 @@ class TableCustomer extends Component {
                                             }
                                             return (
                                                 <tr key={index}>
-                                                    <td className="section-id-list">
-                                                        {index + 1}
-                                                    </td>
+                                                    <td className="section-id-list">{index + 1}</td>
                                                     <td>{item.name}</td>
                                                     <td>{item.phone}</td>
                                                     <td>{test}</td>
@@ -548,22 +445,16 @@ class TableCustomer extends Component {
                                                         style={{
                                                             textAlign: "center",
                                                         }}>
-                                                        {item.status ===
-                                                        "S4" ? (
+                                                        {item.status === "S4" ? (
                                                             <button
                                                                 style={{
                                                                     width: "80px",
                                                                 }}
                                                                 className="btn btn-danger"
-                                                                onClick={() =>
-                                                                    this.handleDeleteTicket(
-                                                                        item
-                                                                    )
-                                                                }>
+                                                                onClick={() => this.handleDeleteTicket(item)}>
                                                                 Hủy vé
                                                             </button>
-                                                        ) : item.status ===
-                                                          "S3" ? (
+                                                        ) : item.status === "S3" ? (
                                                             <button
                                                                 className="btn btn-primary"
                                                                 style={{
@@ -578,11 +469,7 @@ class TableCustomer extends Component {
                                                                 style={{
                                                                     width: "80px",
                                                                 }}
-                                                                onClick={() =>
-                                                                    this.handleEditUser(
-                                                                        item
-                                                                    )
-                                                                }>
+                                                                onClick={() => this.handleEditUser(item)}>
                                                                 Gửi vé
                                                             </button>
                                                         )}
@@ -592,9 +479,7 @@ class TableCustomer extends Component {
                                         })}
                                     </TableBody>
                                     {listUser && listUser.length === 0 && (
-                                        <td
-                                            colSpan="8"
-                                            style={{ textAlign: "center" }}>
+                                        <td colSpan="8" style={{ textAlign: "center" }}>
                                             No data
                                         </td>
                                     )}

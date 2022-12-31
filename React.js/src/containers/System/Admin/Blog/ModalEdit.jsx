@@ -28,6 +28,7 @@ class ModalEdit extends Component {
     }
     async componentDidMount() {
         let user = this.props.currentUser;
+        console.log(user);
         if (user && !_.isEmpty(user)) {
             let imageBase64 = "";
             if (user.image) {

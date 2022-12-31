@@ -194,6 +194,9 @@ class InfoUser extends Component {
         const { language } = this.props;
         let genders = this.state.genderArr;
         let { gender, name, phoneNumber, email, address, isChanged } = this.state;
+        let value;
+        if (language === "vi") value = "Tài xế";
+        else value = "Driver";
         return (
             <React.Fragment>
                 {this.state.isOpenModel && (
@@ -265,14 +268,14 @@ class InfoUser extends Component {
                         </Col>
                         <Col md={3}>
                             <label className="mb-2">
-                                <FormattedMessage id="account.role" />
+                                <FormattedMessage id="account.Role" />
                             </label>
                             <input
                                 className="form-control mb-4"
                                 disabled
                                 placeholder="with a placeholder"
                                 type="text"
-                                value="Tài xế"
+                                value={value}
                             />
                         </Col>
                     </Row>
@@ -300,6 +303,7 @@ class InfoUser extends Component {
                             <input
                                 className="form-control mb-4"
                                 id="phoneNumber"
+                                disabled
                                 name="phoneNumberNumber"
                                 placeholder="with a placeholder"
                                 type="text"

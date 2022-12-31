@@ -8,7 +8,6 @@ import { handleLogin } from "../../services/userService";
 import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../utils";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -57,9 +56,9 @@ class Login extends Component {
         let message1;
         if (!email) {
             if (language === LANGUAGES.VI) {
-                message1 = "Vui lòng nhập email";
+                message1 = "Vui lòng nhập email hoặc số điện thoại đã đăng ký";
             } else {
-                message1 = "Please enter your email";
+                message1 = "Please enter your registered email or phone number";
             }
         } else if (!password) {
             if (language === LANGUAGES.VI) {
@@ -116,10 +115,10 @@ class Login extends Component {
         let language = this.props.language;
         let input1, input2;
         if (language === LANGUAGES.VI) {
-            input1 = "Nhập email";
+            input1 = "Nhập email hoặc số điện thoại";
             input2 = "Nhập mật khẩu";
         } else {
-            input1 = "Enter your email";
+            input1 = "Enter your email or phone number";
             input2 = "Enter your password";
         }
         return (
@@ -128,17 +127,16 @@ class Login extends Component {
                     <div className="login-content row">
                         <div className="logostyle">
                             <Link to="/home">
-                                {/* <img src={logo} loading="eager" /> */}
-                                <LazyLoadImage
-                                    src={logo} // use normal <img> attributes as props
-                                />
+                                <img src={logo} loading="eager" alt="logo" />
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">
                             <FormattedMessage id="login.login" />
                         </div>
                         <div className="col-12 form-group login-input">
-                            <label>Email : </label>
+                            <label>
+                                <FormattedMessage id="login.username" /> :{" "}
+                            </label>
                             <input
                                 type="text"
                                 className="form-control"

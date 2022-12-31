@@ -1,15 +1,7 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
 import _ from "lodash";
@@ -40,9 +32,7 @@ class ModalEditUser extends Component {
         if (user && !_.isEmpty(user)) {
             let imageBase64 = "";
             if (user.image) {
-                imageBase64 = Buffer.from(user.image, "base64").toString(
-                    "binary"
-                );
+                imageBase64 = Buffer.from(user.image, "base64").toString("binary");
             }
 
             this.setState({
@@ -138,8 +128,7 @@ class ModalEditUser extends Component {
     render() {
         let language = this.props.language;
         let genders = this.state.genderArr;
-        let { email, password, name, phone, address, gender, avatar } =
-            this.state;
+        let { email, password, name, phone, address, gender, avatar } = this.state;
 
         return (
             <Modal
@@ -238,12 +227,8 @@ class ModalEditUser extends Component {
                                     genders.length > 0 &&
                                     genders.map((item, index) => {
                                         return (
-                                            <option
-                                                key={index}
-                                                value={item.keyMap}>
-                                                {language === LANGUAGES.VI
-                                                    ? item.valueVi
-                                                    : item.valueEn}
+                                            <option key={index} value={item.keyMap}>
+                                                {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
                                             </option>
                                         );
                                     })}
@@ -258,9 +243,7 @@ class ModalEditUser extends Component {
                                     id="img"
                                     type="file"
                                     hidden
-                                    onChange={(event) =>
-                                        this.handleChangeImage(event)
-                                    }
+                                    onChange={(event) => this.handleChangeImage(event)}
                                 />
                                 <label className="upload-img" htmlFor="img">
                                     Tải ảnh<i className="fas fa-upload"></i>

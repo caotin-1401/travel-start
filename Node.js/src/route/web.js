@@ -76,6 +76,8 @@ let initWebRoutes = (app) => {
     router.get("/api/get-all-schedule", scheduleController.getAllSchedule);
     router.get("/api/show-all-schedule", scheduleController.shouldAllSchedule);
     router.get("/api/get-driver-schedule", scheduleController.getDriverTrips);
+    router.get("/api/get-schedule-from-bus-company", scheduleController.getTripsFromBusCompany);
+    router.get("/api/get-trips-from-bus-company", scheduleController.getTripsFromCompany);
     router.post("/api/create-new-schedule", scheduleController.createSchedule);
     router.delete("/api/delete-schedule", scheduleController.deleteSchedule);
     router.put("/api/handle-start-trip", scheduleController.handleStartTrip);

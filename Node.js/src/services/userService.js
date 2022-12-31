@@ -23,7 +23,23 @@ let checkUserEmailAdmin = (userEmail) => {
         }
     });
 };
-let checkUserEmailPassenger = (userEmail) => {
+let checkPhoneAdmin = (userEmail) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { phoneNumber: userEmail },
+            });
+            if (user) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let checkEmailPassenger = (userEmail) => {
     return new Promise(async (resolve, reject) => {
         try {
             console.log(userEmail);
@@ -41,21 +57,13 @@ let checkUserEmailPassenger = (userEmail) => {
         }
     });
 };
-let checkUserEmail = (userEmail) => {
+let checkPhonePassenger = (phone) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let user = await db.User.findOne({
-                where: { email: userEmail },
-            });
-            console.log(user);
             let passenger = await db.Passenger.findOne({
-                where: { email: userEmail },
+                where: { phoneNumber: phone },
             });
-            console.log(passenger);
-            if (user) {
-                resolve(true);
-            } else if (passenger) {
-                console.log(passenger);
+            if (passenger) {
                 resolve(true);
             } else {
                 resolve(false);
@@ -106,55 +114,42 @@ let handleUserLogin = (email, password) => {
     return new Promise(async (resolve, reject) => {
         try {
             let userData = {};
-            let isExist = await checkUserEmail(email);
-            if (isExist) {
-                let user = await db.User.findOne({
-                    attributes: ["id", "email", "roleID", "password", "name"],
-                    where: { email: email },
-                    raw: true,
-                });
-                let passenger = await db.Passenger.findOne({
-                    where: { email: email },
-                    attributes: ["id", "email", "roleID", "password", "name"],
-                    raw: true,
-                });
-                if (user) {
-                    let check = await bcrypt.compareSync(
-                        password,
-                        user.password
-                    ); // false
-                    if (check) {
-                        userData.errCode = 0;
-                        userData.errMessage = "OK";
-                        delete user.password;
-                        userData.user = user;
-                    } else {
-                        userData.errCode = 3;
-                        userData.errMessage = "Wrong Password";
-                    }
-                } else if (passenger) {
-                    let check = await bcrypt.compareSync(
-                        password,
-                        passenger.password
-                    ); // false
-                    if (check) {
-                        userData.errCode = 0;
-                        userData.errMessage = "OK";
-                        delete passenger.password;
-                        userData.user = passenger;
-                    } else {
-                        userData.errCode = 3;
-                        userData.errMessage = "Wrong Password";
-                    }
+            let user = await db.User.findOne({
+                attributes: ["id", "email", "roleID", "password", "name"],
+                where: { [Op.or]: [{ email: email }, { phoneNumber: email }] },
+                raw: true,
+            });
+            let passenger = await db.Passenger.findOne({
+                where: { [Op.or]: [{ email: email }, { phoneNumber: email }] },
+                attributes: ["id", "email", "roleID", "password", "name"],
+                raw: true,
+            });
+            if (user) {
+                let check = await bcrypt.compareSync(password, user.password); // false
+                if (check) {
+                    userData.errCode = 0;
+                    userData.errMessage = "OK";
+                    delete user.password;
+                    userData.user = user;
                 } else {
-                    //return error
-                    userData.errCode = 2;
-                    userData.errMessage = "User does not exist";
+                    userData.errCode = 3;
+                    userData.errMessage = "Wrong Password";
+                }
+            } else if (passenger) {
+                let check = await bcrypt.compareSync(password, passenger.password); // false
+                if (check) {
+                    userData.errCode = 0;
+                    userData.errMessage = "OK";
+                    delete passenger.password;
+                    userData.user = passenger;
+                } else {
+                    userData.errCode = 3;
+                    userData.errMessage = "Wrong Password";
                 }
             } else {
                 //return error
-                userData.errCode = 1;
-                userData.errMessage = `Your's Email does not exist. Please try other Email`;
+                userData.errCode = 2;
+                userData.errMessage = "User does not exist";
             }
 
             resolve(userData);
@@ -164,16 +159,21 @@ let handleUserLogin = (email, password) => {
     });
 };
 
-let createNewUserByRegister = (email, password, confirmPassword, name) => {
+let createNewUserByRegister = (email, password, confirmPassword, phoneNumber) => {
     return new Promise(async (resolve, reject) => {
         try {
             let userData = {};
-            let check = await checkUserEmailPassenger(email);
+            let check = await checkEmailPassenger(email);
+            let checkPhone = await checkPhonePassenger(phoneNumber);
             if (check) {
                 resolve({
                     errCode: 1,
-                    errMessage:
-                        "Your email already exists, please try another email",
+                    errMessage: "Your email already exists, please try another email",
+                });
+            } else if (checkPhone) {
+                resolve({
+                    errCode: 6,
+                    errMessage: "Your email already exists, please try another email",
                 });
             } else if (!email || !password || !confirmPassword) {
                 resolve({
@@ -207,11 +207,6 @@ let createNewUserByRegister = (email, password, confirmPassword, name) => {
                 userData.errMessage = "OK";
                 delete user.password;
                 userData.user = user;
-                // resolve({
-                //     errCode: 0,
-                //     errMessage: "OK",
-                //     userData.user = user
-                // });
             }
 
             resolve(userData);
@@ -279,32 +274,6 @@ let getAllPassengers = (userId) => {
             if (userId && userId !== "ALL") {
                 users = await db.Passenger.findAll({
                     where: { id: userId },
-                    // attributes: {
-                    //     exclude: ["password"],
-                    // },
-                    // include: [
-                    //     {
-                    //         model: db.Trip,
-                    //         attributes: [
-                    //             "id",
-                    //             "timeStart",
-                    //             "areaStart",
-                    //             "routeId",
-                    //             "busId",
-                    //             "busOwnerId",
-                    //         ],
-                    //         include: [
-                    //             {
-                    //                 model: db.Ticket,
-                    //             },
-                    //         ],
-                    //     },
-                    //     {
-                    //         model: db.Driver,
-                    //     },
-                    // ],
-                    raw: true,
-                    nest: true,
                 });
             }
             resolve(users);
@@ -323,12 +292,7 @@ let getAllDrivers = (userId) => {
                     include: [
                         {
                             model: db.User,
-                            attributes: [
-                                "email",
-                                "address",
-                                "phoneNumber",
-                                "gender",
-                            ],
+                            attributes: ["email", "address", "phoneNumber", "gender"],
                         },
                     ],
                     raw: true,
@@ -376,14 +340,7 @@ let getAllUsers = (userId) => {
                     include: [
                         {
                             model: db.Trip,
-                            attributes: [
-                                "id",
-                                "timeStart",
-                                "areaStart",
-                                "routeId",
-                                "busId",
-                                "busOwnerId",
-                            ],
+                            attributes: ["id", "timeStart", "areaStart", "routeId", "busId", "busOwnerId"],
                             include: [
                                 {
                                     model: db.Ticket,
@@ -445,11 +402,16 @@ let createNewUser = async (data) => {
         try {
             //check email exist
             let check = await checkUserEmailAdmin(data.email);
+            let checkPhone = await checkPhoneAdmin(data.phoneNumber);
             if (check) {
                 resolve({
                     errCode: 1,
-                    errMessage:
-                        "Your email already exists, please try another email",
+                    errMessage: "Your email already exists, please try another email",
+                });
+            } else if (checkPhone) {
+                resolve({
+                    errCode: 8,
+                    errMessage: "Your email already exists, please try another email",
                 });
             } else if (data.password.trim().length < 8) {
                 resolve({
@@ -467,9 +429,7 @@ let createNewUser = async (data) => {
                     errMessage: "Invalid mail address",
                 });
             } else {
-                let hashPasswordFromBcrypt = await hashUserPassword(
-                    data.password
-                );
+                let hashPasswordFromBcrypt = await hashUserPassword(data.password);
                 if (!data.avatar) {
                     await db.User.create({
                         email: data.email,
@@ -736,14 +696,9 @@ let handleChangePasswordPassenger = async (data) => {
                 raw: false,
             });
             if (user) {
-                let check = await bcrypt.compareSync(
-                    data.oldPass,
-                    user.password
-                );
+                let check = await bcrypt.compareSync(data.oldPass, user.password);
                 if (check) {
-                    let hashPasswordFromBcrypt = await hashUserPassword(
-                        data.newPass
-                    );
+                    let hashPasswordFromBcrypt = await hashUserPassword(data.newPass);
                     user.password = hashPasswordFromBcrypt;
                     await user.save();
                     resolve({
@@ -781,14 +736,9 @@ let changePassword = async (data) => {
                 raw: false,
             });
             if (user) {
-                let check = await bcrypt.compareSync(
-                    data.oldPass,
-                    user.password
-                );
+                let check = await bcrypt.compareSync(data.oldPass, user.password);
                 if (check) {
-                    let hashPasswordFromBcrypt = await hashUserPassword(
-                        data.newPass
-                    );
+                    let hashPasswordFromBcrypt = await hashUserPassword(data.newPass);
                     user.password = hashPasswordFromBcrypt;
                     await user.save();
                     resolve({
@@ -956,9 +906,7 @@ let handlePostResetPassword = async (email, token, password) => {
                         },
                         { where: { email: email } }
                     );
-                    let hashPasswordFromBcrypt = await hashUserPassword(
-                        password
-                    );
+                    let hashPasswordFromBcrypt = await hashUserPassword(password);
                     let user = await db.User.findOne({
                         where: { email: email },
                         raw: false,

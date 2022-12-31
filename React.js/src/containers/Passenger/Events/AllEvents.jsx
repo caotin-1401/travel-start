@@ -22,16 +22,23 @@ class AllEvents extends Component {
         };
     }
     componentDidMount() {
-        setTimeout(() => {
-            this.setState({
-                loading: true,
-            });
-        }, 500);
+        // setTimeout(() => {
+        //     this.setState({
+        //         loading: true,
+        //     });
+        // }, 500);
         this.props.fetchAllEvents();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.events !== this.props.events) {
             this.setState({ listEvents: this.props.events });
+            setTimeout(() => {
+                if (this.props.events && this.props.events.length > 0) {
+                    this.setState({
+                        loading: true,
+                    });
+                }
+            }, 50);
         }
     }
     handleViewDetail = (events) => {

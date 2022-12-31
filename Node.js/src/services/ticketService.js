@@ -13,14 +13,7 @@ let getAllTickets = (id) => {
                     include: [
                         {
                             model: db.Trip,
-                            attributes: [
-                                "id",
-                                "timeStart",
-                                "areaStart",
-                                "routeId",
-                                "busId",
-                                "busOwnerId",
-                            ],
+                            attributes: ["id", "timeStart", "areaStart", "routeId", "busId", "busOwnerId"],
                         },
                         {
                             model: db.Passenger,
@@ -39,14 +32,7 @@ let getAllTickets = (id) => {
                     include: [
                         {
                             model: db.Trip,
-                            attributes: [
-                                "id",
-                                "timeStart",
-                                "areaStart",
-                                "routeId",
-                                "busId",
-                                "busOwnerId",
-                            ],
+                            attributes: ["id", "timeStart", "areaStart", "routeId", "busId", "busOwnerId"],
                         },
                         {
                             model: db.Passenger,
@@ -207,9 +193,7 @@ let bulkCreateTicket = (data) => {
         try {
             let result = [];
             let ticket = data.arrTicket;
-            ticket &&
-                ticket.length > 0 &&
-                ticket.forEach((item) => result.push(item.seatNo));
+            ticket && ticket.length > 0 && ticket.forEach((item) => result.push(item.seatNo));
 
             let token = uuidv4();
             ticket = ticket.map((item) => ({
@@ -305,8 +289,7 @@ let verifyTicket = (data) => {
                       })
                     : resolve({
                           errCode: 2,
-                          errMessage:
-                              "appointment has been activated or not exist",
+                          errMessage: "appointment has been activated or not exist",
                       });
             }
         } catch (e) {
@@ -344,8 +327,7 @@ let cancelTicket = (data) => {
                       })
                     : resolve({
                           errCode: 2,
-                          errMessage:
-                              "appointment has been activated or not exist",
+                          errMessage: "appointment has been activated or not exist",
                       });
             }
         } catch (e) {
@@ -432,12 +414,12 @@ let sendTickets = (data) => {
                     where: {
                         tripId: data.tripId,
                         token: data.token,
-                        status: "S2",
+                        // status: "S2",
                     },
                     attributes: ["id", "tripId", "token"],
                     raw: false,
                 });
-
+                console.log(appointment);
                 if (appointment) {
                     await emailService.sendAttachment({
                         receiversEmail: data.email,
@@ -456,8 +438,7 @@ let sendTickets = (data) => {
                       })
                     : resolve({
                           errCode: 2,
-                          errMessage:
-                              "appointment has been activated or not exist",
+                          errMessage: "appointment has been activated or not exist",
                       });
             }
         } catch (e) {

@@ -53,7 +53,6 @@ let shouldAllSchedule = async (req, res) => {
 let getDriverTrips = async (req, res) => {
     try {
         let driverId = req.query.driverId;
-        console.log(driverId);
         if (!driverId) {
             return res.status(200).json({
                 errCode: 1,
@@ -62,6 +61,54 @@ let getDriverTrips = async (req, res) => {
             });
         }
         let trips = await scheduleService.getDriverTrips(driverId);
+
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            trips,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let getTripsFromBusCompany = async (req, res) => {
+    try {
+        let Id = req.query.busOwnerId;
+        if (!Id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+                trips: [],
+            });
+        }
+        let trips = await scheduleService.getTripsFromBusCompany(Id);
+
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            trips,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let getTripsFromCompany = async (req, res) => {
+    try {
+        let Id = req.query.busOwnerId;
+        if (!Id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+                trips: [],
+            });
+        }
+        let trips = await scheduleService.getTripsFromCompany(Id);
 
         return res.status(200).json({
             errCode: 0,
@@ -149,4 +196,6 @@ module.exports = {
     handleEndTrip,
     handleStartTrip,
     getDriverTrips,
+    getTripsFromBusCompany,
+    getTripsFromCompany,
 };

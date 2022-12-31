@@ -22,12 +22,7 @@ class Step2 extends Component {
         });
         let isCleanData = this.props.isCleanDataParent;
         if (isCleanData === false) {
-            if (
-                this.props.nameParent ||
-                this.props.phoneParent ||
-                this.props.emailParent ||
-                this.props.description
-            ) {
+            if (this.props.nameParent || this.props.phoneParent || this.props.emailParent || this.props.description) {
                 this.setState({
                     name: this.props.nameParent,
                     phone: this.props.phoneParent,
@@ -76,8 +71,7 @@ class Step2 extends Component {
         return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
     }
     render() {
-        let { seatArr, totalPrice, name, phone, email, description } =
-            this.state;
+        let { seatArr, totalPrice, name, phone, email, description } = this.state;
         return (
             <div className="container">
                 <div

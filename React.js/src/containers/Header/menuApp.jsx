@@ -113,21 +113,7 @@ export const busOwnerMenu = [
             },
         ],
     },
-    {
-        //quản lý sự kiện
-        name: "menu.busOwner.events",
-        menus: [{ name: "menu.busOwner.event", link: "/busOwner/event-manage" }],
-    },
-    {
-        //quản lý khu vuc do xe
-        name: "menu.busOwner.parking",
-        menus: [
-            {
-                name: "menu.busOwner.parking-lot",
-                link: "/busOwner/parking-lot",
-            },
-        ],
-    },
+
     {
         //quản lý tueyens đường
         name: "menu.busOwner.routes",
@@ -136,6 +122,12 @@ export const busOwnerMenu = [
                 name: "menu.busOwner.route",
                 link: "/busOwner/manage-routes",
             },
+        ],
+    },
+    {
+        //quản lý tueyens đường
+        name: "menu.busOwner.passenger",
+        menus: [
             {
                 name: "menu.busOwner.tickets",
                 link: "/busOwner/manage-tickets",

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import "./UserManage.scss";
+import "../style.scss";
 import _ from "lodash";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
@@ -12,16 +12,9 @@ import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css"; // This only needs to be imported once in your app
 import ModalUser from "./ModalUser";
 import ModalEditUser from "./ModalEditUser";
-import {
-    TableBody,
-    TableContainer,
-    TableFooter,
-    TablePagination,
-    TableRow,
-    Paper,
-    Table,
-} from "@mui/material";
+import { TableBody, TableContainer, TableFooter, TablePagination, TableRow, Paper, Table } from "@mui/material";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
+import { withRouter } from "react-router";
 class UserManage extends Component {
     constructor(props) {
         super(props);
@@ -45,9 +38,7 @@ class UserManage extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.listUsers !== this.props.listUsers) {
             let test = this.props.listUsers.filter(
-                (item) =>
-                    item.Driver.busOwnerId &&
-                    item.Driver.busOwnerId === this.props.userInfo.id
+                (item) => item.Driver.busOwnerId && item.Driver.busOwnerId === this.props.userInfo.id
             );
             this.setState({
                 arrUsers: test,
@@ -127,6 +118,12 @@ class UserManage extends Component {
             this.props.fetchAllVehicle();
         }
     };
+    handleDriver = (item) => {
+        console.log(item);
+        if (this.props.history) {
+            this.props.history.push(`/busOwner/history-driver=${item.id}`);
+        }
+    };
     render() {
         let { page, rowsPerPage, arrUsers } = this.state;
 
@@ -149,9 +146,7 @@ class UserManage extends Component {
 
                     <div className="title text-center">Quản lý tài xế</div>
                     <div className="mx-5 my-3">
-                        <button
-                            className="btn btn-primary px-3"
-                            onClick={() => this.handleAddUser()}>
+                        <button className="btn btn-primary px-3" onClick={() => this.handleAddUser()}>
                             <i className="fas fa-plus px-1"></i>
                             Thêm tài xế
                         </button>
@@ -168,9 +163,7 @@ class UserManage extends Component {
                                         style={{
                                             width: "5%",
                                         }}
-                                        onClick={() =>
-                                            this.handleSort("asc", "id")
-                                        }>
+                                        onClick={() => this.handleSort("asc", "id")}>
                                         Id
                                     </th>
                                     <th
@@ -183,21 +176,11 @@ class UserManage extends Component {
                                                 {" "}
                                                 <FaLongArrowAltDown
                                                     className="iconSortDown"
-                                                    onClick={() =>
-                                                        this.handleSort(
-                                                            "asc",
-                                                            "name"
-                                                        )
-                                                    }
+                                                    onClick={() => this.handleSort("asc", "name")}
                                                 />
                                                 <FaLongArrowAltUp
                                                     className="iconSortDown"
-                                                    onClick={() =>
-                                                        this.handleSort(
-                                                            "desc",
-                                                            "name"
-                                                        )
-                                                    }
+                                                    onClick={() => this.handleSort("desc", "name")}
                                                 />
                                             </div>
                                         </div>
@@ -207,35 +190,20 @@ class UserManage extends Component {
                                             width: "20%",
                                         }}>
                                         <div className="section-title">
-                                            <div> email </div>
-                                            <div>
-                                                {" "}
-                                                <FaLongArrowAltDown
-                                                    className="iconSortDown"
-                                                    onClick={() =>
-                                                        this.handleSort(
-                                                            "asc",
-                                                            "email"
-                                                        )
-                                                    }
-                                                />
-                                                <FaLongArrowAltUp
-                                                    className="iconSortDown"
-                                                    onClick={() =>
-                                                        this.handleSort(
-                                                            "desc",
-                                                            "email"
-                                                        )
-                                                    }
-                                                />
-                                            </div>
+                                            <div> Số điện thoại </div>
                                         </div>
                                     </th>
                                     <th
                                         style={{
-                                            width: "35%",
+                                            width: "20%",
                                         }}>
                                         Địa chỉ
+                                    </th>
+                                    <th
+                                        style={{
+                                            width: "15%",
+                                        }}>
+                                        Lịch sử chạy
                                     </th>
                                     <th
                                         style={{
@@ -255,23 +223,10 @@ class UserManage extends Component {
                                 <tr style={{ height: "50px" }}>
                                     <td></td>
                                     <td>
-                                        <input
-                                            className="form-control"
-                                            // value={this.state.keywordNumber}
-                                            onChange={(e) =>
-                                                this.handleKeyword(e)
-                                            }
-                                        />
+                                        <input className="form-control" onChange={(e) => this.handleKeyword(e)} />
                                     </td>
-                                    <td>
-                                        <input
-                                            className="form-control"
-                                            // value={this.state.keywordNumber}
-                                            onChange={(e) =>
-                                                this.handleKeyword1(e)
-                                            }
-                                        />
-                                    </td>
+                                    <td></td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -282,40 +237,35 @@ class UserManage extends Component {
                                             <tr key={index}>
                                                 <td>{user.id}</td>
                                                 <td>{user.name}</td>
+                                                <td>{user.phoneNumber}</td>
                                                 <td>{user.email}</td>
-                                                <td>{user.address}</td>
+                                                <td className="center">
+                                                    <button
+                                                        onClick={() => this.handleDriver(user)}
+                                                        className="btn
+                                                        btn-primary">
+                                                        Lịch sử chạy
+                                                    </button>
+                                                </td>
                                                 <td
                                                     style={{
                                                         textAlign: "center",
                                                     }}>
-                                                    {user.Driver.status ===
-                                                    2 ? (
-                                                        <div className="driver-run">
-                                                            Đang chạy
-                                                        </div>
+                                                    {user.Driver.status === 2 ? (
+                                                        <div className="driver-run">Đang chạy</div>
                                                     ) : (
-                                                        <div className="driver-not-run">
-                                                            Không chạy
-                                                        </div>
+                                                        <div className="driver-not-run">Không chạy</div>
                                                     )}
                                                 </td>
                                                 <td>
                                                     <button
                                                         className="btn-edit"
-                                                        onClick={() =>
-                                                            this.handleEditUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleEditUser(user)}>
                                                         <i className="fas fa-user-edit"></i>
                                                     </button>
                                                     <button
                                                         className="btn-delete"
-                                                        onClick={() =>
-                                                            this.handleDeleteUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleDeleteUser(user)}>
                                                         <i className="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
@@ -326,25 +276,27 @@ class UserManage extends Component {
                             <TableFooter>
                                 <TableRow>
                                     <TablePagination
-                                        rowsPerPageOptions={[
-                                            5,
-                                            10,
-                                            25,
-                                            { label: "All", value: -1 },
-                                        ]}
-                                        colSpan={6}
+                                        sx={{
+                                            "& .MuiTablePagination-selectLabel ": {
+                                                display: "None",
+                                            },
+                                            "& .MuiTablePagination-displayedRows  ": {
+                                                marginTop: "10px",
+                                                fontSize: "15px",
+                                            },
+                                            "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ": {
+                                                fontSize: "15px",
+                                            },
+                                        }}
+                                        rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                                        colSpan={7}
                                         count={arrUsers.length}
                                         rowsPerPage={rowsPerPage}
                                         page={page}
                                         onPageChange={this.handleChangePage}
-                                        onRowsPerPageChange={
-                                            this.handleChangeRowsPerPage
-                                        }
+                                        onRowsPerPageChange={this.handleChangeRowsPerPage}
                                         ActionsComponent={(subProps) => (
-                                            <TablePaginationActions
-                                                style={{ marginBottom: "12px" }}
-                                                {...subProps}
-                                            />
+                                            <TablePaginationActions style={{ marginBottom: "12px" }} {...subProps} />
                                         )}
                                     />
                                 </TableRow>
@@ -377,4 +329,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserManage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserManage));

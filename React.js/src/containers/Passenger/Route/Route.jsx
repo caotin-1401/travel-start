@@ -1,8 +1,7 @@
-import React, { Component, Suspense, lazy } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../../utils";
-import { changeLanguageApp } from "../../../store/actions/appActions";
 import "./Route.scss";
 import { getAllTripHomeService } from "../../../services/userService";
 import moment from "moment";
@@ -17,11 +16,10 @@ import { toast } from "react-toastify";
 import LoadingOverlay from "react-loading-overlay-ts";
 import _ from "lodash";
 import Header from "../../HomePage/Header";
-import Loading from "../../../components/Loading";
+import HomeFooter from "../../HomePage/Section/HomeFooter";
 import SkeletonLoading from "./SkeletonLoading";
 import { Slider, Box } from "@mui/material";
 import { Row, Col } from "reactstrap";
-const HomeFooter = lazy(() => import("../../HomePage/Section/HomeFooter"));
 const customStyles = {
     control: () => ({
         border: "none",
@@ -75,7 +73,6 @@ class BusRoute extends Component {
             arrMouse: [],
             isTemp: false,
             isMouse: false,
-            isFirst: false,
         };
     }
     async componentDidMount() {
@@ -163,7 +160,8 @@ class BusRoute extends Component {
         if (prevState.dateStartTrip !== this.state.dateStartTrip) {
             let dayChoose;
             if (this.state.dateStartTrip.length === 10) {
-                let [day, month, year] = this.state.dateStartTrip.split("/");
+                let [day] = this.state.dateStartTrip.split("/");
+                console.log(day);
                 dayChoose = day;
             } else {
                 dayChoose = moment(this.state.dateStartTrip).format("DD");
@@ -199,9 +197,6 @@ class BusRoute extends Component {
         this.setState({
             dateStartTrip: data[0],
         });
-    };
-    changeLanguage = (language) => {
-        this.props.changeLanguageAppRedux(language);
     };
     toggleUserModel = () => {
         this.setState({
@@ -289,19 +284,19 @@ class BusRoute extends Component {
         });
     };
     handleSort = (a, b) => {
-        this.state.arrRoute = _.orderBy(this.state.arrRoute, [b], [a]);
+        let test1 = this.state.arrRoute;
+        test1 = _.orderBy(test1, [b], [a]);
         let test = a + b;
         this.setState({
             sortBy: a,
             sortField: b,
-            arrRoute: this.state.arrRoute,
+            arrRoute: test1,
             isSort: test,
         });
     };
     compareTime = (dayChoose) => {
         let day = moment(new Date()).format("DD");
         let hour = moment(new Date()).format("HH");
-        console.log("dayChoose, day,hour >>>", dayChoose, day, hour);
 
         if (+dayChoose === +day) {
             if (+hour >= 18) {
@@ -309,7 +304,6 @@ class BusRoute extends Component {
             } else if (+hour >= 12) {
                 this.setState({ current: 3 });
             } else if (+hour >= 6) {
-                console.log(1);
                 this.setState({ current: 2 });
             } else {
                 this.setState({ current: 1 });
@@ -320,278 +314,141 @@ class BusRoute extends Component {
         this.setState({ value: value.target.value });
     };
     handleMouseLeave = () => {
-        this.setState({ isMouse: false });
-        let { value, arrRoute, arrTemp, isTemp } = this.state;
+        let { value, arrRoute } = this.state;
         let arrMouse = [];
-        if (arrTemp.length > 0 && arrRoute.length !== arrTemp.length) {
-            arrTemp.length > 0 &&
-                (arrMouse = arrTemp.filter((item) => {
-                    return item.price <= value[1] && item.price >= value[0];
-                }));
-        } else {
-            arrRoute.length > 0 &&
-                (arrMouse = arrRoute.filter((item) => {
-                    return item.price <= value[1] && item.price >= value[0];
-                }));
-        }
-        console.log("arrMouse >>>:", arrMouse);
-        if (isTemp === true && !(value[0] === 0 && value[1] === 1000000)) {
-            console.log("1");
+
+        arrRoute.length > 0 &&
+            (arrMouse = arrRoute.filter((item) => {
+                return item.price <= value[1] && item.price >= value[0];
+            }));
+        if (arrMouse.length === arrRoute.length)
             this.setState({
-                isMouse: true,
-                arrMouse: arrMouse,
-                isFirst: false,
-            });
-        } else if (value[0] === 0 && value[1] === 1000000) {
-            console.log("2");
-            this.setState({
-                isMouse: false,
                 arrMouse: arrRoute,
-                isFirst: false,
+                isMouse: false,
             });
-        } else {
-            console.log("3");
+        else
             this.setState({
-                isMouse: true,
                 arrMouse: arrMouse,
-                isFirst: false,
+                isMouse: true,
             });
-        }
     };
     handleButton1 = () => {
-        this.setState({ isTemp: false });
-        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute, arrMouse } = this.state;
+        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute } = this.state;
         let arr = [];
         let temp = false;
-        if (arrMouse.length > 0 && arrRoute.length !== arrMouse.length) {
-            if (selectButton1 === false) {
-                if (selectButton4 === true && selectButton2 === true && selectButton3 === true) {
-                    arr = arrMouse;
-                    temp = true;
-                }
-                if (selectButton2 === false && selectButton3 === false && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6;
-                        }));
-                }
-                if (selectButton2 === false && selectButton3 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || +time >= 18;
-                        }));
-                }
-                if (selectButton2 === false && selectButton3 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || (+time >= 12 && +time < 18);
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === false && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 18;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12 || +time >= 18;
-                        }));
-                }
-                if (selectButton2 === false && selectButton3 === true && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || +time >= 12;
-                        }));
-                }
+        if (selectButton1 === false) {
+            if (selectButton4 === true && selectButton2 === true && selectButton3 === true) {
+                arr = arrRoute;
+                temp = true;
             }
-            if (selectButton1 === true) {
-                if (selectButton2 === false && selectButton3 === false && selectButton4 === false) {
-                    arr = arrMouse;
-                    temp = true;
-                }
-                if (selectButton2 === false && selectButton3 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 18;
-                        }));
-                }
-                if (selectButton2 === false && selectButton3 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12 && +time < 18;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === false && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 12;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 18;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 6 && +time < 12) || +time >= 18;
-                        }));
-                }
-                if (selectButton2 === false && selectButton3 === true && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === true && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6;
-                        }));
-                }
+            if (selectButton2 === false && selectButton3 === false && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6;
+                    }));
             }
-        } else {
-            if (selectButton1 === false) {
-                if (selectButton4 === true && selectButton2 === true && selectButton3 === true) {
-                    arr = arrRoute;
-                    temp = true;
-                }
-                if (selectButton2 === false && selectButton3 === false && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6;
-                        }));
-                }
-                if (selectButton2 === false && selectButton3 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || +time >= 18;
-                        }));
-                }
-                if (selectButton2 === false && selectButton3 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || (+time >= 12 && +time < 18);
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === false && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 18;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12 || +time >= 18;
-                        }));
-                }
-                if (selectButton2 === false && selectButton3 === true && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || +time >= 12;
-                        }));
-                }
+            if (selectButton2 === false && selectButton3 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6 || +time >= 18;
+                    }));
             }
-            if (selectButton1 === true) {
-                if (selectButton2 === false && selectButton3 === false && selectButton4 === false) {
-                    arr = arrRoute;
-                    temp = true;
-                }
-                if (selectButton2 === false && selectButton3 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 18;
-                        }));
-                }
-                if (selectButton2 === false && selectButton3 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12 && +time < 18;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === false && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 12;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 18;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 6 && +time < 12) || +time >= 18;
-                        }));
-                }
-                if (selectButton2 === false && selectButton3 === true && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === true && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6;
-                        }));
-                }
+            if (selectButton2 === false && selectButton3 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6 || (+time >= 12 && +time < 18);
+                    }));
+            }
+            if (selectButton2 === true && selectButton3 === false && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 12;
+                    }));
+            }
+            if (selectButton2 === true && selectButton3 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 18;
+                    }));
+            }
+            if (selectButton2 === true && selectButton3 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 12 || +time >= 18;
+                    }));
+            }
+            if (selectButton2 === false && selectButton3 === true && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6 || +time >= 12;
+                    }));
             }
         }
-
-        console.log(arr);
+        if (selectButton1 === true) {
+            if (selectButton2 === false && selectButton3 === false && selectButton4 === false) {
+                arr = arrRoute;
+                temp = true;
+            }
+            if (selectButton2 === false && selectButton3 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 18;
+                    }));
+            }
+            if (selectButton2 === false && selectButton3 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 12 && +time < 18;
+                    }));
+            }
+            if (selectButton2 === true && selectButton3 === false && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6 && +time < 12;
+                    }));
+            }
+            if (selectButton2 === true && selectButton3 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6 && +time < 18;
+                    }));
+            }
+            if (selectButton2 === true && selectButton3 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return (+time >= 6 && +time < 12) || +time >= 18;
+                    }));
+            }
+            if (selectButton2 === false && selectButton3 === true && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 12;
+                    }));
+            }
+            if (selectButton2 === true && selectButton3 === true && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6;
+                    }));
+            }
+        }
         if (temp === true) {
             this.setState({
-                arrTemp: arr,
-                isFirst: true,
+                arrTemp: arrRoute,
                 isTemp: false,
                 selectButton1: !this.state.selectButton1,
             });
@@ -599,743 +456,392 @@ class BusRoute extends Component {
             this.setState({
                 arrTemp: arr,
                 isTemp: true,
-                isFirst: true,
                 selectButton1: !this.state.selectButton1,
             });
     };
     handleButton2 = () => {
         this.setState({ isTemp: false });
-        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute, arrMouse } = this.state;
+        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute } = this.state;
         let arr = [];
         let temp = false;
-        if (arrMouse.length > 0 && arrRoute.length !== arrMouse.length) {
-            if (selectButton2 === false) {
-                if (selectButton1 === true && selectButton4 === true && selectButton3 === true) {
-                    arr = arrMouse;
-                    temp = true;
-                }
-                if (selectButton1 === false && selectButton3 === false && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 12;
-                        }));
-                }
-                if (selectButton1 === false && selectButton3 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 6 && +time < 12) || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton3 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === false && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12 || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton3 === true && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6;
-                        }));
-                }
+        if (selectButton2 === false) {
+            if (selectButton1 === true && selectButton4 === true && selectButton3 === true) {
+                arr = arrRoute;
+                temp = true;
             }
-            if (selectButton2 === true) {
-                if (selectButton1 === false && selectButton3 === false && selectButton4 === false) {
-                    arr = arrMouse;
-                    temp = true;
-                }
-                if (selectButton1 === false && selectButton3 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton3 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12 && +time < 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === false && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || (+time >= 12 && +time < 18);
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12 || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton3 === true && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === true && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || +time > 12;
-                        }));
-                }
+            if (selectButton1 === false && selectButton3 === false && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6 && +time < 12;
+                    }));
             }
-        } else {
-            if (selectButton2 === false) {
-                if (selectButton1 === true && selectButton4 === true && selectButton3 === true) {
-                    arr = arrRoute;
-                    temp = true;
-                }
-                if (selectButton1 === false && selectButton3 === false && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 12;
-                        }));
-                }
-                if (selectButton1 === false && selectButton3 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 6 && +time < 12) || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton3 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === false && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12 || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton3 === true && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6;
-                        }));
-                }
+            if (selectButton1 === false && selectButton3 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return (+time >= 6 && +time < 12) || +time >= 18;
+                    }));
             }
-            if (selectButton2 === true) {
-                if (selectButton1 === false && selectButton3 === false && selectButton4 === false) {
-                    arr = arrRoute;
-                    temp = true;
-                }
-                if (selectButton1 === false && selectButton3 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton3 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12 && +time < 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === false && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || (+time >= 12 && +time < 18);
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12 || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton3 === true && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton3 === true && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || +time > 12;
-                        }));
-                }
+            if (selectButton1 === false && selectButton3 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6 && +time < 18;
+                    }));
+            }
+            if (selectButton1 === true && selectButton3 === false && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 12;
+                    }));
+            }
+            if (selectButton1 === true && selectButton3 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 18;
+                    }));
+            }
+            if (selectButton1 === true && selectButton3 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 12 || +time >= 18;
+                    }));
+            }
+            if (selectButton1 === false && selectButton3 === true && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6;
+                    }));
+            }
+        }
+        if (selectButton2 === true) {
+            if (selectButton1 === false && selectButton3 === false && selectButton4 === false) {
+                arr = arrRoute;
+                temp = true;
+            }
+            if (selectButton1 === false && selectButton3 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 18;
+                    }));
+            }
+            if (selectButton1 === false && selectButton3 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 12 && +time < 18;
+                    }));
+            }
+            if (selectButton1 === true && selectButton3 === false && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6;
+                    }));
+            }
+            if (selectButton1 === true && selectButton3 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6 || (+time >= 12 && +time < 18);
+                    }));
+            }
+            if (selectButton1 === true && selectButton3 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 12 || +time >= 18;
+                    }));
+            }
+            if (selectButton1 === false && selectButton3 === true && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 12;
+                    }));
+            }
+            if (selectButton1 === true && selectButton3 === true && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6 || +time > 12;
+                    }));
             }
         }
 
-        console.log(arr);
         if (temp === true) {
             this.setState({
-                arrTemp: arr,
+                arrTemp: arrRoute,
                 isTemp: false,
-                isFirst: true,
                 selectButton2: !this.state.selectButton2,
             });
         } else
             this.setState({
                 arrTemp: arr,
                 isTemp: true,
-                isFirst: true,
                 selectButton2: !this.state.selectButton2,
             });
     };
     handleButton3 = () => {
         this.setState({ isTemp: false });
-        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute, arrMouse } = this.state;
+        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute } = this.state;
         let arr = [];
         let temp = false;
-        if (arrMouse.length > 0 && arrRoute.length !== arrMouse.length) {
-            if (selectButton3 === false) {
-                if (selectButton1 === false && selectButton2 === false && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12 && +time < 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || (+time >= 12 && +time < 18);
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || +time >= 12;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === true && selectButton4 === true) {
-                    arr = arrMouse;
-                    temp = true;
-                }
+        if (selectButton3 === false) {
+            if (selectButton1 === false && selectButton2 === false && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 12 && +time < 18;
+                    }));
             }
-            if (selectButton3 === true) {
-                if (selectButton1 === false && selectButton2 === false && selectButton4 === false) {
-                    arr = arrMouse;
-                    temp = true;
-                }
-                if (selectButton1 === false && selectButton2 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6;
-                        }));
-                } //err
-                if (selectButton1 === true && selectButton2 === true && selectButton4 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 6 && +time < 12) || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === true && selectButton4 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12 || +time >= 18;
-                        }));
-                }
+            if (selectButton1 === false && selectButton2 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 12;
+                    }));
             }
-        } else {
-            if (selectButton3 === false) {
-                if (selectButton1 === false && selectButton2 === false && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12 && +time < 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || (+time >= 12 && +time < 18);
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || +time >= 12;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === true && selectButton4 === true) {
-                    arr = arrRoute;
-                    temp = true;
-                }
+            if (selectButton1 === false && selectButton2 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6 && +time < 18;
+                    }));
             }
-            if (selectButton3 === true) {
-                if (selectButton1 === false && selectButton2 === false && selectButton4 === false) {
-                    arr = arrRoute;
-                    temp = true;
-                }
-                if (selectButton1 === false && selectButton2 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6;
-                        }));
-                } //err
-                if (selectButton1 === true && selectButton2 === true && selectButton4 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 6 && +time < 12) || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === true && selectButton4 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12 || +time >= 18;
-                        }));
-                }
+            if (selectButton1 === true && selectButton2 === false && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6 || (+time >= 12 && +time < 18);
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 18;
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6 || +time >= 12;
+                    }));
+            }
+            if (selectButton1 === false && selectButton2 === true && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6;
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === true && selectButton4 === true) {
+                arr = arrRoute;
+                temp = true;
+            }
+        }
+        if (selectButton3 === true) {
+            if (selectButton1 === false && selectButton2 === false && selectButton4 === false) {
+                arr = arrRoute;
+                temp = true;
+            }
+            if (selectButton1 === false && selectButton2 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 18;
+                    }));
+            }
+            if (selectButton1 === false && selectButton2 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6 && +time < 12;
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === false && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6;
+                    }));
+            } //err
+            if (selectButton1 === true && selectButton2 === true && selectButton4 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 12;
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === false && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6 || +time >= 18;
+                    }));
+            }
+            if (selectButton1 === false && selectButton2 === true && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return (+time >= 6 && +time < 12) || +time >= 18;
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === true && selectButton4 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 12 || +time >= 18;
+                    }));
             }
         }
 
-        console.log(arr);
         if (temp === true) {
             this.setState({
-                arrTemp: arr,
+                arrTemp: arrRoute,
                 isTemp: false,
-                isFirst: true,
                 selectButton3: !this.state.selectButton3,
             });
         } else
             this.setState({
                 arrTemp: arr,
                 isTemp: true,
-                isFirst: true,
                 selectButton3: !this.state.selectButton3,
             });
     };
     handleButton4 = () => {
         this.setState({ isTemp: false });
-        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute, arrMouse } = this.state;
+        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute } = this.state;
         let arr = [];
         let temp = false;
-        if (arrMouse.length > 0 && arrRoute.length !== arrMouse.length) {
-            if (selectButton4 === false) {
-                if (selectButton1 === false && selectButton2 === false && selectButton3 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === false && selectButton3 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton3 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 6 && +time < 12) || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton3 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 0 && +time < 6) || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === true && selectButton3 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 0 && +time < 12) || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton3 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 0 && +time < 6) || +time >= 12;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton3 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === true && selectButton3 === true) {
-                    arr = arrMouse;
-                    temp = true;
-                }
+        if (selectButton4 === false) {
+            if (selectButton1 === false && selectButton2 === false && selectButton3 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 18;
+                    }));
             }
-            if (selectButton4 === true) {
-                if (selectButton1 === false && selectButton2 === false && selectButton3 === false) {
-                    arr = arrMouse;
-                    temp = true;
-                }
-                if (selectButton1 === false && selectButton2 === false && selectButton3 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12 && +time < 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton3 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton3 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6;
-                        }));
-                } //err
-                if (selectButton1 === true && selectButton2 === true && selectButton3 === false) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton3 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || (+time >= 12 && +time < 18);
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton3 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 18;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === true && selectButton1 === true) {
-                    arrMouse.length > 0 &&
-                        (arr = arrMouse.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 18;
-                        }));
-                }
+            if (selectButton1 === false && selectButton2 === false && selectButton3 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 12;
+                    }));
             }
-            console.log("arr >>:", arr);
-        } else {
-            if (selectButton4 === false) {
-                if (selectButton1 === false && selectButton2 === false && selectButton3 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === false && selectButton3 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton3 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 6 && +time < 12) || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton3 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 0 && +time < 6) || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === true && selectButton3 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 0 && +time < 12) || +time >= 18;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton3 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return (+time >= 0 && +time < 6) || +time >= 12;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton3 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === true && selectButton3 === true) {
-                    arr = arrRoute;
-                    temp = true;
-                }
+            if (selectButton1 === false && selectButton2 === true && selectButton3 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return (+time >= 6 && +time < 12) || +time >= 18;
+                    }));
             }
-            if (selectButton4 === true) {
-                if (selectButton1 === false && selectButton2 === false && selectButton3 === false) {
-                    arr = arrRoute;
-                    temp = true;
-                }
-                if (selectButton1 === false && selectButton2 === false && selectButton3 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 12 && +time < 18;
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton3 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton3 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6;
-                        }));
-                } //err
-                if (selectButton1 === true && selectButton2 === true && selectButton3 === false) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 12;
-                        }));
-                }
-                if (selectButton1 === true && selectButton2 === false && selectButton3 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 6 || (+time >= 12 && +time < 18);
-                        }));
-                }
-                if (selectButton1 === false && selectButton2 === true && selectButton3 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time >= 6 && +time < 18;
-                        }));
-                }
-                if (selectButton2 === true && selectButton3 === true && selectButton1 === true) {
-                    arrRoute.length > 0 &&
-                        (arr = arrRoute.filter((item, index) => {
-                            let time = moment(+item.timeStart).format("HH");
-                            return +time < 18;
-                        }));
-                }
+            if (selectButton1 === true && selectButton2 === false && selectButton3 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return (+time >= 0 && +time < 6) || +time >= 18;
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === true && selectButton3 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return (+time >= 0 && +time < 12) || +time >= 18;
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === false && selectButton3 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return (+time >= 0 && +time < 6) || +time >= 12;
+                    }));
+            }
+            if (selectButton1 === false && selectButton2 === true && selectButton3 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6;
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === true && selectButton3 === true) {
+                arr = arrRoute;
+                temp = true;
             }
         }
-
-        console.log(arr);
-        if (temp === true) {
+        if (selectButton4 === true) {
+            if (selectButton1 === false && selectButton2 === false && selectButton3 === false) {
+                arr = arrRoute;
+                temp = true;
+            }
+            if (selectButton1 === false && selectButton2 === false && selectButton3 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 12 && +time < 18;
+                    }));
+            }
+            if (selectButton1 === false && selectButton2 === true && selectButton3 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6 && +time < 12;
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === false && selectButton3 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6;
+                    }));
+            } //err
+            if (selectButton1 === true && selectButton2 === true && selectButton3 === false) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 12;
+                    }));
+            }
+            if (selectButton1 === true && selectButton2 === false && selectButton3 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 6 || (+time >= 12 && +time < 18);
+                    }));
+            }
+            if (selectButton1 === false && selectButton2 === true && selectButton3 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time >= 6 && +time < 18;
+                    }));
+            }
+            if (selectButton2 === true && selectButton3 === true && selectButton1 === true) {
+                arrRoute.length > 0 &&
+                    (arr = arrRoute.filter((item, index) => {
+                        let time = moment(+item.timeStart).format("HH");
+                        return +time < 18;
+                    }));
+            }
+        }
+        if (temp === true)
             this.setState({
-                arrTemp: arr,
-                isFirst: true,
+                arrTemp: arrRoute,
                 isTemp: false,
                 selectButton4: !this.state.selectButton4,
             });
-        } else
+        else
             this.setState({
                 arrTemp: arr,
                 isTemp: true,
-                isFirst: true,
                 selectButton4: !this.state.selectButton4,
             });
     };
@@ -1359,22 +865,21 @@ class BusRoute extends Component {
             selectButton2,
             selectButton3,
             selectButton4,
-            isTemp,
-            isMouse,
             arrMouse,
             arrTemp,
-            isFirst,
+            isMouse,
+            isTemp,
         } = this.state;
-        let language = this.props.language;
-        if (isTemp === true && isMouse === false) {
-            arrRoute = arrTemp;
-        } else if (isMouse === true && isTemp === false) {
-            arrRoute = arrMouse;
-        } else if (isMouse === true && isTemp === true && isFirst === false) {
-            arrRoute = arrMouse;
-        } else if (isMouse === true && isTemp === true && isFirst === true) {
-            arrRoute = arrTemp;
-        }
+        let arr1 = [];
+        let arr2 = [];
+        let arrFinish = [];
+
+        if (isMouse === false) arr1 = arrRoute;
+        else if (isMouse === true) arr1 = arrMouse;
+        if (isTemp === false) arr2 = arrRoute;
+        else if (isTemp === true) arr2 = arrTemp;
+
+        arrFinish = _.intersectionWith(arr1, arr2, _.isEqual);
         return (
             <div style={{ overflowX: "hidden" }}>
                 <LoadingOverlay active={this.state.isActive} spinner text="Loading ...">
@@ -1586,17 +1091,14 @@ class BusRoute extends Component {
                                                         ) : (
                                                             <>
                                                                 <span>
-                                                                    {" "}
-                                                                    <FormattedMessage id="routes.has" />{" "}
+                                                                    <FormattedMessage id="routes.has" />
                                                                 </span>
                                                                 <span className="f-bold">{arrRoute.length}</span>
                                                                 <span className="f-bold">
-                                                                    {" "}
-                                                                    <FormattedMessage id="routes.trip" />{" "}
+                                                                    <FormattedMessage id="routes.trip" />
                                                                 </span>
                                                                 <span>
-                                                                    {" "}
-                                                                    <FormattedMessage id="routes.found" />{" "}
+                                                                    <FormattedMessage id="routes.found" />
                                                                 </span>
                                                             </>
                                                         )}
@@ -1631,7 +1133,6 @@ class BusRoute extends Component {
                                                                 }`,
                                                             }}
                                                             onClick={() => this.handleSort("asc", "timeStart")}>
-                                                            {" "}
                                                             <div className="test__">
                                                                 <FormattedMessage id="routes.earliest" />
                                                             </div>
@@ -1659,8 +1160,8 @@ class BusRoute extends Component {
                                             <div className="route-result-body">
                                                 {loading === false ? (
                                                     <SkeletonLoading loading={loading} />
-                                                ) : arrRoute && arrRoute.length > 0 ? (
-                                                    arrRoute.map((item, index) => {
+                                                ) : arrFinish && arrFinish.length > 0 ? (
+                                                    arrFinish.map((item, index) => {
                                                         let start = moment(+item.timeStart).format("llll");
                                                         let end = moment(+item.timeEnd).format("llll");
                                                         let imageBase64 = "";
@@ -1780,10 +1281,8 @@ class BusRoute extends Component {
                         parentCallback1={this.callbackFunction1}
                         parentCallback2={this.callbackFunction2}
                     />
-                </LoadingOverlay>
-                <Suspense fallback={<Loading />}>
                     <HomeFooter />
-                </Suspense>
+                </LoadingOverlay>
             </div>
         );
     }
@@ -1795,7 +1294,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
         fetchAllRoute: () => dispatch(actions.fetchAllRoute()),
         fetchAllLocation: () => dispatch(actions.fetchAllLocation()),
     };

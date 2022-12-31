@@ -8,10 +8,7 @@ import "./Profile.scss";
 import * as actions from "../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../utils";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import {
-    getAllPassengers,
-    handEditPassenger,
-} from "../../../services/userService";
+import { getAllPassengers, handEditPassenger } from "../../../services/userService";
 import { toast } from "react-toastify";
 import ModalChangePassword from "./ModalChangePassword";
 class InfoUser extends Component {
@@ -34,19 +31,12 @@ class InfoUser extends Component {
     }
     async componentDidMount() {
         this.props.getGenderStart();
-        if (
-            this.props.match &&
-            this.props.match.params &&
-            this.props.match.params.id
-        ) {
+        if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let userId = this.props.match.params.id;
             let res = await getAllPassengers(+userId);
             let imageBase64 = "";
             if (res.users[0].image) {
-                imageBase64 = Buffer.from(
-                    res.users[0].image,
-                    "base64"
-                ).toString("binary");
+                imageBase64 = Buffer.from(res.users[0].image, "base64").toString("binary");
             }
             this.setState({
                 gender: res.users[0].gender,
@@ -105,8 +95,7 @@ class InfoUser extends Component {
         }
     };
     handleSaveUser = async () => {
-        let { gender, name, phoneNumber, email, address, id, avatar } =
-            this.state;
+        let { gender, name, phoneNumber, email, address, id, avatar } = this.state;
         console.log(this.state);
         let language = this.props.language;
         if (!gender) gender = "M";
@@ -133,13 +122,9 @@ class InfoUser extends Component {
                         isChanged: false,
                     });
                     if (language === LANGUAGES.VI) {
-                        toast.success(
-                            "Cập nhập thông tin người dùng thành công"
-                        );
+                        toast.success("Cập nhập thông tin người dùng thành công");
                     } else {
-                        toast.success(
-                            "User information is successfully updated"
-                        );
+                        toast.success("User information is successfully updated");
                     }
                 } else {
                     if (language === LANGUAGES.VI) {
@@ -173,13 +158,9 @@ class InfoUser extends Component {
                         isChanged: false,
                     });
                     if (language === LANGUAGES.VI) {
-                        toast.success(
-                            "Cập nhập thông tin người dùng thành công"
-                        );
+                        toast.success("Cập nhập thông tin người dùng thành công");
                     } else {
-                        toast.success(
-                            "User information is successfully updated"
-                        );
+                        toast.success("User information is successfully updated");
                     }
                 } else {
                     if (language === LANGUAGES.VI) {
@@ -211,8 +192,7 @@ class InfoUser extends Component {
     render() {
         const { processLogout, language, userInfo } = this.props;
         let genders = this.state.genderArr;
-        let { gender, name, phoneNumber, email, address, isChanged } =
-            this.state;
+        let { gender, name, phoneNumber, email, address, isChanged } = this.state;
         console.log(gender);
         return (
             <React.Fragment>
@@ -228,14 +208,7 @@ class InfoUser extends Component {
                 <div className="contentProfile">
                     <div className="avatar-container">
                         <div className="prev-img-container">
-                            <input
-                                id="img"
-                                type="file"
-                                hidden
-                                onChange={(event) =>
-                                    this.handleChangeImage(event)
-                                }
-                            />
+                            <input id="img" type="file" hidden onChange={(event) => this.handleChangeImage(event)} />
                             <div
                                 className="avatar"
                                 style={{
@@ -279,12 +252,8 @@ class InfoUser extends Component {
                                     genders.length > 0 &&
                                     genders.map((item, index) => {
                                         return (
-                                            <option
-                                                key={index}
-                                                value={item.keyMap}>
-                                                {language === LANGUAGES.VI
-                                                    ? item.valueVi
-                                                    : item.valueEn}
+                                            <option key={index} value={item.keyMap}>
+                                                {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
                                             </option>
                                         );
                                     })}
@@ -315,6 +284,7 @@ class InfoUser extends Component {
                             <input
                                 className="form-control mb-4"
                                 id="phoneNumber"
+                                disabled
                                 name="phoneNumberNumber"
                                 placeholder="with a placeholder"
                                 type="text"
@@ -359,9 +329,7 @@ class InfoUser extends Component {
                         <Col md={6} style={{ display: "flex" }}>
                             <button
                                 className="btn btn-primary change-password mt-3"
-                                onClick={() =>
-                                    this.handleChangeChangePassword()
-                                }>
+                                onClick={() => this.handleChangeChangePassword()}>
                                 Đổi mật khẩu
                             </button>
                         </Col>
@@ -387,6 +355,4 @@ const mapDispatchToProps = (dispatch) => {
         processLogout: () => dispatch(actions.processLogout()),
     };
 };
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(InfoUser)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(InfoUser));

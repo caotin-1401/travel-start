@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import "./RouteManage.scss";
+import "../style.scss";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
 import moment from "moment";
@@ -9,15 +9,7 @@ import localization from "moment/locale/vi";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
 import ModalAdd from "./ModalAdd";
-import {
-    TableBody,
-    TableContainer,
-    TableFooter,
-    TablePagination,
-    TableRow,
-    Paper,
-    Table,
-} from "@mui/material";
+import { TableBody, TableContainer, TableFooter, TablePagination, TableRow, Paper, Table } from "@mui/material";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
 class RouteManage extends Component {
     constructor(props) {
@@ -41,9 +33,7 @@ class RouteManage extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.listSchedule !== this.props.listSchedule) {
-            let test = this.props.listSchedule.filter(
-                (item) => item.busOwnerId === this.props.userInfo.id
-            );
+            let test = this.props.listSchedule.filter((item) => item.busOwnerId === this.props.userInfo.id);
             this.setState({
                 listTrips: test,
             });
@@ -132,9 +122,7 @@ class RouteManage extends Component {
         let term = e.target.value.toUpperCase();
         let clone = this.state.listTrips;
         if (term) {
-            clone = clone.filter((item) =>
-                item.BusType.typeName.includes(term)
-            );
+            clone = clone.filter((item) => item.BusType.typeName.includes(term));
             this.setState({
                 listTrips: clone,
             });
@@ -155,9 +143,7 @@ class RouteManage extends Component {
 
                     <div className="title text-center">Quản lý chuyến đi</div>
                     <div className="mx-5 my-3">
-                        <button
-                            className="btn btn-primary px-3"
-                            onClick={() => this.handleAddUser()}>
+                        <button className="btn btn-primary px-3" onClick={() => this.handleAddUser()}>
                             <i className="fas fa-plus px-1"></i>
                             Thêm
                         </button>
@@ -172,9 +158,7 @@ class RouteManage extends Component {
                                             style={{
                                                 width: "5%",
                                             }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            onClick={() => this.handleSort("asc", "id")}>
                                             Id
                                         </th>
                                         <th
@@ -187,21 +171,11 @@ class RouteManage extends Component {
                                                     {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "Route.name"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("asc", "Route.name")}
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "Route.name"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("desc", "Route.name")}
                                                     />
                                                 </div>
                                             </div>
@@ -219,21 +193,11 @@ class RouteManage extends Component {
                                                     {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "Vehicle.number"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("asc", "Vehicle.number")}
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "Vehicle.number"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("desc", "Vehicle.number")}
                                                     />
                                                 </div>
                                             </div>
@@ -248,21 +212,11 @@ class RouteManage extends Component {
                                                     {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "User.name"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("asc", "User.name")}
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "User.name"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("desc", "User.name")}
                                                     />
                                                 </div>
                                             </div>
@@ -279,21 +233,11 @@ class RouteManage extends Component {
                                                     {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "date"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("asc", "date")}
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "date"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("desc", "date")}
                                                     />
                                                 </div>
                                             </div>
@@ -308,21 +252,11 @@ class RouteManage extends Component {
                                                     {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "timeType"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("asc", "timeType")}
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "timeType"
-                                                            )
-                                                        }
+                                                        onClick={() => this.handleSort("desc", "timeType")}
                                                     />
                                                 </div>
                                             </div>
@@ -334,52 +268,25 @@ class RouteManage extends Component {
                                         <td></td>
                                         <td></td>
                                         <td>
-                                            <input
-                                                className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword(e)
-                                                }
-                                            />
+                                            <input className="form-control" onChange={(e) => this.handleKeyword(e)} />
                                         </td>
                                         <td>
-                                            <input
-                                                className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword1(e)
-                                                }
-                                            />
+                                            <input className="form-control" onChange={(e) => this.handleKeyword1(e)} />
                                         </td>
                                         <td>
-                                            <input
-                                                className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword2(e)
-                                                }
-                                            />
+                                            <input className="form-control" onChange={(e) => this.handleKeyword2(e)} />
                                         </td>
                                         <td>
-                                            <input
-                                                className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword3(e)
-                                                }
-                                            />
+                                            <input className="form-control" onChange={(e) => this.handleKeyword3(e)} />
                                         </td>
                                         <td></td>
                                     </tr>
                                     {(rowsPerPage > 0
-                                        ? listTrips.slice(
-                                              page * rowsPerPage,
-                                              page * rowsPerPage + rowsPerPage
-                                          )
+                                        ? listTrips.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         : listTrips
                                     ).map((user, index) => {
-                                        let start = moment(
-                                            +user.timeStart
-                                        ).format("ddd DD-MM-YYYY HH:mm");
-                                        let end = moment(
-                                            new Date(+user.timeEnd)
-                                        ).format("ddd  DD-MM-YYYY  HH:mm");
+                                        let start = moment(+user.timeStart).format("ddd DD-MM-YYYY HH:mm");
+                                        let end = moment(new Date(+user.timeEnd)).format("ddd  DD-MM-YYYY  HH:mm");
                                         return (
                                             <tr key={index}>
                                                 <td>{user.id}</td>
@@ -392,20 +299,12 @@ class RouteManage extends Component {
                                                 <td>
                                                     <button
                                                         className="btn-edit"
-                                                        onClick={() =>
-                                                            this.handleEditUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleEditUser(user)}>
                                                         <i className="fas fa-user-edit"></i>
                                                     </button>
                                                     <button
                                                         className="btn-delete"
-                                                        onClick={() =>
-                                                            this.handleDeleteUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleDeleteUser(user)}>
                                                         <i className="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
@@ -416,20 +315,13 @@ class RouteManage extends Component {
                                 <TableFooter>
                                     <TableRow>
                                         <TablePagination
-                                            rowsPerPageOptions={[
-                                                5,
-                                                10,
-                                                25,
-                                                { label: "All", value: -1 },
-                                            ]}
+                                            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                                             colSpan={7}
                                             count={listTrips.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
+                                            onRowsPerPageChange={this.handleChangeRowsPerPage}
                                             ActionsComponent={(subProps) => (
                                                 <TablePaginationActions
                                                     style={{

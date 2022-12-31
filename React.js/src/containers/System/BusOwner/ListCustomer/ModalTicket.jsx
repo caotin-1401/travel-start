@@ -1,25 +1,10 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
-import Box from "@mui/material/Box";
-import * as actions from "../../../../store/actions";
-import { LANGUAGES, CommonUtils } from "../../../../utils";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
+import { CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
-import _ from "lodash";
-
-import {
-    sendTicket,
-    getDriverTicketsRoute,
-} from "../../../../services/userService";
+import { sendTicket } from "../../../../services/userService";
 
 class ModalTicket extends Component {
     constructor(props) {
@@ -30,10 +15,6 @@ class ModalTicket extends Component {
             listUser: [],
         };
     }
-
-    async componentDidMount() {}
-
-    componentDidUpdate(prevProps, prevState, snapshot) {}
 
     toggle = () => {
         this.props.toggleFromParent();
@@ -50,21 +31,23 @@ class ModalTicket extends Component {
         }
     };
     handleSendEmail = async () => {
-        let { img, imgBase64 } = this.state;
-        let { email, token, tripId, driverId, dayStart, name } =
-            this.props.userEdit;
-
+        let { img } = this.state;
+        let { email, token, tripId, name } = this.props.userEdit;
+        let { language } = this.props;
         this.props.parentCallback1(true);
         if (!img) {
-            toast.error("Vui long chon ve xe");
+            if (language === "vi") toast.error("Vui lòng chọn vé xe");
+            else toast.error("Please select bus ticket");
         } else {
             this.props.sendEmail();
             let res = await sendTicket({ token, tripId, img, name, email });
             if (res && res.errCode === 0) {
-                toast.success("Gui ve xe thanh cong");
+                if (language === "vi") toast.success("Gửi vé xe thành công");
+                else toast.success("Gửi vé xe thành công");
                 this.props.parentCallback2(false);
             } else {
-                toast.error("Gui ve xe that bai");
+                if (language === "vi") toast.error("Gửi vé xe thất bại");
+                else toast.error("Ticket submission failed");
                 this.props.parentCallback2(false);
             }
             this.props.sendEmail();
@@ -72,8 +55,6 @@ class ModalTicket extends Component {
     };
 
     render() {
-        let language = this.props.language;
-        let { img } = this.state;
         let email = this.props.userEdit.email;
         return (
             <div>
@@ -86,13 +67,15 @@ class ModalTicket extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Gửi vé xe
+                        <FormattedMessage id="menu.busOwner.ticket.title" />
                     </ModalHeader>
 
                     <ModalBody>
                         <Row>
                             <Col sx={6}>
-                                <label>Email hanh khach</label>
+                                <label>
+                                    <FormattedMessage id="menu.busOwner.ticket.email" />
+                                </label>
                                 <input
                                     style={{ height: "38px" }}
                                     className="form-control mb-4 h-38"
@@ -107,12 +90,10 @@ class ModalTicket extends Component {
                                         id="img"
                                         type="file"
                                         hidden
-                                        onChange={(event) =>
-                                            this.handleChangeImage(event)
-                                        }
+                                        onChange={(event) => this.handleChangeImage(event)}
                                     />
                                     <label className="upload-img" htmlFor="img">
-                                        Tải ảnh
+                                        <FormattedMessage id="menu.busOwner.ticket.upload" />
                                     </label>
                                     <div
                                         className="prev-img"
@@ -132,15 +113,15 @@ class ModalTicket extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            Cancel
-                        </Button>{" "}
+                            <FormattedMessage id="menu.busOwner.ticket.cancel" />
+                        </Button>
                         <Button
                             color="primary"
                             onClick={() => {
                                 this.handleSendEmail();
                             }}
                             className="btn-primary-modal">
-                            Send
+                            <FormattedMessage id="menu.busOwner.ticket.send" />
                         </Button>
                     </ModalFooter>
                 </Modal>
@@ -152,14 +133,11 @@ class ModalTicket extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        events: state.admin.events,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalTicket);

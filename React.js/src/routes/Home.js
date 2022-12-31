@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { LANGUAGES, USER_ROLE } from "../utils";
-import { FormattedMessage } from "react-intl";
-import { adminMenu, busOwnerMenu, driverMenu } from "../containers/Header/menuApp";
+import { USER_ROLE } from "../utils";
 import _ from "lodash";
 class Home extends Component {
     constructor(props) {
@@ -36,8 +34,7 @@ class Home extends Component {
         });
     }
     render() {
-        const { isLoggedIn, userInfo } = this.props;
-        // let linkToRedirect = isLoggedIn ? '/system/dashboard' : '/home';
+        const { isLoggedIn } = this.props;
         let linkToRedirect = isLoggedIn ? this.state.menuApp : "/home";
 
         return <Redirect to={linkToRedirect} />;

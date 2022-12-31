@@ -79,7 +79,7 @@ class ForgotPassword extends Component {
                     <div className="login-content row">
                         <div className="logostyle">
                             <Link to="/home">
-                                <img src={logo} loading="eager" />
+                                <img src={logo} loading="eager" alt="logo" />
                             </Link>
                         </div>
                         <div className="col-12 text-center text-login">
@@ -105,9 +105,7 @@ class ForgotPassword extends Component {
                             {this.state.errMessage}
                         </div>
                         <div className="col-12">
-                            <button
-                                className="btn-login"
-                                onClick={this.handleLogin}>
+                            <button className="btn-login" onClick={this.handleLogin}>
                                 <FormattedMessage id="login.send" />
                             </button>
                         </div>

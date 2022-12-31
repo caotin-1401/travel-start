@@ -153,7 +153,9 @@
         },
         "busOwner": {
             "dashboard": "Bảng điều khiển",
-            "manage-bus": "Phương tiện",
+            "drivers": "Tài xế",
+            "vehicles": "Phương tiện vận tải",
+            "manage-bus": "Tài nguyên",
             "bus": "Quản lý phương tiện",
             "driver": "Quản lý tài xế",
             "events": "Sự Kiện",
@@ -161,6 +163,7 @@
             "parking": "Bãi đậu xe",
             "parking-lot": "Quản lý bãi đậu xe",
             "routes": "Tuyến đường",
+            "passenger": "Hành khách ",
             "route": "Quản lý tuyến đường",
             "tickets": "Quản lý vé",
             "vehicle": {
@@ -173,6 +176,22 @@
                 "upload": "Tải ảnh",
                 "name": "Tên nhà xe",
                 "status": "Trạng thái"
+            },
+            "ticket": {
+                "title": "Gửi vé xe",
+                "email": "Email của hành khách",
+                "upload": "Tải ảnh",
+                "cancel": "Hủy",
+                "send": "Gửi",
+                "title1": "Quản lý hành khách",
+                "chooseDay": "Chọn ngày khởi hành",
+                "chooseDriver": "Chọn tài xế",
+                "chooseStart": "Chọn thời gian / địa điểm xuất phát"
+            },
+            "dashboards": {
+                "name": "Tên tài xế",
+                "trips": "Tổng lượt chạy",
+                "total": "Tổng tiền"
             }
         },
         "driver": {
@@ -224,7 +243,8 @@
         "title2": "Nhập địa địa chỉ email bạn đã đăng kí tài khoản vào đây. Chúng tôi sẽ gửi cho bạn một email để bạn có thể lấy lại mật khẩu của mình.",
         "back-login": "Quay lại trang đăng nhập",
         "send": "Gửi",
-        "reset": "Thay đổi mật khẩu"
+        "reset": "Thay đổi mật khẩu",
+        "username": "Email hoặc số điện thoại"
     },
     "events": {
         "home": "Trang chủ",

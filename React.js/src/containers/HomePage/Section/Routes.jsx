@@ -50,6 +50,61 @@ class Routes extends Component {
                         </div>
                         <div className="section-body">
                             <Slider {...this.props.settings}>
+                                {newArr && newArr.length === 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[0])}>
+                                        <div className="bg-img1"></div>
+
+                                        <div>
+                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Vũng Tàu</div>
+                                        </div>
+                                    </div>
+                                )}
+                                {newArr && newArr.length === 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[1])}>
+                                        <div className="bg-img2"></div>
+
+                                        <div>
+                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Lâm Đồng</div>
+                                        </div>
+                                    </div>
+                                )}
+                                {newArr && newArr.length === 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[2])}>
+                                        <div className="bg-img3"></div>
+
+                                        <div>
+                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Đà Nẵng</div>
+                                        </div>
+                                    </div>
+                                )}
+                                {newArr && newArr.length === 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[3])}>
+                                        <div className="bg-img4"></div>
+
+                                        <div>
+                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Khánh Hòa</div>
+                                        </div>
+                                    </div>
+                                )}
+                                {newArr && newArr.length === 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[4])}>
+                                        <div className="bg-img5"></div>
+
+                                        <div>
+                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Bình Định</div>
+                                        </div>
+                                    </div>
+                                )}
+                                {newArr && newArr.length === 0 && (
+                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[5])}>
+                                        <div className="bg-img6"></div>
+
+                                        <div>
+                                            <div className="section-title">Lâm Đồng -{">"} TP.Hồ Chí Minh</div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {newArr && newArr.length > 0 && (
                                     <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[0])}>
                                         <div className="bg-img1"></div>

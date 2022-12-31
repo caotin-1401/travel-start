@@ -21,16 +21,23 @@ class AllBlogs extends Component {
         };
     }
     componentDidMount() {
-        setTimeout(() => {
-            this.setState({
-                loading: true,
-            });
-        }, 500);
+        // setTimeout(() => {
+        //     this.setState({
+        //         loading: true,
+        //     });
+        // }, 500);
         this.props.fetchAllBlogs();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.blogs !== this.props.blogs) {
             this.setState({ listBlogs: this.props.blogs });
+            setTimeout(() => {
+                if (this.props.blogs && this.props.blogs.length > 0) {
+                    this.setState({
+                        loading: true,
+                    });
+                }
+            }, 50);
         }
     }
     handleViewDetail = (item) => {

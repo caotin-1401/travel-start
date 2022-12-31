@@ -205,7 +205,9 @@ const getAllScheduleService = (inputId) => {
 const getDriverTrips = (inputId) => {
     return axios.get(`/api/get-driver-schedule?driverId=${inputId}`);
 };
-
+const getTripsFromBusCompany = (inputId) => {
+    return axios.get(`/api/get-trips-from-bus-company?busOwnerId=${inputId}`);
+};
 const saveBulkScheduleTrip = (data) => {
     return axios.post("/api/create-new-schedule", data);
 };
@@ -434,4 +436,5 @@ export {
     deleteTicket,
     handEditPassenger,
     getAllVehicleFromOneStation,
+    getTripsFromBusCompany,
 };

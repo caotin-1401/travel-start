@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Row, Col } from "reactstrap";
-import "./Dashboard.scss";
-import FmdGoodIcon from "@mui/icons-material/FmdGood";
+import "../style.scss";
 import CommuteIcon from "@mui/icons-material/Commute";
 import * as actions from "../../../../store/actions";
+import { getTripsFromBusCompany } from "../../../../services/userService";
 import DashboardComponent from "./DashboardComponent";
+import TableDriver from "./TableDriver";
 class Dashboard extends Component {
     constructor(props) {
         super(props);
@@ -15,40 +16,36 @@ class Dashboard extends Component {
             arrVehicles: [],
         };
     }
-    componentDidMount() {
-        this.props.fetchAllLocation();
+    async componentDidMount() {
         this.props.fetchAllVehicle();
-        this.props.fetchUserRedux();
+        await this.getTicket();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(this.props.listUsers);
-        if (prevProps.listUsers !== this.props.listUsers) {
-            let test = this.props.listUsers.filter(
-                (item) =>
-                    item.Driver.busOwnerId &&
-                    item.Driver.busOwnerId === this.props.userInfo.id
-            );
-            this.setState({
-                arrDrivers: test,
-            });
-        }
         if (prevProps.listVehicle !== this.props.listVehicle) {
-            let test = this.props.listVehicle.filter(
-                (item) => item.busOwnerId === this.props.userInfo.id
-            );
+            let test = this.props.listVehicle.filter((item) => item.busOwnerId === this.props.userInfo.id);
             this.setState({
                 arrVehicles: test,
             });
         }
     }
+    getTicket = async () => {
+        let busOwnerId = this.props.userInfo.id;
+        let res = await getTripsFromBusCompany(busOwnerId);
+        this.setState({
+            arrDrivers: res.trips,
+        });
+    };
     render() {
         let { arrDrivers, arrVehicles } = this.state;
+        let { language, userInfo } = this.props;
         return (
             <React.Fragment>
                 <div className="container-dashboard">
                     <div className="container form-redux">
                         <div>
-                            <div className="titleD text-center">Dashboard</div>
+                            <div className="titleD text-center">
+                                <FormattedMessage id="menu.busOwner.dashboard" />
+                            </div>
                             <Row>
                                 <Col md={6}>
                                     <div className="card">
@@ -57,13 +54,10 @@ class Dashboard extends Component {
                                                 <div className="icon-wrapper">
                                                     <i className="fas fa-users"></i>
                                                 </div>
-                                                {arrDrivers &&
-                                                    arrDrivers.length > 0 && (
-                                                        <h3>
-                                                            {arrDrivers.length}
-                                                        </h3>
-                                                    )}
-                                                <h3>Tài xế</h3>
+                                                {arrDrivers && arrDrivers.length > 0 && <h3>{arrDrivers.length}</h3>}
+                                                <h3>
+                                                    <FormattedMessage id="menu.busOwner.drivers" />
+                                                </h3>
                                             </div>
                                         </div>
                                     </div>
@@ -79,21 +73,25 @@ class Dashboard extends Component {
                                                             fontSize: "50px",
                                                         }}
                                                     />
-                                                </div>{" "}
-                                                {arrVehicles &&
-                                                    arrVehicles.length > 0 && (
-                                                        <h3>
-                                                            {arrVehicles.length}
-                                                        </h3>
-                                                    )}
-                                                <h3>Phương tiện</h3>
+                                                </div>
+                                                {arrVehicles && arrVehicles.length > 0 && <h3>{arrVehicles.length}</h3>}
+                                                <h3>
+                                                    <FormattedMessage id="menu.busOwner.vehicles" />
+                                                </h3>
                                             </div>
                                         </div>
                                     </div>
                                 </Col>
                             </Row>
                             <Row>
-                                <DashboardComponent />{" "}
+                                <DashboardComponent userInfo={userInfo} language={language} />
+                            </Row>
+                            <Row style={{ height: "50px" }}> </Row>
+
+                            <Row>
+                                <Col md={6}>
+                                    <TableDriver arrDrivers={arrDrivers} language={language} />
+                                </Col>
                             </Row>
                             <Row style={{ height: "250px" }}> </Row>
                         </div>
@@ -106,18 +104,15 @@ class Dashboard extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        listLocations: state.admin.locations,
         listVehicle: state.admin.vehicles,
-        listUsers: state.admin.users,
         userInfo: state.user.userInfo,
+        language: state.app.language,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchAllLocation: () => dispatch(actions.fetchAllLocation()),
         fetchAllVehicle: () => dispatch(actions.fetchAllVehicle()),
-        fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()),
     };
 };
 
