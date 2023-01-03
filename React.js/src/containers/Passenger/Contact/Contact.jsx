@@ -2,7 +2,6 @@ import React, { Component, Suspense, lazy } from "react";
 import { connect } from "react-redux";
 import Header from "../../HomePage/Header";
 import { FormattedMessage } from "react-intl";
-import { LANGUAGES } from "../../../utils";
 import "./styles.scss";
 import { withRouter } from "react-router";
 import { Row, Col } from "reactstrap";
@@ -13,28 +12,6 @@ const HomeFooter = lazy(() => import("../../HomePage/Section/HomeFooter"));
 const emailRegex =
     /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 
-// function isEmailValid(email) {
-//     if (!email) return false;
-
-//     if (email.length > 254) return false;
-
-//     var valid = emailRegex.test(email);
-//     if (!valid) return false;
-
-//     // Further checking of some things regex can't handle
-//     var parts = email.split("@");
-//     if (parts[0].length > 64) return false;
-
-//     var domainParts = parts[1].split(".");
-//     if (
-//         domainParts.some(function (part) {
-//             return part.length > 63;
-//         })
-//     )
-//         return false;
-
-//     return true;
-// }
 class Contact extends Component {
     constructor(props) {
         super(props);
@@ -125,13 +102,8 @@ class Contact extends Component {
         let { language } = this.props;
         let { name, email, phone, comment } = this.state;
         return (
-            <React.Fragment>
+            <div style={{ overflowX: "hidden" }}>
                 <Header />
-                <div className="container_contact">
-                    <h1>
-                        <FormattedMessage id="contacts.title" />
-                    </h1>
-                </div>
                 <div className="container ">
                     <div className="banner_content">
                         <h1>
@@ -258,7 +230,7 @@ class Contact extends Component {
                 <Suspense fallback={<Loading />}>
                     <HomeFooter />
                 </Suspense>
-            </React.Fragment>
+            </div>
         );
     }
 }

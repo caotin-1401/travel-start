@@ -4,7 +4,35 @@ import { connect } from "react-redux";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import "../style.scss";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
+import { LANGUAGES, CommonUtils } from "../../../../utils";
+import { toast } from "react-toastify";
+import { createNewUserService } from "../../../../services/userService";
+var emailRegex =
+    /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
+
+function isEmailValid(email) {
+    if (!email) return false;
+
+    if (email.length > 254) return false;
+
+    var valid = emailRegex.test(email);
+    if (!valid) return false;
+
+    // Further checking of some things regex can't handle
+    var parts = email.split("@");
+    if (parts[0].length > 64) return false;
+
+    var domainParts = parts[1].split(".");
+    if (
+        domainParts.some(function (part) {
+            return part.length > 63;
+        })
+    )
+        return false;
+
+    return true;
+}
+
 class ModalUser extends Component {
     constructor(props) {
         super(props);
@@ -20,7 +48,6 @@ class ModalUser extends Component {
             address: "",
             gender: "",
             avatar: "",
-            action: "",
             userEditId: "",
             busOwnerId: "",
             busOwner: "",
@@ -48,7 +75,6 @@ class ModalUser extends Component {
                 address: "",
                 gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
                 avatar: "",
-                action: CRUD_ACTIONS.CREATE,
                 previewImgURL: "",
             });
         }
@@ -72,12 +98,59 @@ class ModalUser extends Component {
 
     checkValidInput = () => {
         let isValid = true;
-        let arrCheck = ["email", "password", "name", "phone", "address"];
-        for (let i = 0; i < arrCheck.length; i++) {
-            if (!this.state[arrCheck[i]]) {
+        let { language } = this.props;
+        let { email, password, name, phone, address } = this.state;
+        if (language === "vi") {
+            if (!email) {
+                toast.error("Email không được để trống ! ");
                 isValid = false;
-                alert("this input is required: " + arrCheck[i]);
-                break;
+            } else if (!isEmailValid(email)) {
+                toast.error("Email không đúng định dạng! ");
+                isValid = false;
+            } else if (!password) {
+                toast.error("Mật khẩu không được để trống ! ");
+                isValid = false;
+            } else if (password.length < 8 || password.length > 15) {
+                toast.error("Mật khẩu tối thiểu 8 ký tự và tối đa 15 ký tự ");
+                isValid = false;
+            } else if (isNaN(phone)) {
+                toast.error("Số điện thoại phải là 1 chuỗi số");
+                isValid = false;
+            } else if (!name) {
+                toast.error("Tên không được để trống ! ");
+                isValid = false;
+            } else if (!phone) {
+                toast.error("Số điện thoại không được để trống ! ");
+                isValid = false;
+            } else if (!address) {
+                toast.error("Địa chỉ không được để trống ! ");
+                isValid = false;
+            }
+        } else {
+            if (!email) {
+                toast.error("Please enter your email! ");
+                isValid = false;
+            } else if (!isEmailValid(email)) {
+                toast.error("Invalid mail address! ");
+                isValid = false;
+            } else if (!password) {
+                toast.error("Please enter your password! ");
+                isValid = false;
+            } else if (password.length < 8 || password.length > 15) {
+                toast.error("Password minimum 8 characters and maximum 15 characters     ");
+                isValid = false;
+            } else if (isNaN(phone)) {
+                toast.error("Phone Number must be a number");
+                isValid = false;
+            } else if (!name) {
+                toast.error("TPlease enter your name! ");
+                isValid = false;
+            } else if (!phone) {
+                toast.error("Please enter your phone! ");
+                isValid = false;
+            } else if (!address) {
+                toast.error("Please enter your address! ");
+                isValid = false;
             }
         }
         return isValid;
@@ -91,13 +164,12 @@ class ModalUser extends Component {
         });
     };
 
-    handleAddNewUser = () => {
+    handleAddNewUser = async () => {
         let isValid = this.checkValidInput();
+        let { language } = this.props;
         if (isValid === false) return;
-        this.props.createNewUser1(this.state);
-        let { action } = this.state;
-        if (action === CRUD_ACTIONS.CREATE) {
-            this.props.createNewUser({
+        else {
+            let res = await createNewUserService({
                 email: this.state.email,
                 password: this.state.password,
                 name: this.state.name,
@@ -109,6 +181,17 @@ class ModalUser extends Component {
                 busOwnerId: this.props.userInfo.id,
                 busOwner: this.props.userInfo.name,
             });
+            if (res && res.errCode === 0) {
+                if (language === "vi") toast.success("Thêm tài xế thành công");
+                else toast.success("Successfully added driver");
+                this.props.createNewUser1(this.state);
+            } else if (res && res.errCode === 1) {
+                if (language === "vi") toast.error("Email đã được sử dụng");
+                else toast.error("Email already exists, please try another email");
+            } else if (res && res.errCode === 8) {
+                if (language === "vi") toast.error("Số điện thoại đã được sử dụng");
+                else toast.error("Phone number already exists, please try another email");
+            }
         }
     };
 
@@ -128,12 +211,14 @@ class ModalUser extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Tạo tài xế mới
+                        <FormattedMessage id="menu.busOwner.manageDriver.titleAdd" />
                     </ModalHeader>
                     <ModalBody>
                         <Row>
                             <Col md={6}>
-                                <label htmlFor="exampleEmail">Email</label>
+                                <label htmlFor="exampleEmail">
+                                    <FormattedMessage id="account.email" />
+                                </label>
                                 <input
                                     className="form-control mb-4"
                                     id="exampleEmail"
@@ -146,7 +231,9 @@ class ModalUser extends Component {
                                 />
                             </Col>
                             <Col md={6}>
-                                <label htmlFor="examplePassword">Mật khẩu</label>
+                                <label htmlFor="examplePassword">
+                                    <FormattedMessage id="account.pass" />
+                                </label>
                                 <input
                                     className="form-control mb-4"
                                     id="examplePassword"
@@ -161,7 +248,9 @@ class ModalUser extends Component {
                         </Row>
                         <Row>
                             <Col md={6}>
-                                <label htmlFor="name">Họ tên</label>
+                                <label htmlFor="name">
+                                    <FormattedMessage id="account.Name" />
+                                </label>
                                 <input
                                     className="form-control mb-4"
                                     id="name"
@@ -174,7 +263,9 @@ class ModalUser extends Component {
                                 />
                             </Col>
                             <Col md={6}>
-                                <label htmlFor="phone">Số điện thoại</label>
+                                <label htmlFor="phone">
+                                    <FormattedMessage id="account.phone" />
+                                </label>
                                 <input
                                     className="form-control mb-4"
                                     id="phone"
@@ -188,7 +279,9 @@ class ModalUser extends Component {
                                 />
                             </Col>
                         </Row>
-                        <label htmlFor="exampleAddress">Địa chỉ</label>
+                        <label htmlFor="exampleAddress">
+                            <FormattedMessage id="account.address" />
+                        </label>
                         <input
                             className="form-control mb-4"
                             id="exampleAddress"
@@ -201,7 +294,10 @@ class ModalUser extends Component {
                         />
                         <Row>
                             <Col md={3}>
-                                <label htmlFor="exampleAddress">Giới tính</label>
+                                <label htmlFor="exampleAddress">
+                                    {" "}
+                                    <FormattedMessage id="account.gender" />
+                                </label>
                                 <select
                                     className="form-select mb-4"
                                     onChange={(event) => {
@@ -230,7 +326,8 @@ class ModalUser extends Component {
                                         onChange={(event) => this.handleChangeImage(event)}
                                     />
                                     <label className="upload-img" htmlFor="img">
-                                        Tải ảnh<i className="fas fa-upload"></i>
+                                        <FormattedMessage id="account.upload" />
+                                        <i className="fas fa-upload"></i>
                                     </label>
                                     <div
                                         className="prev-img"
@@ -251,7 +348,7 @@ class ModalUser extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            Cancel
+                            <FormattedMessage id="account.cancel" />
                         </Button>{" "}
                         <Button
                             color="primary"
@@ -259,7 +356,7 @@ class ModalUser extends Component {
                                 this.handleAddNewUser();
                             }}
                             className="btn-primary-modal">
-                            Save
+                            <FormattedMessage id="account.save" />
                         </Button>
                     </ModalFooter>
                 </Modal>
@@ -282,7 +379,6 @@ const mapDispatchToProps = (dispatch) => {
         getRoleStart: () => dispatch(actions.fetchRoleStart()),
         getGenderStart: () => dispatch(actions.fetchGenderStart()),
         createNewUser: (data) => dispatch(actions.createNewUser(data)),
-        fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()),
     };
 };
 

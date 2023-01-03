@@ -49,6 +49,7 @@ let initWebRoutes = (app) => {
     router.put("/api/handle-vehicle-end-trip", busController.handleVehicleEndTrip);
     router.get("/api/get-driver-ticket-route", ticketController.getDriverTicketRoute);
     router.get("/api/get-all-route-from-date-driver", ticketController.getAllRouteFromDateDriver);
+    router.get("/api/get-all-ticket-from-date-driver", ticketController.getAllTicketFromDateDriver);
 
     router.get("/api/get-all-locations", locationController.getAllLocations);
     router.post("/api/create-new-locations", locationController.handleCreateNewLocations);

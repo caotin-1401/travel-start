@@ -5,10 +5,9 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "re
 import Box from "@mui/material/Box";
 import "../style.scss";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CommonUtils } from "../../../../utils";
+import { CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
 import _ from "lodash";
-import "react-markdown-editor-lite/lib/index.css";
 import { editVehicleService } from "../../../../services/userService";
 import Select from "react-select";
 class ModalEdit extends Component {
@@ -58,6 +57,7 @@ class ModalEdit extends Component {
                 obj.label = `${item.typeName} - ${item.numOfSeat} chỗ `;
                 obj.value = item.id;
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -174,7 +174,6 @@ class ModalEdit extends Component {
                                     <label htmlFor="img">Img</label>
                                     <div className="prev-img-container">
                                         <input
-                                            // className="form-control mb-4"
                                             id="img"
                                             type="file"
                                             hidden

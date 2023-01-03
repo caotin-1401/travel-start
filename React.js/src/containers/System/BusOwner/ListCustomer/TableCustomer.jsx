@@ -1,45 +1,58 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import { TableBody, TableContainer, Paper, Table } from "@mui/material";
-import localization from "moment/locale/vi";
 import moment from "moment";
-import DatePicker from "../../../../components/DatePicker";
 import { Row, Col } from "reactstrap";
 import Select from "react-select";
-import { getDriverTicketsRoute, deleteTicket, getAllRouteFromDateDriver } from "../../../../services/userService";
+import {
+    getAllRouteFromDateDriver,
+    getAllTicketFromDateDriver,
+} from "../../../../services/userService";
 import * as actions from "../../../../store/actions";
-import ModalTicket from "./ModalTicket";
-import { toast } from "react-toastify";
 import LoadingOverlay from "react-loading-overlay-ts";
 import "../style.scss";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import "dayjs/locale/vi";
+import {
+    TextField,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    Paper,
+} from "@mui/material";
+
+import RowBody from "./RowBody";
+
 class TableCustomer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            listUser: [],
-            time: "",
-            listRoute: [],
             isCheckPresent: false,
-            selectRoute: "",
             listDrivers: [],
             selectDriver: "",
-            isOpenModel: false,
-            userEdit: {},
             isActive: false,
+            listPassengers: [],
+            listTrips: [],
         };
     }
 
     componentDidMount() {
         this.props.fetchUserRedux();
         this.setState({
-            time: moment(new Date()).format("L"),
+            dateStartTrip: moment(new Date()).format("MM/DD/YYYY"),
         });
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.listUsers !== this.props.listUsers) {
             let test = this.props.listUsers.filter(
-                (item) => item.Driver.busOwnerId && item.Driver.busOwnerId === this.props.userInfo.id
+                (item) =>
+                    item.Driver.busOwnerId && item.Driver.busOwnerId === this.props.userInfo.id
             );
             let dataSelect2 = this.buildDataSelectDrivers(test);
             this.setState({
@@ -56,300 +69,139 @@ class TableCustomer extends Component {
                 obj.label = item.name;
                 obj.value = item.id;
                 result.push(obj);
+                return result;
             });
         }
         return result;
     };
 
     handleOnChange = async (data) => {
-        console.log(data);
-        if (data.length === 1) {
-            this.setState({
-                selectRoute: "",
-                listUser: [],
-            });
-            let { selectDriver } = this.state;
-            if (selectDriver.value) {
-                let res = await getAllRouteFromDateDriver(selectDriver.value, data[0].getTime());
-                if (res && res.tickets && res.tickets.length > 0) {
-                    let listRoute = [];
-                    if (res.tickets && res.tickets.length > 0) {
-                        res.tickets.map((item) => {
-                            let obj = {};
-                            obj.value = item.id;
-                            obj.label = `${item.areaStart} - ${moment(+item.timeStart).format("LT")} - Biển số xe: ${
-                                item.Vehicle.number
-                            }`;
-                            listRoute.push(obj);
-                        });
-                    }
-                    this.setState({
-                        listRoute: listRoute,
-                    });
-                }
-            }
-            this.setState({
-                dateStartTrip: data[0].getTime(),
-            });
-        }
+        let { selectDriver } = this.state;
+        let res = await getAllRouteFromDateDriver(selectDriver.value, data.$d.getTime());
+        let resTicket = await getAllTicketFromDateDriver(selectDriver.value, data.$d.getTime());
+
+        this.setState({
+            dateStartTrip: data.$d.getTime(),
+            listPassengers: resTicket.tickets,
+            listTrips: res.tickets,
+        });
     };
     onChangeInputDriver = async (selectDriver) => {
-        console.log(selectDriver);
-        this.setState({
-            selectRoute: "",
-            listUser: [],
-        });
         let { dateStartTrip } = this.state;
-        if (!dateStartTrip) {
+        let dateCurrent;
+        if (dateStartTrip.length === 10) {
             let date = moment(new Date().getTime()).format("L");
             let str = "00:00";
             let [day, month, year] = date.split("/");
             let [hours, minutes] = str.split(":");
             let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
-            dateStartTrip = date1.getTime();
+            dateCurrent = date1.getTime();
         }
-        let res = await getAllRouteFromDateDriver(selectDriver.value, dateStartTrip);
-        if (res && res.tickets && res.tickets.length > 0) {
-            let listRoute = [];
-            if (res.tickets && res.tickets.length > 0) {
-                res.tickets.map((item) => {
-                    let obj = {};
-                    obj.value = item.id;
-                    obj.label = `${item.areaStart} - ${moment(+item.timeStart).format("LT")} - Biển số xe: ${
-                        item.Vehicle.number
-                    }`;
-                    listRoute.push(obj);
-                });
-            }
-            this.setState({
-                listRoute: listRoute,
-            });
-        }
+        let res = await getAllRouteFromDateDriver(selectDriver.value, dateCurrent);
+        let resTicket = await getAllTicketFromDateDriver(selectDriver.value, dateCurrent);
 
-        this.setState({ selectDriver });
-    };
-    onChangeInputStart = async (selectRoute) => {
-        let { dateStartTrip, selectDriver } = this.state;
-        let res;
-        if (!dateStartTrip) {
-            let test = moment(new Date().getTime()).format("L");
-            let str = "00:00";
-            let [day, month, year] = test.split("/");
-            let [hours, minutes] = str.split(":");
-            let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
-            res = await getDriverTicketsRoute(selectDriver.value, date1.getTime(), selectRoute.value);
-        } else {
-            res = await getDriverTicketsRoute(selectDriver.value, dateStartTrip, selectRoute.value);
-        }
-        let tempUser = {};
-        let resultUser;
-        if (res && res.errCode === 0) {
-            if (res.tickets.length > 0) {
-                res.tickets.forEach((ticket) => {
-                    if (tempUser[`${ticket.token}`]) {
-                        tempUser[`${ticket.token}`].seatNo.push(ticket.seatNo);
-                    } else {
-                        tempUser[`${ticket.token}`] = {
-                            userId: ticket.userId,
-                            seatNo: [ticket.seatNo],
-                            token: ticket.token,
-                            phone: ticket.phone,
-                            name: ticket.name,
-                            totalPrice: ticket.totalPrice,
-                            driverId: ticket.driverId,
-                            status: ticket.status,
-                            email: ticket.email,
-                            tripId: ticket.tripId,
-                            description: ticket.description,
-                            isPresent: ticket.isPresent,
-                            dayStart: ticket.dayStart,
-                        };
-                    }
-                });
-
-                resultUser = Object.values(tempUser);
-                this.setState({ listUser: resultUser });
-            }
-        }
-
-        this.setState({ selectRoute: selectRoute });
+        this.setState({ selectDriver, listPassengers: resTicket.tickets, listTrips: res.tickets });
     };
 
-    //open modal
-    toggleUserModel = () => {
+    callbackFunction = (isActive) => {
         this.setState({
-            isOpenModel: !this.state.isOpenModel,
+            isActive: isActive,
         });
     };
-    sendEmail = async (data) => {
-        let { dateStartTrip, selectDriver, selectRoute } = this.state;
-        let res;
-        if (!dateStartTrip) {
-            let test = moment(new Date().getTime()).format("L");
-            let str = "00:00";
-            let [day, month, year] = test.split("/");
-            let [hours, minutes] = str.split(":");
-            let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
-            res = await getDriverTicketsRoute(selectDriver.value, date1.getTime(), selectRoute.value);
-        } else {
-            res = await getDriverTicketsRoute(selectDriver.value, dateStartTrip, selectRoute.value);
-        }
-        let tempUser = {};
-        let resultUser;
-        if (res && res.errCode === 0) {
-            if (res.tickets.length > 0) {
-                res.tickets.forEach((ticket) => {
-                    if (tempUser[`${ticket.token}`]) {
-                        tempUser[`${ticket.token}`].seatNo.push(ticket.seatNo);
-                    } else {
-                        tempUser[`${ticket.token}`] = {
-                            userId: ticket.userId,
-                            seatNo: [ticket.seatNo],
-                            token: ticket.token,
-                            phone: ticket.phone,
-                            name: ticket.name,
-                            totalPrice: ticket.totalPrice,
-                            driverId: ticket.driverId,
-                            status: ticket.status,
-                            email: ticket.email,
-                            tripId: ticket.tripId,
-                            description: ticket.description,
-                            isPresent: ticket.isPresent,
-                            dayStart: ticket.dayStart,
-                        };
-                    }
-                });
 
-                resultUser = Object.values(tempUser);
-                this.setState({ listUser: resultUser });
-            }
-        }
-        this.setState({
-            isOpenModel: false,
-        });
-    };
-    handleEditUser = (item) => {
-        this.setState({
-            isOpenModel: true,
-            userEdit: item,
-        });
-    };
-    handleDeleteTicket = async (data) => {
-        let token = data.token;
-        let tripId = data.tripId;
-        let { dateStartTrip, selectDriver, selectRoute } = this.state;
-        let resDelete = await deleteTicket(tripId, token);
-        if (resDelete && resDelete.errCode === 0) {
-            let res;
-            if (!dateStartTrip) {
-                let test = moment(new Date().getTime()).format("L");
-                let str = "00:00";
-                let [day, month, year] = test.split("/");
-                let [hours, minutes] = str.split(":");
-                let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
-                res = await getDriverTicketsRoute(selectDriver.value, date1.getTime(), selectRoute.value);
-            } else {
-                res = await getDriverTicketsRoute(selectDriver.value, dateStartTrip, selectRoute.value);
-            }
-            let tempUser = {};
-            let resultUser;
-            if (res && res.errCode === 0) {
-                if (res.tickets.length > 0) {
-                    res.tickets.forEach((ticket) => {
-                        if (tempUser[`${ticket.token}`]) {
-                            tempUser[`${ticket.token}`].seatNo.push(ticket.seatNo);
-                        } else {
-                            tempUser[`${ticket.token}`] = {
-                                userId: ticket.userId,
-                                seatNo: [ticket.seatNo],
-                                token: ticket.token,
-                                phone: ticket.phone,
-                                name: ticket.name,
-                                totalPrice: ticket.totalPrice,
-                                driverId: ticket.driverId,
-                                status: ticket.status,
-                                email: ticket.email,
-                                tripId: ticket.tripId,
-                                description: ticket.description,
-                                isPresent: ticket.isPresent,
-                                dayStart: ticket.dayStart,
-                            };
-                        }
-                    });
-
-                    resultUser = Object.values(tempUser);
-                }
-            }
-            this.setState({ listUser: resultUser });
-        } else {
-            toast.error("Xoas ve thaats bai");
-        }
-    };
-    callbackFunction1 = (isActive) => {
-        this.setState({
-            isActive: true,
-        });
-    };
-    callbackFunction2 = (isActive) => {
-        this.setState({
-            isActive: false,
-        });
-    };
+    theme = createTheme({
+        components: {
+            MuiInputBase: {
+                styleOverrides: {
+                    root: {
+                        height: 38,
+                        backgroundColor: "white",
+                    },
+                    input: {
+                        height: 1.5,
+                        padding: 0,
+                    },
+                },
+            },
+            MuiOutlinedInput: {
+                styleOverrides: {
+                    notchedOutline: {
+                        borderColor: "#CED4DA!important",
+                    },
+                },
+            },
+            MuiButtonBase: {
+                styleOverrides: {
+                    root: {
+                        color: "#000000!important",
+                    },
+                },
+            },
+            MuiPickersDay: {
+                styleOverrides: {
+                    root: {
+                        fontSize: "14px",
+                    },
+                },
+            },
+        },
+    });
     render() {
-        let {
-            page,
-            rowsPerPage,
-            listUser,
-            time,
-            listRoute,
-            selectRoute,
-            listDrivers,
-            selectDriver,
-            isOpenModel,
-            userEdit,
-        } = this.state;
+        let { language } = this.props;
+        let { listDrivers, selectDriver, dateStartTrip, listPassengers, listTrips } = this.state;
+        console.log(dateStartTrip);
         return (
             <LoadingOverlay active={this.state.isActive} spinner text="Loading ...">
-                <div className="user-redux-container">
-                    {isOpenModel && (
-                        <ModalTicket
-                            style={{ zIndex: 10 }}
-                            userEdit={userEdit}
-                            isOpen={this.state.isOpenModel}
-                            toggleFromParent={this.toggleUserModel}
-                            sendEmail={this.sendEmail}
-                            parentCallback1={this.callbackFunction1}
-                            parentCallback2={this.callbackFunction2}
-                        />
-                    )}
-
+                <div className="user-redux-container height100vh">
                     <div className="title">
-                        <p style={{ marginBottom: "20px" }}>Quản lý vé</p>
+                        <p style={{ marginBottom: "20px" }}>
+                            <FormattedMessage id="menu.busOwner.ticket.title1" />
+                        </p>
                     </div>
                     <div className="container form-reux">
                         <Row>
                             <Col md={3}>
-                                <label htmlFor="schedule1">Chọn ngày chạy</label>
-                                <span className="form-control mb-4" style={{ height: "38px" }} htmlFor="schedule1">
-                                    <DatePicker
-                                        locale="vi"
-                                        style={{ border: "none" }}
-                                        onChange={this.handleOnChange}
-                                        id="schedule1"
-                                        value={time}
-                                        selected={time}
-                                    />
-                                    <label htmlFor="schedule1" style={{ float: "right" }}>
-                                        <i
-                                            className="far fa-calendar-alt"
-                                            style={{
-                                                fontSize: "20px",
-                                            }}></i>
-                                    </label>
-                                </span>
+                                <label htmlFor="schedule1">
+                                    <FormattedMessage id="menu.busOwner.ticket.chooseDay" />
+                                </label>
+                                <div className=" mb-2">
+                                    <ThemeProvider theme={this.theme}>
+                                        {language === "vi" ? (
+                                            <LocalizationProvider
+                                                dateAdapter={AdapterDayjs}
+                                                adapterLocale="vi">
+                                                <Stack>
+                                                    <DatePicker
+                                                        value={dateStartTrip}
+                                                        onChange={this.handleOnChange}
+                                                        renderInput={(params) => (
+                                                            <TextField {...params} />
+                                                        )}
+                                                        dayOfWeekFormatter={(day) => `${day}.`}
+                                                    />
+                                                </Stack>
+                                            </LocalizationProvider>
+                                        ) : (
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <Stack>
+                                                    <DatePicker
+                                                        value={dateStartTrip}
+                                                        onChange={this.handleOnChange}
+                                                        renderInput={(params) => (
+                                                            <TextField {...params} />
+                                                        )}
+                                                        dayOfWeekFormatter={(day) => `${day}.`}
+                                                    />
+                                                </Stack>
+                                            </LocalizationProvider>
+                                        )}
+                                    </ThemeProvider>
+                                </div>
                             </Col>
                             <Col md={3}>
-                                <label>Chọn tài xế</label>
+                                <label>
+                                    <FormattedMessage id="menu.busOwner.ticket.chooseDriver" />
+                                </label>
                                 <Select
                                     className="mb-4"
                                     value={selectDriver}
@@ -357,137 +209,61 @@ class TableCustomer extends Component {
                                     options={listDrivers}
                                 />
                             </Col>
-                            <Col md={6}>
-                                <label>Chọn địa điểm /thời gian xuất phát:</label>
-                                <Select
-                                    className="mb-4"
-                                    value={selectRoute}
-                                    onChange={this.onChangeInputStart}
-                                    options={listRoute}
-                                />
-                            </Col>
                         </Row>
                         <div className="user-container">
-                            <TableContainer component={Paper} id="customers">
+                            <TableContainer component={Paper} id="customers1">
                                 <Table>
-                                    <TableBody>
+                                    <TableHead>
                                         <tr>
-                                            <th
-                                                className="section-id"
-                                                style={{
-                                                    width: "5%",
-                                                }}
-                                                onClick={() => this.handleSort("asc", "id")}>
-                                                Id
+                                            <TableCell />
+                                            <th className="w5">ID</th>
+                                            <th className="w45">
+                                                <FormattedMessage id="menu.busOwner.ticket.trips" />
                                             </th>
-                                            <th>
-                                                <div className="section-title">Tên</div>
+                                            <th className="w15">
+                                                <FormattedMessage id="menu.busOwner.dashboards.name" />
                                             </th>
-                                            <th
-                                                style={{
-                                                    width: "10%",
-                                                }}>
-                                                Số điện thoại
+                                            <th className="w15">
+                                                <FormattedMessage id="menu.driver.number" />
                                             </th>
-                                            <th
-                                                className="section-id-list"
-                                                style={{
-                                                    width: "15%",
-                                                }}>
-                                                Chỗ ngồi
-                                            </th>
-                                            <th className="section-id-list">Thanh toán</th>
-
-                                            <th>
-                                                <div className="section-title">
-                                                    <div>Yeu cau them</div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div>tinh trang</div>
-                                                </div>
-                                            </th>
-                                            <th
-                                                style={{
-                                                    width: "10%",
-                                                }}
-                                                className="section-id-list">
-                                                Gui ve xe
+                                            <th className="w20">
+                                                <FormattedMessage id="menu.driver.timeDe" />
                                             </th>
                                         </tr>
-
-                                        {(listUser && listUser.length > 0 && rowsPerPage > 0
-                                            ? listUser.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            : listUser
-                                        ).map((item, index) => {
-                                            let test = item.seatNo.join(" - ");
-                                            let statusSeat;
-                                            if (item.status === "S1") {
-                                                statusSeat = "Chưa xác nhận";
-                                            } else if (item.status === "S2") {
-                                                statusSeat = "Đã xác nhận";
-                                            } else if (item.status === "S3") {
-                                                statusSeat = "Đã gửi vé";
-                                            } else if (item.status === "S4") {
-                                                statusSeat = "Đã hủy vé";
-                                            }
-                                            return (
-                                                <tr key={index}>
-                                                    <td className="section-id-list">{index + 1}</td>
-                                                    <td>{item.name}</td>
-                                                    <td>{item.phone}</td>
-                                                    <td>{test}</td>
-                                                    <td>{item.totalPrice}</td>
-                                                    <td>{item.description}</td>
-                                                    <td>{statusSeat}</td>
-                                                    <td
-                                                        style={{
-                                                            textAlign: "center",
-                                                        }}>
-                                                        {item.status === "S4" ? (
-                                                            <button
-                                                                style={{
-                                                                    width: "80px",
-                                                                }}
-                                                                className="btn btn-danger"
-                                                                onClick={() => this.handleDeleteTicket(item)}>
-                                                                Hủy vé
-                                                            </button>
-                                                        ) : item.status === "S3" ? (
-                                                            <button
-                                                                className="btn btn-primary"
-                                                                style={{
-                                                                    width: "80px",
-                                                                }}
-                                                                disabled>
-                                                                Gửi vé
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                className="btn btn-primary"
-                                                                style={{
-                                                                    width: "80px",
-                                                                }}
-                                                                onClick={() => this.handleEditUser(item)}>
-                                                                Gửi vé
-                                                            </button>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
+                                    </TableHead>
+                                    <TableBody>
+                                        {listTrips &&
+                                            listTrips.length > 0 &&
+                                            listTrips.map((item, index) => {
+                                                console.log(1);
+                                                return (
+                                                    <RowBody
+                                                        key={item.id}
+                                                        parentCallback1={this.callbackFunction}
+                                                        item={item}
+                                                        listPassengers={listPassengers}
+                                                        selectDriver={selectDriver.value}
+                                                        dateStartTrip={dateStartTrip}
+                                                        language={language}
+                                                    />
+                                                );
+                                            })}
+                                        {listTrips && listTrips.length === 0 && (
+                                            <tr style={{ height: "50px" }}>
+                                                <td
+                                                    style={{
+                                                        fontSize: "18px",
+                                                        textAlign: "center",
+                                                    }}
+                                                    colSpan="6"></td>
+                                            </tr>
+                                        )}
                                     </TableBody>
-                                    {listUser && listUser.length === 0 && (
-                                        <td colSpan="8" style={{ textAlign: "center" }}>
-                                            No data
-                                        </td>
-                                    )}
                                 </Table>
                             </TableContainer>
-                            {/* </div> */}
                         </div>
                     </div>
+                    <div style={{ height: "200px" }}></div>
                 </div>
             </LoadingOverlay>
         );
@@ -497,6 +273,7 @@ class TableCustomer extends Component {
 const mapStateToProps = (state) => {
     return {
         userInfo: state.user.userInfo,
+        language: state.app.language,
         listUsers: state.admin.users,
     };
 };

@@ -9,6 +9,7 @@ import RouteManage from "./../containers/System/BusOwner/RouteManage/RouteManage
 import TableCustomer from "./../containers/System/BusOwner/ListCustomer/TableCustomer";
 import ListVehicles from "./../containers/System/BusOwner/ListVehicle/TableVehicles";
 import History from "./../containers/System/BusOwner/DriverManage/History";
+import TableDiscount from "./../containers/System/BusOwner/Discount/TableDiscount";
 
 class BusOnwer extends Component {
     constructor(props) {
@@ -34,6 +35,7 @@ class BusOnwer extends Component {
                             <Route path="/busOwner/dashboard" component={Dashboard} />
                             <Route path="/busOwner/bus-manage" component={ListVehicles} />
                             <Route path="/busOwner/driver-manage" component={UserManage} />
+                            <Route path="/busOwner/manage-discount" component={TableDiscount} />
                             <Route path="/busOwner/history-driver=:id" component={History} />
                             <Route path="/busOwner/manage-routes" component={RouteManage} />{" "}
                             <Route path="/busOwner/manage-tickets" component={TableCustomer} />

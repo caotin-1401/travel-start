@@ -301,6 +301,7 @@ class InfoUser extends Component {
                                 <FormattedMessage id="account.phone" />
                             </label>
                             <input
+                                disabled
                                 className="form-control mb-4"
                                 id="phoneNumber"
                                 name="phoneNumberNumber"

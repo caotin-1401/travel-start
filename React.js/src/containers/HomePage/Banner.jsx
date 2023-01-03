@@ -4,49 +4,18 @@ import "./Banner.scss";
 import { FormattedMessage } from "react-intl";
 import { changeLanguageApp } from "../../store/actions/appActions";
 import Select from "react-select";
-import DatePicker from "../../components/DatePicker";
 import moment from "moment";
-import localization from "moment/locale/vi";
 import * as actions from "../../store/actions";
 import { getAllTripHomeService } from "../../services/userService";
 import { toast } from "react-toastify";
 import { withRouter, Link } from "react-router-dom";
-
-const customStyles = {
-    control: (base) => ({
-        // ...base,
-        border: "none",
-        display: "flex",
-        position: "relative",
-        boxSizing: "border-box",
-        flexWrap: "wrap",
-        transition: "all 100ms",
-        justifyContent: "space-between",
-    }),
-    valueContainer: (base) => ({
-        // ...base,
-        width: 290,
-        height: 27,
-        alignItems: "center",
-        flexWrap: "wrap",
-        padding: "2px 10px",
-        overflow: "hidden",
-        position: "relative",
-        boxSizing: "border-box",
-        display: "grid",
-    }),
-    indicatorSeparator: (base) => ({
-        ...base,
-        display: "none",
-    }),
-    // placeholder: (base) => ({
-    //     ...base,
-    //     // backgroundColor: "black",
-    //     fontSize: "2em",
-    //     color: "black",
-    //     fontWeight: 400,
-    // }),
-};
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import "dayjs/locale/vi";
+import { TextField, Stack } from "@mui/material";
+import { customStylesBanner } from "../Passenger/Route/styleInput";
 class Banner extends Component {
     constructor(props) {
         super(props);
@@ -81,6 +50,7 @@ class Banner extends Component {
                 obj.label = item.name;
                 obj.value = item.id;
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -97,7 +67,7 @@ class Banner extends Component {
     };
     handleOnChange1 = (data) => {
         this.setState({
-            dateStartTrip: data[0],
+            dateStartTrip: data.$d,
         });
     };
 
@@ -133,8 +103,39 @@ class Banner extends Component {
         }
     };
 
+    theme = createTheme({
+        components: {
+            MuiInputBase: {
+                styleOverrides: {
+                    root: {
+                        height: 38,
+                    },
+                    input: {
+                        height: 1.5,
+                        padding: 0,
+                    },
+                },
+            },
+            MuiOutlinedInput: {
+                styleOverrides: {
+                    notchedOutline: {
+                        borderColor: "#CED4DA!important",
+                        border: "none",
+                    },
+                },
+            },
+            MuiPickersDay: {
+                styleOverrides: {
+                    root: {
+                        fontSize: "15px",
+                    },
+                },
+            },
+        },
+    });
     render() {
         let { selectLocaion1, selectLocaion2, info } = this.state;
+        let { language } = this.props;
         return (
             <React.Fragment>
                 <div className="home-header-banner">
@@ -149,7 +150,7 @@ class Banner extends Component {
                                 <div className="inputItem item1">
                                     <i className="fas fa-map-marker-alt"></i>
                                     <Select
-                                        styles={customStyles}
+                                        styles={customStylesBanner}
                                         value={selectLocaion1}
                                         onChange={this.onChangeInput1}
                                         options={this.state.listLocations}
@@ -159,7 +160,7 @@ class Banner extends Component {
                                 <div className="inputItem">
                                     <i className="fas fa-map-marker-alt"></i>
                                     <Select
-                                        styles={customStyles}
+                                        styles={customStylesBanner}
                                         placeholder={"Tỉnh/Thành phố nơi đến"}
                                         value={selectLocaion2}
                                         onChange={this.onChangeInput2}
@@ -167,17 +168,45 @@ class Banner extends Component {
                                     />
                                 </div>
                                 <div className="inputItem">
-                                    <label htmlFor="schedule1" style={{ float: "right" }}>
-                                        <i className="far fa-calendar-alt" style={{ fontSize: "20px" }}></i>
-                                    </label>
-                                    <DatePicker
-                                        placeholder={"Chọn ngày"}
-                                        style={{ border: "none" }}
-                                        onChange={this.handleOnChange1}
-                                        id="schedule1"
-                                        selected={this.state.dateStartTrip}
-                                        minDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                                    />
+                                    <ThemeProvider theme={this.theme}>
+                                        {language === "vi" ? (
+                                            <LocalizationProvider
+                                                dateAdapter={AdapterDayjs}
+                                                adapterLocale="vi">
+                                                <Stack>
+                                                    <DatePicker
+                                                        sx={{
+                                                            "& .css-z5fbbl-MuiInputBase-root-MuiOutlinedInput-root  ":
+                                                                {
+                                                                    fontSize: "14px",
+                                                                },
+                                                        }}
+                                                        value={this.state.dateStartTrip}
+                                                        onChange={this.handleOnChange1}
+                                                        renderInput={(params) => (
+                                                            <TextField {...params} />
+                                                        )}
+                                                        minDate={new Date()}
+                                                        dayOfWeekFormatter={(day) => `${day}.`}
+                                                    />
+                                                </Stack>
+                                            </LocalizationProvider>
+                                        ) : (
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <Stack>
+                                                    <DatePicker
+                                                        value={this.state.dateStartTrip}
+                                                        onChange={this.handleOnChange1}
+                                                        renderInput={(params) => (
+                                                            <TextField {...params} />
+                                                        )}
+                                                        minDate={new Date()}
+                                                        dayOfWeekFormatter={(day) => `${day}.`}
+                                                    />
+                                                </Stack>
+                                            </LocalizationProvider>
+                                        )}
+                                    </ThemeProvider>
                                 </div>
                             </div>
                             <div className="search">

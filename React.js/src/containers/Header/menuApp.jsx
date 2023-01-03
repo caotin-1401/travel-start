@@ -113,7 +113,16 @@ export const busOwnerMenu = [
             },
         ],
     },
-
+    {
+        //quản lý tueyens đường
+        name: "menu.admin.discount",
+        menus: [
+            {
+                name: "menu.admin.discount",
+                link: "/busOwner/manage-discount",
+            },
+        ],
+    },
     {
         //quản lý tueyens đường
         name: "menu.busOwner.routes",

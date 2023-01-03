@@ -180,7 +180,8 @@ class History extends Component {
                 <Row>
                     <Col md={3}>
                         <div onClick={() => this.handleBack()} className="backsystem">
-                            <i className="fas fa-arrow-left"></i> <FormattedMessage id="menu.admin.listDriver.back" />
+                            <i className="fas fa-arrow-left"></i>{" "}
+                            <FormattedMessage id="menu.busOwner.manageDriver.back" />
                         </div>
                     </Col>
                     <Col md={6}>

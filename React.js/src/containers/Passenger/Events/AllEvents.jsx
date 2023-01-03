@@ -4,15 +4,16 @@ import Header from "../../HomePage/Header";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../../utils";
 import moment from "moment";
-import localization from "moment/locale/vi";
 import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
 import "./style.scss";
-import { Typography, Breadcrumbs, Link, Box, Skeleton } from "@mui/material";
+import { Typography, Breadcrumbs, Link } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import { Row, Col } from "reactstrap";
 import Loading from "../../../components/Loading";
+import SkeletonAllEvent from "./SkeletonAllEvent";
 const HomeFooter = lazy(() => import("../../HomePage/Section/HomeFooter"));
+
 class AllEvents extends Component {
     constructor(props) {
         super(props);
@@ -22,11 +23,6 @@ class AllEvents extends Component {
         };
     }
     componentDidMount() {
-        // setTimeout(() => {
-        //     this.setState({
-        //         loading: true,
-        //     });
-        // }, 500);
         this.props.fetchAllEvents();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -44,7 +40,8 @@ class AllEvents extends Component {
     handleViewDetail = (events) => {
         let time2 = +events.endDate;
         let time1 = +events.startDate;
-        let timeCurrent = new Date(1671814800000).getTime();
+        let timeCurrent = new Date().getTime();
+        console.log(time1, time2, timeCurrent);
         if (time2 > timeCurrent && time1 < timeCurrent) {
             if (this.props.history) {
                 this.props.history.push(`/home/event/eventId=${events.id}`);
@@ -66,7 +63,7 @@ class AllEvents extends Component {
         }
         let { listEvents } = this.state;
         return (
-            <React.Fragment>
+            <div style={{ overflowX: "hidden" }}>
                 <Header />
                 <div className="header-events">
                     <div className="container">
@@ -112,77 +109,14 @@ class AllEvents extends Component {
                             <Row>
                                 <Col md={1}></Col>
                                 <Col md={9}>
-                                    {loading === false && (
-                                        <>
-                                            <li>
-                                                <div className="content-events">
-                                                    <div className="bg-img">
-                                                        <Box>
-                                                            {loading === false && <Skeleton height={140}></Skeleton>}
-                                                        </Box>
-                                                    </div>
-                                                    <div className="content-right">
-                                                        <Typography variant="h3" sx={{ mb: 1 }}>
-                                                            {loading === false && <Skeleton width="500px" />}
-                                                        </Typography>
-                                                        <Typography variant="caption">
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                        <Typography variant="h2" sx={{ mt: 1 }}>
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="content-events">
-                                                    <div className="bg-img">
-                                                        <Box>
-                                                            {loading === false && <Skeleton height={140}></Skeleton>}
-                                                        </Box>
-                                                    </div>
-                                                    <div className="content-right">
-                                                        <Typography variant="h3" sx={{ mb: 1 }}>
-                                                            {loading === false && <Skeleton width="500px" />}
-                                                        </Typography>
-                                                        <Typography variant="caption">
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                        <Typography variant="h2" sx={{ mt: 1 }}>
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="content-events">
-                                                    <div className="bg-img">
-                                                        <Box>
-                                                            {loading === false && <Skeleton height={140}></Skeleton>}
-                                                        </Box>
-                                                    </div>
-                                                    <div className="content-right">
-                                                        <Typography variant="h3" sx={{ mb: 1 }}>
-                                                            {loading === false && <Skeleton width="500px" />}
-                                                        </Typography>
-                                                        <Typography variant="caption">
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                        <Typography variant="h2" sx={{ mt: 1 }}>
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </>
-                                    )}
+                                    {loading === false && <SkeletonAllEvent loading={loading} />}
                                     {loading === true &&
                                         listEvents &&
                                         listEvents.length > 0 &&
                                         listEvents.map((item, index) => {
-                                            let time = `${moment(+item.startDate).format("L")} - ${moment(
+                                            let time = `${moment(+item.startDate).format("DD/MM/YYYY")} - ${moment(
                                                 +item.endDate
-                                            ).format("L")}`;
+                                            ).format("DD/MM/YYYY")}`;
                                             let imageBase64 = "";
                                             if (item.image) {
                                                 imageBase64 = Buffer.from(item.image, "base64").toString("binary");
@@ -190,7 +124,6 @@ class AllEvents extends Component {
                                             let time1 = +item.startDate;
                                             let time2 = +item.endDate;
                                             let timeCurrent = new Date().getTime();
-                                            console.log(time2, timeCurrent);
                                             let mes;
                                             time1 > timeCurrent
                                                 ? (mes = mes2)
@@ -244,7 +177,7 @@ class AllEvents extends Component {
                 <Suspense fallback={<Loading />}>
                     <HomeFooter />
                 </Suspense>
-            </React.Fragment>
+            </div>
         );
     }
 }

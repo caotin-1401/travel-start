@@ -3,14 +3,14 @@ import { connect } from "react-redux";
 import Header from "../../HomePage/Header";
 import { FormattedMessage } from "react-intl";
 import moment from "moment";
-import localization from "moment/locale/vi";
 import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
 import "./style.scss";
-import { Typography, Breadcrumbs, Link, Box, Skeleton } from "@mui/material";
+import { Typography, Breadcrumbs, Link } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import { Row, Col } from "reactstrap";
 import Loading from "../../../components/Loading";
+import SkeletonAllBlog from "./SkeletonAllBlog";
 const HomeFooter = lazy(() => import("../../HomePage/Section/HomeFooter"));
 class AllBlogs extends Component {
     constructor(props) {
@@ -21,11 +21,6 @@ class AllBlogs extends Component {
         };
     }
     componentDidMount() {
-        // setTimeout(() => {
-        //     this.setState({
-        //         loading: true,
-        //     });
-        // }, 500);
         this.props.fetchAllBlogs();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -49,7 +44,7 @@ class AllBlogs extends Component {
         let { listBlogs, loading } = this.state;
 
         return (
-            <React.Fragment>
+            <div style={{ overflowX: "hidden" }}>
                 <Header />
                 <div className="header-events">
                     <div className="container">
@@ -96,70 +91,7 @@ class AllBlogs extends Component {
                             <Row>
                                 <Col md={1}></Col>
                                 <Col md={9}>
-                                    {loading === false && (
-                                        <>
-                                            <li>
-                                                <div className="content-events">
-                                                    <div className="bg-img">
-                                                        <Box>
-                                                            {loading === false && <Skeleton height={140}></Skeleton>}
-                                                        </Box>
-                                                    </div>
-                                                    <div className="content-right">
-                                                        <Typography variant="h3" sx={{ mb: 1 }}>
-                                                            {loading === false && <Skeleton width="500px" />}
-                                                        </Typography>
-                                                        <Typography variant="caption">
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                        <Typography variant="h2" sx={{ mt: 1 }}>
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="content-events">
-                                                    <div className="bg-img">
-                                                        <Box>
-                                                            {loading === false && <Skeleton height={140}></Skeleton>}
-                                                        </Box>
-                                                    </div>
-                                                    <div className="content-right">
-                                                        <Typography variant="h3" sx={{ mb: 1 }}>
-                                                            {loading === false && <Skeleton width="500px" />}
-                                                        </Typography>
-                                                        <Typography variant="caption">
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                        <Typography variant="h2" sx={{ mt: 1 }}>
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="content-events">
-                                                    <div className="bg-img">
-                                                        <Box>
-                                                            {loading === false && <Skeleton height={140}></Skeleton>}
-                                                        </Box>
-                                                    </div>
-                                                    <div className="content-right">
-                                                        <Typography variant="h3" sx={{ mb: 1 }}>
-                                                            {loading === false && <Skeleton width="500px" />}
-                                                        </Typography>
-                                                        <Typography variant="caption">
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                        <Typography variant="h2" sx={{ mt: 1 }}>
-                                                            {loading === false && <Skeleton width="200px" />}
-                                                        </Typography>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </>
-                                    )}
+                                    {loading === false && <SkeletonAllBlog loading={loading} />}
                                     {loading === true &&
                                         listBlogs &&
                                         listBlogs.length > 0 &&
@@ -199,7 +131,7 @@ class AllBlogs extends Component {
                 <Suspense fallback={<Loading />}>
                     <HomeFooter />
                 </Suspense>
-            </React.Fragment>
+            </div>
         );
     }
 }

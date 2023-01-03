@@ -5,8 +5,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "re
 import "../style.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
-import { emitter } from "../../../../utils/emitter";
-import "react-image-lightbox/style.css";
 import { toast } from "react-toastify";
 import { createNewUserService } from "../../../../services/userService";
 
@@ -16,8 +14,6 @@ class ModalUser extends Component {
         this.state = {
             genderArr: [],
             previewImgURL: "",
-            isOpenImg: false,
-
             email: "",
             password: "",
             name: "",
@@ -25,7 +21,6 @@ class ModalUser extends Component {
             address: "",
             gender: "",
             avatar: "",
-            userEditId: "",
         };
     }
     async componentDidMount() {

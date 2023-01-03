@@ -26,9 +26,11 @@ let checkUserEmailAdmin = (userEmail) => {
 let checkPhoneAdmin = (userEmail) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log(userEmail);
             let user = await db.User.findOne({
                 where: { phoneNumber: userEmail },
             });
+            console.log(user);
             if (user) {
                 resolve(true);
             } else {
@@ -401,34 +403,42 @@ let createNewUser = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             //check email exist
+            console.log(data);
             let check = await checkUserEmailAdmin(data.email);
             let checkPhone = await checkPhoneAdmin(data.phoneNumber);
+            console.log(checkPhone);
             if (check) {
+                console.log(2);
                 resolve({
                     errCode: 1,
                     errMessage: "Your email already exists, please try another email",
                 });
             } else if (checkPhone) {
+                console.log(3);
                 resolve({
                     errCode: 8,
                     errMessage: "Your email already exists, please try another email",
                 });
             } else if (data.password.trim().length < 8) {
+                console.log(4);
                 resolve({
                     errCode: 4,
                     errMessage: "Password must be at least 8 characters",
                 });
             } else if (isNaN(data.phoneNumber)) {
+                console.log(5);
                 resolve({
                     errCode: 5,
                     errMessage: "Phone Number must be a number",
                 });
             } else if (!isEmailValid(data.email)) {
+                console.log(2);
                 resolve({
                     errCode: 6,
                     errMessage: "Invalid mail address",
                 });
             } else {
+                console.log(1);
                 let hashPasswordFromBcrypt = await hashUserPassword(data.password);
                 if (!data.avatar) {
                     await db.User.create({
@@ -473,7 +483,7 @@ let createNewDriver = async (data) => {
             let user = await db.User.findOne({
                 where: { email: data.email },
             });
-
+            console.log(user);
             await db.Driver.create({
                 status: 1,
                 name: data.name,

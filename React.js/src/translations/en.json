@@ -61,7 +61,7 @@
             "event": "Events",
             "err": "Error",
             "err1": "List Error",
-            "discount": "Discounts",
+            "discount": "Coupons",
             "promotions": "Promotions",
 
             "listBusType": {
@@ -79,7 +79,7 @@
                 "name": "Bus station name",
                 "city": "Province / city",
                 "address": "Address",
-                "action": "Action",
+                "action": "Status",
                 "add": "Add station",
                 "cancel": "Cancel",
                 "save": "Add",
@@ -184,7 +184,38 @@
                 "email": "Passenger's email",
                 "upload": "Upload",
                 "cancel": "Cancel",
-                "send": "Send"
+                "send": "Send",
+                "title1": "Passenger Management",
+                "chooseDay": "Select departure date",
+                "chooseDriver": "Choose a driver",
+                "trips": "Route name"
+            },
+            "manageDriver": {
+                "title": "Manage list of drivers",
+                "history": "List trips",
+                "status": "Status",
+                "add": "Add driver",
+                "close": "Close",
+                "titleInfo": "Detail Information",
+                "back": "Back to manage driver page"
+            },
+            "discount": {
+                "title1": "Manage coupons",
+                "title2": "Add coupon",
+                "title3": "Edit coupon",
+                "add": "Add coupon",
+                "name": "Name coupon",
+                "discount": "Discount",
+                "count": "Count",
+                "use": "Used",
+                "start": "Start day",
+                "end": "End day",
+                "type": "Coupons type",
+                "discount1": "Direct discount (according to VND)",
+                "discountd": "Direct discount (VND)",
+                "discount2": "Discount by %",
+                "min": "Minimum bill (VND)",
+                "max": "Maximum reduction (VND)"
             },
             "dashboards": {
                 "name": "Name driver",
@@ -306,6 +337,8 @@
         "passNew": "Password New :",
         "confirm": "Confirm Password",
         "save": "Save",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "pass": "Password",
+        "upload": "Upload"
     }
 }

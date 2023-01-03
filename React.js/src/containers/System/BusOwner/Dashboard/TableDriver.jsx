@@ -162,12 +162,14 @@ export default class TableDriver extends Component {
         }
 
         arr = arrDrivers;
-        arr.forEach((item) => {
-            let test = item.User.Trips.filter((i) => {
-                return time[0] <= +i.timeStart && +i.timeEnd <= time[1];
+        arr &&
+            arr.length > 0 &&
+            arr.forEach((item) => {
+                let test = item.User.Trips.filter((i) => {
+                    return time[0] <= +i.timeStart && +i.timeEnd <= time[1];
+                });
+                item.test = test;
             });
-            item.test = test;
-        });
         this.setState({
             listDrivers: arrDrivers,
             time,
@@ -235,7 +237,9 @@ export default class TableDriver extends Component {
                                         let totalPrice = 0;
                                         let tickets = item.test;
                                         tickets.length > 0 &&
-                                            tickets.map((item) => (totalPrice = totalPrice + item.total));
+                                            tickets.map(
+                                                (item) => (totalPrice = totalPrice + item.total)
+                                            );
                                         return (
                                             <tr>
                                                 <td>{item.driverId}</td>

@@ -38,6 +38,7 @@ class ModalTicket extends Component {
         if (!img) {
             if (language === "vi") toast.error("Vui lòng chọn vé xe");
             else toast.error("Please select bus ticket");
+            this.props.parentCallback2(false);
         } else {
             this.props.sendEmail();
             let res = await sendTicket({ token, tripId, img, name, email });

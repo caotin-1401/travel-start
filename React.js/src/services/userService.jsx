@@ -221,7 +221,9 @@ const deleteScheduleService = (userId) => {
 };
 
 const getAllTripHomeService = (areaStartId, areaEndId, dateStart) => {
-    return axios.get(`/api/show-all-schedule?areaStartId=${areaStartId}&areaEndId=${areaEndId}&dateStart=${dateStart}`);
+    return axios.get(
+        `/api/show-all-schedule?areaStartId=${areaStartId}&areaEndId=${areaEndId}&dateStart=${dateStart}`
+    );
 };
 const getForgotPasswordService = (email, token) => {
     return axios.get(`/api/get-forgot-password?email=${email}&token=${token}`);
@@ -245,10 +247,19 @@ const getDriverTickets = (inputId, dayStart) => {
     return axios.get(`/api/get-driver-ticket?driverId=${inputId}&dayStart=${dayStart}`);
 };
 const getDriverTicketsRoute = (inputId, dayStart, tripId) => {
-    return axios.get(`/api/get-driver-ticket-route?driverId=${inputId}&dayStart=${dayStart}&tripId=${tripId}`);
+    return axios.get(
+        `/api/get-driver-ticket-route?driverId=${inputId}&dayStart=${dayStart}&tripId=${tripId}`
+    );
 };
 const getAllRouteFromDateDriver = (inputId, dayStart) => {
-    return axios.get(`/api/get-all-route-from-date-driver?driverId=${inputId}&dayStart=${dayStart}`);
+    return axios.get(
+        `/api/get-all-route-from-date-driver?driverId=${inputId}&dayStart=${dayStart}`
+    );
+};
+const getAllTicketFromDateDriver = (inputId, dayStart) => {
+    return axios.get(
+        `/api/get-all-ticket-from-date-driver?driverId=${inputId}&dayStart=${dayStart}`
+    );
 };
 
 //verify
@@ -437,4 +448,5 @@ export {
     handEditPassenger,
     getAllVehicleFromOneStation,
     getTripsFromBusCompany,
+    getAllTicketFromDateDriver,
 };

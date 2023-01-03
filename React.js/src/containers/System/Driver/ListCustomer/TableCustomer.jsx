@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import { TableBody, TableContainer, Paper, Table } from "@mui/material";
-import localization from "moment/locale/vi";
+import { TableBody, TableContainer, Paper, Table, Stack, TextField } from "@mui/material";
 import moment from "moment";
-import DatePicker from "../../../../components/DatePicker";
 import { Row, Col } from "reactstrap";
 import ModalInfo from "./ModalInfo";
 import { toast } from "react-toastify";
@@ -19,6 +17,11 @@ import {
     getDriverTicketsRoute,
     getAllRouteFromDateDriver,
 } from "../../../../services/userService";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import "dayjs/locale/vi";
 class TableCustomer extends Component {
     constructor(props) {
         super(props);
@@ -40,9 +43,9 @@ class TableCustomer extends Component {
 
     getAllTickets = async () => {
         let id = this.props.userInfo.id;
-        let date = moment(new Date().getTime()).format("L");
+        let date = moment(new Date().getTime()).format("MM/DD/YYYY");
         let str = "00:00";
-        let [day, month, year] = date.split("/");
+        let [month, day, year] = date.split("/");
         let [hours, minutes] = str.split(":");
         let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
         let res = await getAllRouteFromDateDriver(id, date1.getTime());
@@ -50,30 +53,29 @@ class TableCustomer extends Component {
             res.tickets &&
             this.setState({
                 listRoute: res.tickets,
-                time: moment(new Date()).format("L"),
+                time: moment(new Date()).format("MM/DD/YYYY"),
+                dateStartTrip: date1.getTime(),
             });
     };
 
     handleOnChange = async (data) => {
-        console.log(data[0].getTime());
-        if (data.length === 1) {
-            this.setState({
-                listRoute: [],
-                time: data[0].getTime(),
-            });
-            let test;
-            data && (test = data[0].getTime());
-            let id = this.props.userInfo.id;
-            let res = await getAllRouteFromDateDriver(id, test);
-            res &&
-                res.tickets &&
-                this.setState({
-                    listRoute: res.tickets,
-                    time: data[0].getTime(),
-                });
-        }
         this.setState({
-            dateStartTrip: data[0].getTime(),
+            listRoute: [],
+            time: data.$d.getTime(),
+        });
+        let test;
+        data && (test = data.$d.getTime());
+        let id = this.props.userInfo.id;
+        let res = await getAllRouteFromDateDriver(id, test);
+        res &&
+            res.tickets &&
+            this.setState({
+                listRoute: res.tickets,
+                time: data.$d.getTime(),
+            });
+
+        this.setState({
+            dateStartTrip: data.$d.getTime(),
         });
     };
     handleBeginTrip = async (item) => {
@@ -142,8 +144,8 @@ class TableCustomer extends Component {
     handleCheck = async (item) => {
         let { dateStartTrip, idDriver } = this.state;
         let res;
-        if (!dateStartTrip) {
-            let test = moment(new Date().getTime()).format("L");
+        if (dateStartTrip.length === 10) {
+            let test = moment(new Date().getTime()).format("DD/MM/YYYY");
             let str = "00:00";
             let [day, month, year] = test.split("/");
             let [hours, minutes] = str.split(":");
@@ -193,7 +195,43 @@ class TableCustomer extends Component {
             isOpenModel: !this.state.isOpenModel,
         });
     };
-
+    theme = createTheme({
+        components: {
+            MuiInputBase: {
+                styleOverrides: {
+                    root: {
+                        height: 38,
+                        backgroundColor: "white",
+                    },
+                    input: {
+                        height: 1.5,
+                        padding: 0,
+                    },
+                },
+            },
+            MuiOutlinedInput: {
+                styleOverrides: {
+                    notchedOutline: {
+                        borderColor: "#CED4DA!important",
+                    },
+                },
+            },
+            MuiButtonBase: {
+                styleOverrides: {
+                    root: {
+                        color: "#000000!important",
+                    },
+                },
+            },
+            MuiPickersDay: {
+                styleOverrides: {
+                    root: {
+                        fontSize: "14px",
+                    },
+                },
+            },
+        },
+    });
     render() {
         let { language } = this.props;
         let { time, listRoute, isOpenModel, listUser } = this.state;
@@ -217,23 +255,33 @@ class TableCustomer extends Component {
                             <label htmlFor="schedule1">
                                 <FormattedMessage id="menu.driver.selectday" />
                             </label>
-                            <span className="form-control mb-4" style={{ height: "38px" }} htmlFor="schedule1">
-                                <DatePicker
-                                    locale="vi"
-                                    style={{ border: "none" }}
-                                    onChange={this.handleOnChange}
-                                    id="schedule1"
-                                    value={time}
-                                    selected={time}
-                                />
-                                <label htmlFor="schedule1" style={{ float: "right" }}>
-                                    <i
-                                        className="far fa-calendar-alt"
-                                        style={{
-                                            fontSize: "20px",
-                                        }}></i>
-                                </label>
-                            </span>
+                            <ThemeProvider theme={this.theme}>
+                                {language === "vi" ? (
+                                    <LocalizationProvider
+                                        dateAdapter={AdapterDayjs}
+                                        adapterLocale="vi">
+                                        <Stack>
+                                            <DatePicker
+                                                value={time}
+                                                onChange={this.handleOnChange}
+                                                renderInput={(params) => <TextField {...params} />}
+                                                dayOfWeekFormatter={(day) => `${day}.`}
+                                            />
+                                        </Stack>
+                                    </LocalizationProvider>
+                                ) : (
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <Stack>
+                                            <DatePicker
+                                                value={time}
+                                                onChange={this.handleOnChange}
+                                                renderInput={(params) => <TextField {...params} />}
+                                                dayOfWeekFormatter={(day) => `${day}.`}
+                                            />
+                                        </Stack>
+                                    </LocalizationProvider>
+                                )}
+                            </ThemeProvider>
                         </Col>
                     </Row>
                     <div className="user-container">
@@ -299,9 +347,9 @@ class TableCustomer extends Component {
                                     {listRoute.map((item, index) => {
                                         let time;
                                         if (language === "vi") {
-                                            time = ` ${moment(+item.timeStart).format("LT")}${" - "} ${moment(
-                                                +item.timeEnd
-                                            ).format("LT")}`;
+                                            time = ` ${moment(+item.timeStart).format(
+                                                "HH:mm"
+                                            )}${" - "} ${moment(+item.timeEnd).format("HH:mm")}`;
                                         } else {
                                             time = ` ${moment(+item.timeStart)
                                                 .locale("en")
@@ -309,7 +357,6 @@ class TableCustomer extends Component {
                                                 .locale("en")
                                                 .format("LT")}`;
                                         }
-
                                         return (
                                             <tr key={index}>
                                                 <td className="section-id-list">{item.id}</td>
@@ -329,7 +376,9 @@ class TableCustomer extends Component {
                                                                 width: "100px",
                                                             }}
                                                             className="btn btn-primary"
-                                                            onClick={() => this.handleBeginTrip(item)}>
+                                                            onClick={() =>
+                                                                this.handleBeginTrip(item)
+                                                            }>
                                                             <FormattedMessage id="menu.driver.start" />
                                                         </button>
                                                     ) : +item.status === 2 ? (
@@ -338,7 +387,9 @@ class TableCustomer extends Component {
                                                                 width: "100px",
                                                             }}
                                                             className="btn btn-warning"
-                                                            onClick={() => this.handleEndTrip(item)}>
+                                                            onClick={() =>
+                                                                this.handleEndTrip(item)
+                                                            }>
                                                             <FormattedMessage id="menu.driver.end" />
                                                         </button>
                                                     ) : (

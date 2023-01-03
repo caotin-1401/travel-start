@@ -99,11 +99,12 @@ class RouteManage extends Component {
         });
     };
     handleSort = (a, b) => {
-        this.state.listTrips = _.orderBy(this.state.listTrips, [b], [a]);
+        let clone = this.state.listTrips;
+        clone = _.orderBy(clone, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            listTrips: this.state.listTrips,
+            listTrips: clone,
         });
     };
     handleKeyword = (e, target) => {

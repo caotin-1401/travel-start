@@ -97,25 +97,19 @@ class ModalInfo extends Component {
                             <Table>
                                 <TableBody>
                                     <tr>
-                                        <th>Id</th>
                                         <th className="section-id-list">
-                                            {" "}
                                             <FormattedMessage id="menu.driver.name" />
                                         </th>
                                         <th className="section-id-list">
-                                            {" "}
                                             <FormattedMessage id="menu.driver.phone" />
                                         </th>
                                         <th className="section-id-list">
-                                            {" "}
                                             <FormattedMessage id="menu.driver.seat" />
                                         </th>
                                         <th className="section-id-list">
-                                            {" "}
                                             <FormattedMessage id="menu.driver.pay" />
                                         </th>
                                         <th className="section-id-list">
-                                            {" "}
                                             <FormattedMessage id="menu.driver.description" />
                                         </th>
                                         <th
@@ -134,17 +128,18 @@ class ModalInfo extends Component {
                                             totalPrice = totalPrice + item.totalPrice;
                                             return (
                                                 <tr key={index}>
-                                                    <td className="section-id-list">{item.id}</td>
                                                     <td>{item.name}</td>
                                                     <td>{item.phone}</td>
                                                     <td>{test}</td>
                                                     <td>
                                                         {language === "vi"
                                                             ? this.currencyFormat(item.totalPrice)
-                                                            : this.currencyFormatEn(item.totalPrice)}
+                                                            : this.currencyFormatEn(
+                                                                  item.totalPrice
+                                                              )}
                                                     </td>
                                                     <td>{item.description}</td>
-                                                    <td>
+                                                    <td className="center">
                                                         {item.Trip.status === 3 ? (
                                                             <></>
                                                         ) : !item.isPresent ? (
@@ -154,7 +149,9 @@ class ModalInfo extends Component {
                                                                 </button>
                                                                 <button
                                                                     className="btn-edit"
-                                                                    onClick={() => this.handleCheck(item)}>
+                                                                    onClick={() =>
+                                                                        this.handleCheck(item)
+                                                                    }>
                                                                     <i className="fas fa-check"></i>
                                                                 </button>
                                                             </>
@@ -174,7 +171,7 @@ class ModalInfo extends Component {
                             </Table>
                         </TableContainer>
                         <div className="tatol_price">
-                            <FormattedMessage id="menu.driver.total" />:{" "}
+                            <FormattedMessage id="menu.driver.total" />:
                             <b>
                                 {language === "vi"
                                     ? this.currencyFormat(totalPrice)

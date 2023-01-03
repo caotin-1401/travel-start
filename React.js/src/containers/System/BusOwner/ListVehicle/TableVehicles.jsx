@@ -10,6 +10,7 @@ import { TableBody, TableContainer, TableFooter, TablePagination, TableRow, Pape
 import { toast } from "react-toastify";
 import { getAllVehiclesService, deleteVehicleService } from "../../../../services/userService";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
+import "../style.scss";
 
 class ListVehicles extends Component {
     constructor(props) {
@@ -18,6 +19,7 @@ class ListVehicles extends Component {
             isOpenModel: false,
             isOpenModelEdit: false,
             ListVehicles: [],
+            ListVehiclesALL: [],
             sortBy: "",
             sortField: "",
             page: 0,
@@ -32,12 +34,21 @@ class ListVehicles extends Component {
     async componentDidMount() {
         await this.getAllVehicles();
     }
-
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.ListVehiclesALL !== this.state.ListVehiclesALL) {
+            let test = this.state.ListVehiclesALL.filter(
+                (item) => item.busOwnerId && item.busOwnerId === this.props.userInfo.id
+            );
+            this.setState({
+                ListVehicles: test,
+            });
+        }
+    }
     getAllVehicles = async () => {
         let res = await getAllVehiclesService("ALL");
         if (res && res.errCode === 0) {
             this.setState({
-                ListVehicles: res.vehicles,
+                ListVehiclesALL: res.vehicles,
             });
         }
     };
@@ -71,7 +82,6 @@ class ListVehicles extends Component {
         }
     };
     handleEditUser = (user) => {
-        console.log(user);
         this.setState({
             isOpenModelEditUser: true,
             userEdit: user,
@@ -110,29 +120,12 @@ class ListVehicles extends Component {
             ListVehicles: clone,
         });
     };
+
     handleKeyword = (e) => {
         let term = e.target.value.toUpperCase();
         let clone = this.state.ListVehicles;
-
         if (term) {
-            clone = clone.filter((item) => item.from.name.includes(term));
-            this.setState({
-                test1: clone,
-                isTest: true,
-            });
-        } else {
-            this.setState({
-                isTest: false,
-            });
-            this.getAllVehicles();
-        }
-    };
-    handleKeyword1 = (e) => {
-        let term = e.target.value.toUpperCase();
-        let clone = this.state.ListVehicles;
-
-        if (term) {
-            clone = clone.filter((item) => item.to.name.includes(term));
+            clone = clone.filter((item) => item.number.includes(term));
             this.setState({
                 test1: clone,
                 isTest: true,
@@ -148,13 +141,19 @@ class ListVehicles extends Component {
         let { page, rowsPerPage, ListVehicles, test, test1, isTest, isOpenModelEditUser, isOpenModel } = this.state;
         isTest === true ? (test = test1) : (test = ListVehicles);
         let { language } = this.props;
-        let mes1, mes2;
+        let mes1, mes2, mes, mes3, mes4;
         if (language === "vi") {
             mes1 = "Trong bến";
             mes2 = "Đang chạy";
+            mes = "Tìm xe";
+            mes3 = "Sửa thông tin";
+            mes4 = "Xóa";
         } else {
             mes1 = "In the depot";
             mes2 = "Running...";
+            mes = "Search vehicles";
+            mes3 = "Edit";
+            mes4 = "Delete";
         }
         return (
             <div className="container form-redux">
@@ -176,12 +175,25 @@ class ListVehicles extends Component {
                     <div className="title text-center">
                         <FormattedMessage id="menu.busOwner.vehicle.title" />
                     </div>
-                    <div className="mx-5 my-3">
-                        <button className="btn btn-primary px-3 w130" onClick={() => this.handleAddVehicle()}>
-                            <i className="fas fa-plus px-1 "></i>
-                            <FormattedMessage id="menu.admin.listBusType.add" />
-                        </button>
+                    <div className="chart_title">
+                        <div className="chart_item-left">
+                            <div className="mx-5 my-3">
+                                <button className="btn btn-primary px-3 w130" onClick={() => this.handleAddVehicle()}>
+                                    <i className="fas fa-plus px-1 "></i>
+                                    <FormattedMessage id="menu.admin.listBusType.add" />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="chart_item">
+                            <input
+                                placeholder={mes}
+                                className="form-control"
+                                style={{ width: "280px", height: "38px" }}
+                                onChange={(e) => this.handleKeyword(e)}
+                            />
+                        </div>
                     </div>
+
                     <div className="use-table m-3">
                         <TableContainer component={Paper} id="customers">
                             <Table>
@@ -200,19 +212,7 @@ class ListVehicles extends Component {
                                                 width: "20%",
                                             }}>
                                             <div className="section-title">
-                                                <div>
-                                                    <FormattedMessage id="menu.busOwner.vehicle.bsx" />
-                                                </div>
-                                                <div>
-                                                    <FaLongArrowAltDown
-                                                        className="iconSortDown"
-                                                        onClick={() => this.handleSort("asc", "number")}
-                                                    />
-                                                    <FaLongArrowAltUp
-                                                        className="iconSortDown"
-                                                        onClick={() => this.handleSort("desc", "number")}
-                                                    />
-                                                </div>
+                                                <FormattedMessage id="menu.busOwner.vehicle.bsx" />
                                             </div>
                                         </th>
                                         <th
@@ -250,36 +250,18 @@ class ListVehicles extends Component {
                                                 width: "15%",
                                             }}
                                             className="section-id-list">
+                                            <FormattedMessage id="menu.admin.listLocations.action" />{" "}
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: "10%",
+                                            }}
+                                            className="section-id-list">
                                             <FormattedMessage id="menu.busOwner.vehicle.img" />
                                         </th>
-                                        <th
-                                            style={{
-                                                width: "10%",
-                                            }}
-                                            className="section-id-list">
-                                            Trangj thais
-                                        </th>
-                                        <th
-                                            style={{
-                                                width: "10%",
-                                            }}
-                                            className="section-id-list">
-                                            <FormattedMessage id="menu.admin.listLocations.action" />
-                                        </th>
+                                        <th></th>
                                     </tr>
-                                    <tr style={{ height: "50px" }}>
-                                        <td></td>
-                                        <td>
-                                            <input className="form-control" onChange={(e) => this.handleKeyword(e)} />
-                                        </td>
-                                        <td>
-                                            <input className="form-control" onChange={(e) => this.handleKeyword1(e)} />
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
+
                                     {(rowsPerPage > 0
                                         ? test.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         : test
@@ -307,16 +289,16 @@ class ListVehicles extends Component {
                                                     style={{
                                                         backgroundImage: `url(${item && item.image ? item.image : ""})`,
                                                     }}></td>
-                                                <td className="section-id-list">
+                                                <td className="center">
                                                     <button
                                                         className="btn-edit"
-                                                        title="Edit"
+                                                        title={mes3}
                                                         onClick={() => this.handleEditUser(item)}>
                                                         <i className="fas fa-edit"></i>
                                                     </button>
                                                     <button
                                                         className="btn-delete"
-                                                        title="Delete"
+                                                        title={mes4}
                                                         onClick={() => this.handleDeleteVehicle(item)}>
                                                         <i className="fas fa-trash-alt"></i>
                                                     </button>

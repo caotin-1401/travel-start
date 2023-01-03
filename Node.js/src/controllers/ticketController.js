@@ -85,11 +85,7 @@ let getDriverTicketRoute = async (req, res) => {
                 tickets: [],
             });
         }
-        let tickets = await ticketService.getDriverTicketRoute(
-            driverId,
-            dayStart,
-            routeId
-        );
+        let tickets = await ticketService.getDriverTicketRoute(driverId, dayStart, routeId);
 
         return res.status(200).json({
             errCode: 0,
@@ -157,10 +153,7 @@ let deleteTicket = async (req, res) => {
                 errMessage: "Missing required parameter",
             });
         }
-        let message = await ticketService.deleteTicket(
-            req.body.tripId,
-            req.body.token
-        );
+        let message = await ticketService.deleteTicket(req.body.tripId, req.body.token);
         return res.status(200).json(message);
     } catch (e) {
         return res.status(200).json({
@@ -180,10 +173,32 @@ let getAllRouteFromDateDriver = async (req, res) => {
                 tickets: [],
             });
         }
-        let tickets = await ticketService.getAllRouteFromDateDriver(
-            driverId,
-            dayStart
-        );
+        let tickets = await ticketService.getAllRouteFromDateDriver(driverId, dayStart);
+
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            tickets,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
+let getAllTicketFromDateDriver = async (req, res) => {
+    try {
+        let driverId = req.query.driverId;
+        let dayStart = req.query.dayStart;
+        if (!driverId) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+                tickets: [],
+            });
+        }
+        let tickets = await ticketService.getAllTicketFromDateDriver(driverId, dayStart);
 
         return res.status(200).json({
             errCode: 0,
@@ -221,4 +236,5 @@ module.exports = {
     deleteTicket,
     getAllRouteFromDateDriver,
     sendTickets,
+    getAllTicketFromDateDriver,
 };

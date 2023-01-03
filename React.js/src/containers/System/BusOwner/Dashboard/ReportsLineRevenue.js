@@ -127,6 +127,7 @@ class ReportsLineRevenue extends Component {
                 week.map((trip) => (temp = temp + trip.total));
             }
             arrRevenueWeek.push(temp);
+            return arrRevenueWeek;
         });
         handleArrMonth.map((item) => {
             let temp = 0;
@@ -139,6 +140,7 @@ class ReportsLineRevenue extends Component {
                 month.map((trip) => (temp = temp + trip.total));
             }
             arrRevenueMonth.push(temp);
+            return arrRevenueMonth;
         });
         this.setState({ listWeek: arrRevenueWeek, listMonths: arrRevenueMonth });
     };

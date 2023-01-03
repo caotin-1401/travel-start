@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
-import { LANGUAGES } from "../../../utils";
 import "./Route.scss";
 import { getAllTripHomeService } from "../../../services/userService";
 import moment from "moment";
@@ -15,39 +14,13 @@ import NotFoundTrip from "../../../assets/NotFoundTrip.png";
 import { toast } from "react-toastify";
 import LoadingOverlay from "react-loading-overlay-ts";
 import _ from "lodash";
+import { customStyles } from "./styleInput";
 import Header from "../../HomePage/Header";
 import HomeFooter from "../../HomePage/Section/HomeFooter";
 import SkeletonLoading from "./SkeletonLoading";
-import { Slider, Box } from "@mui/material";
-import { Row, Col } from "reactstrap";
-const customStyles = {
-    control: () => ({
-        border: "none",
-        display: "flex",
-        position: "relative",
-        boxSizing: "border-box",
-        flexWrap: "wrap",
-        transition: "all 100ms",
-        justifyContent: "space-between",
-    }),
-    valueContainer: () => ({
-        width: 290,
-        height: 27,
-        alignItems: "center",
-        flexWrap: "wrap",
-        padding: "2px 10px",
-        overflow: "hidden",
-        position: "relative",
-        boxSizing: "border-box",
-        display: "grid",
-    }),
-    indicatorSeparator: () => ({
-        display: "none",
-    }),
-    placeholder: () => ({
-        display: "display",
-    }),
-};
+import ChoosePrice from "./ChoosePrice";
+import ChooseTime from "./ChooseTime";
+
 class BusRoute extends Component {
     constructor(props) {
         super(props);
@@ -63,8 +36,8 @@ class BusRoute extends Component {
             previewImgURL: "",
             isSort: "",
             loading: false,
-            value: [0, 1000000],
             current: 0,
+            value: [0, 1000000],
             selectButton1: false,
             selectButton2: false,
             selectButton3: false,
@@ -161,7 +134,6 @@ class BusRoute extends Component {
             let dayChoose;
             if (this.state.dateStartTrip.length === 10) {
                 let [day] = this.state.dateStartTrip.split("/");
-                console.log(day);
                 dayChoose = day;
             } else {
                 dayChoose = moment(this.state.dateStartTrip).format("DD");
@@ -183,6 +155,7 @@ class BusRoute extends Component {
                 obj.label = item.name;
                 obj.value = item.id;
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -273,6 +246,45 @@ class BusRoute extends Component {
     currencyFormat(num) {
         return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
     }
+    callbackFunctionPrice = (arrMouse, isMouse) => {
+        this.setState({ arrMouse: arrMouse, isMouse: isMouse });
+    };
+    callbackFunctionValue = (value) => {
+        this.setState({ value: value });
+    };
+    callbackFunctionButton1 = (arrTemp, isTemp, selectButton1) => {
+        this.setState({
+            arrTemp: arrTemp,
+            isTemp: isTemp,
+            selectButton1: selectButton1,
+        });
+    };
+    callbackFunctionButton2 = (arrTemp, isTemp, selectButton2) => {
+        this.setState({
+            arrTemp: arrTemp,
+            isTemp: isTemp,
+            selectButton2: selectButton2,
+        });
+    };
+    callbackFunctionButton3 = (arrTemp, isTemp, selectButton3) => {
+        this.setState({
+            arrTemp: arrTemp,
+            isTemp: isTemp,
+            selectButton3: selectButton3,
+        });
+    };
+    callbackFunctionButton4 = (arrTemp, isTemp, selectButton4) => {
+        this.setState({
+            arrTemp: arrTemp,
+            isTemp: isTemp,
+            selectButton4: selectButton4,
+        });
+    };
+    callbackFunctionTemp = (isTemp) => {
+        this.setState({
+            isTemp: false,
+        });
+    };
     callbackFunction1 = (isActive) => {
         this.setState({
             isActive: true,
@@ -310,541 +322,7 @@ class BusRoute extends Component {
             }
         } else this.setState({ current: 1 });
     };
-    handleChange = (value) => {
-        this.setState({ value: value.target.value });
-    };
-    handleMouseLeave = () => {
-        let { value, arrRoute } = this.state;
-        let arrMouse = [];
 
-        arrRoute.length > 0 &&
-            (arrMouse = arrRoute.filter((item) => {
-                return item.price <= value[1] && item.price >= value[0];
-            }));
-        if (arrMouse.length === arrRoute.length)
-            this.setState({
-                arrMouse: arrRoute,
-                isMouse: false,
-            });
-        else
-            this.setState({
-                arrMouse: arrMouse,
-                isMouse: true,
-            });
-    };
-    handleButton1 = () => {
-        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute } = this.state;
-        let arr = [];
-        let temp = false;
-        if (selectButton1 === false) {
-            if (selectButton4 === true && selectButton2 === true && selectButton3 === true) {
-                arr = arrRoute;
-                temp = true;
-            }
-            if (selectButton2 === false && selectButton3 === false && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6;
-                    }));
-            }
-            if (selectButton2 === false && selectButton3 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6 || +time >= 18;
-                    }));
-            }
-            if (selectButton2 === false && selectButton3 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6 || (+time >= 12 && +time < 18);
-                    }));
-            }
-            if (selectButton2 === true && selectButton3 === false && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 12;
-                    }));
-            }
-            if (selectButton2 === true && selectButton3 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 18;
-                    }));
-            }
-            if (selectButton2 === true && selectButton3 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 12 || +time >= 18;
-                    }));
-            }
-            if (selectButton2 === false && selectButton3 === true && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6 || +time >= 12;
-                    }));
-            }
-        }
-        if (selectButton1 === true) {
-            if (selectButton2 === false && selectButton3 === false && selectButton4 === false) {
-                arr = arrRoute;
-                temp = true;
-            }
-            if (selectButton2 === false && selectButton3 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 18;
-                    }));
-            }
-            if (selectButton2 === false && selectButton3 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 12 && +time < 18;
-                    }));
-            }
-            if (selectButton2 === true && selectButton3 === false && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6 && +time < 12;
-                    }));
-            }
-            if (selectButton2 === true && selectButton3 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6 && +time < 18;
-                    }));
-            }
-            if (selectButton2 === true && selectButton3 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return (+time >= 6 && +time < 12) || +time >= 18;
-                    }));
-            }
-            if (selectButton2 === false && selectButton3 === true && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 12;
-                    }));
-            }
-            if (selectButton2 === true && selectButton3 === true && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6;
-                    }));
-            }
-        }
-        if (temp === true) {
-            this.setState({
-                arrTemp: arrRoute,
-                isTemp: false,
-                selectButton1: !this.state.selectButton1,
-            });
-        } else
-            this.setState({
-                arrTemp: arr,
-                isTemp: true,
-                selectButton1: !this.state.selectButton1,
-            });
-    };
-    handleButton2 = () => {
-        this.setState({ isTemp: false });
-        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute } = this.state;
-        let arr = [];
-        let temp = false;
-        if (selectButton2 === false) {
-            if (selectButton1 === true && selectButton4 === true && selectButton3 === true) {
-                arr = arrRoute;
-                temp = true;
-            }
-            if (selectButton1 === false && selectButton3 === false && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6 && +time < 12;
-                    }));
-            }
-            if (selectButton1 === false && selectButton3 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return (+time >= 6 && +time < 12) || +time >= 18;
-                    }));
-            }
-            if (selectButton1 === false && selectButton3 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6 && +time < 18;
-                    }));
-            }
-            if (selectButton1 === true && selectButton3 === false && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 12;
-                    }));
-            }
-            if (selectButton1 === true && selectButton3 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 18;
-                    }));
-            }
-            if (selectButton1 === true && selectButton3 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 12 || +time >= 18;
-                    }));
-            }
-            if (selectButton1 === false && selectButton3 === true && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6;
-                    }));
-            }
-        }
-        if (selectButton2 === true) {
-            if (selectButton1 === false && selectButton3 === false && selectButton4 === false) {
-                arr = arrRoute;
-                temp = true;
-            }
-            if (selectButton1 === false && selectButton3 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 18;
-                    }));
-            }
-            if (selectButton1 === false && selectButton3 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 12 && +time < 18;
-                    }));
-            }
-            if (selectButton1 === true && selectButton3 === false && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6;
-                    }));
-            }
-            if (selectButton1 === true && selectButton3 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6 || (+time >= 12 && +time < 18);
-                    }));
-            }
-            if (selectButton1 === true && selectButton3 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 12 || +time >= 18;
-                    }));
-            }
-            if (selectButton1 === false && selectButton3 === true && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 12;
-                    }));
-            }
-            if (selectButton1 === true && selectButton3 === true && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6 || +time > 12;
-                    }));
-            }
-        }
-
-        if (temp === true) {
-            this.setState({
-                arrTemp: arrRoute,
-                isTemp: false,
-                selectButton2: !this.state.selectButton2,
-            });
-        } else
-            this.setState({
-                arrTemp: arr,
-                isTemp: true,
-                selectButton2: !this.state.selectButton2,
-            });
-    };
-    handleButton3 = () => {
-        this.setState({ isTemp: false });
-        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute } = this.state;
-        let arr = [];
-        let temp = false;
-        if (selectButton3 === false) {
-            if (selectButton1 === false && selectButton2 === false && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 12 && +time < 18;
-                    }));
-            }
-            if (selectButton1 === false && selectButton2 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 12;
-                    }));
-            }
-            if (selectButton1 === false && selectButton2 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6 && +time < 18;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === false && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6 || (+time >= 12 && +time < 18);
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 18;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6 || +time >= 12;
-                    }));
-            }
-            if (selectButton1 === false && selectButton2 === true && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === true && selectButton4 === true) {
-                arr = arrRoute;
-                temp = true;
-            }
-        }
-        if (selectButton3 === true) {
-            if (selectButton1 === false && selectButton2 === false && selectButton4 === false) {
-                arr = arrRoute;
-                temp = true;
-            }
-            if (selectButton1 === false && selectButton2 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 18;
-                    }));
-            }
-            if (selectButton1 === false && selectButton2 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6 && +time < 12;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === false && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6;
-                    }));
-            } //err
-            if (selectButton1 === true && selectButton2 === true && selectButton4 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 12;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === false && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6 || +time >= 18;
-                    }));
-            }
-            if (selectButton1 === false && selectButton2 === true && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return (+time >= 6 && +time < 12) || +time >= 18;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === true && selectButton4 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 12 || +time >= 18;
-                    }));
-            }
-        }
-
-        if (temp === true) {
-            this.setState({
-                arrTemp: arrRoute,
-                isTemp: false,
-                selectButton3: !this.state.selectButton3,
-            });
-        } else
-            this.setState({
-                arrTemp: arr,
-                isTemp: true,
-                selectButton3: !this.state.selectButton3,
-            });
-    };
-    handleButton4 = () => {
-        this.setState({ isTemp: false });
-        let { selectButton1, selectButton2, selectButton3, selectButton4, arrRoute } = this.state;
-        let arr = [];
-        let temp = false;
-        if (selectButton4 === false) {
-            if (selectButton1 === false && selectButton2 === false && selectButton3 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 18;
-                    }));
-            }
-            if (selectButton1 === false && selectButton2 === false && selectButton3 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 12;
-                    }));
-            }
-            if (selectButton1 === false && selectButton2 === true && selectButton3 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return (+time >= 6 && +time < 12) || +time >= 18;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === false && selectButton3 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return (+time >= 0 && +time < 6) || +time >= 18;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === true && selectButton3 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return (+time >= 0 && +time < 12) || +time >= 18;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === false && selectButton3 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return (+time >= 0 && +time < 6) || +time >= 12;
-                    }));
-            }
-            if (selectButton1 === false && selectButton2 === true && selectButton3 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === true && selectButton3 === true) {
-                arr = arrRoute;
-                temp = true;
-            }
-        }
-        if (selectButton4 === true) {
-            if (selectButton1 === false && selectButton2 === false && selectButton3 === false) {
-                arr = arrRoute;
-                temp = true;
-            }
-            if (selectButton1 === false && selectButton2 === false && selectButton3 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 12 && +time < 18;
-                    }));
-            }
-            if (selectButton1 === false && selectButton2 === true && selectButton3 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6 && +time < 12;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === false && selectButton3 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6;
-                    }));
-            } //err
-            if (selectButton1 === true && selectButton2 === true && selectButton3 === false) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 12;
-                    }));
-            }
-            if (selectButton1 === true && selectButton2 === false && selectButton3 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 6 || (+time >= 12 && +time < 18);
-                    }));
-            }
-            if (selectButton1 === false && selectButton2 === true && selectButton3 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time >= 6 && +time < 18;
-                    }));
-            }
-            if (selectButton2 === true && selectButton3 === true && selectButton1 === true) {
-                arrRoute.length > 0 &&
-                    (arr = arrRoute.filter((item, index) => {
-                        let time = moment(+item.timeStart).format("HH");
-                        return +time < 18;
-                    }));
-            }
-        }
-        if (temp === true)
-            this.setState({
-                arrTemp: arrRoute,
-                isTemp: false,
-                selectButton4: !this.state.selectButton4,
-            });
-        else
-            this.setState({
-                arrTemp: arr,
-                isTemp: true,
-                selectButton4: !this.state.selectButton4,
-            });
-    };
     handleReset = () => {
         this.setState({
             value: [0, 1000000],
@@ -856,20 +334,11 @@ class BusRoute extends Component {
             isMouse: false,
         });
     };
+
     render() {
-        let { arrRoute, dateStartTrip, selectLocaion1, selectLocaion2, isSort, loading } = this.state;
-        let {
-            value,
-            current,
-            selectButton1,
-            selectButton2,
-            selectButton3,
-            selectButton4,
-            arrMouse,
-            arrTemp,
-            isMouse,
-            isTemp,
-        } = this.state;
+        let { arrRoute, dateStartTrip, selectLocaion1, selectLocaion2, isSort, loading } =
+            this.state;
+        let { current, arrMouse, arrTemp, isMouse, isTemp } = this.state;
         let arr1 = [];
         let arr2 = [];
         let arrFinish = [];
@@ -880,6 +349,13 @@ class BusRoute extends Component {
         else if (isTemp === true) arr2 = arrTemp;
 
         arrFinish = _.intersectionWith(arr1, arr2, _.isEqual);
+
+        const commonProps = {
+            selectButton1: this.state.selectButton1,
+            selectButton2: this.state.selectButton2,
+            selectButton3: this.state.selectButton3,
+            selectButton4: this.state.selectButton4,
+        };
         return (
             <div style={{ overflowX: "hidden" }}>
                 <LoadingOverlay active={this.state.isActive} spinner text="Loading ...">
@@ -908,7 +384,9 @@ class BusRoute extends Component {
                                 </div>
                                 <div className="inputItem">
                                     <label htmlFor="schedule1" style={{ float: "right" }}>
-                                        <i className="far fa-calendar-alt" style={{ fontSize: "20px" }}></i>
+                                        <i
+                                            className="far fa-calendar-alt"
+                                            style={{ fontSize: "20px" }}></i>
                                     </label>
                                     <DatePicker
                                         placeholder={"Chọn ngày"}
@@ -917,7 +395,9 @@ class BusRoute extends Component {
                                         id="schedule1"
                                         value={dateStartTrip}
                                         selected={this.state.dateStartTrip}
-                                        minDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+                                        minDate={
+                                            new Date(new Date().setDate(new Date().getDate() - 1))
+                                        }
                                     />
                                 </div>
                             </div>
@@ -938,7 +418,9 @@ class BusRoute extends Component {
                                                 <span className="boloctimkiem float-left">
                                                     <FormattedMessage id="routes.filter" />
                                                 </span>
-                                                <span className="xoaloc float-right" onClick={() => this.handleReset()}>
+                                                <span
+                                                    className="xoaloc float-right"
+                                                    onClick={() => this.handleReset()}>
                                                     <FormattedMessage id="routes.clean" />
                                                 </span>
                                             </div>
@@ -951,113 +433,38 @@ class BusRoute extends Component {
                                                     <h6 className="mt-3">
                                                         <FormattedMessage id="routes.time" />
                                                     </h6>
-                                                    <Row>
-                                                        <Col md={6}>
-                                                            <button
-                                                                className="item_choose"
-                                                                style={{
-                                                                    borderColor: `${
-                                                                        selectButton1 ? "#0B5ED8" : "#c0c0c0"
-                                                                    }`,
-                                                                    background: `${
-                                                                        selectButton1 ? "#F0F0F0 " : "white"
-                                                                    }`,
-                                                                }}
-                                                                onClick={() => this.handleButton1()}
-                                                                disabled={current === 1 ? false : true}>
-                                                                <div>
-                                                                    <FormattedMessage id="routes.dawn" />
-                                                                </div>
-                                                                <div>00:00 - 05:59</div>
-                                                            </button>
-                                                        </Col>
-                                                        <Col md={6}>
-                                                            <button
-                                                                style={{
-                                                                    borderColor: `${
-                                                                        selectButton2 ? "#0B5ED8" : "#c0c0c0"
-                                                                    }`,
-                                                                    background: `${
-                                                                        selectButton2 ? "#F0F0F0 " : "white"
-                                                                    }`,
-                                                                }}
-                                                                onClick={() => this.handleButton2()}
-                                                                className="item_choose"
-                                                                disabled={
-                                                                    current === 2 || current === 1 ? false : true
-                                                                }>
-                                                                <div>
-                                                                    <FormattedMessage id="routes.morning" />
-                                                                </div>
-                                                                <div>06:00 - 11:59</div>
-                                                            </button>
-                                                        </Col>
-                                                    </Row>
-                                                    <Row className="mt-3">
-                                                        <Col md={6}>
-                                                            <button
-                                                                style={{
-                                                                    borderColor: `${
-                                                                        selectButton3 ? "#0B5ED8" : "#c0c0c0"
-                                                                    }`,
-                                                                    background: `${
-                                                                        selectButton3 ? "#F0F0F0 " : "white"
-                                                                    }`,
-                                                                }}
-                                                                onClick={() => this.handleButton3()}
-                                                                className="item_choose"
-                                                                disabled={
-                                                                    current === 2 || current === 1 || current === 3
-                                                                        ? false
-                                                                        : true
-                                                                }>
-                                                                <div>
-                                                                    <FormattedMessage id="routes.afternoon" />
-                                                                </div>
-                                                                <div>12:00 - 17:59</div>
-                                                            </button>
-                                                        </Col>
-                                                        <Col md={6}>
-                                                            <button
-                                                                style={{
-                                                                    borderColor: `${
-                                                                        selectButton4 ? "#0B5ED8" : "#c0c0c0"
-                                                                    }`,
-                                                                    background: `${
-                                                                        selectButton4 ? "#F0F0F0 " : "white"
-                                                                    }`,
-                                                                }}
-                                                                onClick={() => this.handleButton4()}
-                                                                className="item_choose">
-                                                                <div>
-                                                                    <FormattedMessage id="routes.evening" />
-                                                                </div>
-                                                                <div>18:00 - 23:59</div>
-                                                            </button>
-                                                        </Col>
-                                                    </Row>
+
+                                                    <ChooseTime
+                                                        arrRoute={arrRoute}
+                                                        current={current}
+                                                        test={commonProps}
+                                                        parentCallback={this.callbackFunctionTemp}
+                                                        parentCallback1={
+                                                            this.callbackFunctionButton1
+                                                        }
+                                                        parentCallback2={
+                                                            this.callbackFunctionButton2
+                                                        }
+                                                        parentCallback3={
+                                                            this.callbackFunctionButton3
+                                                        }
+                                                        parentCallback4={
+                                                            this.callbackFunctionButton4
+                                                        }
+                                                    />
                                                     <h6 className="mt-3">
                                                         <FormattedMessage id="routes.price" />
                                                     </h6>
-                                                    <Box sx={{ width: 280 }}>
-                                                        <Slider
-                                                            getAriaLabel={() => "Temperature range"}
-                                                            value={value}
-                                                            min={0}
-                                                            max={1000000}
-                                                            step={50000}
-                                                            onMouseUp={this.handleMouseLeave}
-                                                            onChange={(e) => this.handleChange(e)}
-                                                            valueLabelDisplay="auto"
-                                                        />
-                                                    </Box>
-                                                    {/* <Slider range min={0} max={2000000} defaultValue={[0, 2000000]} /> */}
-                                                    <div className="filter_b">
-                                                        <span>{this.currencyFormat(value[0])}</span>
-                                                        <span className="float-end">
-                                                            {this.currencyFormat(value[1])}
-                                                        </span>
-                                                    </div>
+                                                    <ChoosePrice
+                                                        arrRoute={arrRoute}
+                                                        value={this.state.value}
+                                                        parentCallbackPrice={
+                                                            this.callbackFunctionPrice
+                                                        }
+                                                        parentCallbackValue={
+                                                            this.callbackFunctionValue
+                                                        }
+                                                    />
                                                 </div>
                                                 <div className="filter_brand">
                                                     <h6 className="mt-3">
@@ -1070,8 +477,14 @@ class BusRoute extends Component {
                                                     />
                                                     <div className="listNhaXe mt-3">
                                                         <div className="d-flex align-items-center">
-                                                            <input type="checkbox" name="nhaxe" id="nhaxe" />
-                                                            <label className="nhaxe mb-0 ml-2" htmlFor="nhaxe">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="nhaxe"
+                                                                id="nhaxe"
+                                                            />
+                                                            <label
+                                                                className="nhaxe mb-0 ml-2"
+                                                                htmlFor="nhaxe">
                                                                 Hoàng Long (3)
                                                             </label>
                                                         </div>
@@ -1082,7 +495,6 @@ class BusRoute extends Component {
                                     </div>
                                     <div className="col-md-9 col-sm-12">
                                         <div className="route-result-count">
-                                            {/* <div className="route-header"> */}
                                             <div className="route-sort">
                                                 <div className="container-sub ">
                                                     <div className="w-30 fl">
@@ -1093,7 +505,9 @@ class BusRoute extends Component {
                                                                 <span>
                                                                     <FormattedMessage id="routes.has" />
                                                                 </span>
-                                                                <span className="f-bold">{arrRoute.length}</span>
+                                                                <span className="f-bold">
+                                                                    {arrFinish.length}
+                                                                </span>
                                                                 <span className="f-bold">
                                                                     <FormattedMessage id="routes.trip" />
                                                                 </span>
@@ -1106,18 +520,28 @@ class BusRoute extends Component {
                                                     <div className="w-70 fr">
                                                         <div
                                                             className="w-20"
-                                                            onClick={() => this.handleSort("asc", "id")}>
+                                                            onClick={() =>
+                                                                this.handleSort("asc", "id")
+                                                            }>
                                                             <FormattedMessage id="routes.sort" />
                                                         </div>
                                                         <div
                                                             className="w-20"
                                                             style={{
                                                                 backgroundColor: `${
-                                                                    isSort === "ascprice" ? "#007BFF" : ""
+                                                                    isSort === "ascprice"
+                                                                        ? "#007BFF"
+                                                                        : ""
                                                                 }`,
-                                                                color: `${isSort === "ascprice" ? "white" : "black"}`,
+                                                                color: `${
+                                                                    isSort === "ascprice"
+                                                                        ? "white"
+                                                                        : "black"
+                                                                }`,
                                                             }}
-                                                            onClick={() => this.handleSort("asc", "price")}>
+                                                            onClick={() =>
+                                                                this.handleSort("asc", "price")
+                                                            }>
                                                             <div className="test__">
                                                                 <FormattedMessage id="routes.cheap" />
                                                             </div>
@@ -1126,13 +550,19 @@ class BusRoute extends Component {
                                                             className="w-30"
                                                             style={{
                                                                 backgroundColor: `${
-                                                                    isSort === "asctimeStart" ? "#007BFF" : ""
+                                                                    isSort === "asctimeStart"
+                                                                        ? "#007BFF"
+                                                                        : ""
                                                                 }`,
                                                                 color: `${
-                                                                    isSort === "asctimeStart" ? "white" : "black"
+                                                                    isSort === "asctimeStart"
+                                                                        ? "white"
+                                                                        : "black"
                                                                 }`,
                                                             }}
-                                                            onClick={() => this.handleSort("asc", "timeStart")}>
+                                                            onClick={() =>
+                                                                this.handleSort("asc", "timeStart")
+                                                            }>
                                                             <div className="test__">
                                                                 <FormattedMessage id="routes.earliest" />
                                                             </div>
@@ -1141,13 +571,19 @@ class BusRoute extends Component {
                                                             className="w-30"
                                                             style={{
                                                                 backgroundColor: `${
-                                                                    isSort === "desctimeStart" ? "#007BFF" : ""
+                                                                    isSort === "desctimeStart"
+                                                                        ? "#007BFF"
+                                                                        : ""
                                                                 }`,
                                                                 color: `${
-                                                                    isSort === "desctimeStart" ? "white" : "black"
+                                                                    isSort === "desctimeStart"
+                                                                        ? "white"
+                                                                        : "black"
                                                                 }`,
                                                             }}
-                                                            onClick={() => this.handleSort("desc", "timeStart")}>
+                                                            onClick={() =>
+                                                                this.handleSort("desc", "timeStart")
+                                                            }>
                                                             <div className="test__">
                                                                 <FormattedMessage id="routes.late" />
                                                             </div>
@@ -1162,8 +598,12 @@ class BusRoute extends Component {
                                                     <SkeletonLoading loading={loading} />
                                                 ) : arrFinish && arrFinish.length > 0 ? (
                                                     arrFinish.map((item, index) => {
-                                                        let start = moment(+item.timeStart).format("llll");
-                                                        let end = moment(+item.timeEnd).format("llll");
+                                                        let start = moment(+item.timeStart).format(
+                                                            "llll"
+                                                        );
+                                                        let end = moment(+item.timeEnd).format(
+                                                            "llll"
+                                                        );
                                                         let imageBase64 = "";
                                                         if (item.Vehicle.image) {
                                                             imageBase64 = Buffer.from(
@@ -1172,18 +612,24 @@ class BusRoute extends Component {
                                                             ).toString("binary");
                                                         }
                                                         return (
-                                                            <>
+                                                            <div key={index}>
                                                                 <div className="ticket">
                                                                     <div className="ticket-container">
                                                                         <div className="ticket-header">
                                                                             <div className="fl">
                                                                                 <i className="fas fa-bus"></i>
                                                                                 <span className="ml-5">
-                                                                                    {item.User.Driver.busOwner}
+                                                                                    {
+                                                                                        item.User
+                                                                                            .Driver
+                                                                                            .busOwner
+                                                                                    }
                                                                                 </span>
                                                                             </div>
                                                                             <div className="fr">
-                                                                                {this.currencyFormat(item.price)}
+                                                                                {this.currencyFormat(
+                                                                                    item.price
+                                                                                )}
                                                                             </div>
                                                                         </div>
                                                                         <div className="ticket-body row">
@@ -1201,21 +647,33 @@ class BusRoute extends Component {
                                                                                         <div className="f-17">
                                                                                             <i className="fas fa-dot-circle"></i>
                                                                                             <span className="timeStart">
-                                                                                                {start}
-                                                                                                {"  -  "}
+                                                                                                {
+                                                                                                    start
+                                                                                                }
+                                                                                                {
+                                                                                                    "  -  "
+                                                                                                }
                                                                                             </span>
                                                                                             <span className="pointStart">
-                                                                                                {item.areaStart}
+                                                                                                {
+                                                                                                    item.areaStart
+                                                                                                }
                                                                                             </span>
                                                                                         </div>
                                                                                         <div className="f-17">
                                                                                             <i className="fas fa-map-marker-alt"></i>
                                                                                             <span className="timeEnd">
-                                                                                                {end}
-                                                                                                {"  -  "}
+                                                                                                {
+                                                                                                    end
+                                                                                                }
+                                                                                                {
+                                                                                                    "  -  "
+                                                                                                }
                                                                                             </span>
                                                                                             <span className="pointEnd">
-                                                                                                {item.areaEnd}
+                                                                                                {
+                                                                                                    item.areaEnd
+                                                                                                }
                                                                                             </span>
                                                                                         </div>
                                                                                     </div>
@@ -1231,7 +689,9 @@ class BusRoute extends Component {
                                                                                     <button
                                                                                         className="btn btn-warning fr"
                                                                                         onClick={() =>
-                                                                                            this.handleClickTicket(item)
+                                                                                            this.handleClickTicket(
+                                                                                                item
+                                                                                            )
                                                                                         }>
                                                                                         <FormattedMessage id="routes.select" />
                                                                                     </button>
@@ -1240,12 +700,16 @@ class BusRoute extends Component {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </>
+                                                            </div>
                                                         );
                                                     })
                                                 ) : (
                                                     <div className="detail_fail text-center">
-                                                        <img width="70%" src={NotFoundTrip} alt="" />
+                                                        <img
+                                                            width="70%"
+                                                            src={NotFoundTrip}
+                                                            alt=""
+                                                        />
                                                         <p
                                                             style={{
                                                                 marginTop: 10,
@@ -1256,13 +720,14 @@ class BusRoute extends Component {
                                                             Chuyến đang cập nhật
                                                         </p>
                                                         <p className="mb-0">
-                                                            Hiện tại hệ thống chưa có thông tin nhà xe đi từ{" "}
-                                                            {selectLocaion1.label} đến {selectLocaion2.label} vào ngày{" "}
+                                                            Hiện tại hệ thống chưa có thông tin nhà
+                                                            xe đi từ {selectLocaion1.label} đến{" "}
+                                                            {selectLocaion2.label} vào ngày{" "}
                                                             {moment(dateStartTrip).format("L")}
                                                         </p>
                                                         <span>
-                                                            Xin quý khách vui lòng chọn ngày đi khác hoặc tuyến đường
-                                                            khác.
+                                                            Xin quý khách vui lòng chọn ngày đi khác
+                                                            hoặc tuyến đường khác.
                                                         </span>
                                                     </div>
                                                 )}

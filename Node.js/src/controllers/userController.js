@@ -190,9 +190,11 @@ let getInfoDriverRoute = async (req, res) => {
 let handleCreateNewUser = async (req, res) => {
     try {
         let message = await userService.createNewUser(req.body);
-        if (req.body.roleID === "R3") {
-            let message1 = await userService.createNewDriver(req.body);
-        }
+        if (message.errCode === 0)
+            if (req.body.roleID === "R3") {
+                console.log(1);
+                await userService.createNewDriver(req.body);
+            }
         return res.status(200).json(message);
     } catch (e) {
         return res.status(200).json({

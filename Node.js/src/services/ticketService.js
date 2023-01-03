@@ -170,7 +170,7 @@ let getAllRouteFromDateDriver = (id, dayStart) => {
                     },
                     {
                         model: db.User,
-                        attributes: ["id"],
+                        attributes: ["id", "name"],
                         include: [
                             {
                                 model: db.Driver,
@@ -181,6 +181,20 @@ let getAllRouteFromDateDriver = (id, dayStart) => {
                 ],
                 raw: true,
                 nest: true,
+            });
+            resolve(bus);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+let getAllTicketFromDateDriver = (id, dayStart) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log(id, dayStart);
+
+            let bus = await db.Ticket.findAll({
+                where: { driverId: id, dayStart: dayStart },
             });
             resolve(bus);
         } catch (e) {
@@ -458,4 +472,5 @@ module.exports = {
     getUserTicket,
     cancelTicket,
     getAllRouteFromDateDriver,
+    getAllTicketFromDateDriver,
 };

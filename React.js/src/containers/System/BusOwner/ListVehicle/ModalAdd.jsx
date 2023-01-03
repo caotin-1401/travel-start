@@ -63,6 +63,7 @@ class ModalAdd extends Component {
                 obj.label = `${item.typeName} - ${item.numOfSeat} chỗ `;
                 obj.value = item.id;
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -117,7 +118,6 @@ class ModalAdd extends Component {
     };
     render() {
         let { number, listBusTypes, selectBusType } = this.state;
-        console.log(number);
         return (
             <div>
                 <Modal

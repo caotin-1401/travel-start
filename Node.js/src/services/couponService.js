@@ -76,7 +76,9 @@ let checkName = (data) => {
 let createNewCoupon = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log(data);
             let check = await checkName(data.name);
+            console.log(check);
             let {
                 discount,
                 discountMax,
@@ -90,21 +92,9 @@ let createNewCoupon = (data) => {
                 count,
                 use,
                 sumMoneyCondition,
+                pointCondition,
             } = data;
-            if (
-                !name ||
-                !description ||
-                !type ||
-                !startDate ||
-                !endDate ||
-                !count ||
-                !sumMoneyCondition
-            ) {
-                resolve({
-                    errCode: 1,
-                    errMessage: "Missing required parameter",
-                });
-            } else if (check) {
+            if (check) {
                 resolve({
                     errCode: 2,
                     errMessage: "Coupon already exists",
@@ -123,6 +113,7 @@ let createNewCoupon = (data) => {
                     description,
                     descriptionMarkdown,
                     type,
+                    pointCondition,
                     startDate,
                     endDate,
                     count,

@@ -4,23 +4,23 @@ import { connect } from "react-redux";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Select from "react-select";
 import "../style.scss";
-import DatePicker from "../../../../components/DatePicker";
+// import DatePicker from "../../../../components/DatePicker";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
 import PropTypes from "prop-types";
-import { emitter } from "../../../../utils/emitter";
 import { toast } from "react-toastify";
 import _ from "lodash";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-import dayjs from "dayjs";
+import { Dayjs } from "dayjs";
 import localization from "moment/locale/vi";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-
+import "dayjs/locale/vi";
 class ModalUser extends Component {
     constructor(props) {
         super(props);
@@ -50,7 +50,9 @@ class ModalUser extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.vehicles !== this.props.vehicles) {
-            let test = this.props.vehicles.filter((item) => item.busOwnerId === this.props.userInfo.id);
+            let test = this.props.vehicles.filter(
+                (item) => item.busOwnerId === this.props.userInfo.id
+            );
             let dataSelect = this.buildDataSelectVehicles(test);
             this.setState({
                 listVehicles: dataSelect,
@@ -65,7 +67,8 @@ class ModalUser extends Component {
         }
         if (prevProps.listUsers !== this.props.listUsers) {
             let test = this.props.listUsers.filter(
-                (item) => item.Driver.busOwnerId && item.Driver.busOwnerId === this.props.userInfo.id
+                (item) =>
+                    item.Driver.busOwnerId && item.Driver.busOwnerId === this.props.userInfo.id
             );
             let dataSelect2 = this.buildDataSelectDrivers(test);
             this.setState({
@@ -126,13 +129,17 @@ class ModalUser extends Component {
         this.props.toggleFromParent();
     };
     handleOnChange1 = (data) => {
+        console.log(data);
         this.setState({
-            currentDateStart: data[0],
+            currentDateStart: data.$d,
         });
+        // this.setState({
+        //     currentDateStart: data[0],
+        // });
     };
     handleOnChange2 = (data) => {
         this.setState({
-            currentDateEnd: data[0],
+            currentDateEnd: data.$d,
         });
     };
     onChangeInput1 = (selectRoute) => {
@@ -156,7 +163,7 @@ class ModalUser extends Component {
             price,
             allRoutes,
         } = this.state;
-        console.log(allRoutes);
+        console.log(currentDateStart, currentDateEnd);
 
         if (selectRoute && _.isEmpty(selectRoute)) {
             toast.error("Invalid select Route!");
@@ -171,7 +178,7 @@ class ModalUser extends Component {
             toast.error("Invalid select Driver!");
             return;
         } else if (!currentDateStart || !currentDateEnd) {
-            toast.error("Invalid date!");
+            toast.error("Invalid date!1");
             return;
         } else if (!timeStart || !timeEnd) {
             toast.error("Invalid time!");
@@ -354,7 +361,7 @@ class ModalUser extends Component {
                             {" "}
                             <Col md={6}>
                                 <label htmlFor="schedule1">Chọn ngày/giờ đi</label>
-                                <div className="form-control mb-2" style={{ height: "38px" }} htmlFor="schedule1">
+                                {/* <div className="form-control mb-2" style={{ height: "38px" }} htmlFor="schedule1">
                                     <DatePicker
                                         style={{ border: "none" }}
                                         onChange={this.handleOnChange1}
@@ -365,7 +372,28 @@ class ModalUser extends Component {
                                     <label htmlFor="schedule1" style={{ float: "right" }}>
                                         <i className="far fa-calendar-alt" style={{ fontSize: "20px" }}></i>
                                     </label>
+                                </div> */}
+                                <div className=" mb-2">
+                                    <ThemeProvider theme={this.theme}>
+                                        <LocalizationProvider
+                                            dateAdapter={AdapterDayjs}
+                                            adapterLocale="vi">
+                                            {" "}
+                                            <Stack>
+                                                <DatePicker
+                                                    value={currentDateStart}
+                                                    onChange={this.handleOnChange1}
+                                                    renderInput={(params) => (
+                                                        <TextField {...params} />
+                                                    )}
+                                                    minDate={new Date()}
+                                                    dayOfWeekFormatter={(day) => `${day}.`}
+                                                />
+                                            </Stack>
+                                        </LocalizationProvider>
+                                    </ThemeProvider>
                                 </div>
+
                                 <ThemeProvider theme={this.theme}>
                                     <LocalizationProvider dateAdapter={AdapterDayjs} locale="vi">
                                         {" "}
@@ -381,7 +409,7 @@ class ModalUser extends Component {
                             </Col>{" "}
                             <Col md={6}>
                                 <label htmlFor="schedule2">Chọn ngày đến</label>
-                                <div className="form-control mb-2" style={{ height: "38px" }} htmlFor="schedule2">
+                                {/* <div className="form-control mb-2" style={{ height: "38px" }} htmlFor="schedule2">
                                     <DatePicker
                                         style={{ border: "none" }}
                                         onChange={this.handleOnChange2}
@@ -392,7 +420,23 @@ class ModalUser extends Component {
                                     <label htmlFor="schedule2" style={{ float: "right" }}>
                                         <i className="far fa-calendar-alt" style={{ fontSize: "20px" }}></i>
                                     </label>
-                                </div>
+                                </div> */}
+                                <ThemeProvider theme={this.theme}>
+                                    <LocalizationProvider
+                                        dateAdapter={AdapterDayjs}
+                                        adapterLocale="vi">
+                                        {" "}
+                                        <Stack>
+                                            <DatePicker
+                                                value={currentDateEnd}
+                                                onChange={this.handleOnChange2}
+                                                renderInput={(params) => <TextField {...params} />}
+                                                minDate={new Date()}
+                                                dayOfWeekFormatter={(day) => `${day}.`}
+                                            />
+                                        </Stack>
+                                    </LocalizationProvider>
+                                </ThemeProvider>
                                 <ThemeProvider theme={this.theme}>
                                     <LocalizationProvider dateAdapter={AdapterDayjs} locale="vi">
                                         <Stack>

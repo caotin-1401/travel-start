@@ -78,7 +78,7 @@
                 "name": "Tên bến xe",
                 "city": "Tỉnh / thành phố",
                 "address": "Địa chỉ",
-                "action": "Thao tác",
+                "action": "Trạng thái",
                 "add": "Thêm bến xe",
                 "cancel": "Hủy",
                 "save": "Thêm",
@@ -177,6 +177,16 @@
                 "name": "Tên nhà xe",
                 "status": "Trạng thái"
             },
+            "manageDriver": {
+                "title": "Quản lý tài xế",
+                "history": "Lịch sử chạy",
+                "status": "Tình trạng",
+                "add": "Thêm tài xế",
+                "close": "Đóng",
+                "titleInfo": "Thông tin tài xế",
+                "titleAdd": "Thêm tài xế",
+                "back": "Quay lại trang quản lý tài xế"
+            },
             "ticket": {
                 "title": "Gửi vé xe",
                 "email": "Email của hành khách",
@@ -186,12 +196,30 @@
                 "title1": "Quản lý hành khách",
                 "chooseDay": "Chọn ngày khởi hành",
                 "chooseDriver": "Chọn tài xế",
-                "chooseStart": "Chọn thời gian / địa điểm xuất phát"
+                "trips": "Tên tuyến đường"
             },
             "dashboards": {
                 "name": "Tên tài xế",
                 "trips": "Tổng lượt chạy",
                 "total": "Tổng tiền"
+            },
+            "discount": {
+                "title1": "Quản lý mã giảm giá",
+                "title2": "Thêm mã giảm giá",
+                "title3": "Sửa mã giảm giá",
+                "add": "Thêm mã giảm giá",
+                "name": "Tên mã giảm giá",
+                "discount": "Tiền giảm",
+                "count": "Tổng số lượng",
+                "use": "Số lượng đã dùng",
+                "start": "Ngày bắt đầu",
+                "end": "Ngày kết thúc",
+                "type": "Loại giảm giá",
+                "discount1": "Giảm giá trực tiếp (theo đ)",
+                "discountd": "Giảm giá trực tiếp (theo đ)",
+                "discount2": "Giảm giá theo %",
+                "min": "Hóa đơn tối thiểu (đ)",
+                "max": "Giảm tối đa (đ)"
             }
         },
         "driver": {
@@ -304,10 +332,12 @@
         "address": "Địa chỉ",
         "saveInfo": "Lưu thông tin",
         "change": "Thay đổi mật khẩu",
+        "pass": "Mật khẩu",
         "passOld": "Mật khẩu cũ :",
         "passNew": "Mật khẩu mới :",
         "confirm": "Xác nhận mật khẩu :",
         "save": "Lưu",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "upload": "Tải ảnh"
     }
 }

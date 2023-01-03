@@ -4,17 +4,14 @@ import { connect } from "react-redux";
 import "../style.scss";
 import _ from "lodash";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
-
-import { getAllCodeService } from "../../../../services/userService";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
-import Lightbox from "react-image-lightbox";
-import "react-image-lightbox/style.css"; // This only needs to be imported once in your app
 import ModalUser from "./ModalUser";
 import ModalEditUser from "./ModalEditUser";
 import { TableBody, TableContainer, TableFooter, TablePagination, TableRow, Paper, Table } from "@mui/material";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
 import { withRouter } from "react-router";
+import "../style.scss";
+
 class UserManage extends Component {
     constructor(props) {
         super(props);
@@ -68,7 +65,11 @@ class UserManage extends Component {
             userEdit: user,
         });
     };
-
+    handleChangePage = (event, newPage) => {
+        this.setState({
+            page: newPage,
+        });
+    };
     handleDeleteUser = (user) => {
         this.props.deleteUser(user.id);
     };
@@ -79,17 +80,19 @@ class UserManage extends Component {
         });
     };
     createNewUser1 = (data) => {
+        this.props.fetchUserRedux();
         this.setState({
             isOpenModel: false,
         });
     };
 
     handleSort = (a, b) => {
-        this.state.arrUsers = _.orderBy(this.state.arrUsers, [b], [a]);
+        let clone = this.state.arrUsers;
+        clone = _.orderBy(clone, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            arrUsers: this.state.arrUsers,
+            arrUsers: clone,
         });
     };
     handleKeyword = (e) => {
@@ -105,28 +108,29 @@ class UserManage extends Component {
             this.props.fetchUserRedux();
         }
     };
-    handleKeyword1 = (e) => {
-        console.log(e);
-        let term = e.target.value;
-        let clone = this.state.arrUsers;
-        if (term) {
-            clone = clone.filter((item) => item.email.includes(term));
-            this.setState({
-                arrUsers: clone,
-            });
-        } else {
-            this.props.fetchAllVehicle();
-        }
-    };
+
     handleDriver = (item) => {
-        console.log(item);
         if (this.props.history) {
             this.props.history.push(`/busOwner/history-driver=${item.id}`);
         }
     };
     render() {
         let { page, rowsPerPage, arrUsers } = this.state;
-
+        let { language } = this.props;
+        let mes1, mes2, mes3, mes4, mes5;
+        if (language === "vi") {
+            mes1 = "Tìm tài xế";
+            mes2 = "Không chạy";
+            mes3 = "Đang chạy";
+            mes4 = "Xem thông tin cá nhân";
+            mes5 = "Xóa tài xế";
+        } else {
+            mes1 = "Search driver";
+            mes2 = "Inactive";
+            mes3 = "On trip";
+            mes4 = "Detail infomation";
+            mes5 = "Delete";
+        }
         return (
             <div className="container form-redux">
                 <div className="user-container">
@@ -144,16 +148,28 @@ class UserManage extends Component {
                         />
                     )}
 
-                    <div className="title text-center">Quản lý tài xế</div>
-                    <div className="mx-5 my-3">
-                        <button className="btn btn-primary px-3" onClick={() => this.handleAddUser()}>
-                            <i className="fas fa-plus px-1"></i>
-                            Thêm tài xế
-                        </button>
+                    <div className="title text-center">
+                        <FormattedMessage id="menu.busOwner.manageDriver.title" />
                     </div>
-                    <div style={{ marginTop: "50px" }}></div>
+                    <div className="chart_title">
+                        <div className="chart_item-left">
+                            <div className="mx-5 my-3">
+                                <button className="btn btn-primary px-3 w130" onClick={() => this.handleAddUser()}>
+                                    <i className="fas fa-plus px-1 "></i>{" "}
+                                    <FormattedMessage id="menu.busOwner.manageDriver.add" />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="chart_item">
+                            <input
+                                placeholder={mes1}
+                                className="form-control"
+                                style={{ width: "280px", height: "38px" }}
+                                onChange={(e) => this.handleKeyword(e)}
+                            />
+                        </div>
+                    </div>
 
-                    {/* <div className="user-container m-3"> */}
                     <TableContainer component={Paper} id="customers">
                         <Table>
                             <TableBody>
@@ -171,9 +187,10 @@ class UserManage extends Component {
                                             width: "20%",
                                         }}>
                                         <div className="section-title">
-                                            <div> Tên </div>
                                             <div>
-                                                {" "}
+                                                <FormattedMessage id="account.Name" />
+                                            </div>
+                                            <div>
                                                 <FaLongArrowAltDown
                                                     className="iconSortDown"
                                                     onClick={() => this.handleSort("asc", "name")}
@@ -190,80 +207,74 @@ class UserManage extends Component {
                                             width: "20%",
                                         }}>
                                         <div className="section-title">
-                                            <div> Số điện thoại </div>
+                                            <div>
+                                                {" "}
+                                                <FormattedMessage id="account.phone" />{" "}
+                                            </div>
                                         </div>
                                     </th>
                                     <th
                                         style={{
                                             width: "20%",
                                         }}>
-                                        Địa chỉ
+                                        <FormattedMessage id="account.email" />
+                                    </th>
+
+                                    <th
+                                        style={{
+                                            width: "10%",
+                                        }}
+                                        className="section-id-list">
+                                        <FormattedMessage id="menu.busOwner.manageDriver.status" />
                                     </th>
                                     <th
+                                        className="section-id-list"
                                         style={{
                                             width: "15%",
                                         }}>
-                                        Lịch sử chạy
+                                        <FormattedMessage id="menu.busOwner.manageDriver.history" />
                                     </th>
-                                    <th
-                                        style={{
-                                            width: "10%",
-                                        }}
-                                        className="section-id-list">
-                                        Tình trạng
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: "10%",
-                                        }}
-                                        className="section-id-list">
-                                        <FormattedMessage id="menu.admin.listLocations.action" />
-                                    </th>
+                                    <th></th>
                                 </tr>
-                                <tr style={{ height: "50px" }}>
-                                    <td></td>
-                                    <td>
-                                        <input className="form-control" onChange={(e) => this.handleKeyword(e)} />
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
+
                                 {arrUsers &&
                                     arrUsers.map((user, index) => {
                                         return (
                                             <tr key={index}>
-                                                <td>{user.id}</td>
+                                                <td className="center">{user.id}</td>
                                                 <td>{user.name}</td>
                                                 <td>{user.phoneNumber}</td>
                                                 <td>{user.email}</td>
-                                                <td className="center">
-                                                    <button
-                                                        onClick={() => this.handleDriver(user)}
-                                                        className="btn
-                                                        btn-primary">
-                                                        Lịch sử chạy
-                                                    </button>
-                                                </td>
+
                                                 <td
                                                     style={{
                                                         textAlign: "center",
                                                     }}>
                                                     {user.Driver.status === 2 ? (
-                                                        <div className="driver-run">Đang chạy</div>
+                                                        <div className="driver-run">{mes3}</div>
                                                     ) : (
-                                                        <div className="driver-not-run">Không chạy</div>
+                                                        <div className="driver-not-run">{mes2}</div>
                                                     )}
                                                 </td>
-                                                <td>
+                                                <td className="center">
                                                     <button
+                                                        style={{
+                                                            width: "100px",
+                                                        }}
+                                                        onClick={() => this.handleDriver(user)}
+                                                        className="btn btn-primary">
+                                                        <FormattedMessage id="menu.busOwner.manageDriver.history" />
+                                                    </button>
+                                                </td>
+                                                <td className="center">
+                                                    <button
+                                                        title={mes4}
                                                         className="btn-edit"
                                                         onClick={() => this.handleEditUser(user)}>
-                                                        <i className="fas fa-user-edit"></i>
+                                                        <i className="fas fa-info-circle"></i>
                                                     </button>
                                                     <button
+                                                        title={mes5}
                                                         className="btn-delete"
                                                         onClick={() => this.handleDeleteUser(user)}>
                                                         <i className="fas fa-trash-alt"></i>
@@ -303,7 +314,6 @@ class UserManage extends Component {
                             </TableFooter>
                         </Table>
                     </TableContainer>
-                    {/* </div> */}
                 </div>
             </div>
         );
@@ -313,8 +323,6 @@ class UserManage extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        // roleRedux: state.admin.roles,
-        // genderRedux: state.admin.gender,
         listUsers: state.admin.users,
         userInfo: state.user.userInfo,
     };
@@ -322,7 +330,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getRoleStart: () => dispatch(actions.fetchRoleStart()),
         getGenderStart: () => dispatch(actions.fetchGenderStart()),
         fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()),
         deleteUser: (id) => dispatch(actions.deleteUser(id)),

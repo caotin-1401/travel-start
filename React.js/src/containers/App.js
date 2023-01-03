@@ -29,6 +29,7 @@ import ResetPassword from "./Auth/ResetPassword";
 import DetailBlog from "./Passenger/Blogs/DetailBlog";
 import AllBlogs from "./Passenger/Blogs/AllBlogs";
 import Contact from "./Passenger/Contact/Contact";
+import "./App.scss";
 
 class App extends Component {
     handlePersistorState = () => {
