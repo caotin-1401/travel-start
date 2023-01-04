@@ -33,6 +33,32 @@
     width: 45%;
 }
 
+.w-30_admin {
+    height: 34px;
+    width : 120px;
+
+    cursor: pointer;
+    border: 1px solid black;
+
+    .test__ {
+        padding        : 0px 5px 3px 5px;
+        font-size      : 16px;
+        margin         : 3px;
+        display        : flex;
+        align-items    : center;
+        justify-content: center;
+    }
+}
+
+.choose_left {
+    border-radius: 5px 0 0 5px;
+}
+
+.choose_right {
+    border-radius: 0 5px 5px 0;
+
+}
+
 .height100vh {
     min-height: 100vh
 }

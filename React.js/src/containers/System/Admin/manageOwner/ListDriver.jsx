@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
+import { LANGUAGES } from "../../../../utils";
 import { getAllDrivers } from "../../../../services/userService";
 import { withRouter } from "react-router";
 import {
@@ -40,11 +40,7 @@ class ListDriver extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.listDrivers !== this.state.listDrivers) {
             let { listDrivers } = this.state;
-            if (
-                this.props.match &&
-                this.props.match.params &&
-                this.props.match.params.id
-            ) {
+            if (this.props.match && this.props.match.params && this.props.match.params.id) {
                 let driverId = this.props.match.params.id;
                 let test = [];
                 console.log("listDrivers >>:", listDrivers);
@@ -143,9 +139,7 @@ class ListDriver extends Component {
                                             style={{
                                                 width: "5%",
                                             }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            onClick={() => this.handleSort("asc", "id")}>
                                             Id
                                         </th>
                                         <th
@@ -161,19 +155,13 @@ class ListDriver extends Component {
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "name"
-                                                            )
+                                                            this.handleSort("asc", "name")
                                                         }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "name"
-                                                            )
+                                                            this.handleSort("desc", "name")
                                                         }
                                                     />
                                                 </div>
@@ -189,19 +177,13 @@ class ListDriver extends Component {
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "email"
-                                                            )
+                                                            this.handleSort("asc", "email")
                                                         }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "email"
-                                                            )
+                                                            this.handleSort("desc", "email")
                                                         }
                                                     />
                                                 </div>
@@ -233,17 +215,13 @@ class ListDriver extends Component {
                                         <td>
                                             <input
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword(e)}
                                             />
                                         </td>
                                         <td>
                                             <input
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword1(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword1(e)}
                                             />
                                         </td>
                                         <td></td>
@@ -257,9 +235,7 @@ class ListDriver extends Component {
                                                     <td>{user.id}</td>
                                                     <td>{user.name}</td>
                                                     <td>{user.User.email}</td>
-                                                    <td>
-                                                        {user.User.phoneNumber}
-                                                    </td>
+                                                    <td>{user.User.phoneNumber}</td>
                                                     <td
                                                         className="center"
                                                         style={{
@@ -279,9 +255,7 @@ class ListDriver extends Component {
                                                         <button
                                                             className="btn-delete"
                                                             onClick={() =>
-                                                                this.handleDeleteUser(
-                                                                    user
-                                                                )
+                                                                this.handleDeleteUser(user)
                                                             }>
                                                             <i className="fas fa-trash-alt"></i>
                                                         </button>
@@ -294,15 +268,13 @@ class ListDriver extends Component {
                                     <TableRow>
                                         <TablePagination
                                             sx={{
-                                                "& .MuiTablePagination-selectLabel ":
-                                                    {
-                                                        display: "None",
-                                                    },
-                                                "& .MuiTablePagination-displayedRows  ":
-                                                    {
-                                                        marginTop: "10px",
-                                                        fontSize: "15px",
-                                                    },
+                                                "& .MuiTablePagination-selectLabel ": {
+                                                    display: "None",
+                                                },
+                                                "& .MuiTablePagination-displayedRows  ": {
+                                                    marginTop: "10px",
+                                                    fontSize: "15px",
+                                                },
                                                 "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
                                                     {
                                                         fontSize: "15px",
@@ -319,9 +291,7 @@ class ListDriver extends Component {
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
+                                            onRowsPerPageChange={this.handleChangeRowsPerPage}
                                             ActionsComponent={(subProps) => (
                                                 <TablePaginationActions
                                                     style={{
@@ -359,6 +329,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(ListDriver)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListDriver));

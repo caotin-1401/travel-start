@@ -1,16 +1,28 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import "../style.scss";
 import _ from "lodash";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import * as actions from "../../../../store/actions";
-import ModalUser from "./ModalUser";
-import ModalEditUser from "./ModalEditUser";
-import { TableBody, TableContainer, TableFooter, TablePagination, TableRow, Paper, Table } from "@mui/material";
+import {
+    TableBody,
+    TableContainer,
+    TableFooter,
+    TablePagination,
+    TableRow,
+    Paper,
+    Table,
+} from "@mui/material";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
 import { withRouter } from "react-router";
 import "../style.scss";
+// import ModalUser from "./ModalUser";
+// import ModalEditUser from "./ModalEditUser";
+import Loading from "../../../../components/Loading";
+
+const ModalUser = lazy(() => import("./ModalUser"));
+const ModalEditUser = lazy(() => import("./ModalEditUser"));
 
 class UserManage extends Component {
     constructor(props) {
@@ -35,7 +47,8 @@ class UserManage extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.listUsers !== this.props.listUsers) {
             let test = this.props.listUsers.filter(
-                (item) => item.Driver.busOwnerId && item.Driver.busOwnerId === this.props.userInfo.id
+                (item) =>
+                    item.Driver.busOwnerId && item.Driver.busOwnerId === this.props.userInfo.id
             );
             this.setState({
                 arrUsers: test,
@@ -134,19 +147,21 @@ class UserManage extends Component {
         return (
             <div className="container form-redux">
                 <div className="user-container">
-                    <ModalUser
-                        isOpen={this.state.isOpenModel}
-                        toggleFromParent={this.toggleUserModel}
-                        createNewUser1={this.createNewUser1}
-                    />
-                    {this.state.isOpenModelEditUser && (
-                        <ModalEditUser
-                            isOpen={this.state.isOpenModelEditUser}
-                            toggleFromParent={this.toggleUserEditModel}
-                            currentUser={this.state.userEdit}
-                            doEditUser1={this.doEditUser1}
+                    <Suspense fallback={<Loading />}>
+                        <ModalUser
+                            isOpen={this.state.isOpenModel}
+                            toggleFromParent={this.toggleUserModel}
+                            createNewUser1={this.createNewUser1}
                         />
-                    )}
+                        {this.state.isOpenModelEditUser && (
+                            <ModalEditUser
+                                isOpen={this.state.isOpenModelEditUser}
+                                toggleFromParent={this.toggleUserEditModel}
+                                currentUser={this.state.userEdit}
+                                doEditUser1={this.doEditUser1}
+                            />
+                        )}
+                    </Suspense>
 
                     <div className="title text-center">
                         <FormattedMessage id="menu.busOwner.manageDriver.title" />
@@ -154,7 +169,9 @@ class UserManage extends Component {
                     <div className="chart_title">
                         <div className="chart_item-left">
                             <div className="mx-5 my-3">
-                                <button className="btn btn-primary px-3 w130" onClick={() => this.handleAddUser()}>
+                                <button
+                                    className="btn btn-primary px-3 w130"
+                                    onClick={() => this.handleAddUser()}>
                                     <i className="fas fa-plus px-1 "></i>{" "}
                                     <FormattedMessage id="menu.busOwner.manageDriver.add" />
                                 </button>
@@ -295,11 +312,17 @@ class UserManage extends Component {
                                                 marginTop: "10px",
                                                 fontSize: "15px",
                                             },
-                                            "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ": {
-                                                fontSize: "15px",
-                                            },
+                                            "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
+                                                {
+                                                    fontSize: "15px",
+                                                },
                                         }}
-                                        rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                                        rowsPerPageOptions={[
+                                            5,
+                                            10,
+                                            25,
+                                            { label: "All", value: -1 },
+                                        ]}
                                         colSpan={7}
                                         count={arrUsers.length}
                                         rowsPerPage={rowsPerPage}
@@ -307,7 +330,10 @@ class UserManage extends Component {
                                         onPageChange={this.handleChangePage}
                                         onRowsPerPageChange={this.handleChangeRowsPerPage}
                                         ActionsComponent={(subProps) => (
-                                            <TablePaginationActions style={{ marginBottom: "12px" }} {...subProps} />
+                                            <TablePaginationActions
+                                                style={{ marginBottom: "12px" }}
+                                                {...subProps}
+                                            />
                                         )}
                                     />
                                 </TableRow>
@@ -330,7 +356,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getGenderStart: () => dispatch(actions.fetchGenderStart()),
         fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()),
         deleteUser: (id) => dispatch(actions.deleteUser(id)),
     };

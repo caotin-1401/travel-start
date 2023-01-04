@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Slider, Box } from "@mui/material";
+import { FormattedMessage } from "react-intl";
 export default class ChoosePrice extends Component {
     constructor(props) {
         super(props);
@@ -57,6 +58,20 @@ export default class ChoosePrice extends Component {
                 <div className="filter_b">
                     <span>{this.currencyFormat(value[0])}</span>
                     <span className="float-end">{this.currencyFormat(value[1])}</span>
+                </div>
+                <div className="filter_brand">
+                    <h6 className="mt-3">
+                        <FormattedMessage id="routes.oparator" />
+                    </h6>
+                    <input type="text" className="form-control" placeholder="Tìm nhà xe" />
+                    <div className="listNhaXe mt-3">
+                        <div className="d-flex align-items-center">
+                            <input type="checkbox" name="nhaxe" id="nhaxe" />
+                            <label className="nhaxe mb-0 ml-2" htmlFor="nhaxe">
+                                Hoàng Long (3)
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </>
         );

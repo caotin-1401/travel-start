@@ -138,7 +138,6 @@ const adminReducer = (state = initialState, action) => {
         //schedule
         case actionTypes.FETCH_SCHEDULES_SUCCESS:
             state.trips = action.trips;
-            console.log(action.trips);
             return {
                 ...state,
             };

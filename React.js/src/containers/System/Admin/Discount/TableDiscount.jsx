@@ -7,7 +7,6 @@ import _ from "lodash";
 import moment from "moment";
 import localization from "moment/locale/vi";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css"; // This only needs to be imported once in your app
 import ModalAdd from "./ModalAdd";
@@ -182,9 +181,7 @@ class TableDiscount extends Component {
         let term = e.target.value.toUpperCase();
         let clone = this.state.listCoupons;
         if (term) {
-            clone = clone.filter((item) =>
-                item.BusType.typeName.includes(term)
-            );
+            clone = clone.filter((item) => item.BusType.typeName.includes(term));
             this.setState({
                 listCoupons: clone,
             });
@@ -207,13 +204,8 @@ class TableDiscount extends Component {
         });
     };
     render() {
-        let { page, rowsPerPage, listEvents, selectEvent, listCoupons } =
-            this.state;
-        if (
-            listCoupons &&
-            listCoupons.length > 0 &&
-            listCoupons[0].id === null
-        ) {
+        let { page, rowsPerPage, listEvents, selectEvent, listCoupons } = this.state;
+        if (listCoupons && listCoupons.length > 0 && listCoupons[0].id === null) {
             return (
                 <div className="container form-redux">
                     <div className="user-container">
@@ -231,9 +223,7 @@ class TableDiscount extends Component {
                                 doEditUser={this.doEditUser}
                             />
                         )}
-                        <div className="title text-center">
-                            Quan ly ma giam gia
-                        </div>
+                        <div className="title text-center">Quan ly ma giam gia</div>
                         <Row>
                             {" "}
                             <Col md={4} style={{ marginLeft: "15px" }}>
@@ -267,9 +257,7 @@ class TableDiscount extends Component {
                                                 style={{
                                                     width: "5%",
                                                 }}
-                                                onClick={() =>
-                                                    this.handleSort("asc", "id")
-                                                }>
+                                                onClick={() => this.handleSort("asc", "id")}>
                                                 Id
                                             </th>
                                             <th>
@@ -279,19 +267,13 @@ class TableDiscount extends Component {
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("asc", "name")
                                                             }
                                                         />
                                                         <FaLongArrowAltUp
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("desc", "name")
                                                             }
                                                         />
                                                     </div>
@@ -305,19 +287,13 @@ class TableDiscount extends Component {
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("asc", "name")
                                                             }
                                                         />
                                                         <FaLongArrowAltUp
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("desc", "name")
                                                             }
                                                         />
                                                     </div>
@@ -331,19 +307,13 @@ class TableDiscount extends Component {
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("asc", "name")
                                                             }
                                                         />
                                                         <FaLongArrowAltUp
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("desc", "name")
                                                             }
                                                         />
                                                     </div>
@@ -351,10 +321,7 @@ class TableDiscount extends Component {
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div>
-                                                        {" "}
-                                                        Số lượng đã dùng{" "}
-                                                    </div>
+                                                    <div> Số lượng đã dùng </div>
                                                 </div>
                                             </th>
                                             <th>
@@ -365,19 +332,13 @@ class TableDiscount extends Component {
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "startDate"
-                                                                )
+                                                                this.handleSort("asc", "startDate")
                                                             }
                                                         />
                                                         <FaLongArrowAltUp
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "startDate"
-                                                                )
+                                                                this.handleSort("desc", "startDate")
                                                             }
                                                         />
                                                     </div>
@@ -391,28 +352,20 @@ class TableDiscount extends Component {
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "endDate"
-                                                                )
+                                                                this.handleSort("asc", "endDate")
                                                             }
                                                         />
                                                         <FaLongArrowAltUp
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "endDate"
-                                                                )
+                                                                this.handleSort("desc", "endDate")
                                                             }
                                                         />
                                                     </div>
                                                 </div>
                                             </th>
 
-                                            <th style={{ width: "15%" }}>
-                                                Hành động
-                                            </th>
+                                            <th style={{ width: "15%" }}>Hành động</th>
                                         </tr>
 
                                         {listCoupons &&
@@ -452,9 +405,7 @@ class TableDiscount extends Component {
                                 doEditUser={this.doEditUser}
                             />
                         )}
-                        <div className="title text-center">
-                            Quản lý mã giảm giá
-                        </div>
+                        <div className="title text-center">Quản lý mã giảm giá</div>
                         <Row>
                             {" "}
                             <Col md={4} style={{ marginLeft: "15px" }}>
@@ -488,9 +439,7 @@ class TableDiscount extends Component {
                                                 style={{
                                                     width: "5%",
                                                 }}
-                                                onClick={() =>
-                                                    this.handleSort("asc", "id")
-                                                }>
+                                                onClick={() => this.handleSort("asc", "id")}>
                                                 Id
                                             </th>
                                             <th>
@@ -501,19 +450,13 @@ class TableDiscount extends Component {
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("asc", "name")
                                                             }
                                                         />
                                                         <FaLongArrowAltUp
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("desc", "name")
                                                             }
                                                         />
                                                     </div>
@@ -527,19 +470,13 @@ class TableDiscount extends Component {
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("asc", "name")
                                                             }
                                                         />
                                                         <FaLongArrowAltUp
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("desc", "name")
                                                             }
                                                         />
                                                     </div>
@@ -553,19 +490,13 @@ class TableDiscount extends Component {
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("asc", "name")
                                                             }
                                                         />
                                                         <FaLongArrowAltUp
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "name"
-                                                                )
+                                                                this.handleSort("desc", "name")
                                                             }
                                                         />
                                                     </div>
@@ -573,10 +504,7 @@ class TableDiscount extends Component {
                                             </th>
                                             <th>
                                                 <div className="section-title">
-                                                    <div>
-                                                        {" "}
-                                                        Số lượng đã dùng{" "}
-                                                    </div>
+                                                    <div> Số lượng đã dùng </div>
                                                 </div>
                                             </th>
                                             <th>
@@ -587,19 +515,13 @@ class TableDiscount extends Component {
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "startDate"
-                                                                )
+                                                                this.handleSort("asc", "startDate")
                                                             }
                                                         />
                                                         <FaLongArrowAltUp
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "startDate"
-                                                                )
+                                                                this.handleSort("desc", "startDate")
                                                             }
                                                         />
                                                     </div>
@@ -613,28 +535,20 @@ class TableDiscount extends Component {
                                                         <FaLongArrowAltDown
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "asc",
-                                                                    "endDate"
-                                                                )
+                                                                this.handleSort("asc", "endDate")
                                                             }
                                                         />
                                                         <FaLongArrowAltUp
                                                             className="iconSortDown"
                                                             onClick={() =>
-                                                                this.handleSort(
-                                                                    "desc",
-                                                                    "endDate"
-                                                                )
+                                                                this.handleSort("desc", "endDate")
                                                             }
                                                         />
                                                     </div>
                                                 </div>
                                             </th>
 
-                                            <th style={{ width: "15%" }}>
-                                                Hành động
-                                            </th>
+                                            <th style={{ width: "15%" }}>Hành động</th>
                                         </tr>
 
                                         <tr style={{ height: "50px" }}>
@@ -647,17 +561,13 @@ class TableDiscount extends Component {
                                             <td>
                                                 <input
                                                     className="form-control"
-                                                    onChange={(e) =>
-                                                        this.handleKeyword(e)
-                                                    }
+                                                    onChange={(e) => this.handleKeyword(e)}
                                                 />
                                             </td>
                                             <td>
                                                 <input
                                                     className="form-control"
-                                                    onChange={(e) =>
-                                                        this.handleKeyword1(e)
-                                                    }
+                                                    onChange={(e) => this.handleKeyword1(e)}
                                                 />
                                             </td>
 
@@ -671,21 +581,19 @@ class TableDiscount extends Component {
                                             listCoupons.length > 0
                                                 ? listCoupons.slice(
                                                       page * rowsPerPage,
-                                                      page * rowsPerPage +
-                                                          rowsPerPage
+                                                      page * rowsPerPage + rowsPerPage
                                                   )
                                                 : listCoupons
                                             ).map((user, index) => {
-                                                let start = moment(
-                                                    +user.startDate
-                                                ).format(" DD-MM-YYYY HH:mm");
-                                                let end = moment(
-                                                    new Date(+user.endDate)
-                                                ).format("  DD-MM-YYYY  HH:mm");
+                                                let start = moment(+user.startDate).format(
+                                                    " DD-MM-YYYY HH:mm"
+                                                );
+                                                let end = moment(new Date(+user.endDate)).format(
+                                                    "  DD-MM-YYYY  HH:mm"
+                                                );
                                                 let price;
 
-                                                if (user.type === 1)
-                                                    price = "đ";
+                                                if (user.type === 1) price = "đ";
                                                 else price = "%";
                                                 return (
                                                     <tr key={index}>
@@ -693,8 +601,7 @@ class TableDiscount extends Component {
 
                                                         <td>{user.name}</td>
                                                         <td>
-                                                            {user.discount}{" "}
-                                                            {price}
+                                                            {user.discount} {price}
                                                         </td>
                                                         <td>{user.count}</td>
                                                         <td>{user.use}</td>
@@ -713,18 +620,14 @@ class TableDiscount extends Component {
                                                             <button
                                                                 className="btn-edit"
                                                                 onClick={() =>
-                                                                    this.handleEditUser(
-                                                                        user
-                                                                    )
+                                                                    this.handleEditUser(user)
                                                                 }>
                                                                 <i className="fas fa-edit"></i>
                                                             </button>
                                                             <button
                                                                 className="btn-delete"
                                                                 onClick={() =>
-                                                                    this.handleDeleteUser(
-                                                                        user
-                                                                    )
+                                                                    this.handleDeleteUser(user)
                                                                 }>
                                                                 <i className="fas fa-trash-alt"></i>
                                                             </button>
@@ -746,19 +649,12 @@ class TableDiscount extends Component {
                                                 count={listEvents.length}
                                                 rowsPerPage={rowsPerPage}
                                                 page={page}
-                                                onPageChange={
-                                                    this.handleChangePage
-                                                }
-                                                onRowsPerPageChange={
-                                                    this.handleChangeRowsPerPage
-                                                }
-                                                ActionsComponent={(
-                                                    subProps
-                                                ) => (
+                                                onPageChange={this.handleChangePage}
+                                                onRowsPerPageChange={this.handleChangeRowsPerPage}
+                                                ActionsComponent={(subProps) => (
                                                     <TablePaginationActions
                                                         style={{
-                                                            marginBottom:
-                                                                "12px",
+                                                            marginBottom: "12px",
                                                         }}
                                                         {...subProps}
                                                     />

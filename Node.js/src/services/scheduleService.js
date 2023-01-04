@@ -278,6 +278,10 @@ let getAllSchedule = (tripId) => {
                 trip.map((item) => {
                     item.maxNumber = item.Vehicle.BusType.numOfSeat;
                 });
+
+                trip = _.sortBy(trip, ["timeStart"], ["asc"]);
+                let test = trip.reverse();
+                console.log(test);
                 resolve(trip);
             }
             if (tripId && tripId !== "ALL") {
@@ -331,7 +335,6 @@ let getDriverTrips = (tripId) => {
                 nest: true,
             });
             trip = _.sortBy(trip, ["timeStart"]);
-            console.log(trip);
             resolve(trip);
         } catch (e) {
             reject(e);
@@ -345,19 +348,37 @@ let getTripsFromBusCompany = (tripId) => {
                 where: { busOwnerId: tripId },
                 include: [
                     {
-                        model: db.User,
-                        attributes: ["id", "name"],
+                        model: db.Vehicle,
+                        attributes: ["id", "number", "busTypeId"],
+                        include: [
+                            {
+                                model: db.BusType,
+                                attributes: ["id", "typeName", "numOfSeat"],
+                            },
+                        ],
                     },
                     {
-                        model: db.Ticket,
-                        attributes: ["id", "token", "totalPrice"],
+                        model: db.Route,
+                        attributes: ["id", "name", "areaStartId", "areaEndId"],
+                    },
+                    {
+                        model: db.User,
+                        attributes: ["id", "name"],
+                        include: [
+                            {
+                                model: db.Driver,
+                            },
+                        ],
                     },
                 ],
-                raw: false,
+                raw: true,
                 nest: true,
             });
+            trip.map((item) => {
+                item.maxNumber = item.Vehicle.BusType.numOfSeat;
+            });
             trip = _.sortBy(trip, ["timeStart"]);
-            console.log(trip);
+            trip.reverse();
             resolve(trip);
         } catch (e) {
             reject(e);
@@ -478,7 +499,7 @@ let bulkCreateSchedule = (data) => {
                     });
                 } else if (isDayBusStart) {
                     resolve({
-                        errCode: 1,
+                        errCode: 2,
                         errMessage: "The current vehicle is not available at the starting point",
                     });
                 } else {
@@ -502,8 +523,20 @@ let bulkCreateSchedule = (data) => {
                     errMessage: "OK",
                 });
             } else {
-                let isCheckBusOut = await checkBusTime1(routeId, busId, dayStart, unixTimestamp1, unixTimestamp2);
-                let isCheckBusIn = await checkBusTime2(routeId, busId, dayStart, unixTimestamp1, unixTimestamp2);
+                let isCheckBusOut = await checkBusTime1(
+                    routeId,
+                    busId,
+                    dayStart,
+                    unixTimestamp1,
+                    unixTimestamp2
+                );
+                let isCheckBusIn = await checkBusTime2(
+                    routeId,
+                    busId,
+                    dayStart,
+                    unixTimestamp1,
+                    unixTimestamp2
+                );
                 let isCheckDriverOut = await checkDriverTime1(
                     routeId,
                     driverId,
@@ -520,17 +553,17 @@ let bulkCreateSchedule = (data) => {
                 );
                 if (isCheckBusOut) {
                     resolve({
-                        errCode: 1,
+                        errCode: 3,
                         errMessage: "vehicle in operation",
                     });
                 } else if (isCheckBusIn) {
                     resolve({
-                        errCode: 1,
+                        errCode: 2,
                         errMessage: "The current vehicle is not available at the starting point",
                     });
                 } else if (isCheckDriverOut) {
                     resolve({
-                        errCode: 1,
+                        errCode: 4,
                         errMessage: "driver is running",
                     });
                 } else if (isCheckDriverIn) {

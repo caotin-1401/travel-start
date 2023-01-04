@@ -71,7 +71,6 @@ export default class RowBody extends Component {
 
             resultUser = Object.values(tempUser);
         }
-        console.log(resultUser);
         this.setState({ listPassenger: resultUser });
     };
     toggleUserModel = () => {
@@ -123,7 +122,6 @@ export default class RowBody extends Component {
                 });
 
                 resultUser = Object.values(tempUser);
-                console.log(resultUser);
                 this.setState({ listPassenger: resultUser });
             }
         }

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import "../style.scss";
@@ -6,14 +6,24 @@ import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
 import moment from "moment";
 import * as actions from "../../../../store/actions";
-import ModalAdd from "./ModalAdd";
-import { TableBody, TableContainer, TableFooter, TablePagination, TableRow, Paper, Table } from "@mui/material";
+import {
+    TableBody,
+    TableContainer,
+    TableFooter,
+    TablePagination,
+    TableRow,
+    Paper,
+    Table,
+} from "@mui/material";
 import { Row, Col } from "reactstrap";
 import { toast } from "react-toastify";
 import { getAllCouponService, deleteCouponService } from "../../../../services/userService";
-import ModalEdit from "./ModalEdit";
-
 import TablePaginationActions from "../../../../components/TablePaginationActions";
+import Loading from "../../../../components/Loading";
+
+const ModalAdd = lazy(() => import("./ModalAdd"));
+const ModalEdit = lazy(() => import("./ModalEdit"));
+
 class TableDiscount extends Component {
     constructor(props) {
         super(props);
@@ -135,27 +145,32 @@ class TableDiscount extends Component {
         return (
             <div className="container form-redux">
                 <div className="user-container">
-                    <ModalAdd
-                        listCoupons={listCoupons}
-                        isOpen={this.state.isOpenModel}
-                        toggleFromParent={this.toggleUserModel}
-                        createNewUser1={this.createNewUser1}
-                    />
-                    {this.state.isOpenModelEditUser && (
-                        <ModalEdit
-                            isOpen={this.state.isOpenModelEditUser}
-                            toggleFromParent={this.toggleUserEditModel}
-                            currentUser={this.state.userEdit}
-                            doEditUser={this.doEditUser}
+                    <Suspense fallback={<Loading />}>
+                        <ModalAdd
+                            listCoupons={listCoupons}
+                            isOpen={this.state.isOpenModel}
+                            toggleFromParent={this.toggleUserModel}
+                            createNewUser1={this.createNewUser1}
                         />
-                    )}
+                        {this.state.isOpenModelEditUser && (
+                            <ModalEdit
+                                isOpen={this.state.isOpenModelEditUser}
+                                toggleFromParent={this.toggleUserEditModel}
+                                currentUser={this.state.userEdit}
+                                doEditUser={this.doEditUser}
+                            />
+                        )}
+                    </Suspense>
+
                     <div className="title text-center">
                         <FormattedMessage id="menu.busOwner.discount.title1" />
                     </div>
                     <Row>
                         <Col md={3} style={{ marginTop: "8px" }}>
                             <div className="mx-5 my-3">
-                                <button className="btn btn-primary px-3" onClick={() => this.handleAddUser()}>
+                                <button
+                                    className="btn btn-primary px-3"
+                                    onClick={() => this.handleAddUser()}>
                                     <i className="fas fa-plus px-1"></i>
                                     <FormattedMessage id="menu.busOwner.discount.add" />
                                 </button>
@@ -222,11 +237,15 @@ class TableDiscount extends Component {
                                                 <div>
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() => this.handleSort("asc", "startDate")}
+                                                        onClick={() =>
+                                                            this.handleSort("asc", "startDate")
+                                                        }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() => this.handleSort("desc", "startDate")}
+                                                        onClick={() =>
+                                                            this.handleSort("desc", "startDate")
+                                                        }
                                                     />
                                                 </div>
                                             </div>
@@ -243,11 +262,15 @@ class TableDiscount extends Component {
                                                 <div>
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() => this.handleSort("asc", "endDate")}
+                                                        onClick={() =>
+                                                            this.handleSort("asc", "endDate")
+                                                        }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() => this.handleSort("desc", "endDate")}
+                                                        onClick={() =>
+                                                            this.handleSort("desc", "endDate")
+                                                        }
                                                     />
                                                 </div>
                                             </div>
@@ -260,13 +283,20 @@ class TableDiscount extends Component {
                                         listCoupons.length > 0 &&
                                         listCoupons[0].id !== null &&
                                         (rowsPerPage > 0 && listCoupons && listCoupons.length > 0
-                                            ? listCoupons.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            ? listCoupons.slice(
+                                                  page * rowsPerPage,
+                                                  page * rowsPerPage + rowsPerPage
+                                              )
                                             : listCoupons
                                         ).map((user, index) => {
                                             let start, end;
                                             if (language === "vi") {
-                                                start = moment(+user.startDate).format(" DD/MM/YYYY HH:mm");
-                                                end = moment(new Date(+user.endDate)).format("  DD/MM/YYYY  HH:mm");
+                                                start = moment(+user.startDate).format(
+                                                    " DD/MM/YYYY HH:mm"
+                                                );
+                                                end = moment(new Date(+user.endDate)).format(
+                                                    "  DD/MM/YYYY  HH:mm"
+                                                );
                                             } else {
                                                 start = `${moment(+user.startDate)
                                                     .locale("en")
@@ -290,7 +320,8 @@ class TableDiscount extends Component {
 
                                                     <td>{user.name}</td>
                                                     <td>
-                                                        {user.type === "1" && this.currencyFormat(+user.discount)}
+                                                        {user.type === "1" &&
+                                                            this.currencyFormat(+user.discount)}
                                                         {user.type === "2" && time}
                                                     </td>
                                                     <td>{user.count}</td>
@@ -300,12 +331,16 @@ class TableDiscount extends Component {
                                                     <td className="center">
                                                         <button
                                                             className="btn-edit"
-                                                            onClick={() => this.handleEditUser(user)}>
+                                                            onClick={() =>
+                                                                this.handleEditUser(user)
+                                                            }>
                                                             <i className="fas fa-edit"></i>
                                                         </button>
                                                         <button
                                                             className="btn-delete"
-                                                            onClick={() => this.handleDeleteUser(user)}>
+                                                            onClick={() =>
+                                                                this.handleDeleteUser(user)
+                                                            }>
                                                             <i className="fas fa-trash-alt"></i>
                                                         </button>
                                                     </td>
@@ -337,11 +372,17 @@ class TableDiscount extends Component {
                                                         marginTop: "10px",
                                                         fontSize: "15px",
                                                     },
-                                                    "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ": {
-                                                        fontSize: "15px",
-                                                    },
+                                                    "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
+                                                        {
+                                                            fontSize: "15px",
+                                                        },
                                                 }}
-                                                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                                                rowsPerPageOptions={[
+                                                    5,
+                                                    10,
+                                                    25,
+                                                    { label: "All", value: -1 },
+                                                ]}
                                                 colSpan={8}
                                                 count={listCoupons.length}
                                                 rowsPerPage={rowsPerPage}

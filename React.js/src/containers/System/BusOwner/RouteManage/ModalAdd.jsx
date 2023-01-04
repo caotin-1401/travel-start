@@ -1,19 +1,14 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
+import { Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Select from "react-select";
 import "../style.scss";
-// import DatePicker from "../../../../components/DatePicker";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
-import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import _ from "lodash";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-import { Dayjs } from "dayjs";
-import localization from "moment/locale/vi";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
@@ -21,6 +16,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import moment from "moment";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import "dayjs/locale/vi";
+import Checkbox from "@mui/material/Checkbox";
+import { createNewTrip } from "../../../../services/userService";
 class ModalUser extends Component {
     constructor(props) {
         super(props);
@@ -29,23 +26,22 @@ class ModalUser extends Component {
             listVehicles: [],
             listDrivers: [],
             allRoutes: [],
-            selectRoute: {},
-            selectVehicle: {},
-            selectDriver: {},
+            selectRoute: "",
+            selectVehicle: "",
+            selectDriver: "",
             currentDateStart: "",
             currentDateEnd: "",
             timeStart: "",
             timeEnd: "",
-            action: "",
             busOwnerId: "",
             price: "",
+            checked: false,
         };
     }
     componentDidMount() {
         this.props.fetchAllRoute();
         this.props.fetchAllVehicle();
         this.props.fetchUserRedux();
-        this.props.fetchAllScheduleTrip();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -75,7 +71,7 @@ class ModalUser extends Component {
                 listDrivers: dataSelect2,
             });
         }
-        if (prevProps.listSchedule !== this.props.listSchedule) {
+        if (prevProps.listTrips !== this.props.listTrips) {
             this.setState({
                 selectRoute: "",
                 selectVehicle: "",
@@ -85,7 +81,6 @@ class ModalUser extends Component {
                 timeStart: "",
                 timeEnd: "",
                 price: "",
-                action: CRUD_ACTIONS.CREATE,
             });
         }
     }
@@ -97,6 +92,7 @@ class ModalUser extends Component {
                 obj.label = `${item.from.name} (${item.from.city}) - ${item.to.name} (${item.to.city})`;
                 obj.value = item.id;
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -109,6 +105,7 @@ class ModalUser extends Component {
                 obj.label = `${item.number} - ${item.BusType.numOfSeat} chỗ`;
                 obj.value = item.id;
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -121,6 +118,7 @@ class ModalUser extends Component {
                 obj.label = item.name;
                 obj.value = item.id;
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -129,17 +127,23 @@ class ModalUser extends Component {
         this.props.toggleFromParent();
     };
     handleOnChange1 = (data) => {
-        console.log(data);
         this.setState({
             currentDateStart: data.$d,
         });
-        // this.setState({
-        //     currentDateStart: data[0],
-        // });
     };
     handleOnChange2 = (data) => {
         this.setState({
             currentDateEnd: data.$d,
+        });
+    };
+    changeTime1 = (value) => {
+        this.setState({
+            timeStart: value.$d,
+        });
+    };
+    changeTime2 = (value) => {
+        this.setState({
+            timeEnd: value.$d,
         });
     };
     onChangeInput1 = (selectRoute) => {
@@ -162,26 +166,39 @@ class ModalUser extends Component {
             timeEnd,
             price,
             allRoutes,
+            checked,
         } = this.state;
-        console.log(currentDateStart, currentDateEnd);
-
-        if (selectRoute && _.isEmpty(selectRoute)) {
-            toast.error("Invalid select Route!");
+        console.log(selectDriver);
+        let { language } = this.props;
+        if (!selectRoute && _.isEmpty(selectRoute)) {
+            if (language === "vi") {
+                toast.error("Vui lòng chọn tuyến đường!");
+            } else toast.error("Invalid select Route!");
             return;
-        } else if (selectVehicle && _.isEmpty(selectVehicle)) {
-            toast.error("Invalid select Vehicle!");
+        } else if (!selectVehicle && _.isEmpty(selectVehicle)) {
+            if (language === "vi") {
+                toast.error("Vui lòng chọn phương tiện vận tải!");
+            } else toast.error("Invalid select Vehicle!");
             return;
         } else if (!price) {
-            toast.error("Invalid select price!");
+            if (language === "vi") {
+                toast.error("Vui lòng điền giá vé!");
+            } else toast.error("Please enter the pricce ticket!");
             return;
-        } else if (selectDriver && _.isEmpty(selectDriver)) {
-            toast.error("Invalid select Driver!");
+        } else if (!selectDriver && _.isEmpty(selectDriver)) {
+            if (language === "vi") {
+                toast.error("Vui lòng chọn tài xế điền giá vé!");
+            } else toast.error("Please select driver!");
             return;
-        } else if (!currentDateStart || !currentDateEnd) {
-            toast.error("Invalid date!1");
+        } else if (!currentDateStart || !timeStart) {
+            if (language === "vi") {
+                toast.error("Vui lòng chọn thời gian khởi hành!");
+            } else toast.error("Please select departure time!");
             return;
-        } else if (!timeStart || !timeEnd) {
-            toast.error("Invalid time!");
+        } else if (!currentDateEnd || !timeEnd) {
+            if (language === "vi") {
+                toast.error("Vui lòng chọn thời gian về bến!");
+            } else toast.error("Please choose your arrival time!");
             return;
         }
         let a = allRoutes;
@@ -193,7 +210,7 @@ class ModalUser extends Component {
         let timeUnixTime1 = moment(new Date(timeStart).getTime()).format("LT");
         let dateUnixTime2 = moment(new Date(currentDateEnd).getTime()).format("L");
         let timeUnixTime2 = moment(new Date(timeEnd).getTime()).format("LT");
-
+        console.log(dateUnixTime1, timeUnixTime1);
         let [day1, month1, year1] = dateUnixTime1.split("/");
         let [hours1, minutes1] = timeUnixTime1.split(":");
 
@@ -207,22 +224,22 @@ class ModalUser extends Component {
 
         let dayStart = new Date(currentDateStart).getTime();
         let dayEnd = new Date(currentDateEnd).getTime();
-        // let timeScheduleStart = new Date(timeStart).getTime();
-        // let timeScheduleEnd = new Date(timeEnd).getTime();
 
         if (new Date(currentDateStart).getTime() > new Date(currentDateEnd).getTime()) {
-            toast.error("date selection error!");
+            if (language === "vi") {
+                toast.error("Thời gian không hợp lệ!");
+            } else toast.error("Invalid time!");
             return;
-        } else if (new Date(currentDateStart).getTime() == new Date(currentDateEnd).getTime()) {
+        } else if (new Date(currentDateStart).getTime() === new Date(currentDateEnd).getTime()) {
             if (new Date(timeStart).getTime() > new Date(timeEnd).getTime()) {
-                toast.error("time selection error!");
+                if (language === "vi") {
+                    toast.error("Thời gian không hợp lệ!");
+                } else toast.error("Invalid time!");
                 return;
             }
         }
-        let { action } = this.state;
-        this.props.createNewUser1(this.state);
-        if (action === CRUD_ACTIONS.CREATE) {
-            this.props.createNewSchedule({
+        if (checked === false) {
+            let res = await createNewTrip({
                 routeId: selectRoute.value,
                 driverId: selectDriver.value,
                 busId: selectVehicle.value,
@@ -234,23 +251,33 @@ class ModalUser extends Component {
                 price: price,
                 areaStartId,
                 areaEndId,
-                // maxNumber:
             });
+            if (res && res.errCode === 0) {
+                if (language === "vi") {
+                    toast.success("Tạo chuyến đi thành công !");
+                } else toast.success("Create a successful trip!");
+                this.props.createTripSuccess(this.state);
+            } else if (res && res.errCode === 1) {
+                if (language === "vi") {
+                    toast.error("Phương tiện lúc đó không có ở điểm xuất phát!");
+                } else toast.error("Create a new successful trip!");
+            } else if (res && res.errCode === 2) {
+                if (language === "vi") {
+                    toast.error("Tạo mới chuyến đi thành công!");
+                } else toast.error("The current vehicle is not available at the starting point!");
+            } else if (res && res.errCode === 3) {
+                if (language === "vi") {
+                    toast.error("Phương tiện đang trong chuyến khác!");
+                } else toast.error("Vehicle in operation!");
+            } else if (res && res.errCode === 4) {
+                if (language === "vi") {
+                    toast.error("Tài xế đang trong chuyến khác!");
+                } else toast.error("driver is running!");
+            }
+        } else if (checked === true) {
         }
     };
-    changeTime1 = (value) => {
-        this.setState({
-            timeStart: value.$d,
-        });
-    };
-    changeTime2 = (value) => {
-        console.log(value.$d);
-        console.log(new Date(value.$d).valueOf());
-        console.log(moment(new Date(value.$d).valueOf()).format("LT"));
-        this.setState({
-            timeEnd: value.$d,
-        });
-    };
+
     theme = createTheme({
         components: {
             MuiInputBase: {
@@ -271,10 +298,10 @@ class ModalUser extends Component {
                     },
                 },
             },
-            MuiButtonBase: {
+            MuiPickersDay: {
                 styleOverrides: {
                     root: {
-                        color: "#000000!important",
+                        fontSize: "15px",
                     },
                 },
             },
@@ -283,6 +310,12 @@ class ModalUser extends Component {
     onChangeInput = (event) => {
         this.setState({
             price: event.target.value,
+        });
+    };
+    handleChange = (event) => {
+        console.log(event.target.checked);
+        this.setState({
+            checked: event.target.checked,
         });
     };
     render() {
@@ -299,6 +332,7 @@ class ModalUser extends Component {
             price,
             timeStart,
             timeEnd,
+            checked,
         } = this.state;
         return (
             <div>
@@ -312,11 +346,13 @@ class ModalUser extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Tạo mới chuyến xe
+                        <FormattedMessage id="menu.busOwner.trips.title2" />
                     </ModalHeader>
                     <ModalBody>
                         <Row>
-                            <label htmlFor="exampleEmail">Tuyến đường</label>
+                            <label htmlFor="exampleEmail">
+                                <FormattedMessage id="menu.busOwner.trips.selectRoute" />
+                            </label>
                             <Select
                                 className="mb-4"
                                 value={selectRoute}
@@ -327,7 +363,9 @@ class ModalUser extends Component {
 
                         <Row>
                             <Col md={4}>
-                                <label>Chọn xe</label>
+                                <label>
+                                    <FormattedMessage id="menu.busOwner.trips.selectVehicle" />
+                                </label>
                                 <Select
                                     className="mb-4"
                                     value={selectVehicle}
@@ -336,7 +374,9 @@ class ModalUser extends Component {
                                 />
                             </Col>
                             <Col md={4}>
-                                <label>Chọn tài xế</label>
+                                <label>
+                                    <FormattedMessage id="menu.busOwner.trips.selectDriver" />
+                                </label>
                                 <Select
                                     className="mb-4"
                                     value={selectDriver}
@@ -345,7 +385,9 @@ class ModalUser extends Component {
                                 />
                             </Col>
                             <Col md={4}>
-                                <label>Gia</label>
+                                <label>
+                                    <FormattedMessage id="menu.busOwner.trips.prices" />
+                                </label>
                                 <input
                                     style={{ height: "38px" }}
                                     className="form-control mb-4 h-38"
@@ -357,118 +399,192 @@ class ModalUser extends Component {
                                 />
                             </Col>
                         </Row>
-                        <Row>
-                            {" "}
-                            <Col md={6}>
-                                <label htmlFor="schedule1">Chọn ngày/giờ đi</label>
-                                {/* <div className="form-control mb-2" style={{ height: "38px" }} htmlFor="schedule1">
-                                    <DatePicker
-                                        style={{ border: "none" }}
-                                        onChange={this.handleOnChange1}
-                                        id="schedule1"
-                                        selected={currentDateStart}
-                                        minDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                                    />
-                                    <label htmlFor="schedule1" style={{ float: "right" }}>
-                                        <i className="far fa-calendar-alt" style={{ fontSize: "20px" }}></i>
+                        {language === "vi" ? (
+                            <Row>
+                                <Col md={6}>
+                                    <label htmlFor="schedule1">
+                                        <FormattedMessage id="menu.busOwner.trips.time1" />
                                     </label>
-                                </div> */}
-                                <div className=" mb-2">
+
+                                    <div className=" mb-2">
+                                        <ThemeProvider theme={this.theme}>
+                                            <LocalizationProvider
+                                                dateAdapter={AdapterDayjs}
+                                                adapterLocale="vi">
+                                                <Stack>
+                                                    <DatePicker
+                                                        value={currentDateStart}
+                                                        onChange={this.handleOnChange1}
+                                                        renderInput={(params) => (
+                                                            <TextField {...params} />
+                                                        )}
+                                                        minDate={new Date()}
+                                                        dayOfWeekFormatter={(day) => `${day}.`}
+                                                    />
+                                                </Stack>
+                                            </LocalizationProvider>
+                                        </ThemeProvider>
+                                    </div>
+
                                     <ThemeProvider theme={this.theme}>
                                         <LocalizationProvider
                                             dateAdapter={AdapterDayjs}
-                                            adapterLocale="vi">
-                                            {" "}
+                                            locale="vi">
                                             <Stack>
-                                                <DatePicker
-                                                    value={currentDateStart}
-                                                    onChange={this.handleOnChange1}
+                                                <TimePicker
+                                                    value={timeStart}
+                                                    onChange={this.changeTime1}
                                                     renderInput={(params) => (
                                                         <TextField {...params} />
                                                     )}
-                                                    minDate={new Date()}
-                                                    dayOfWeekFormatter={(day) => `${day}.`}
                                                 />
                                             </Stack>
                                         </LocalizationProvider>
                                     </ThemeProvider>
-                                </div>
-
-                                <ThemeProvider theme={this.theme}>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs} locale="vi">
-                                        {" "}
-                                        <Stack>
-                                            <TimePicker
-                                                value={timeStart}
-                                                onChange={this.changeTime1}
-                                                renderInput={(params) => <TextField {...params} />}
-                                            />
-                                        </Stack>
-                                    </LocalizationProvider>
-                                </ThemeProvider>
-                            </Col>{" "}
-                            <Col md={6}>
-                                <label htmlFor="schedule2">Chọn ngày đến</label>
-                                {/* <div className="form-control mb-2" style={{ height: "38px" }} htmlFor="schedule2">
-                                    <DatePicker
-                                        style={{ border: "none" }}
-                                        onChange={this.handleOnChange2}
-                                        id="schedule2"
-                                        selected={currentDateEnd}
-                                        minDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                                    />
-                                    <label htmlFor="schedule2" style={{ float: "right" }}>
-                                        <i className="far fa-calendar-alt" style={{ fontSize: "20px" }}></i>
+                                </Col>
+                                <Col md={6}>
+                                    <label htmlFor="schedule2">
+                                        <FormattedMessage id="menu.busOwner.trips.time2" />
                                     </label>
-                                </div> */}
-                                <ThemeProvider theme={this.theme}>
-                                    <LocalizationProvider
-                                        dateAdapter={AdapterDayjs}
-                                        adapterLocale="vi">
-                                        {" "}
-                                        <Stack>
-                                            <DatePicker
-                                                value={currentDateEnd}
-                                                onChange={this.handleOnChange2}
-                                                renderInput={(params) => <TextField {...params} />}
-                                                minDate={new Date()}
-                                                dayOfWeekFormatter={(day) => `${day}.`}
-                                            />
-                                        </Stack>
-                                    </LocalizationProvider>
-                                </ThemeProvider>
-                                <ThemeProvider theme={this.theme}>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs} locale="vi">
-                                        <Stack>
-                                            <TimePicker
-                                                value={timeEnd}
-                                                onChange={this.changeTime2}
-                                                renderInput={(params) => <TextField {...params} />}
-                                            />
-                                        </Stack>
-                                    </LocalizationProvider>
-                                </ThemeProvider>
+                                    <div className=" mb-2">
+                                        <ThemeProvider theme={this.theme}>
+                                            <LocalizationProvider
+                                                dateAdapter={AdapterDayjs}
+                                                adapterLocale="vi">
+                                                <Stack>
+                                                    <DatePicker
+                                                        value={currentDateEnd}
+                                                        onChange={this.handleOnChange2}
+                                                        renderInput={(params) => (
+                                                            <TextField {...params} />
+                                                        )}
+                                                        minDate={new Date()}
+                                                        dayOfWeekFormatter={(day) => `${day}.`}
+                                                    />
+                                                </Stack>
+                                            </LocalizationProvider>
+                                        </ThemeProvider>
+                                    </div>
+                                    <ThemeProvider theme={this.theme}>
+                                        <LocalizationProvider
+                                            dateAdapter={AdapterDayjs}
+                                            locale="vi">
+                                            <Stack>
+                                                <TimePicker
+                                                    value={timeEnd}
+                                                    onChange={this.changeTime2}
+                                                    renderInput={(params) => (
+                                                        <TextField {...params} />
+                                                    )}
+                                                />
+                                            </Stack>
+                                        </LocalizationProvider>
+                                    </ThemeProvider>
+                                </Col>
+                            </Row>
+                        ) : (
+                            <Row>
+                                <Col md={6}>
+                                    <label htmlFor="schedule1">
+                                        <FormattedMessage id="menu.busOwner.trips.time1" />
+                                    </label>
+
+                                    <div className=" mb-2">
+                                        <ThemeProvider theme={this.theme}>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <Stack>
+                                                    <DatePicker
+                                                        value={currentDateStart}
+                                                        onChange={this.handleOnChange1}
+                                                        renderInput={(params) => (
+                                                            <TextField {...params} />
+                                                        )}
+                                                        minDate={new Date()}
+                                                        dayOfWeekFormatter={(day) => `${day}.`}
+                                                    />
+                                                </Stack>
+                                            </LocalizationProvider>
+                                        </ThemeProvider>
+                                    </div>
+
+                                    <ThemeProvider theme={this.theme}>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <Stack>
+                                                <TimePicker
+                                                    value={timeStart}
+                                                    onChange={this.changeTime1}
+                                                    renderInput={(params) => (
+                                                        <TextField {...params} />
+                                                    )}
+                                                />
+                                            </Stack>
+                                        </LocalizationProvider>
+                                    </ThemeProvider>
+                                </Col>
+                                <Col md={6}>
+                                    <label htmlFor="schedule2">
+                                        <FormattedMessage id="menu.busOwner.trips.time2" />
+                                    </label>
+                                    <div className=" mb-2">
+                                        <ThemeProvider theme={this.theme}>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <Stack>
+                                                    <DatePicker
+                                                        value={currentDateEnd}
+                                                        onChange={this.handleOnChange2}
+                                                        renderInput={(params) => (
+                                                            <TextField {...params} />
+                                                        )}
+                                                        minDate={new Date()}
+                                                        dayOfWeekFormatter={(day) => `${day}.`}
+                                                    />
+                                                </Stack>
+                                            </LocalizationProvider>
+                                        </ThemeProvider>
+                                    </div>
+                                    <ThemeProvider theme={this.theme}>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <Stack>
+                                                <TimePicker
+                                                    value={timeEnd}
+                                                    onChange={this.changeTime2}
+                                                    renderInput={(params) => (
+                                                        <TextField {...params} />
+                                                    )}
+                                                />
+                                            </Stack>
+                                        </LocalizationProvider>
+                                    </ThemeProvider>
+                                </Col>
+                            </Row>
+                        )}
+                        <Row>
+                            <Col>
+                                <Checkbox
+                                    // type="checkbox"
+                                    checked={checked}
+                                    onChange={this.handleChange}
+                                />
+                                Tạo lịch chạy cố định cho 7 ngày tiếp theo
                             </Col>
                         </Row>
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button
-                            color="secondary"
+                        <button
                             onClick={() => {
                                 this.toggle();
                             }}
-                            className="btn-primary-modal">
-                            Cancel
-                        </Button>{" "}
-                        <Button
-                            color="primary"
+                            className=" btn btn-secondary">
+                            <FormattedMessage id="account.cancel" />
+                        </button>
+                        <button
                             onClick={() => {
                                 this.handleSave();
                             }}
-                            className="btn-primary-modal">
-                            Save
-                        </Button>
+                            className=" btn btn-primary">
+                            <FormattedMessage id="account.save" />
+                        </button>
                     </ModalFooter>
                 </Modal>
             </div>
@@ -483,7 +599,6 @@ const mapStateToProps = (state) => {
         vehicles: state.admin.vehicles,
         userInfo: state.user.userInfo,
         listUsers: state.admin.users,
-        listSchedule: state.admin.trips,
     };
 };
 
@@ -493,7 +608,6 @@ const mapDispatchToProps = (dispatch) => {
         fetchAllVehicle: () => dispatch(actions.fetchAllVehicle()),
         fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()),
         createNewSchedule: (data) => dispatch(actions.createNewSchedule(data)),
-        fetchAllScheduleTrip: () => dispatch(actions.fetchAllScheduleTrip()),
     };
 };
 

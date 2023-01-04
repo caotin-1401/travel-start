@@ -466,30 +466,6 @@ class BusRoute extends Component {
                                                         }
                                                     />
                                                 </div>
-                                                <div className="filter_brand">
-                                                    <h6 className="mt-3">
-                                                        <FormattedMessage id="routes.oparator" />
-                                                    </h6>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        placeholder="Tìm nhà xe"
-                                                    />
-                                                    <div className="listNhaXe mt-3">
-                                                        <div className="d-flex align-items-center">
-                                                            <input
-                                                                type="checkbox"
-                                                                name="nhaxe"
-                                                                id="nhaxe"
-                                                            />
-                                                            <label
-                                                                className="nhaxe mb-0 ml-2"
-                                                                htmlFor="nhaxe">
-                                                                Hoàng Long (3)
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>

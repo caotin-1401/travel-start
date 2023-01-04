@@ -220,6 +220,23 @@
                 "discount2": "Giảm giá theo %",
                 "min": "Hóa đơn tối thiểu (đ)",
                 "max": "Giảm tối đa (đ)"
+            },
+            "trips": {
+                "title1": "Quản lý chuyến đi",
+                "title2": "Thêm chuyến đi",
+                "title3": "Chọn cách hiển thị chuyến đi",
+                "selectRoute": "Chọn Tuyến đường",
+                "selectVehicle": "Chọn phương tiện",
+                "selectDriver": "Chọn tài xế",
+                "prices": "Giá vé",
+                "time1": "Chọn ngày/ giờ khởi hành",
+                "time2": "Chọn ngày/ giờ về bến",
+                "add": "Thêm ",
+                "route": "Tuyến đường",
+                "time3": "Thời gian khởi hành",
+                "time4": "Thời gian về bến",
+                "all": "Tất cả",
+                "oneday": "Theo ngày"
             }
         },
         "driver": {

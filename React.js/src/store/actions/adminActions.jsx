@@ -24,7 +24,7 @@ import {
     editVehicleService,
     getAllScheduleService,
     deleteScheduleService,
-    saveBulkScheduleTrip,
+    createNewTrip,
     getAllTickets,
     getAllEventsService,
     getAllCouponService,
@@ -645,7 +645,7 @@ export const EditVehicle = (data) => {
 export const createNewSchedule = (data) => {
     return async (dispatch, getState) => {
         try {
-            let res = await saveBulkScheduleTrip(data);
+            let res = await createNewTrip(data);
             if (res && res.errCode === 0) {
                 toast.success("Create a new vehicle success!");
                 dispatch({

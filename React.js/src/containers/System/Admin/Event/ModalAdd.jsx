@@ -1,22 +1,14 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
 import { changeLanguageApp } from "../../../../store/actions/appActions";
 
 import "../style.scss";
 import DatePicker from "../../../../components/DatePicker";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
+import { LANGUAGES, CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
 import _ from "lodash";
 import dayjs from "dayjs";
@@ -134,15 +126,8 @@ class ModalAdd extends Component {
         console.log(html, text);
     };
     handleSave = async () => {
-        let {
-            name,
-            image,
-            previewImgURL,
-            dayStart,
-            dayEnd,
-            description,
-            descriptionMarkdown,
-        } = this.state;
+        let { name, image, previewImgURL, dayStart, dayEnd, description, descriptionMarkdown } =
+            this.state;
         let language = this.props.language;
         let startDate = new Date(dayStart).getTime();
         let endDatetest = new Date(dayEnd).getTime();
@@ -223,14 +208,7 @@ class ModalAdd extends Component {
     };
     render() {
         let language = this.props.language;
-        let {
-            name,
-            image,
-            dayStart,
-            description,
-            dayEnd,
-            descriptionMarkdown,
-        } = this.state;
+        let { name, image, dayStart, description, dayEnd, descriptionMarkdown } = this.state;
         return (
             <div>
                 <Modal
@@ -255,9 +233,7 @@ class ModalAdd extends Component {
                             <Row>
                                 <Col md={6}>
                                     <Row>
-                                        <label htmlFor="exampleEmail">
-                                            Tên sự kiện
-                                        </label>
+                                        <label htmlFor="exampleEmail">Tên sự kiện</label>
                                         <input
                                             className="form-control mb-4 h-38 "
                                             id="name"
@@ -268,18 +244,13 @@ class ModalAdd extends Component {
                                             }}
                                             value={name}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "name"
-                                                );
+                                                this.onChangeInput(event, "name");
                                             }}
                                         />
                                     </Row>
                                     <Row>
                                         <Col md={6}>
-                                            <label htmlFor="schedule1">
-                                                Ngày bắt đầu
-                                            </label>
+                                            <label htmlFor="schedule1">Ngày bắt đầu</label>
 
                                             <div
                                                 className="form-control mb-4"
@@ -288,16 +259,13 @@ class ModalAdd extends Component {
                                                 <DatePicker
                                                     locale="vi"
                                                     style={{ border: "none" }}
-                                                    onChange={
-                                                        this.handleOnChange1
-                                                    }
+                                                    onChange={this.handleOnChange1}
                                                     id="schedule1"
                                                     selected={dayStart}
                                                     minDate={
                                                         new Date(
                                                             new Date().setDate(
-                                                                new Date().getDate() -
-                                                                    1
+                                                                new Date().getDate() - 1
                                                             )
                                                         )
                                                     }
@@ -314,25 +282,20 @@ class ModalAdd extends Component {
                                             </div>
                                         </Col>
                                         <Col md={6}>
-                                            <label htmlFor="schedule2">
-                                                Ngày kết thúc
-                                            </label>
+                                            <label htmlFor="schedule2">Ngày kết thúc</label>
                                             <div
                                                 className="form-control mb-4"
                                                 style={{ height: "38px" }}
                                                 htmlFor="schedule2">
                                                 <DatePicker
                                                     style={{ border: "none" }}
-                                                    onChange={
-                                                        this.handleOnChange2
-                                                    }
+                                                    onChange={this.handleOnChange2}
                                                     id="schedule2"
                                                     selected={dayEnd}
                                                     minDate={
                                                         new Date(
                                                             new Date().setDate(
-                                                                new Date().getDate() -
-                                                                    1
+                                                                new Date().getDate() - 1
                                                             )
                                                         )
                                                     }
@@ -359,13 +322,9 @@ class ModalAdd extends Component {
                                             id="img"
                                             type="file"
                                             hidden
-                                            onChange={(event) =>
-                                                this.handleChangeImage(event)
-                                            }
+                                            onChange={(event) => this.handleChangeImage(event)}
                                         />
-                                        <label
-                                            className="upload-img"
-                                            htmlFor="img">
+                                        <label className="upload-img" htmlFor="img">
                                             Tải ảnh
                                             <i className="fas fa-upload"></i>
                                         </label>
@@ -380,14 +339,10 @@ class ModalAdd extends Component {
                             </Row>
                             <Row>
                                 <Col>
-                                    <label htmlFor="img">
-                                        Thong tin su kien
-                                    </label>
+                                    <label htmlFor="img">Thong tin su kien</label>
                                     <MdEditor
                                         style={{ height: "340px" }}
-                                        renderHTML={(text) =>
-                                            mdParser.render(text)
-                                        }
+                                        renderHTML={(text) => mdParser.render(text)}
                                         onChange={this.handleEditorChange}
                                         value={this.state.descriptionMarkdown}
                                     />
@@ -430,8 +385,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-        changeLanguageAppRedux: (language) =>
-            dispatch(changeLanguageApp(language)),
+        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
     };
 };
 

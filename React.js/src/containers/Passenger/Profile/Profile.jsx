@@ -6,7 +6,7 @@ import Header from "../../HomePage/Header";
 import { Row, Col } from "reactstrap";
 import "./Profile.scss";
 import * as actions from "../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../utils";
+import { LANGUAGES } from "../../../utils";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Link from "@mui/material/Link";
 import HomeIcon from "@mui/icons-material/Home";
@@ -21,11 +21,7 @@ class Profile extends Component {
         };
     }
     componentDidMount() {
-        if (
-            this.props.match &&
-            this.props.match.params &&
-            this.props.match.params.status
-        ) {
+        if (this.props.match && this.props.match.params && this.props.match.params.status) {
             let test = this.props.match.params.status;
             this.setState({
                 isInfo: +test,
@@ -71,9 +67,7 @@ class Profile extends Component {
                                     Trang chủ
                                 </Link>
                                 <p style={{ marginTop: "14px" }}>
-                                    {isInfo === 1
-                                        ? "Thông tin cá nhân"
-                                        : "Thông tin vé xe của tôi"}
+                                    {isInfo === 1 ? "Thông tin cá nhân" : "Thông tin vé xe của tôi"}
                                 </p>
                             </Breadcrumbs>
                         </div>
@@ -82,9 +76,7 @@ class Profile extends Component {
                                 <div className="contentProfile">
                                     <div>
                                         <Row
-                                            className={
-                                                isInfo === 1 ? "active" : ""
-                                            }
+                                            className={isInfo === 1 ? "active" : ""}
                                             onClick={this.handleSelection1}>
                                             <Col md={2}>
                                                 <i className="fas fa-user-circle"></i>
@@ -97,9 +89,7 @@ class Profile extends Component {
                                     <div>
                                         <Row
                                             onClick={this.handleSelection2}
-                                            className={
-                                                isInfo === 2 ? "active" : ""
-                                            }>
+                                            className={isInfo === 2 ? "active" : ""}>
                                             <Col md={2}>
                                                 <i className="fas fa-ticket-alt"></i>
                                             </Col>
@@ -109,9 +99,7 @@ class Profile extends Component {
                                         </Row>
                                     </div>
                                     <div onClick={this.returnToHome}>
-                                        <Row
-                                            onClick={processLogout}
-                                            title="Log out">
+                                        <Row onClick={processLogout} title="Log out">
                                             <Col md={2}>
                                                 <i className="fas fa-sign-out-alt"></i>
                                             </Col>
@@ -149,6 +137,4 @@ const mapDispatchToProps = (dispatch) => {
         processLogout: () => dispatch(actions.processLogout()),
     };
 };
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(Profile)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));

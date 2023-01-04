@@ -221,6 +221,23 @@
                 "name": "Name driver",
                 "trips": "Total trips",
                 "total": "Revenue"
+            },
+            "trips": {
+                "title1": "Trips Management",
+                "title2": "Add trips",
+                "title3": "Choose how to display trips",
+                "selectRoute": "Select routes",
+                "selectVehicle": "Select vehicle",
+                "selectDriver": "Select driver",
+                "prices": "Price",
+                "time1": "Select departure date/time",
+                "time2": "Choose a date/time to return to the wharf",
+                "add": "Add ",
+                "route": "Route",
+                "time3": "Departure time",
+                "time4": "Arrival time",
+                "all": "All",
+                "oneday": "By date"
             }
         },
         "driver": {

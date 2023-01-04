@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
+import { LANGUAGES } from "../../../../utils";
 import { getAllDrivers } from "../../../../services/userService";
 import { withRouter } from "react-router";
 import { changeLanguageApp } from "../../../../store/actions/appActions";
@@ -43,16 +43,10 @@ class ListVehicleOfAdmin extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.listVehicle !== this.props.listVehicle) {
-            if (
-                this.props.match &&
-                this.props.match.params &&
-                this.props.match.params.id
-            ) {
+            if (this.props.match && this.props.match.params && this.props.match.params.id) {
                 let driverId = this.props.match.params.id;
                 console.log(driverId);
-                let test = this.props.listVehicle.filter(
-                    (item) => item.busOwnerId == driverId
-                );
+                let test = this.props.listVehicle.filter((item) => item.busOwnerId == driverId);
                 this.setState({
                     listVehicles: test,
                 });
@@ -101,9 +95,7 @@ class ListVehicleOfAdmin extends Component {
         let clone = this.state.listVehicles;
 
         if (term) {
-            clone = clone.filter((item) =>
-                item.BusType.typeName.includes(term)
-            );
+            clone = clone.filter((item) => item.BusType.typeName.includes(term));
             this.setState({
                 test1: clone,
                 isTest: true,
@@ -123,8 +115,7 @@ class ListVehicleOfAdmin extends Component {
         }
     };
     render() {
-        let { page, rowsPerPage, listVehicles, test, test1, isTest } =
-            this.state;
+        let { page, rowsPerPage, listVehicles, test, test1, isTest } = this.state;
         isTest === true ? (test = test1) : (test = listVehicles);
         let { language } = this.props;
         let title;
@@ -155,9 +146,7 @@ class ListVehicleOfAdmin extends Component {
                                             style={{
                                                 width: "5%",
                                             }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            onClick={() => this.handleSort("asc", "id")}>
                                             Id
                                         </th>
                                         <th
@@ -173,19 +162,13 @@ class ListVehicleOfAdmin extends Component {
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "number"
-                                                            )
+                                                            this.handleSort("asc", "number")
                                                         }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "number"
-                                                            )
+                                                            this.handleSort("desc", "number")
                                                         }
                                                     />
                                                 </div>
@@ -259,17 +242,13 @@ class ListVehicleOfAdmin extends Component {
                                         <td>
                                             <input
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword(e)}
                                             />
                                         </td>
                                         <td>
                                             <input
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword1(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword1(e)}
                                             />
                                         </td>
                                         <td></td>
@@ -286,14 +265,10 @@ class ListVehicleOfAdmin extends Component {
                                     ).map((item, index) => {
                                         return (
                                             <tr key={index}>
-                                                <td className="section-id-list">
-                                                    {item.id}
-                                                </td>
+                                                <td className="section-id-list">{item.id}</td>
                                                 <td>{item.number}</td>
                                                 <td>{item.BusType.typeName}</td>
-                                                <td>
-                                                    {item.BusType.numOfSeat}
-                                                </td>
+                                                <td>{item.BusType.numOfSeat}</td>
                                                 <td
                                                     style={{
                                                         height: "100px",
@@ -301,9 +276,7 @@ class ListVehicleOfAdmin extends Component {
                                                         display: "flex",
                                                     }}>
                                                     {item.status === 2 ? (
-                                                        <div className="vehicle-run">
-                                                            Đang chạy
-                                                        </div>
+                                                        <div className="vehicle-run">Đang chạy</div>
                                                     ) : (
                                                         <div className="vehicle-not-run">
                                                             Trong ben
@@ -314,19 +287,13 @@ class ListVehicleOfAdmin extends Component {
                                                     className="content-left"
                                                     style={{
                                                         backgroundImage: `url(${
-                                                            item && item.image
-                                                                ? item.image
-                                                                : ""
+                                                            item && item.image ? item.image : ""
                                                         })`,
                                                     }}></td>
                                                 <td className="section-id-list">
                                                     <button
                                                         className="btn-delete"
-                                                        onClick={() =>
-                                                            this.handleDeleteUser(
-                                                                item
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleDeleteUser(item)}>
                                                         <i className="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
@@ -338,15 +305,13 @@ class ListVehicleOfAdmin extends Component {
                                     <TableRow>
                                         <TablePagination
                                             sx={{
-                                                "& .MuiTablePagination-selectLabel ":
-                                                    {
-                                                        display: "None",
-                                                    },
-                                                "& .MuiTablePagination-displayedRows  ":
-                                                    {
-                                                        marginTop: "10px",
-                                                        fontSize: "15px",
-                                                    },
+                                                "& .MuiTablePagination-selectLabel ": {
+                                                    display: "None",
+                                                },
+                                                "& .MuiTablePagination-displayedRows  ": {
+                                                    marginTop: "10px",
+                                                    fontSize: "15px",
+                                                },
                                                 "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
                                                     {
                                                         fontSize: "15px",
@@ -363,9 +328,7 @@ class ListVehicleOfAdmin extends Component {
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
+                                            onRowsPerPageChange={this.handleChangeRowsPerPage}
                                             ActionsComponent={(subProps) => (
                                                 <TablePaginationActions
                                                     style={{
@@ -399,11 +362,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchAllVehicle: () => dispatch(actions.fetchAllVehicle()),
         deleteVehicle: (id) => dispatch(actions.deleteVehicle(id)),
-        changeLanguageAppRedux: (language) =>
-            dispatch(changeLanguageApp(language)),
+        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
     };
 };
 
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(ListVehicleOfAdmin)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListVehicleOfAdmin));

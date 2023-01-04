@@ -1,21 +1,13 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
 import { changeLanguageApp } from "../../../../store/actions/appActions";
 import "../style.scss";
 import DatePicker from "../../../../components/DatePicker";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS, CommonUtils } from "../../../../utils";
+import { LANGUAGES } from "../../../../utils";
 import { toast } from "react-toastify";
 import _ from "lodash";
 import TextField from "@mui/material/TextField";
@@ -412,9 +404,7 @@ class ModalAdd extends Component {
                             }}>
                             <Row>
                                 <Col md={4}>
-                                    <label htmlFor="name">
-                                        Tên mã giảm giá
-                                    </label>
+                                    <label htmlFor="name">Tên mã giảm giá</label>
                                     <input
                                         style={{ height: "38px" }}
                                         className="form-control mb-4 h-38 "
@@ -449,37 +439,24 @@ class ModalAdd extends Component {
                             </Row>
                             <Row>
                                 <Col md={3}>
-                                    <label htmlFor="discount">
-                                        Giảm giá theo đ
-                                    </label>
+                                    <label htmlFor="discount">Giảm giá theo đ</label>
                                     {isEditing1 ? (
                                         <input
                                             style={{
                                                 height: "38px",
                                                 marginBottom: `${
-                                                    errMessage1 !== ""
-                                                        ? "3px"
-                                                        : "24px"
+                                                    errMessage1 !== "" ? "3px" : "24px"
                                                 }`,
                                             }}
                                             className="form-control"
                                             id="discount"
                                             placeholder="Lớn hơn 1.000"
                                             type="text"
-                                            disabled={
-                                                discountD === true
-                                                    ? true
-                                                    : false
-                                            }
-                                            onBlur={this.toggleEditing1.bind(
-                                                this
-                                            )}
+                                            disabled={discountD === true ? true : false}
+                                            onBlur={this.toggleEditing1.bind(this)}
                                             value={discount1}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "discount1"
-                                                );
+                                                this.onChangeInput(event, "discount1");
                                             }}
                                         />
                                     ) : (
@@ -487,72 +464,46 @@ class ModalAdd extends Component {
                                             style={{
                                                 height: "38px",
                                                 marginBottom: `${
-                                                    errMessage1 !== ""
-                                                        ? "3px"
-                                                        : "24px"
+                                                    errMessage1 !== "" ? "3px" : "24px"
                                                 }`,
                                             }}
                                             className="form-control"
                                             id="discount"
                                             placeholder="Lớn hơn 1.000"
                                             type="text"
-                                            disabled={
-                                                discountD === true
-                                                    ? true
-                                                    : false
-                                            }
-                                            value={this.currencyFormat(
-                                                discount1
-                                            )}
+                                            disabled={discountD === true ? true : false}
+                                            value={this.currencyFormat(discount1)}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "discount1"
-                                                );
+                                                this.onChangeInput(event, "discount1");
                                             }}
-                                            onFocus={this.toggleEditing1.bind(
-                                                this
-                                            )}
+                                            onFocus={this.toggleEditing1.bind(this)}
                                         />
                                     )}
                                     {errMessage1 && (
-                                        <div
-                                            className="col-12"
-                                            style={{ color: "red" }}>
+                                        <div className="col-12" style={{ color: "red" }}>
                                             * {errMessage1}
                                         </div>
                                     )}
                                 </Col>
                                 <Col md={3}>
-                                    <label htmlFor="discount">
-                                        Giảm giá theo %
-                                    </label>
+                                    <label htmlFor="discount">Giảm giá theo %</label>
                                     <input
                                         style={{
                                             height: "38px",
-                                            marginBottom: `${
-                                                errMessage2 !== "" && "3px"
-                                            }`,
+                                            marginBottom: `${errMessage2 !== "" && "3px"}`,
                                         }}
                                         className="form-control"
                                         id="discount"
                                         type="text"
-                                        disabled={
-                                            discountD === false ? true : false
-                                        }
+                                        disabled={discountD === false ? true : false}
                                         placeholder="Nhỏ hơn 100"
                                         value={discount2}
                                         onChange={(event) => {
-                                            this.onChangeInput(
-                                                event,
-                                                "discount2"
-                                            );
+                                            this.onChangeInput(event, "discount2");
                                         }}
                                     />
                                     {errMessage2 && (
-                                        <div
-                                            className="col-12"
-                                            style={{ color: "red" }}>
+                                        <div className="col-12" style={{ color: "red" }}>
                                             * {errMessage2}
                                         </div>
                                     )}
@@ -565,114 +516,76 @@ class ModalAdd extends Component {
                                         <input
                                             style={{
                                                 height: "38px",
-                                                marginBottom: `${
-                                                    errMessage3 !== "" && "3px"
-                                                }`,
+                                                marginBottom: `${errMessage3 !== "" && "3px"}`,
                                             }}
                                             className="form-control"
                                             id="sumMoneyCondition"
                                             placeholder="Hóa đơn tối thiểu"
                                             type="text"
-                                            onBlur={this.toggleEditing2.bind(
-                                                this
-                                            )}
+                                            onBlur={this.toggleEditing2.bind(this)}
                                             value={sumMoneyCondition}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "sumMoneyCondition"
-                                                );
+                                                this.onChangeInput(event, "sumMoneyCondition");
                                             }}
                                         />
                                     ) : (
                                         <input
                                             style={{
                                                 height: "38px",
-                                                marginBottom: `${
-                                                    errMessage3 !== "" && "3px"
-                                                }`,
+                                                marginBottom: `${errMessage3 !== "" && "3px"}`,
                                             }}
                                             className="form-control"
                                             id="sumMoneyCondition"
                                             placeholder="Hóa đơn tối thiểu"
                                             type="text"
-                                            value={this.currencyFormat(
-                                                sumMoneyCondition
-                                            )}
+                                            value={this.currencyFormat(sumMoneyCondition)}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "sumMoneyCondition"
-                                                );
+                                                this.onChangeInput(event, "sumMoneyCondition");
                                             }}
-                                            onFocus={this.toggleEditing2.bind(
-                                                this
-                                            )}
+                                            onFocus={this.toggleEditing2.bind(this)}
                                         />
                                     )}
                                     {errMessage3 && (
-                                        <div
-                                            className="col-12"
-                                            style={{ color: "red" }}>
+                                        <div className="col-12" style={{ color: "red" }}>
                                             * {errMessage3}
                                         </div>
                                     )}
                                 </Col>
                                 <Col md={3}>
-                                    <label htmlFor="discountMax">
-                                        Giảm tối đa (đ)
-                                    </label>
+                                    <label htmlFor="discountMax">Giảm tối đa (đ)</label>
                                     {isEditing3 ? (
                                         <input
                                             style={{
                                                 height: "38px",
-                                                marginBottom: `${
-                                                    errMessage4 !== "" && "3px"
-                                                }`,
+                                                marginBottom: `${errMessage4 !== "" && "3px"}`,
                                             }}
                                             className="form-control"
                                             id="discountMax"
                                             type="text"
                                             value={discountMax}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "discountMax"
-                                                );
+                                                this.onChangeInput(event, "discountMax");
                                             }}
-                                            onBlur={this.toggleEditing3.bind(
-                                                this
-                                            )}
+                                            onBlur={this.toggleEditing3.bind(this)}
                                         />
                                     ) : (
                                         <input
                                             style={{
                                                 height: "38px",
-                                                marginBottom: `${
-                                                    errMessage4 !== "" && "3px"
-                                                }`,
+                                                marginBottom: `${errMessage4 !== "" && "3px"}`,
                                             }}
                                             className="form-control"
                                             id="discountMax"
                                             type="text"
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "discountMax"
-                                                );
+                                                this.onChangeInput(event, "discountMax");
                                             }}
-                                            value={this.currencyFormat(
-                                                discountMax
-                                            )}
-                                            onFocus={this.toggleEditing3.bind(
-                                                this
-                                            )}
+                                            value={this.currencyFormat(discountMax)}
+                                            onFocus={this.toggleEditing3.bind(this)}
                                         />
                                     )}
                                     {errMessage4 && (
-                                        <div
-                                            className="col-12"
-                                            style={{ color: "red" }}>
+                                        <div className="col-12" style={{ color: "red" }}>
                                             * {errMessage4}
                                         </div>
                                     )}
@@ -680,54 +593,36 @@ class ModalAdd extends Component {
                             </Row>
                             <Row>
                                 <Col md={4}>
-                                    <label htmlFor="count">
-                                        Số lượng mã giảm giá
-                                    </label>
+                                    <label htmlFor="count">Số lượng mã giảm giá</label>
                                     {isEditing4 ? (
                                         <input
                                             style={{
                                                 height: "38px",
-                                                marginBottom: `${
-                                                    errMessage5 === false ??
-                                                    "4px"
-                                                }`,
+                                                marginBottom: `${errMessage5 === false ?? "4px"}`,
                                             }}
                                             className="form-control"
                                             id="discountMax"
                                             type="text"
                                             value={count}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "count"
-                                                );
+                                                this.onChangeInput(event, "count");
                                             }}
-                                            onBlur={this.toggleEditing4.bind(
-                                                this
-                                            )}
+                                            onBlur={this.toggleEditing4.bind(this)}
                                         />
                                     ) : (
                                         <input
                                             style={{
                                                 height: "38px",
-                                                marginBottom: `${
-                                                    errMessage5 === false ??
-                                                    "4px"
-                                                }`,
+                                                marginBottom: `${errMessage5 === false ?? "4px"}`,
                                             }}
                                             className="form-control"
                                             id="discountMax"
                                             type="text"
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "count"
-                                                );
+                                                this.onChangeInput(event, "count");
                                             }}
                                             value={this.currencyFormat(count)}
-                                            onFocus={this.toggleEditing4.bind(
-                                                this
-                                            )}
+                                            onFocus={this.toggleEditing4.bind(this)}
                                         />
                                     )}
 
@@ -742,17 +637,13 @@ class ModalAdd extends Component {
                                         }}
                                     /> */}
                                     {errMessage5 && (
-                                        <div
-                                            className="col-12"
-                                            style={{ color: "red" }}>
+                                        <div className="col-12" style={{ color: "red" }}>
                                             * {errMessage5}
                                         </div>
                                     )}
                                 </Col>
                                 <Col md={4}>
-                                    <label htmlFor="schedule1">
-                                        Ngày bắt đầu
-                                    </label>
+                                    <label htmlFor="schedule1">Ngày bắt đầu</label>
 
                                     <div
                                         className="form-control mb-4"
@@ -766,15 +657,11 @@ class ModalAdd extends Component {
                                             selected={dayStart}
                                             minDate={
                                                 new Date(
-                                                    new Date().setDate(
-                                                        new Date().getDate() - 1
-                                                    )
+                                                    new Date().setDate(new Date().getDate() - 1)
                                                 )
                                             }
                                         />
-                                        <label
-                                            htmlFor="schedule1"
-                                            style={{ float: "right" }}>
+                                        <label htmlFor="schedule1" style={{ float: "right" }}>
                                             <i
                                                 className="far fa-calendar-alt"
                                                 style={{
@@ -784,9 +671,7 @@ class ModalAdd extends Component {
                                     </div>
                                 </Col>
                                 <Col md={4}>
-                                    <label htmlFor="schedule2">
-                                        Ngày kết thúc
-                                    </label>
+                                    <label htmlFor="schedule2">Ngày kết thúc</label>
                                     <div
                                         className="form-control mb-4"
                                         style={{ height: "38px" }}
@@ -798,15 +683,11 @@ class ModalAdd extends Component {
                                             selected={dayEnd}
                                             minDate={
                                                 new Date(
-                                                    new Date().setDate(
-                                                        new Date().getDate() - 1
-                                                    )
+                                                    new Date().setDate(new Date().getDate() - 1)
                                                 )
                                             }
                                         />
-                                        <label
-                                            htmlFor="schedule2"
-                                            style={{ float: "right" }}>
+                                        <label htmlFor="schedule2" style={{ float: "right" }}>
                                             <i
                                                 className="far fa-calendar-alt"
                                                 style={{
@@ -818,14 +699,10 @@ class ModalAdd extends Component {
                             </Row>
                             <Row>
                                 <Col>
-                                    <label htmlFor="img">
-                                        Thông tin mã giảm giá
-                                    </label>
+                                    <label htmlFor="img">Thông tin mã giảm giá</label>
                                     <MdEditor
                                         style={{ height: "280px" }}
-                                        renderHTML={(text) =>
-                                            mdParser.render(text)
-                                        }
+                                        renderHTML={(text) => mdParser.render(text)}
                                         onChange={this.handleEditorChange}
                                         value={this.state.descriptionMarkdown}
                                     />
@@ -870,8 +747,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
         fetchAllCoupon: () => dispatch(actions.fetchAllCoupon()),
-        changeLanguageAppRedux: (language) =>
-            dispatch(changeLanguageApp(language)),
+        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
     };
 };
 

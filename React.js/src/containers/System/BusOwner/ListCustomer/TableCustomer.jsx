@@ -39,6 +39,7 @@ class TableCustomer extends Component {
             isActive: false,
             listPassengers: [],
             listTrips: [],
+            dateStartTrip: "",
         };
     }
 
@@ -96,7 +97,10 @@ class TableCustomer extends Component {
             let [hours, minutes] = str.split(":");
             let date1 = new Date(+year, month - 1, +day, +hours, +minutes);
             dateCurrent = date1.getTime();
+        } else {
+            dateCurrent = dateStartTrip;
         }
+        console.log(selectDriver.value, dateCurrent, dateStartTrip);
         let res = await getAllRouteFromDateDriver(selectDriver.value, dateCurrent);
         let resTicket = await getAllTicketFromDateDriver(selectDriver.value, dateCurrent);
 
@@ -149,7 +153,6 @@ class TableCustomer extends Component {
     render() {
         let { language } = this.props;
         let { listDrivers, selectDriver, dateStartTrip, listPassengers, listTrips } = this.state;
-        console.log(dateStartTrip);
         return (
             <LoadingOverlay active={this.state.isActive} spinner text="Loading ...">
                 <div className="user-redux-container height100vh">
@@ -235,7 +238,6 @@ class TableCustomer extends Component {
                                         {listTrips &&
                                             listTrips.length > 0 &&
                                             listTrips.map((item, index) => {
-                                                console.log(1);
                                                 return (
                                                     <RowBody
                                                         key={item.id}

@@ -1,16 +1,27 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
 import { LANGUAGES } from "../../../../utils";
-import ModalAdd from "./ModalAdd";
-import ModalEdit from "./ModalEdit";
-import { TableBody, TableContainer, TableFooter, TablePagination, TableRow, Paper, Table } from "@mui/material";
+import {
+    TableBody,
+    TableContainer,
+    TableFooter,
+    TablePagination,
+    TableRow,
+    Paper,
+    Table,
+} from "@mui/material";
 import { toast } from "react-toastify";
 import { getAllVehiclesService, deleteVehicleService } from "../../../../services/userService";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
 import "../style.scss";
+
+import Loading from "../../../../components/Loading";
+
+const ModalAdd = lazy(() => import("./ModalAdd"));
+const ModalEdit = lazy(() => import("./ModalEdit"));
 
 class ListVehicles extends Component {
     constructor(props) {
@@ -138,7 +149,16 @@ class ListVehicles extends Component {
         }
     };
     render() {
-        let { page, rowsPerPage, ListVehicles, test, test1, isTest, isOpenModelEditUser, isOpenModel } = this.state;
+        let {
+            page,
+            rowsPerPage,
+            ListVehicles,
+            test,
+            test1,
+            isTest,
+            isOpenModelEditUser,
+            isOpenModel,
+        } = this.state;
         isTest === true ? (test = test1) : (test = ListVehicles);
         let { language } = this.props;
         let mes1, mes2, mes, mes3, mes4;
@@ -158,27 +178,32 @@ class ListVehicles extends Component {
         return (
             <div className="container form-redux">
                 <div className="user-container">
-                    <ModalAdd
-                        ListVehicles={ListVehicles}
-                        isOpen={isOpenModel}
-                        toggleFromParent={this.toggleModel}
-                        createVehicle={this.createVehicle}
-                    />
-                    {isOpenModelEditUser && (
-                        <ModalEdit
-                            isOpen={isOpenModelEditUser}
-                            toggleFromParent={this.toggleUserEditModel}
-                            currentUser={this.state.userEdit}
-                            doEditUser={this.doEditUser}
+                    <Suspense fallback={<Loading />}>
+                        <ModalAdd
+                            ListVehicles={ListVehicles}
+                            isOpen={isOpenModel}
+                            toggleFromParent={this.toggleModel}
+                            createVehicle={this.createVehicle}
                         />
-                    )}
+                        {isOpenModelEditUser && (
+                            <ModalEdit
+                                isOpen={isOpenModelEditUser}
+                                toggleFromParent={this.toggleUserEditModel}
+                                currentUser={this.state.userEdit}
+                                doEditUser={this.doEditUser}
+                            />
+                        )}
+                    </Suspense>
+
                     <div className="title text-center">
                         <FormattedMessage id="menu.busOwner.vehicle.title" />
                     </div>
                     <div className="chart_title">
                         <div className="chart_item-left">
                             <div className="mx-5 my-3">
-                                <button className="btn btn-primary px-3 w130" onClick={() => this.handleAddVehicle()}>
+                                <button
+                                    className="btn btn-primary px-3 w130"
+                                    onClick={() => this.handleAddVehicle()}>
                                     <i className="fas fa-plus px-1 "></i>
                                     <FormattedMessage id="menu.admin.listBusType.add" />
                                 </button>
@@ -236,11 +261,21 @@ class ListVehicles extends Component {
                                                 <div>
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
-                                                        onClick={() => this.handleSort("asc", "BusType.numOfSeat")}
+                                                        onClick={() =>
+                                                            this.handleSort(
+                                                                "asc",
+                                                                "BusType.numOfSeat"
+                                                            )
+                                                        }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
-                                                        onClick={() => this.handleSort("desc", "BusType.numOfSeat")}
+                                                        onClick={() =>
+                                                            this.handleSort(
+                                                                "desc",
+                                                                "BusType.numOfSeat"
+                                                            )
+                                                        }
                                                     />
                                                 </div>
                                             </div>
@@ -263,7 +298,10 @@ class ListVehicles extends Component {
                                     </tr>
 
                                     {(rowsPerPage > 0
-                                        ? test.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        ? test.slice(
+                                              page * rowsPerPage,
+                                              page * rowsPerPage + rowsPerPage
+                                          )
                                         : test
                                     ).map((item, index) => {
                                         return (
@@ -281,13 +319,17 @@ class ListVehicles extends Component {
                                                     {item.status === 2 ? (
                                                         <div className="vehicle-run">{mes2}</div>
                                                     ) : (
-                                                        <div className="vehicle-not-run">{mes1}</div>
+                                                        <div className="vehicle-not-run">
+                                                            {mes1}
+                                                        </div>
                                                     )}
                                                 </td>
                                                 <td
                                                     className="content-left"
                                                     style={{
-                                                        backgroundImage: `url(${item && item.image ? item.image : ""})`,
+                                                        backgroundImage: `url(${
+                                                            item && item.image ? item.image : ""
+                                                        })`,
                                                     }}></td>
                                                 <td className="center">
                                                     <button
@@ -299,7 +341,9 @@ class ListVehicles extends Component {
                                                     <button
                                                         className="btn-delete"
                                                         title={mes4}
-                                                        onClick={() => this.handleDeleteVehicle(item)}>
+                                                        onClick={() =>
+                                                            this.handleDeleteVehicle(item)
+                                                        }>
                                                         <i className="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
@@ -318,11 +362,17 @@ class ListVehicles extends Component {
                                                     marginTop: "10px",
                                                     fontSize: "15px",
                                                 },
-                                                "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ": {
-                                                    fontSize: "15px",
-                                                },
+                                                "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
+                                                    {
+                                                        fontSize: "15px",
+                                                    },
                                             }}
-                                            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                                            rowsPerPageOptions={[
+                                                5,
+                                                10,
+                                                25,
+                                                { label: "All", value: -1 },
+                                            ]}
                                             colSpan={7}
                                             count={ListVehicles.length}
                                             rowsPerPage={rowsPerPage}
