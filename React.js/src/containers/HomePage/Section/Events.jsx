@@ -13,7 +13,7 @@ class Events extends Component {
         };
     }
     componentDidMount() {
-        this.props.fetchAllEvents();
+        this.props.fetchAllEventsHome();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.events !== this.props.events) {
@@ -45,9 +45,7 @@ class Events extends Component {
                             <span className="title-section">
                                 <FormattedMessage id="header.promotion" />
                             </span>
-                            <button
-                                className="btn-section"
-                                onClick={() => this.handleEvents()}>
+                            <button className="btn-section" onClick={() => this.handleEvents()}>
                                 <FormattedMessage id="header.more" />
                             </button>
                         </div>
@@ -58,7 +56,7 @@ class Events extends Component {
                                     newArr.map((item, index) => {
                                         let imageBase64 = "";
                                         if (item.image) {
-                                            imageBase64 = new Buffer(
+                                            imageBase64 = Buffer.from(
                                                 item.image,
                                                 "base64"
                                             ).toString("binary");
@@ -67,21 +65,17 @@ class Events extends Component {
                                             <div
                                                 key={index}
                                                 className=" section-custom"
-                                                onClick={() =>
-                                                    this.handleViewDetail(item)
-                                                }>
-                                                <div
-                                                    className="bg-img"
-                                                    style={{
-                                                        backgroundImage: `url(${imageBase64})`,
-                                                        borderBottom:
-                                                            "1px solid gray ",
-                                                    }}></div>
+                                                onClick={() => this.handleViewDetail(item)}>
+                                                <div className="bg-img">
+                                                    <img
+                                                        src={imageBase64}
+                                                        alt="..."
+                                                        loading="lazy"
+                                                    />
+                                                </div>
 
                                                 <div>
-                                                    <div className="section-title">
-                                                        {item.name}
-                                                    </div>
+                                                    <div className="section-title">{item.name}</div>
                                                 </div>
                                             </div>
                                         );
@@ -105,7 +99,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
+        fetchAllEventsHome: () => dispatch(actions.fetchAllEventsHome()),
     };
 };
 

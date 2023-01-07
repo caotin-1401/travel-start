@@ -132,6 +132,10 @@ class TableDiscount extends Component {
     currencyFormat(num) {
         return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
     }
+    currencyFormat1(number) {
+        const formatter = new Intl.NumberFormat("vi-VI", { maximumSignificantDigits: 3 });
+        return formatter.format(number);
+    }
     render() {
         let { page, rowsPerPage, listCoupons } = this.state;
         let { language } = this.props;
@@ -324,7 +328,7 @@ class TableDiscount extends Component {
                                                             this.currencyFormat(+user.discount)}
                                                         {user.type === "2" && time}
                                                     </td>
-                                                    <td>{user.count}</td>
+                                                    <td>{this.currencyFormat1(user.count)}</td>
                                                     <td>{user.use}</td>
                                                     <td>{start}</td>
                                                     <td>{end}</td>

@@ -2,20 +2,22 @@ import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
-import Box from "@mui/material/Box";
+import { Box, TextField, Stack } from "@mui/material";
 import "../style.scss";
-import DatePicker from "../../../../components/DatePicker";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
 import _ from "lodash";
-import dayjs from "dayjs";
-import localization from "moment/locale/vi";
 import moment from "moment";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
 import "react-markdown-editor-lite/lib/index.css";
 import { editEventsService } from "../../../../services/userService";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import "dayjs/locale/vi";
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
 class ModalEdit extends Component {
@@ -40,8 +42,8 @@ class ModalEdit extends Component {
             if (user.image) {
                 imageBase64 = Buffer.from(user.image, "base64").toString("binary");
             }
-            let time1 = moment(+user.startDate).format("L");
-            let time2 = moment(+user.endDate).format("L");
+            let time1 = moment(+user.startDate).format("MM/DD/YYYY");
+            let time2 = moment(+user.endDate).format("MM/DD/YYYY");
             this.setState({
                 id: user.id,
                 name: user.name,
@@ -80,12 +82,12 @@ class ModalEdit extends Component {
     };
     handleOnChange1 = (data) => {
         this.setState({
-            dayStart: data[0],
+            dayStart: data.$d,
         });
     };
     handleOnChange2 = (data) => {
         this.setState({
-            dayEnd: data[0],
+            dayEnd: data.$d,
         });
     };
     handleEditorChange = ({ html, text }) => {
@@ -95,7 +97,7 @@ class ModalEdit extends Component {
         });
     };
     handleSave = async () => {
-        let { name, image, previewImgURL, dayStart, dayEnd, description, descriptionMarkdown, id } = this.state;
+        let { name, image, dayStart, dayEnd, description, descriptionMarkdown, id } = this.state;
 
         let str = "00:00";
         let [hours, minutes] = str.split(":");
@@ -105,25 +107,24 @@ class ModalEdit extends Component {
             endDate = new Date(dayEnd).getTime() + 86399000;
         } else if (!dayEnd.length && dayStart.length === 10) {
             endDate = new Date(dayEnd).getTime() + 86399000;
-            let [day1, month1, year1] = dayStart.split("/");
+            let [month1, day1, year1] = dayStart.split("/");
             let date1 = new Date(+year1, month1 - 1, +day1, +hours, +minutes);
             startDate = Math.floor(date1.getTime());
         } else if (!dayStart.length && dayEnd.length === 10) {
             startDate = new Date(dayStart).getTime();
-            let [day2, month2, year2] = dayEnd.split("/");
+            let [month2, day2, year2] = dayEnd.split("/");
             let date2 = new Date(+year2, month2 - 1, +day2, +hours, +minutes);
             endDate = Math.floor(date2.getTime()) + 86399000;
         } else {
-            let [day1, month1, year1] = dayStart.split("/");
-            let [day2, month2, year2] = dayEnd.split("/");
+            let [month1, day1, year1] = dayStart.split("/");
+            let [month2, day2, year2] = dayEnd.split("/");
 
             let date1 = new Date(+year1, month1 - 1, +day1, +hours, +minutes);
             let date2 = new Date(+year2, month2 - 1, +day2, +hours, +minutes);
             startDate = Math.floor(date1.getTime());
             endDate = Math.floor(date2.getTime()) + 86399000;
         }
-        // let startDate = new Date(dayStart).getTime();
-        // let endDate = new Date(dayEnd).getTime();
+        console.log(startDate, endDate);
         let language = this.props.language;
 
         let nameErrVi = "Vui lòng điền tên sự kiện";
@@ -173,7 +174,8 @@ class ModalEdit extends Component {
                 toast.error(descriptionEn);
             }
             return;
-        } else if (+dayStart > +dayEnd) {
+        } else if (startDate > endDate) {
+            console.log(1);
             if (language === LANGUAGES.VI) {
                 toast.error(compareDateVi);
             } else {
@@ -181,6 +183,7 @@ class ModalEdit extends Component {
             }
             return;
         } else {
+            console.log(2);
             let res = await editEventsService({
                 id,
                 name,
@@ -200,10 +203,38 @@ class ModalEdit extends Component {
         }
         this.props.doEditUser(this.state);
     };
+    theme = createTheme({
+        components: {
+            MuiInputBase: {
+                styleOverrides: {
+                    root: {
+                        height: 38,
+                    },
+                    input: {
+                        height: 1.5,
+                        padding: 0,
+                    },
+                },
+            },
+            MuiOutlinedInput: {
+                styleOverrides: {
+                    notchedOutline: {
+                        borderColor: "#CED4DA!important",
+                    },
+                },
+            },
+            MuiPickersDay: {
+                styleOverrides: {
+                    root: {
+                        fontSize: "15px",
+                    },
+                },
+            },
+        },
+    });
     render() {
         let language = this.props.language;
-        let { name, image, dayStart, description, dayEnd, descriptionMarkdown } = this.state;
-        console.log(this.state);
+        let { name, dayStart, dayEnd, descriptionMarkdown } = this.state;
         return (
             <div>
                 <Modal
@@ -217,7 +248,7 @@ class ModalEdit extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Create a new trip
+                        <FormattedMessage id="menu.admin.listEvents.title2" />
                     </ModalHeader>
                     <ModalBody>
                         <Box
@@ -228,7 +259,9 @@ class ModalEdit extends Component {
                             <Row>
                                 <Col md={6}>
                                     <Row>
-                                        <label htmlFor="exampleEmail">Tên sự kiện</label>
+                                        <label htmlFor="exampleEmail">
+                                            <FormattedMessage id="menu.admin.listEvents.name" />
+                                        </label>
                                         <input
                                             className="form-control mb-4 h-38 "
                                             id="name"
@@ -245,48 +278,88 @@ class ModalEdit extends Component {
                                     </Row>
                                     <Row>
                                         <Col md={6}>
-                                            <label htmlFor="schedule1">Ngày bắt đầu</label>
-                                            <div
-                                                className="form-control mb-4"
-                                                style={{ height: "38px" }}
-                                                htmlFor="schedule1">
-                                                <DatePicker
-                                                    style={{ border: "none" }}
-                                                    onChange={this.handleOnChange1}
-                                                    id="schedule1"
-                                                    value={dayStart}
-                                                    selected={dayStart}
-                                                    // minDate={new Date()}
-                                                />
-                                                <label htmlFor="schedule1" style={{ float: "right" }}>
-                                                    <i
-                                                        className="far fa-calendar-alt"
-                                                        style={{
-                                                            fontSize: "20px",
-                                                        }}></i>
-                                                </label>
-                                            </div>
+                                            <label htmlFor="schedule1">
+                                                <FormattedMessage id="menu.admin.listEvents.start1" />
+                                            </label>
+                                            <ThemeProvider theme={this.theme}>
+                                                {language === "vi" ? (
+                                                    <LocalizationProvider
+                                                        dateAdapter={AdapterDayjs}
+                                                        adapterLocale="vi">
+                                                        <Stack>
+                                                            <DatePicker
+                                                                value={dayStart}
+                                                                onChange={this.handleOnChange1}
+                                                                renderInput={(params) => (
+                                                                    <TextField {...params} />
+                                                                )}
+                                                                dayOfWeekFormatter={(day) =>
+                                                                    `${day}.`
+                                                                }
+                                                            />
+                                                        </Stack>
+                                                    </LocalizationProvider>
+                                                ) : (
+                                                    <LocalizationProvider
+                                                        dateAdapter={AdapterDayjs}>
+                                                        <Stack>
+                                                            <DatePicker
+                                                                value={dayStart}
+                                                                onChange={this.handleOnChange1}
+                                                                renderInput={(params) => (
+                                                                    <TextField {...params} />
+                                                                )}
+                                                                dayOfWeekFormatter={(day) =>
+                                                                    `${day}.`
+                                                                }
+                                                            />
+                                                        </Stack>
+                                                    </LocalizationProvider>
+                                                )}
+                                            </ThemeProvider>
                                         </Col>
                                         <Col md={6}>
-                                            <label htmlFor="schedule2">Ngày kết thúc</label>
-                                            <div
-                                                className="form-control mb-4"
-                                                style={{ height: "38px" }}
-                                                htmlFor="schedule2">
-                                                <DatePicker
-                                                    style={{ border: "none" }}
-                                                    onChange={this.handleOnChange2}
-                                                    id="schedule2"
-                                                    value={dayEnd}
-                                                    selected={dayEnd}
-                                                />
-                                                <label htmlFor="schedule2" style={{ float: "right" }}>
-                                                    <i
-                                                        className="far fa-calendar-alt"
-                                                        style={{
-                                                            fontSize: "20px",
-                                                        }}></i>
-                                                </label>
+                                            <label htmlFor="schedule2">
+                                                {" "}
+                                                <FormattedMessage id="menu.admin.listEvents.end1" />
+                                            </label>
+                                            <div className=" mb-4">
+                                                <ThemeProvider theme={this.theme}>
+                                                    {language === "vi" ? (
+                                                        <LocalizationProvider
+                                                            dateAdapter={AdapterDayjs}
+                                                            adapterLocale="vi">
+                                                            <Stack>
+                                                                <DatePicker
+                                                                    value={dayEnd}
+                                                                    onChange={this.handleOnChange2}
+                                                                    renderInput={(params) => (
+                                                                        <TextField {...params} />
+                                                                    )}
+                                                                    dayOfWeekFormatter={(day) =>
+                                                                        `${day}.`
+                                                                    }
+                                                                />
+                                                            </Stack>
+                                                        </LocalizationProvider>
+                                                    ) : (
+                                                        <LocalizationProvider
+                                                            dateAdapter={AdapterDayjs}>
+                                                            <Stack>
+                                                                <DatePicker
+                                                                    value={dayEnd}
+                                                                    onChange={this.handleOnChange2}
+                                                                    renderInput={(params) => (
+                                                                        <TextField {...params} />
+                                                                    )}
+                                                                    dayOfWeekFormatter={(day) =>
+                                                                        `${day}.`
+                                                                    }
+                                                                />
+                                                            </Stack>
+                                                        </LocalizationProvider>
+                                                    )}
+                                                </ThemeProvider>
                                             </div>
                                         </Col>
                                     </Row>
@@ -302,7 +375,7 @@ class ModalEdit extends Component {
                                             onChange={(event) => this.handleChangeImage(event)}
                                         />
                                         <label className="upload-img" htmlFor="img">
-                                            Tải ảnh
+                                            <FormattedMessage id="account.upload" />
                                             <i className="fas fa-upload"></i>
                                         </label>
                                         <div
@@ -316,7 +389,9 @@ class ModalEdit extends Component {
                             </Row>
                             <Row>
                                 <Col>
-                                    <label>Thong tin su kien</label>
+                                    <label>
+                                        <FormattedMessage id="menu.admin.listEvents.description" />
+                                    </label>
                                     <MdEditor
                                         style={{ height: "340px" }}
                                         renderHTML={(text) => mdParser.render(text)}
@@ -335,7 +410,7 @@ class ModalEdit extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            Cancel
+                            <FormattedMessage id="account.cancel" />
                         </Button>{" "}
                         <Button
                             color="primary"
@@ -343,7 +418,7 @@ class ModalEdit extends Component {
                                 this.handleSave();
                             }}
                             className="btn-primary-modal">
-                            Save
+                            <FormattedMessage id="account.save" />{" "}
                         </Button>
                     </ModalFooter>
                 </Modal>

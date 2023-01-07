@@ -59,9 +59,9 @@ class Error extends Component {
                             <tbody>
                                 {listErr && listErr.length > 0 ? (
                                     listErr.map((item, index) => {
-                                        let create = moment(new Date(item.createdAt).getTime()).format(
-                                            "DD/MM/YYYY HH:mm"
-                                        );
+                                        let create = moment(
+                                            new Date(item.createdAt).getTime()
+                                        ).format("DD/MM/YYYY HH:mm");
                                         return (
                                             <tr key={index}>
                                                 <td>{item.id}</td>
@@ -80,7 +80,12 @@ class Error extends Component {
                                 ) : (
                                     <tr colSpan="4">
                                         <td colSpan="4">
-                                            <p style={{ marginTop: "15px", textAlign: "center", fontSize: "15px" }}>
+                                            <p
+                                                style={{
+                                                    marginTop: "15px",
+                                                    textAlign: "center",
+                                                    fontSize: "15px",
+                                                }}>
                                                 <FormattedMessage id="menu.admin.listErr.title1" />
                                             </p>
                                         </td>
@@ -98,7 +103,6 @@ class Error extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        userInfo: state.user.userInfo,
     };
 };
 

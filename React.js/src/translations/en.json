@@ -53,8 +53,8 @@
             "list-vehicle": "List Bus",
             "manage-busOnwer": "Manage BusOnwer",
             "manage-passenger": "Manage Passenger",
-            "handbook": "Handbooks",
-            "blog": "Manage handbooks",
+            "handbook": "Blogs",
+            "blog": "Manage blogs",
             "list-bus": "List Bus",
             "location": "List Location",
             "route": "List Route",
@@ -83,7 +83,16 @@
                 "add": "Add station",
                 "cancel": "Cancel",
                 "save": "Add",
-                "modaladd": "Add new bus station"
+                "modaladd": "Add new bus station",
+                "count": "Total means of traffic in the bus station",
+                "list": "List vehicles",
+                "time": "Arrival time",
+                "bus": "Bus Company",
+                "detail": "Detailed information",
+                "detailMode": "Vehicle information",
+                "titleInfo1": "Route of the next trip",
+                "titleInfo2": "Departure time of the next trip",
+                "titleInfo3": "Driver for the next trip"
             },
             "listRoute": {
                 "title": "Manage the list of bus routes",
@@ -136,14 +145,15 @@
                 "driver": "List of drivers",
                 "vehicle": "List of vehicles",
                 "action": "Delete",
-                "add": "Add"
+                "add": "Add new"
             },
             "listDriver": {
                 "back": "Back to page",
                 "name": "Name driver",
                 "phone": "Phone Number",
                 "status": "Status",
-                "action": "Delete driver"
+                "action": "Delete driver",
+                "action1": "Delete vehicle"
             },
             "listErr": {
                 "title": "Error list",
@@ -151,6 +161,38 @@
                 "time": "Error reporting time",
                 "done": "Has been fixed",
                 "title1": "The system now has no errors from user feedback"
+            },
+            "listBlog": {
+                "title": "Manage blogs list",
+                "title1": "Add blog",
+                "title3": "Add blog",
+                "title2": "Edit blog",
+                "name": "Blog title",
+                "img": "Blog title image",
+                "content": "Nội dung",
+                "personCreated": "Blog creator",
+                "timeCreated": "Blog creation time"
+            },
+            "listEvents": {
+                "title": "Event Management",
+                "title1": "Add new event",
+                "title2": "Edit event information",
+                "name": "Name event",
+                "start": "Event start time",
+                "end": "Event end time",
+                "start1": "Start day",
+                "end1": "End date",
+                "img": "Event photo",
+                "description": "Details of the event"
+            },
+            "listCoupons": {
+                "title": "Manage discount",
+                "title1": "Add new discount",
+                "title2": "Edit infomation discount",
+                "add": "Add new",
+                "selectEvent": "Select Event",
+                "info": "Discount code details",
+                "title4": "This event does not have any discount codes"
             }
         },
         "busOwner": {

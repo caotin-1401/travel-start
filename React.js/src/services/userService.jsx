@@ -87,6 +87,13 @@ const deleteUserService = (userId) => {
         },
     });
 };
+const deletePassengerService = (userId) => {
+    return axios.delete("/api/delete-passenger", {
+        data: {
+            id: userId,
+        },
+    });
+};
 
 const editUserService = (inputData) => {
     return axios.put("/api/edit-user", inputData);
@@ -152,15 +159,13 @@ const deleteBusTypeService = (userId) => {
     });
 };
 
-const editBusTypeService = (inputData) => {
-    return axios.put("/api/edit-bustype", inputData);
-};
-
 //Route
 const getAllRoutesService = (inputId) => {
     return axios.get(`/api/get-all-routes?id=${inputId}`);
 };
-
+const getAllRoutesHomeService = (inputId) => {
+    return axios.get(`/api/get-all-routes-home?id=${inputId}`);
+};
 const createNewRouteService = (data) => {
     return axios.post("/api/create-new-route", data);
 };
@@ -171,10 +176,6 @@ const deleteRouteService = (userId) => {
             id: userId,
         },
     });
-};
-
-const editRouteService = (inputData) => {
-    return axios.put("/api/edit-route", inputData);
 };
 
 //Vehicle
@@ -236,7 +237,9 @@ const getForgotPasswordService = (email, token) => {
     // });
 };
 //tickets
-
+const getNextTrip = (areaStart, busId) => {
+    return axios.get(`/api/get-next-trip?areaStart=${areaStart}&busId=${busId}`);
+};
 const saveBulkTicket = (data) => {
     return axios.post("/api/create-new-ticket", data);
 };
@@ -288,7 +291,9 @@ const deleteTicket = (tripId, token) => {
 const getAllEventsService = (inputId) => {
     return axios.get(`/api/get-all-events?id=${inputId}`);
 };
-
+const getAllEventsHomeService = (inputId) => {
+    return axios.get(`/api/get-all-events-home?id=${inputId}`);
+};
 const createNewEventsService = (data) => {
     return axios.post("/api/create-new-event", data);
 };
@@ -375,6 +380,7 @@ const deleteErrService = (userId) => {
 
 export {
     getDriverTrips,
+    deletePassengerService,
     getAllErrService,
     deleteErrService,
     createNewErrService,
@@ -426,11 +432,10 @@ export {
     getAllBusTypesService,
     createNewBusTypeService,
     deleteBusTypeService,
-    editBusTypeService,
     getAllRoutesService,
     createNewRouteService,
     deleteRouteService,
-    editRouteService,
+    getAllRoutesHomeService,
     getAllVehiclesService,
     createNewVehicleService,
     deleteVehicleService,
@@ -453,4 +458,6 @@ export {
     getTripsFromBusCompany,
     getAllTicketFromDateDriver,
     getScheduleFromBusCompany,
+    getAllEventsHomeService,
+    getNextTrip,
 };

@@ -2,12 +2,8 @@ import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import "../style.scss";
-import {
-    getAllUsers,
-    deleteUserService,
-} from "../../../../services/userService";
+import { getAllUsers, deleteUserService } from "../../../../services/userService";
 import _ from "lodash";
-
 import * as actions from "../../../../store/actions";
 import ModalUser from "./ModalUser";
 import ModalEditUser from "./ModalEditUser";
@@ -85,11 +81,14 @@ class UserManage extends Component {
 
     handleDeleteUser = async (user) => {
         let res = await deleteUserService(user.id);
+        let { language } = this.props;
         if (res && res.errCode === 0) {
-            toast.success("xoa thanh cong");
+            if (language === "vi") toast.success("Xóa thành công");
+            else toast.success("Delete successfully");
             await this.getAllAdmin();
         } else {
-            toast.error("xoa that bai");
+            if (language === "vi") toast.success("Xóa thất bại");
+            else toast.success("Delete failed");
             await this.getAllAdmin();
         }
     };
@@ -101,11 +100,12 @@ class UserManage extends Component {
         });
     };
     handleSort = (a, b) => {
-        this.state.usersRedux = _.orderBy(this.state.usersRedux, [b], [a]);
+        let clone = this.state.usersRedux;
+        clone = _.orderBy(clone, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            usersRedux: this.state.usersRedux,
+            usersRedux: clone,
         });
     };
     handleKeyword = (e) => {
@@ -141,10 +141,29 @@ class UserManage extends Component {
             await this.getAllAdmin();
         }
     };
+    handleChangePage = (event, newPage) => {
+        this.setState({
+            page: newPage,
+        });
+    };
+    handleChangeRowsPerPage = (event) => {
+        this.setState({
+            rowsPerPage: parseInt(event.target.value),
+            page: 0,
+        });
+    };
     render() {
         let { usersRedux, rowsPerPage, page, test, test1, isTest } = this.state;
+        let { language } = this.props;
         isTest === true ? (test = test1) : (test = usersRedux);
-
+        let mes1, mes2;
+        if (language === "vi") {
+            mes1 = "Tìm người dùng";
+            mes2 = "Tìm số điện thoại";
+        } else {
+            mes1 = "search user";
+            mes2 = "search phone number";
+        }
         return (
             <div className="container form-redux">
                 <div className="user-container">
@@ -182,9 +201,7 @@ class UserManage extends Component {
                                             style={{
                                                 width: "5%",
                                             }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            onClick={() => this.handleSort("asc", "id")}>
                                             Id
                                         </th>
                                         <th
@@ -192,26 +209,18 @@ class UserManage extends Component {
                                                 width: "34%",
                                             }}>
                                             <div className="section-title">
-                                                <div>
-                                                    <FormattedMessage id="menu.admin.listAdmin.name" />
-                                                </div>
+                                                <FormattedMessage id="menu.admin.listAdmin.name" />
                                                 <div>
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "name"
-                                                            )
+                                                            this.handleSort("asc", "name")
                                                         }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "name"
-                                                            )
+                                                            this.handleSort("desc", "name")
                                                         }
                                                     />
                                                 </div>
@@ -220,7 +229,7 @@ class UserManage extends Component {
 
                                         <th>
                                             <div className="section-title">
-                                                Email
+                                                <FormattedMessage id="account.email" />
                                             </div>
                                         </th>
                                         <th>
@@ -229,27 +238,23 @@ class UserManage extends Component {
                                             </div>
                                         </th>
 
-                                        <th style={{ width: "10%" }}>
-                                            <FormattedMessage id="menu.admin.listAdmin.action" />
-                                        </th>
+                                        <th style={{ width: "10%" }}></th>
                                     </tr>
                                     <tr style={{ height: "50px" }}>
                                         <td></td>
                                         <td></td>
                                         <td>
                                             <input
+                                                placeholder={mes1}
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword(e)}
                                             />
                                         </td>
                                         <td>
                                             <input
+                                                placeholder={mes2}
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword1(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword1(e)}
                                             />
                                         </td>
 
@@ -264,29 +269,20 @@ class UserManage extends Component {
                                     ).map((user, index) => {
                                         return (
                                             <tr key={index}>
-                                                <td>{user.id}</td>
-
+                                                <td className="center">{user.id}</td>
                                                 <td>{user.name}</td>
                                                 <td>{user.email}</td>
                                                 <td>{user.phoneNumber}</td>
-                                                <td>
+                                                <td className="center">
                                                     <button
                                                         title="Infomation Detail"
                                                         className="btn-edit"
-                                                        onClick={() =>
-                                                            this.handleEditUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleEditUser(user)}>
                                                         <i className="fas fa-info-circle"></i>
                                                     </button>
                                                     <button
                                                         className="btn-delete"
-                                                        onClick={() =>
-                                                            this.handleDeleteUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleDeleteUser(user)}>
                                                         <i className="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
@@ -298,15 +294,13 @@ class UserManage extends Component {
                                     <TableRow>
                                         <TablePagination
                                             sx={{
-                                                "& .MuiTablePagination-selectLabel ":
-                                                    {
-                                                        display: "None",
-                                                    },
-                                                "& .MuiTablePagination-displayedRows  ":
-                                                    {
-                                                        marginTop: "10px",
-                                                        fontSize: "15px",
-                                                    },
+                                                "& .MuiTablePagination-selectLabel ": {
+                                                    display: "None",
+                                                },
+                                                "& .MuiTablePagination-displayedRows  ": {
+                                                    marginTop: "10px",
+                                                    fontSize: "15px",
+                                                },
                                                 "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
                                                     {
                                                         fontSize: "15px",
@@ -318,14 +312,12 @@ class UserManage extends Component {
                                                 25,
                                                 { label: "All", value: -1 },
                                             ]}
-                                            colSpan={7}
+                                            colSpan={5}
                                             count={usersRedux.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
+                                            onRowsPerPageChange={this.handleChangeRowsPerPage}
                                             ActionsComponent={(subProps) => (
                                                 <TablePaginationActions
                                                     style={{
@@ -349,7 +341,6 @@ class UserManage extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        // genderRedux: state.admin.gender,
         listUsers: state.admin.users,
     };
 };
@@ -357,8 +348,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         getGenderStart: () => dispatch(actions.fetchGenderStart()),
-        fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()),
-        deleteUser: (id) => dispatch(actions.deleteUser(id)),
     };
 };
 

@@ -41,6 +41,7 @@ let initWebRoutes = (app) => {
     router.put("/api/change-password", userController.handleChangePassword);
     router.put("/api/change-password-passenger", userController.handleChangePasswordPassenger);
     router.delete("/api/delete-user", userController.handleDeleteUser);
+    router.delete("/api/delete-passenger", userController.handleDeletePassenger);
     router.get("/api/allcode", userController.getAllCode);
     router.get("/api/get-info-driver-route", userController.getInfoDriverRoute);
     router.put("/api/handle-driver-start-trip", userController.handleDriverStartTrip);
@@ -56,7 +57,10 @@ let initWebRoutes = (app) => {
     router.put("/api/edit-locations", locationController.handleEditLocations);
     router.delete("/api/delete-locations", locationController.deleteLocations);
     router.get("/api/get-all-vehicle-from-station", locationController.getAllVehicleFromStation);
-    router.get("/api/get-all-vehicle-from-one-station", locationController.getAllVehicleFromOneStation);
+    router.get(
+        "/api/get-all-vehicle-from-one-station",
+        locationController.getAllVehicleFromOneStation
+    );
     router.get("/api/get-all-city", locationController.getAllCity);
 
     router.get("/api/get-all-bustypes", busTypeController.getAllBusTypes);
@@ -65,6 +69,7 @@ let initWebRoutes = (app) => {
     router.delete("/api/delete-bustype", busTypeController.deleteBusTypes);
 
     router.get("/api/get-all-routes", routeController.getAllRoutes);
+    router.get("/api/get-all-routes-home", routeController.getAllRoutesHome);
     router.post("/api/create-new-route", routeController.createNewRoute);
     router.put("/api/edit-route", routeController.editRoute);
     router.delete("/api/delete-route", routeController.deleteRoute);
@@ -73,6 +78,7 @@ let initWebRoutes = (app) => {
     router.post("/api/create-new-bus", busController.createNewBus);
     router.put("/api/edit-bus", busController.editBus);
     router.delete("/api/delete-bus", busController.deleteBus);
+    router.get("/api/get-next-trip", busController.getNextTrip);
 
     router.get("/api/get-all-schedule", scheduleController.getAllSchedule);
     router.get("/api/show-all-schedule", scheduleController.shouldAllSchedule);
@@ -103,6 +109,7 @@ let initWebRoutes = (app) => {
     router.put("/api/use-coupon", couponController.useCoupon);
 
     router.get("/api/get-all-events", eventController.getAllEvents);
+    router.get("/api/get-all-events-home", eventController.getAllEventsHome);
     router.post("/api/create-new-event", eventController.createNewEvent);
     router.put("/api/edit-event", eventController.editEvent);
     router.delete("/api/delete-event", eventController.deleteEvent);

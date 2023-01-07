@@ -28,7 +28,6 @@ class Banner extends Component {
         };
     }
     async componentDidMount() {
-        this.props.fetchAllRoute();
         this.props.fetchAllLocation();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -235,7 +234,6 @@ const mapStateToProps = (state) => {
         isLoggedIn: state.user.isLoggedIn,
         userInfo: state.user.userInfo,
         language: state.app.language,
-        listRoutes: state.admin.routes,
         locations: state.admin.locations,
     };
 };
@@ -243,7 +241,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
-        fetchAllRoute: () => dispatch(actions.fetchAllRoute()),
         fetchAllLocation: () => dispatch(actions.fetchAllLocation()),
     };
 };

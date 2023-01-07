@@ -5,10 +5,7 @@ import _ from "lodash";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
-import { getAllDrivers } from "../../../../services/userService";
 import { withRouter } from "react-router";
-import { changeLanguageApp } from "../../../../store/actions/appActions";
-
 import {
     TableBody,
     TableContainer,
@@ -50,14 +47,6 @@ class ListVehicleOfAdmin extends Component {
                 this.setState({
                     listVehicles: test,
                 });
-                // let test = [];
-                // console.log("listDrivers >>:", listDrivers);
-                // listDrivers &&
-                //     listDrivers.length > 0 &&
-                //     (test = listDrivers.filter(
-                //         (item) => item.busOwnerId && item.busOwnerId == driverId
-                //     ));
-                // this.setState({ arrUsers: test });
             }
         }
     }
@@ -67,11 +56,13 @@ class ListVehicleOfAdmin extends Component {
     };
 
     handleSort = (a, b) => {
-        this.state.listVehicles = _.orderBy(this.state.listVehicles, [b], [a]);
+        let clone = this.state.listVehicles;
+
+        clone = _.orderBy(clone, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            listVehicles: this.state.listVehicles,
+            listVehicles: clone,
         });
     };
     handleKeyword = (e) => {
@@ -114,15 +105,32 @@ class ListVehicleOfAdmin extends Component {
             this.props.history.push(`/system/busOnwer-manage`);
         }
     };
+    handleChangePage = (event, newPage) => {
+        this.setState({
+            page: newPage,
+        });
+    };
+    handleChangeRowsPerPage = (event) => {
+        this.setState({
+            rowsPerPage: parseInt(event.target.value),
+            page: 0,
+        });
+    };
     render() {
         let { page, rowsPerPage, listVehicles, test, test1, isTest } = this.state;
         isTest === true ? (test = test1) : (test = listVehicles);
         let { language } = this.props;
-        let title;
+        let title, mes1, mes3, mes4;
         if (test.length > 0) {
             if (language === LANGUAGES.VI) {
+                mes1 = "Tìm phương tiện";
+                mes3 = "Đang chạy";
+                mes4 = "Trong bến";
                 title = `Danh sách phương tiện giao thông của ${listVehicles[0].User.name}`;
             } else {
+                mes1 = "Search vehicle";
+                mes3 = "Running..";
+                mes4 = "In the wharf";
                 title = `List of vehicles of ${listVehicles[0].User.name}`;
             }
         }
@@ -136,7 +144,7 @@ class ListVehicleOfAdmin extends Component {
                     <div className="user-container">
                         <div className="title text-center">{title}</div>
 
-                        <div style={{ marginTop: "50px" }}></div>
+                        <div style={{ marginTop: "20px" }}></div>
                         <TableContainer component={Paper} id="customers">
                             <Table>
                                 <TableBody>
@@ -217,30 +225,32 @@ class ListVehicleOfAdmin extends Component {
                                         </th>
                                         <th
                                             style={{
-                                                width: "15%",
-                                            }}
-                                            className="section-id-list">
-                                            <FormattedMessage id="menu.busOwner.vehicle.img" />
-                                        </th>
-                                        <th
-                                            style={{
-                                                width: "10%",
+                                                width: "12%",
                                             }}
                                             className="section-id-list">
                                             <FormattedMessage id="menu.busOwner.vehicle.status" />
                                         </th>
                                         <th
                                             style={{
+                                                width: "13%",
+                                            }}
+                                            className="section-id-list">
+                                            <FormattedMessage id="menu.busOwner.vehicle.img" />
+                                        </th>
+
+                                        <th
+                                            style={{
                                                 width: "10%",
                                             }}
                                             className="section-id-list">
-                                            <FormattedMessage id="menu.admin.listDriver.action" />
+                                            <FormattedMessage id="menu.admin.listDriver.action1" />
                                         </th>
                                     </tr>
                                     <tr style={{ height: "50px" }}>
                                         <td></td>
                                         <td>
                                             <input
+                                                placeholder={mes1}
                                                 className="form-control"
                                                 onChange={(e) => this.handleKeyword(e)}
                                             />
@@ -276,10 +286,10 @@ class ListVehicleOfAdmin extends Component {
                                                         display: "flex",
                                                     }}>
                                                     {item.status === 2 ? (
-                                                        <div className="vehicle-run">Đang chạy</div>
+                                                        <div className="vehicle-run">{mes3}</div>
                                                     ) : (
                                                         <div className="vehicle-not-run">
-                                                            Trong ben
+                                                            {mes4}
                                                         </div>
                                                     )}
                                                 </td>
@@ -362,7 +372,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchAllVehicle: () => dispatch(actions.fetchAllVehicle()),
         deleteVehicle: (id) => dispatch(actions.deleteVehicle(id)),
-        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
     };
 };
 

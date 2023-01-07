@@ -1,12 +1,10 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import "../style.scss";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
-import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
-import ModalAdd from "./ModalAdd";
 import {
     TableBody,
     TableContainer,
@@ -17,11 +15,12 @@ import {
     Table,
 } from "@mui/material";
 import { toast } from "react-toastify";
-import {
-    getAllLocationService,
-    deleteLocationService,
-} from "../../../../services/userService";
+import { getAllLocationService, deleteLocationService } from "../../../../services/userService";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
+
+import Loading from "../../../../components/Loading";
+
+const ModalAdd = lazy(() => import("./ModalAdd"));
 
 class TableStation extends Component {
     constructor(props) {
@@ -97,22 +96,17 @@ class TableStation extends Component {
         });
     };
     handleSort = (a, b) => {
-        this.state.listLocations = _.orderBy(
-            this.state.listLocations,
-            [b],
-            [a]
-        );
+        let clone = this.state.listLocations;
+        clone = _.orderBy(clone, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            listLocations: this.state.listLocations,
+            listLocations: clone,
         });
     };
     handleKeyword = (e) => {
         let term = e.target.value.toUpperCase();
         let clone = this.state.listLocations;
-        console.log(term);
-        console.log(clone);
         if (term) {
             clone = clone.filter((item) => item.name.includes(term));
             this.setState({
@@ -144,19 +138,28 @@ class TableStation extends Component {
         }
     };
     render() {
-        let { page, rowsPerPage, listLocations, test, test1, isTest } =
-            this.state;
+        let { page, rowsPerPage, listLocations, test, test1, isTest } = this.state;
         isTest === true ? (test = test1) : (test = listLocations);
+        let { language } = this.props;
+        let mes1, mes2;
+        if (language === "vi") {
+            mes1 = "Tìm bến xe";
+            mes2 = "Tìm tỉnh / thành phố";
+        } else {
+            mes1 = "Search the station";
+            mes2 = "Search province/city";
+        }
         return (
             <div className="container form-redux">
                 <div className="user-container">
-                    <ModalAdd
-                        listLocations={listLocations}
-                        isOpen={this.state.isOpenModel}
-                        toggleFromParent={this.toggleModel}
-                        createLocation={this.createLocation}
-                    />
-
+                    <Suspense fallback={<Loading />}>
+                        <ModalAdd
+                            listLocations={listLocations}
+                            isOpen={this.state.isOpenModel}
+                            toggleFromParent={this.toggleModel}
+                            createLocation={this.createLocation}
+                        />
+                    </Suspense>
                     <div className="title text-center">
                         <FormattedMessage id="menu.admin.listLocations.title" />
                     </div>
@@ -178,9 +181,7 @@ class TableStation extends Component {
                                             style={{
                                                 width: "5%",
                                             }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            onClick={() => this.handleSort("asc", "id")}>
                                             Id
                                         </th>
                                         <th
@@ -195,19 +196,13 @@ class TableStation extends Component {
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "name"
-                                                            )
+                                                            this.handleSort("asc", "name")
                                                         }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "name"
-                                                            )
+                                                            this.handleSort("desc", "name")
                                                         }
                                                     />
                                                 </div>
@@ -225,19 +220,13 @@ class TableStation extends Component {
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "city"
-                                                            )
+                                                            this.handleSort("asc", "city")
                                                         }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "city"
-                                                            )
+                                                            this.handleSort("desc", "city")
                                                         }
                                                     />
                                                 </div>
@@ -253,27 +242,22 @@ class TableStation extends Component {
                                         <th
                                             style={{
                                                 width: "10%",
-                                            }}
-                                            className="section-id-list">
-                                            <FormattedMessage id="menu.admin.listLocations.action" />
-                                        </th>
+                                            }}></th>
                                     </tr>
                                     <tr style={{ height: "50px" }}>
                                         <td></td>
                                         <td>
                                             <input
+                                                placeholder={mes1}
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword(e)}
                                             />
                                         </td>
                                         <td>
                                             <input
+                                                placeholder={mes2}
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword1(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword1(e)}
                                             />
                                         </td>
                                         <td></td>
@@ -288,7 +272,7 @@ class TableStation extends Component {
                                     ).map((user, index) => {
                                         return (
                                             <tr key={index}>
-                                                <td>{user.id}</td>
+                                                <td className="center">{user.id}</td>
 
                                                 <td>{user.name}</td>
                                                 <td>{user.city}</td>
@@ -296,11 +280,7 @@ class TableStation extends Component {
                                                 <td className="center">
                                                     <button
                                                         className="btn-delete"
-                                                        onClick={() =>
-                                                            this.handleDeleteUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleDeleteUser(user)}>
                                                         <i className="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
@@ -312,15 +292,13 @@ class TableStation extends Component {
                                     <TableRow>
                                         <TablePagination
                                             sx={{
-                                                "& .MuiTablePagination-selectLabel ":
-                                                    {
-                                                        display: "None",
-                                                    },
-                                                "& .MuiTablePagination-displayedRows  ":
-                                                    {
-                                                        marginTop: "10px",
-                                                        fontSize: "15px",
-                                                    },
+                                                "& .MuiTablePagination-selectLabel ": {
+                                                    display: "None",
+                                                },
+                                                "& .MuiTablePagination-displayedRows  ": {
+                                                    marginTop: "10px",
+                                                    fontSize: "15px",
+                                                },
                                                 "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
                                                     {
                                                         fontSize: "15px",
@@ -337,9 +315,7 @@ class TableStation extends Component {
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
+                                            onRowsPerPageChange={this.handleChangeRowsPerPage}
                                             ActionsComponent={(subProps) => (
                                                 <TablePaginationActions
                                                     style={{
@@ -363,15 +339,11 @@ class TableStation extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        userInfo: state.user.userInfo,
-        locations: state.admin.locations,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchAllLocation: () => dispatch(actions.fetchAllLocation()),
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableStation);

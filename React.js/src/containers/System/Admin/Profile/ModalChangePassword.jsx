@@ -28,10 +28,6 @@ class ModalChangePassword extends Component {
         });
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        // let;
-    }
-
     toggle = () => {
         this.props.toggleFromParent();
     };
@@ -164,7 +160,7 @@ class ModalChangePassword extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        change password
+                        <FormattedMessage id="account.change" />
                     </ModalHeader>
                     <ModalBody>
                         <Box>
@@ -172,7 +168,7 @@ class ModalChangePassword extends Component {
                                 <Col md={1}></Col>
                                 <Col md={10} className="form-group login-input">
                                     <label htmlFor="oldPass" className="mb-2">
-                                        Password :
+                                        <FormattedMessage id="account.passOld" />
                                     </label>
                                     <div className="custom-password mb-4">
                                         <input
@@ -186,7 +182,12 @@ class ModalChangePassword extends Component {
                                             }}
                                         />
                                         <span onClick={() => this.handleShowOldPassword()}>
-                                            <i className={this.state.isOldPass ? "fas fa-eye" : "fas fa-eye-slash"}></i>
+                                            <i
+                                                className={
+                                                    this.state.isOldPass
+                                                        ? "fas fa-eye"
+                                                        : "fas fa-eye-slash"
+                                                }></i>
                                         </span>
                                     </div>
                                 </Col>
@@ -196,7 +197,7 @@ class ModalChangePassword extends Component {
                                 <Col md={1}></Col>
                                 <Col md={10} className="form-group login-input">
                                     <label htmlFor="newPass" className="mb-2">
-                                        New Password :
+                                        <FormattedMessage id="account.passNew" />
                                     </label>
                                     <div className="custom-password mb-4">
                                         <input
@@ -210,8 +211,20 @@ class ModalChangePassword extends Component {
                                             }}
                                         />
                                         <span onClick={() => this.handleShowNewPassword()}>
-                                            <i className={this.state.isNewPass ? "fas fa-eye" : "fas fa-eye-slash"}></i>
+                                            <i
+                                                className={
+                                                    this.state.isNewPass
+                                                        ? "fas fa-eye"
+                                                        : "fas fa-eye-slash"
+                                                }></i>
                                         </span>
+                                    </div>
+                                    <div
+                                        style={{
+                                            color: "red",
+                                            fontSize: "16px",
+                                        }}>
+                                        {errMessage}
                                     </div>
                                 </Col>
                                 <Col md={1}></Col>
@@ -220,7 +233,7 @@ class ModalChangePassword extends Component {
                                 <Col md={1}></Col>
                                 <Col md={10} className="form-group login-input">
                                     <label htmlFor="confirmPass" className="mb-2">
-                                        Confirm password :
+                                        <FormattedMessage id="account.confirm" />
                                     </label>
                                     <div className="custom-password mb-4">
                                         <input
@@ -236,7 +249,9 @@ class ModalChangePassword extends Component {
                                         <span onClick={() => this.handleShowConfirmPassword()}>
                                             <i
                                                 className={
-                                                    this.state.isConfirmPass ? "fas fa-eye" : "fas fa-eye-slash"
+                                                    this.state.isConfirmPass
+                                                        ? "fas fa-eye"
+                                                        : "fas fa-eye-slash"
                                                 }></i>
                                         </span>
                                     </div>
@@ -260,7 +275,7 @@ class ModalChangePassword extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            Cancel
+                            <FormattedMessage id="account.cancel" />
                         </Button>{" "}
                         <Button
                             color="primary"
@@ -268,7 +283,7 @@ class ModalChangePassword extends Component {
                                 this.handleSave();
                             }}
                             className="btn-primary-modal">
-                            Save
+                            <FormattedMessage id="account.save" />
                         </Button>
                     </ModalFooter>
                 </Modal>

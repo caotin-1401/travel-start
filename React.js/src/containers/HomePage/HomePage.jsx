@@ -9,7 +9,7 @@ const HeaderPage = lazy(() => import("./Header"));
 const Banner = lazy(() => import("./Banner"));
 const Routes = lazy(() => import("./Section/Routes"));
 const Events = lazy(() => import("./Section/Events"));
-const Blog = lazy(() => import("./Section/Blog"));
+// const Blog = lazy(() => import("./Section/Blog"));
 const FAQ = lazy(() => import("./Section/FAQ"));
 
 class HomePage extends Component {
@@ -28,7 +28,7 @@ class HomePage extends Component {
                     <Banner />
                     <Routes settings={settings} />
                     <Events settings={settings} />
-                    <Blog settings={settings} />
+                    {/* <Blog settings={settings} /> */}
                     <FAQ />
                     <HomeFooter />
                 </Suspense>

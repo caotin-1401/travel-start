@@ -5,9 +5,7 @@ import "../style.scss";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
 import moment from "moment";
-import localization from "moment/locale/vi";
 import * as actions from "../../../../store/actions";
-import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css"; // This only needs to be imported once in your app
 import ModalAdd from "./ModalAdd";
 import {
@@ -21,14 +19,10 @@ import {
 } from "@mui/material";
 import { Row, Col } from "reactstrap";
 import { toast } from "react-toastify";
-import {
-    getAllCouponService,
-    getAllEventsService,
-    deleteCouponService,
-} from "../../../../services/userService";
+import { getAllCouponService, deleteCouponService } from "../../../../services/userService";
 import ModalEdit from "./ModalEdit";
 import Select from "react-select";
-
+import { SkeletonEvent } from "../SkeletonComponent";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
 class TableDiscount extends Component {
     constructor(props) {
@@ -39,38 +33,19 @@ class TableDiscount extends Component {
             userEdit: {},
             listEvents: [],
             listCoupons: [],
+            listCouponsEvent: [],
+            isEvent: false,
             sortBy: "",
             sortField: "",
-            keywordNumber: "",
             page: 0,
             rowsPerPage: 5,
             selectEvent: "",
+            loading: false,
         };
     }
 
     async componentDidMount() {
         await this.getAllCoupons();
-        // let dataSelect = this.buildDataSelectEvents(this.props.events);
-        // this.setState(
-        //     {
-        //         listEvents: dataSelect,
-        //     },
-        //     console.log(this.state)
-        // );
-        // console.log(this.state);
-        // let objEvent = {};
-        // objEvent.label = this.state.listEvents[0].label;
-        // objEvent.value = this.state.listEvents[0].value;
-        // console.log(objEvent);
-        // this.setState(
-        //     {
-        //         selectEvent: objEvent,
-        //     },
-        //     console.log(this.state.selectEvent)
-        // );
-        // this.setState({
-        //     selectEvent:
-        // })
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -84,19 +59,28 @@ class TableDiscount extends Component {
     getAllCoupons = async () => {
         let res = await getAllCouponService("ALL");
         if (res && res.errCode === 0) {
+            setTimeout(() => {
+                this.setState({
+                    loading: true,
+                });
+            }, 50);
+            let test = res.coupons.filter((item) => {
+                return item.eventId;
+            });
             this.setState({
-                listCoupons: res.coupons,
+                listCoupons: test,
             });
         }
     };
     buildDataSelectEvents = (inputData) => {
-        let result = [];
+        let result = [{ value: 0, label: "Tất cả mã giảm gía" }];
         if (inputData && inputData.length > 0) {
             inputData.map((item, key) => {
                 let obj = {};
                 obj.label = item.name;
                 obj.value = item.id;
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -158,487 +142,309 @@ class TableDiscount extends Component {
         });
     };
     handleSort = (a, b) => {
-        this.state.listCoupons = _.orderBy(this.state.listCoupons, [b], [a]);
+        let clone = this.state.listCoupons;
+        clone = _.orderBy(clone, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            listCoupons: this.state.listCoupons,
+            listCoupons: clone,
         });
     };
-    handleKeyword = (e, target) => {
-        let term = e.target.value.toUpperCase();
-        let clone = this.state.listCoupons;
-        if (term) {
-            clone = clone.filter((item) => item.number.includes(term));
-            this.setState({
-                listCoupons: clone,
-            });
-        } else {
-            this.props.fetchAllVehicle();
-        }
-    };
-    handleKeyword1 = (e) => {
-        let term = e.target.value.toUpperCase();
-        let clone = this.state.listCoupons;
-        if (term) {
-            clone = clone.filter((item) => item.BusType.typeName.includes(term));
-            this.setState({
-                listCoupons: clone,
-            });
-        } else {
-            this.props.fetchAllVehicle();
-        }
-    };
+
     onChangeInputSelectEvent = async (selectEvent) => {
-        let res = await getAllEventsService(selectEvent.value);
-        console.log(res.events);
-        let dataEvents = res.events;
-        let data = [];
-        dataEvents.forEach((item) => {
-            data.push(item.Coupons);
-        });
-        console.log(data);
-        this.setState({
-            listCoupons: data,
-            selectEvent,
-        });
-    };
-    render() {
-        let { page, rowsPerPage, listEvents, selectEvent, listCoupons } = this.state;
-        if (listCoupons && listCoupons.length > 0 && listCoupons[0].id === null) {
-            return (
-                <div className="container form-redux">
-                    <div className="user-container">
-                        <ModalAdd
-                            listCoupons={listCoupons}
-                            isOpen={this.state.isOpenModel}
-                            toggleFromParent={this.toggleUserModel}
-                            createNewUser1={this.createNewUser1}
-                        />
-                        {this.state.isOpenModelEditUser && (
-                            <ModalEdit
-                                isOpen={this.state.isOpenModelEditUser}
-                                toggleFromParent={this.toggleUserEditModel}
-                                currentUser={this.state.userEdit}
-                                doEditUser={this.doEditUser}
-                            />
-                        )}
-                        <div className="title text-center">Quan ly ma giam gia</div>
-                        <Row>
-                            {" "}
-                            <Col md={4} style={{ marginLeft: "15px" }}>
-                                <label>Chọn sự kiện</label>
-                                <Select
-                                    className="mb-4"
-                                    value={selectEvent}
-                                    onChange={this.onChangeInputSelectEvent}
-                                    options={listEvents}
-                                />
-                            </Col>
-                            <Col md={3} style={{ marginTop: "8px" }}>
-                                <div className="mx-5 my-3">
-                                    <button
-                                        className="btn btn-primary px-3"
-                                        onClick={() => this.handleAddUser()}>
-                                        <i className="fas fa-plus px-1"></i>
-                                        Thêm mã giảm giá
-                                    </button>
-                                </div>
-                            </Col>
-                        </Row>
+        let { listCoupons } = this.state;
+        if (selectEvent.value !== 0) {
+            let data = listCoupons.filter((item) => {
+                return item.eventId === selectEvent.value;
+            });
 
-                        <div className="use-table m-3">
-                            <TableContainer component={Paper} id="customers">
-                                <Table>
-                                    <TableBody>
-                                        <tr>
-                                            <th
-                                                className="section-id"
-                                                style={{
-                                                    width: "5%",
-                                                }}
-                                                onClick={() => this.handleSort("asc", "id")}>
-                                                Id
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div> Tên mã giảm giá </div>
-                                                    <div>
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("asc", "name")
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("desc", "name")
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div> Tiền giảm </div>
-                                                    <div>
-                                                        {" "}
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("asc", "name")
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("desc", "name")
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div>Tổng số lượng </div>
-                                                    <div>
-                                                        {" "}
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("asc", "name")
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("desc", "name")
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div> Số lượng đã dùng </div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div> Ngày bắt đầuy </div>
-                                                    <div>
-                                                        {" "}
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("asc", "startDate")
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("desc", "startDate")
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div> Ngày kết thúc </div>
-                                                    <div>
-                                                        {" "}
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("asc", "endDate")
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("desc", "endDate")
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </th>
-
-                                            <th style={{ width: "15%" }}>Hành động</th>
-                                        </tr>
-
-                                        {listCoupons &&
-                                            listCoupons.length > 0 &&
-                                            listCoupons[0].id === null && (
-                                                <div
-                                                    style={{
-                                                        height: "40px",
-                                                        fontSize: "15px",
-                                                        margin: "10px 0 0 10px",
-                                                    }}>
-                                                    No data
-                                                </div>
-                                            )}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </div>
-                    </div>
-                </div>
-            );
+            this.setState({
+                listCouponsEvent: data,
+                selectEvent,
+                isEvent: true,
+            });
         } else {
-            return (
-                <div className="container form-redux">
-                    <div className="user-container">
-                        <ModalAdd
-                            listCoupons={listCoupons}
-                            isOpen={this.state.isOpenModel}
-                            toggleFromParent={this.toggleUserModel}
-                            createNewUser1={this.createNewUser1}
+            this.setState({
+                selectEvent,
+                isEvent: false,
+            });
+        }
+    };
+    currencyFormat(number) {
+        const formatter = new Intl.NumberFormat("vi-VI", { style: "currency", currency: "VND" });
+        return formatter.format(number);
+    }
+    currencyFormat1(number) {
+        const formatter = new Intl.NumberFormat("vi-VI", { maximumSignificantDigits: 3 });
+        return formatter.format(number);
+    }
+    render() {
+        let {
+            page,
+            rowsPerPage,
+            listEvents,
+            selectEvent,
+            listCoupons,
+            listCouponsEvent,
+            isEvent,
+            loading,
+        } = this.state;
+        let { language } = this.props;
+        let clone = [];
+        if (isEvent === true) {
+            clone = listCouponsEvent;
+        } else {
+            clone = listCoupons;
+        }
+        return (
+            <div className="container form-redux">
+                <div className="user-container">
+                    <ModalAdd
+                        listCoupons={listCoupons}
+                        isOpen={this.state.isOpenModel}
+                        toggleFromParent={this.toggleUserModel}
+                        createNewUser1={this.createNewUser1}
+                    />
+                    {this.state.isOpenModelEditUser && (
+                        <ModalEdit
+                            isOpen={this.state.isOpenModelEditUser}
+                            toggleFromParent={this.toggleUserEditModel}
+                            currentUser={this.state.userEdit}
+                            doEditUser={this.doEditUser}
                         />
-                        {this.state.isOpenModelEditUser && (
-                            <ModalEdit
-                                isOpen={this.state.isOpenModelEditUser}
-                                toggleFromParent={this.toggleUserEditModel}
-                                currentUser={this.state.userEdit}
-                                doEditUser={this.doEditUser}
+                    )}
+                    <div className="title text-center">
+                        <FormattedMessage id="menu.admin.listCoupons.title" />
+                    </div>
+                    <Row>
+                        {" "}
+                        <Col md={4} style={{ marginLeft: "15px" }}>
+                            <label>
+                                {" "}
+                                <FormattedMessage id="menu.admin.listCoupons.selectEvent" />
+                            </label>
+                            <Select
+                                className="mb-4"
+                                value={selectEvent}
+                                onChange={this.onChangeInputSelectEvent}
+                                options={listEvents}
                             />
-                        )}
-                        <div className="title text-center">Quản lý mã giảm giá</div>
-                        <Row>
-                            {" "}
-                            <Col md={4} style={{ marginLeft: "15px" }}>
-                                <label>Chọn sự kiện</label>
-                                <Select
-                                    className="mb-4"
-                                    value={selectEvent}
-                                    onChange={this.onChangeInputSelectEvent}
-                                    options={listEvents}
-                                />
-                            </Col>
-                            <Col md={3} style={{ marginTop: "8px" }}>
-                                <div className="mx-5 my-3">
-                                    <button
-                                        className="btn btn-primary px-3"
-                                        onClick={() => this.handleAddUser()}>
-                                        <i className="fas fa-plus px-1"></i>
-                                        Thêm mã giảm giá
-                                    </button>
-                                </div>
-                            </Col>
-                        </Row>
+                        </Col>
+                        <Col md={3} style={{ marginTop: "14px" }}>
+                            <div className="mx-5 my-3">
+                                <button
+                                    className="btn btn-primary px-3"
+                                    onClick={() => this.handleAddUser()}>
+                                    <i className="fas fa-plus px-1"></i>
+                                    <FormattedMessage id="menu.busOwner.discount.title2" />
+                                </button>
+                            </div>
+                        </Col>
+                    </Row>
 
-                        <div className="use-table m-3">
-                            <TableContainer component={Paper} id="customers">
-                                <Table>
-                                    <TableBody>
+                    <div className="use-table m-3">
+                        <TableContainer component={Paper} id="customers">
+                            <Table>
+                                <TableBody>
+                                    <tr>
+                                        <th
+                                            className="section-id w5"
+                                            onClick={() => this.handleSort("asc", "id")}>
+                                            Id
+                                        </th>
+                                        <th className=" w15">
+                                            <div className="section-title">
+                                                <FormattedMessage id="menu.busOwner.discount.name" />
+                                                <div>
+                                                    {" "}
+                                                    <FaLongArrowAltDown
+                                                        className="iconSortDown"
+                                                        onClick={() =>
+                                                            this.handleSort("asc", "name")
+                                                        }
+                                                    />
+                                                    <FaLongArrowAltUp
+                                                        className="iconSortDown"
+                                                        onClick={() =>
+                                                            this.handleSort("desc", "name")
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th className=" w10">
+                                            <div className="section-title">
+                                                <FormattedMessage id="menu.busOwner.discount.discount" />
+                                            </div>
+                                        </th>
+                                        <th className=" w15">
+                                            <div className="section-title">
+                                                <FormattedMessage id="menu.busOwner.discount.count" />
+                                                <div>
+                                                    {" "}
+                                                    <FaLongArrowAltDown
+                                                        className="iconSortDown"
+                                                        onClick={() =>
+                                                            this.handleSort("asc", "name")
+                                                        }
+                                                    />
+                                                    <FaLongArrowAltUp
+                                                        className="iconSortDown"
+                                                        onClick={() =>
+                                                            this.handleSort("desc", "name")
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th className=" w15">
+                                            <div className="section-title">
+                                                <FormattedMessage id="menu.busOwner.discount.use" />
+                                            </div>
+                                        </th>
+                                        <th className=" w15">
+                                            <div className="section-title">
+                                                <div>
+                                                    {" "}
+                                                    <FormattedMessage id="menu.busOwner.discount.start" />
+                                                </div>
+                                                <div>
+                                                    {" "}
+                                                    <FaLongArrowAltDown
+                                                        className="iconSortDown"
+                                                        onClick={() =>
+                                                            this.handleSort("asc", "startDate")
+                                                        }
+                                                    />
+                                                    <FaLongArrowAltUp
+                                                        className="iconSortDown"
+                                                        onClick={() =>
+                                                            this.handleSort("desc", "startDate")
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th className=" w15">
+                                            <div className="section-title">
+                                                <FormattedMessage id="menu.busOwner.discount.end" />
+                                                <div>
+                                                    {" "}
+                                                    <FaLongArrowAltDown
+                                                        className="iconSortDown"
+                                                        onClick={() =>
+                                                            this.handleSort("asc", "endDate")
+                                                        }
+                                                    />
+                                                    <FaLongArrowAltUp
+                                                        className="iconSortDown"
+                                                        onClick={() =>
+                                                            this.handleSort("desc", "endDate")
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                        </th>
+
+                                        <th style={{ width: "10%" }}></th>
+                                    </tr>
+                                    {loading === false && <SkeletonEvent />}
+                                    {loading === true &&
+                                        (rowsPerPage > 0 && clone && clone.length > 0
+                                            ? clone.slice(
+                                                  page * rowsPerPage,
+                                                  page * rowsPerPage + rowsPerPage
+                                              )
+                                            : clone
+                                        ).map((user, index) => {
+                                            let start, end;
+                                            if (language === "vi") {
+                                                start = moment(+user.startDate).format(
+                                                    " DD/MM/YYYY HH:mm"
+                                                );
+                                                end = moment(new Date(+user.endDate)).format(
+                                                    "  DD/MM/YYYY  HH:mm"
+                                                );
+                                            } else {
+                                                start = `${moment(+user.startDate)
+                                                    .locale("en")
+                                                    .format("L")} ${" "} ${moment(+user.startDate)
+                                                    .locale("en")
+                                                    .format("LT")}`;
+                                                end = `${moment(new Date(+user.endDate))
+                                                    .locale("en")
+                                                    .format("L")} ${" "} ${moment(+user.endDate)
+                                                    .locale("en")
+                                                    .format("LT")}`;
+                                            }
+                                            let price;
+
+                                            if (user.type === "2") price = "%";
+                                            return (
+                                                <tr key={index}>
+                                                    <td className="center">{user.id}</td>
+
+                                                    <td>{user.name}</td>
+                                                    <td>
+                                                        {user.type === "1" &&
+                                                            this.currencyFormat(user.discount)}
+                                                        {user.type === "2" &&
+                                                            `${user.discount} ${price}`}
+                                                    </td>
+                                                    <td>{this.currencyFormat1(user.count)}</td>
+                                                    <td>{user.use}</td>
+                                                    <td>{start}</td>
+                                                    <td>{end}</td>
+                                                    <td className="center">
+                                                        <button
+                                                            className="btn-edit"
+                                                            onClick={() =>
+                                                                this.handleEditUser(user)
+                                                            }>
+                                                            <i className="fas fa-edit"></i>
+                                                        </button>
+                                                        <button
+                                                            className="btn-delete"
+                                                            onClick={() =>
+                                                                this.handleDeleteUser(user)
+                                                            }>
+                                                            <i className="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    {loading === true && clone && clone.length === 0 && (
                                         <tr>
-                                            <th
-                                                className="section-id"
+                                            <td
+                                                colSpan="8"
                                                 style={{
-                                                    width: "5%",
-                                                }}
-                                                onClick={() => this.handleSort("asc", "id")}>
-                                                Id
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div> Tên mã giảm giá </div>
-                                                    <div>
-                                                        {" "}
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("asc", "name")
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("desc", "name")
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div>Tiền giảm </div>
-                                                    <div>
-                                                        {" "}
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("asc", "name")
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("desc", "name")
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div>Tổng số lượng </div>
-                                                    <div>
-                                                        {" "}
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("asc", "name")
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("desc", "name")
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div> Số lượng đã dùng </div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div> Ngày bắt đầu </div>
-                                                    <div>
-                                                        {" "}
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("asc", "startDate")
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("desc", "startDate")
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div className="section-title">
-                                                    <div> Ngày kết thúc</div>
-                                                    <div>
-                                                        {" "}
-                                                        <FaLongArrowAltDown
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("asc", "endDate")
-                                                            }
-                                                        />
-                                                        <FaLongArrowAltUp
-                                                            className="iconSortDown"
-                                                            onClick={() =>
-                                                                this.handleSort("desc", "endDate")
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </th>
-
-                                            <th style={{ width: "15%" }}>Hành động</th>
-                                        </tr>
-
-                                        <tr style={{ height: "50px" }}>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-
-                                            <td>
-                                                <input
-                                                    className="form-control"
-                                                    onChange={(e) => this.handleKeyword(e)}
-                                                />
+                                                    height: "50px",
+                                                    fontSize: "18px",
+                                                    textAlign: "center",
+                                                }}>
+                                                <FormattedMessage id="menu.admin.listCoupons.title4" />
                                             </td>
-                                            <td>
-                                                <input
-                                                    className="form-control"
-                                                    onChange={(e) => this.handleKeyword1(e)}
-                                                />
-                                            </td>
-
-                                            <td></td>
                                         </tr>
-                                        {listCoupons &&
-                                            listCoupons.length > 0 &&
-                                            listCoupons[0].id !== null &&
-                                            (rowsPerPage > 0 &&
-                                            listCoupons &&
-                                            listCoupons.length > 0
-                                                ? listCoupons.slice(
-                                                      page * rowsPerPage,
-                                                      page * rowsPerPage + rowsPerPage
-                                                  )
-                                                : listCoupons
-                                            ).map((user, index) => {
-                                                let start = moment(+user.startDate).format(
-                                                    " DD-MM-YYYY HH:mm"
-                                                );
-                                                let end = moment(new Date(+user.endDate)).format(
-                                                    "  DD-MM-YYYY  HH:mm"
-                                                );
-                                                let price;
-
-                                                if (user.type === 1) price = "đ";
-                                                else price = "%";
-                                                return (
-                                                    <tr key={index}>
-                                                        <td>{user.id}</td>
-
-                                                        <td>{user.name}</td>
-                                                        <td>
-                                                            {user.discount} {price}
-                                                        </td>
-                                                        <td>{user.count}</td>
-                                                        <td>{user.use}</td>
-                                                        <td>{start}</td>
-                                                        <td>{end}</td>
-                                                        <td>
-                                                            {/* <button
-                                                                className="  btn-info"
-                                                                onClick={() =>
-                                                                    this.handleEditUser(
-                                                                        user
-                                                                    )
-                                                                }>
-                                                                <i className="fas fa-info-circle"></i>
-                                                            </button> */}
-                                                            <button
-                                                                className="btn-edit"
-                                                                onClick={() =>
-                                                                    this.handleEditUser(user)
-                                                                }>
-                                                                <i className="fas fa-edit"></i>
-                                                            </button>
-                                                            <button
-                                                                className="btn-delete"
-                                                                onClick={() =>
-                                                                    this.handleDeleteUser(user)
-                                                                }>
-                                                                <i className="fas fa-trash-alt"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                    </TableBody>
+                                    )}
+                                </TableBody>
+                                {loading === true && clone && clone.length !== 0 && (
                                     <TableFooter>
                                         <TableRow>
                                             <TablePagination
+                                                sx={{
+                                                    "& .MuiTablePagination-selectLabel ": {
+                                                        display: "None",
+                                                    },
+                                                    "& .MuiTablePagination-displayedRows  ": {
+                                                        marginTop: "10px",
+                                                        fontSize: "15px",
+                                                    },
+                                                    "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
+                                                        {
+                                                            fontSize: "15px",
+                                                        },
+                                                }}
                                                 rowsPerPageOptions={[
                                                     5,
                                                     10,
@@ -646,7 +452,7 @@ class TableDiscount extends Component {
                                                     { label: "All", value: -1 },
                                                 ]}
                                                 colSpan={8}
-                                                count={listEvents.length}
+                                                count={clone.length}
                                                 rowsPerPage={rowsPerPage}
                                                 page={page}
                                                 onPageChange={this.handleChangePage}
@@ -662,14 +468,13 @@ class TableDiscount extends Component {
                                             />
                                         </TableRow>
                                     </TableFooter>
-                                </Table>
-                            </TableContainer>
-                        </div>
+                                )}
+                            </Table>
+                        </TableContainer>
                     </div>
                 </div>
-            );
-        }
-        // console.log(listCoupons[0].Coupons.id);
+            </div>
+        );
     }
 }
 
@@ -686,8 +491,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-        fetchAllCoupon: () => dispatch(actions.fetchAllCoupon()),
-        deleteSchedule: (id) => dispatch(actions.deleteSchedule(id)),
     };
 };
 

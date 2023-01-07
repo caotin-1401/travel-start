@@ -24,7 +24,32 @@ let getAllBus = async (req, res) => {
         });
     }
 };
-
+let getNextTrip = async (req, res) => {
+    try {
+        let areaStart = req.query.areaStart;
+        let busId = req.query.busId;
+        if (!areaStart || !busId) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+                vehicles: [],
+            });
+        }
+        let vehicles = await busService.getNextTrip(areaStart, busId);
+        console.log(vehicles);
+        if (!vehicles) vehicles = [];
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            vehicles,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 let createNewBus = async (req, res) => {
     try {
         let data = await busService.createNewBus(req.body);
@@ -111,4 +136,5 @@ module.exports = {
     createNewBus,
     editBus,
     deleteBus,
+    getNextTrip,
 };

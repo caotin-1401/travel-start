@@ -8,15 +8,8 @@ import { Row, Col } from "reactstrap";
 import "./ProfileAdmin.scss";
 import InfoUser from "./InfoUser";
 class ProfileAdmin extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    componentDidMount() {}
-    componentDidUpdate(prevProps, prevState, snapshot) {}
-
     render() {
-        const { processLogout, language } = this.props;
+        const { processLogout } = this.props;
         return (
             <React.Fragment>
                 <Header />
@@ -32,19 +25,21 @@ class ProfileAdmin extends Component {
                                                 <i className="fas fa-user-circle"></i>
                                             </Col>
                                             <Col md={10}>
-                                                <p>Thông tin tài khoản</p>
+                                                <p>
+                                                    <FormattedMessage id="menu.driver.info" />
+                                                </p>
                                             </Col>
                                         </Row>
                                     </div>
                                     <div>
-                                        <Row
-                                            onClick={processLogout}
-                                            title="Log out">
+                                        <Row onClick={processLogout} title="Log out">
                                             <Col md={2}>
                                                 <i className="fas fa-sign-out-alt"></i>
                                             </Col>
                                             <Col md={10}>
-                                                <p>Đăng xuất</p>
+                                                <p>
+                                                    <FormattedMessage id="menu.driver.logout" />
+                                                </p>
                                             </Col>
                                         </Row>
                                     </div>
@@ -77,6 +72,4 @@ const mapDispatchToProps = (dispatch) => {
         processLogout: () => dispatch(actions.processLogout()),
     };
 };
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(ProfileAdmin)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProfileAdmin));

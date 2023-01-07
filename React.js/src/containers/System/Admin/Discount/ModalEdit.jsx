@@ -2,20 +2,22 @@ import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
-import Box from "@mui/material/Box";
+import { Box, TextField, Stack } from "@mui/material";
 import "../style.scss";
-import DatePicker from "../../../../components/DatePicker";
-import * as actions from "../../../../store/actions";
-import { LANGUAGES, CommonUtils } from "../../../../utils";
+import { LANGUAGES } from "../../../../utils";
 import { toast } from "react-toastify";
 import _ from "lodash";
-import localization from "moment/locale/vi";
 import moment from "moment";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
 import "react-markdown-editor-lite/lib/index.css";
 import { editCouponService } from "../../../../services/userService";
 import Select from "react-select";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import "dayjs/locale/vi";
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -36,28 +38,42 @@ class ModalEdit extends Component {
             discount: "",
             discountMax: "",
             listEvents: [],
+            isEditing1: false,
+            isEditing2: false,
+            isEditing3: false,
+            isEditing4: false,
+            discountD: false,
+            errMessage1: "",
+            errMessage2: "",
+            errMessage3: "",
+            errMessage4: "",
+            errMessage5: "",
         };
     }
-    // componentDidMount() {
-    //     this.props.fetchAllEvents();
-    // }
     async componentDidMount() {
-        this.props.fetchAllEvents();
         let user = this.props.currentUser;
-        console.log(user);
+        let { language } = this.props;
         if (user && !_.isEmpty(user)) {
+            let label1, label2;
+            if (language === "vi") {
+                label1 = "Giảm giá trực tiếp (theo đ)";
+                label2 = "Giảm giá theo %";
+            } else {
+                label1 = "Direct discount (according to VND)";
+                label2 = "Discount by %";
+            }
             let typeSelect = [
                 {
                     value: 1,
-                    label: "Giảm theo %",
+                    label: label1,
                 },
                 {
                     value: 2,
-                    label: "Giảm theo đ",
+                    label: label2,
                 },
             ];
-            let time1 = moment(+user.startDate).format("L");
-            let time2 = moment(+user.endDate).format("L");
+            let time1 = moment(+user.startDate).format("MM/DD/YYYY");
+            let time2 = moment(+user.endDate).format("MM/DD/YYYY");
             let objEvent = {};
             objEvent.label = user.Event.name;
             objEvent.value = user.eventId;
@@ -66,12 +82,14 @@ class ModalEdit extends Component {
             typeSelect.forEach((item) => {
                 if (item.value == user.type) {
                     test = item.label;
-                    // break;
                 }
             });
             objType.label = test;
             objType.value = user.type;
             console.log(objType);
+            let cloneCondition;
+            if (!user.sumMoneyCondition) cloneCondition = 0;
+            else cloneCondition = user.sumMoneyCondition;
             this.setState({
                 id: user.id,
                 name: user.name,
@@ -79,7 +97,7 @@ class ModalEdit extends Component {
                 dayEnd: time2,
                 selectEvent: objEvent,
                 selectType: objType,
-                sumMoneyCondition: user.sumMoneyCondition,
+                sumMoneyCondition: cloneCondition,
                 count: user.count,
                 description: user.description,
                 descriptionMarkdown: user.descriptionMarkdown,
@@ -104,7 +122,9 @@ class ModalEdit extends Component {
                 let obj = {};
                 obj.label = item.name;
                 obj.value = item.id;
+
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -115,9 +135,56 @@ class ModalEdit extends Component {
 
     onChangeInput = (event, id) => {
         let copyState = { ...this.state };
+        let { language } = this.props;
+        let message1 = "";
+        let message2 = "";
+        let message3 = "";
+        let message4 = "";
+        let message5 = "";
+        if (language === "vi") {
+            if (id === "discount" && isNaN(event.target.value)) {
+                message1 = "Trường này bắt buộc phải la số";
+            } else if (
+                id === "discount" &&
+                this.state.selectType.value === 2 &&
+                event.target.value.length > 2
+            ) {
+                message2 = "Trường này phải nhỏ hơn 100";
+            } else if (id === "discountMax" && isNaN(event.target.value)) {
+                message4 = "Trường này bắt buộc phải la số";
+            } else if (id === "sumMoneyCondition" && isNaN(event.target.value)) {
+                message3 = "Trường này bắt buộc phải la số";
+            } else if (id === "count" && isNaN(event.target.value)) {
+                message5 = "Trường này bắt buộc phải la số";
+            }
+        } else {
+            if (id === "discount" && isNaN(event.target.value)) {
+                message1 = "This field must be a number";
+            } else if (id === "discount" && event.target.value.length > 2) {
+                message2 = "This field must be less than 100";
+            } else if (id === "discountMax" && isNaN(event.target.value)) {
+                message4 = "This field must be a number";
+            } else if (id === "sumMoneyCondition" && isNaN(event.target.value)) {
+                message3 = "This field must be a number";
+            } else if (id === "count" && isNaN(event.target.value)) {
+                message5 = "This field must be a number";
+            }
+        }
+
+        if (id === "discount1" || id === "discount2") {
+            copyState["discount"] = event.target.value;
+            this.setState({
+                ...copyState,
+            });
+        }
         copyState[id] = event.target.value;
         this.setState({
             ...copyState,
+            errMessage1: message1,
+            errMessage2: message2,
+            errMessage3: message3,
+            errMessage4: message4,
+            errMessage5: message5,
         });
     };
 
@@ -161,17 +228,17 @@ class ModalEdit extends Component {
             endDate = new Date(dayEnd).getTime() + 86399000;
         } else if (!dayEnd.length && dayStart.length === 10) {
             endDate = new Date(dayEnd).getTime() + 86399000;
-            let [day1, month1, year1] = dayStart.split("/");
+            let [month1, day1, year1] = dayStart.split("/");
             let date1 = new Date(+year1, month1 - 1, +day1, +hours, +minutes);
             startDate = Math.floor(date1.getTime());
         } else if (!dayStart.length && dayEnd.length === 10) {
             startDate = new Date(dayStart).getTime();
-            let [day2, month2, year2] = dayEnd.split("/");
+            let [month2, day2, year2] = dayEnd.split("/");
             let date2 = new Date(+year2, month2 - 1, +day2, +hours, +minutes);
             endDate = Math.floor(date2.getTime()) + 86399000;
         } else {
-            let [day1, month1, year1] = dayStart.split("/");
-            let [day2, month2, year2] = dayEnd.split("/");
+            let [month1, day1, year1] = dayStart.split("/");
+            let [month2, day2, year2] = dayEnd.split("/");
 
             let date1 = new Date(+year1, month1 - 1, +day1, +hours, +minutes);
             let date2 = new Date(+year2, month2 - 1, +day2, +hours, +minutes);
@@ -180,108 +247,51 @@ class ModalEdit extends Component {
         }
 
         let language = this.props.language;
-        // let startDate = new Date(dayStart).getTime();
-        // let endDatetest = new Date(dayEnd).getTime();
-        let nameErrVi = "Vui lòng điền tên sự kiện";
-        let nameErrEn = "Please enter event name";
-        let dateStartErrVi = "Vui lòng chọn thời gian bắt đầu sự kiện";
-        let dateStartErrEn = "Please select an event start time";
-        let dateEndErrVi = "Vui lòng chọn thời gian kết thúc sự kiện";
-        let dateEndErrEn = "Please select an event end time";
-        let compareDateVi = "Thời gian bắt đầu phải trước thời gian kết thúc";
-        let compareDateEn = "The start time must be before the end time";
-        let descriptionVi = "Vui lòng nhập mô tả chi tiết cho sự kiện";
-        let descriptionEn = "Please enter a detailed description for the event";
-        if (isNaN(sumMoneyCondition)) {
-            if (language === LANGUAGES.VI) {
-                toast.error("nameErrVi1");
-            } else {
-                toast.error("1");
-            }
-            return;
-        } else if (isNaN(discountMax)) {
-            if (language === LANGUAGES.VI) {
-                toast.error("2");
-            } else {
-                toast.error("2");
-            }
-            return;
-        } else if (isNaN(count)) {
-            if (language === LANGUAGES.VI) {
-                toast.error("nameErrVi");
-            } else {
-                toast.error("nameErrEn");
-            }
-            return;
+        let nameErr,
+            countErr,
+            discountErr,
+            dayStartErr,
+            dayEndErr,
+            compareDay,
+            selectTypeErr,
+            selectEventErr;
+
+        if (language === "vi") {
+            nameErr = "Vui lòng điền tên mã giảm giá";
+            countErr = "Vui lòng điền số lượng mã giảm giá";
+            discountErr = "Vui lòng điền số tiền giảm";
+            dayStartErr = "Vui lòng chọn ngày bắt đầu mã giảm giá có hiệu lực";
+            dayEndErr = "Vui lòng chọn ngày mã giảm giá hết hiệu lực";
+            selectTypeErr = "Vui lòng chọn loại giảm giá";
+            selectEventErr = "Vui lòng chọn sự kiện";
+            compareDay = "Thời gian bắt đầu phải trước thời gian kết thúc";
+        } else {
+            nameErr = "Please enter discount name";
+            countErr = "Please enter the number of discount";
+            discountErr = "Please enter the discount amount";
+            dayStartErr = "Please select a valid discount code start date";
+            dayEndErr = "Please select the expiration date of the discount code";
+            selectTypeErr = "Please select a discount type";
+            selectEventErr = "Please select a event";
+            compareDay = "The start time must be before the end time";
         }
+        console.log(sumMoneyCondition);
         if (!name) {
-            if (language === LANGUAGES.VI) {
-                toast.error(nameErrVi);
-            } else {
-                toast.error(nameErrEn);
-            }
-            return;
+            toast.error(nameErr);
         } else if (selectEvent && _.isEmpty(selectEvent)) {
-            if (language === LANGUAGES.VI) {
-                toast.error("dateStartErrVi");
-            } else {
-                toast.error(dateStartErrEn);
-            }
+            toast.error(selectEventErr);
         } else if (selectType && _.isEmpty(selectType)) {
-            if (language === LANGUAGES.VI) {
-                toast.error("dateStartErrVi");
-            } else {
-                toast.error(dateStartErrEn);
-            }
+            toast.error(selectTypeErr);
         } else if (!discount) {
-            if (language === LANGUAGES.VI) {
-                toast.error("dateStartErrVi");
-            } else {
-                toast.error(dateStartErrEn);
-            }
-            return;
-        } else if (!discountMax) {
-            if (language === LANGUAGES.VI) {
-                toast.error("dateStartErrVi");
-            } else {
-                toast.error(dateStartErrEn);
-            }
-            return;
+            toast.error(discountErr);
         } else if (!count) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
-            } else {
-                toast.error(dateStartErrEn);
-            }
-            return;
+            toast.error(countErr);
         } else if (!dayStart) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
-            } else {
-                toast.error(dateStartErrEn);
-            }
-            return;
+            toast.error(dayStartErr);
         } else if (!dayEnd) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateEndErrVi);
-            } else {
-                toast.error(dateEndErrEn);
-            }
-            return;
-        } else if (!description) {
-            if (language === LANGUAGES.VI) {
-                toast.error(descriptionVi);
-            } else {
-                toast.error(descriptionEn);
-            }
-            return;
+            toast.error(dayEndErr);
         } else if (+dayStart > +dayEnd) {
-            if (language === LANGUAGES.VI) {
-                toast.error(compareDateVi);
-            } else {
-                toast.error(compareDateEn);
-            }
-            return;
+            toast.error(compareDay);
         } else {
             let res = await editCouponService({
                 id,
@@ -314,6 +324,55 @@ class ModalEdit extends Component {
             this.props.doEditUser(this.state);
         }
     };
+    theme = createTheme({
+        components: {
+            MuiInputBase: {
+                styleOverrides: {
+                    root: {
+                        height: 38,
+                    },
+                    input: {
+                        height: 1.5,
+                        padding: 0,
+                    },
+                },
+            },
+            MuiOutlinedInput: {
+                styleOverrides: {
+                    notchedOutline: {
+                        borderColor: "#CED4DA!important",
+                    },
+                },
+            },
+            MuiPickersDay: {
+                styleOverrides: {
+                    root: {
+                        fontSize: "15px",
+                    },
+                },
+            },
+        },
+    });
+    currencyFormat(number) {
+        const formatter = new Intl.NumberFormat("vi-VI", { style: "currency", currency: "VND" });
+        return formatter.format(number);
+    }
+    currencyFormat1(number) {
+        const formatter = new Intl.NumberFormat("vi-VI", { maximumSignificantDigits: 3 });
+        return formatter.format(number);
+    }
+    toggleEditing1() {
+        this.setState({ isEditing1: !this.state.isEditing1 });
+    }
+    toggleEditing2() {
+        this.setState({ isEditing2: !this.state.isEditing2 });
+    }
+    toggleEditing3() {
+        this.setState({ isEditing3: !this.state.isEditing3 });
+    }
+    toggleEditing4() {
+        this.setState({ isEditing4: !this.state.isEditing4 });
+    }
     render() {
         let language = this.props.language;
         let {
@@ -326,19 +385,33 @@ class ModalEdit extends Component {
             discountMax,
             sumMoneyCondition,
             count,
-            description,
             descriptionMarkdown,
             listEvents,
+            isEditing1,
+            isEditing2,
+            isEditing3,
+            isEditing4,
+            errMessage1,
+            errMessage3,
+            errMessage4,
+            errMessage5,
         } = this.state;
-        console.log(this.state);
+        let label1, label2;
+        if (language === "vi") {
+            label1 = "Giảm giá trực tiếp (theo đ)";
+            label2 = "Giảm giá theo %";
+        } else {
+            label1 = "Direct discount (according to VND)";
+            label2 = "Discount by %";
+        }
         let typeSelect = [
             {
                 value: 1,
-                label: "Giảm theo đ",
+                label: label1,
             },
             {
                 value: 2,
-                label: "Giảm theo %",
+                label: label2,
             },
         ];
         return (
@@ -354,7 +427,7 @@ class ModalEdit extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Create a new trip
+                        <FormattedMessage id="menu.busOwner.discount.title3" />{" "}
                     </ModalHeader>
                     <ModalBody>
                         <Box
@@ -363,7 +436,10 @@ class ModalEdit extends Component {
                             }}>
                             <Row>
                                 <Col md={4}>
-                                    <label htmlFor="name">Tên mã giảm giá</label>
+                                    <label htmlFor="name">
+                                        {" "}
+                                        <FormattedMessage id="menu.busOwner.discount.name" />
+                                    </label>
                                     <input
                                         style={{ height: "38px" }}
                                         className="form-control mb-4 h-38 "
@@ -377,7 +453,10 @@ class ModalEdit extends Component {
                                 </Col>
                                 <Col md={4}>
                                     {" "}
-                                    <label>Chọn sự kiện</label>
+                                    <label>
+                                        {" "}
+                                        <FormattedMessage id="menu.admin.listCoupons.selectEvent" />
+                                    </label>
                                     <Select
                                         className="mb-4"
                                         value={selectEvent}
@@ -387,7 +466,9 @@ class ModalEdit extends Component {
                                 </Col>
                                 <Col md={4}>
                                     {" "}
-                                    <label>Chọn loại giảm giá</label>
+                                    <label>
+                                        <FormattedMessage id="menu.busOwner.discount.type" />
+                                    </label>
                                     <Select
                                         className="mb-4"
                                         value={selectType}
@@ -399,100 +480,259 @@ class ModalEdit extends Component {
                             <Row>
                                 <Col md={4}>
                                     {" "}
-                                    <label htmlFor="discount">Giảm giá</label>
-                                    <input
-                                        style={{ height: "38px" }}
-                                        className="form-control mb-4 h-38 "
-                                        id="discount"
-                                        type="text"
-                                        value={discount}
-                                        onChange={(event) => {
-                                            this.onChangeInput(event, "discount");
-                                        }}
-                                    />
+                                    <label htmlFor="discount">
+                                        <FormattedMessage id="menu.busOwner.discount.discountd" />
+                                    </label>
+                                    {isEditing1 ? (
+                                        <input
+                                            style={{
+                                                height: "38px",
+                                                marginBottom: `${
+                                                    errMessage1 !== "" ? "3px" : "24px"
+                                                }`,
+                                            }}
+                                            className="form-control"
+                                            id="discount"
+                                            placeholder="Lớn hơn 1.000"
+                                            type="text"
+                                            onBlur={this.toggleEditing1.bind(this)}
+                                            value={discount}
+                                            onChange={(event) => {
+                                                this.onChangeInput(event, "discount1");
+                                            }}
+                                        />
+                                    ) : (
+                                        <input
+                                            style={{
+                                                height: "38px",
+                                                marginBottom: `${
+                                                    errMessage1 !== "" ? "3px" : "24px"
+                                                }`,
+                                            }}
+                                            className="form-control"
+                                            id="discount"
+                                            placeholder="Lớn hơn 1.000"
+                                            type="text"
+                                            value={this.currencyFormat1(discount)}
+                                            onChange={(event) => {
+                                                this.onChangeInput(event, "discount");
+                                            }}
+                                            onFocus={this.toggleEditing1.bind(this)}
+                                        />
+                                    )}
+                                    {errMessage1 && (
+                                        <div className="col-12" style={{ color: "red" }}>
+                                            * {errMessage1}
+                                        </div>
+                                    )}
                                 </Col>
                                 <Col md={4}>
                                     {" "}
-                                    <label htmlFor="sumMoneyCondition">Hóa đơn tối thiểu từ (đ)</label>
-                                    <input
-                                        style={{ height: "38px" }}
-                                        className="form-control mb-4 h-38 "
-                                        id="sumMoneyCondition"
-                                        type="text"
-                                        value={sumMoneyCondition}
-                                        onChange={(event) => {
-                                            this.onChangeInput(event, "sumMoneyCondition");
-                                        }}
-                                    />
+                                    <label htmlFor="sumMoneyCondition">
+                                        <FormattedMessage id="menu.busOwner.discount.min" />
+                                    </label>
+                                    {isEditing2 ? (
+                                        <input
+                                            style={{
+                                                height: "38px",
+                                                marginBottom: `${errMessage3 !== "" && "3px"}`,
+                                            }}
+                                            className="form-control"
+                                            id="sumMoneyCondition"
+                                            placeholder="Hóa đơn tối thiểu"
+                                            type="text"
+                                            onBlur={this.toggleEditing2.bind(this)}
+                                            value={sumMoneyCondition}
+                                            onChange={(event) => {
+                                                this.onChangeInput(event, "sumMoneyCondition");
+                                            }}
+                                        />
+                                    ) : (
+                                        <input
+                                            style={{
+                                                height: "38px",
+                                                marginBottom: `${errMessage3 !== "" && "3px"}`,
+                                            }}
+                                            className="form-control"
+                                            id="sumMoneyCondition"
+                                            placeholder="Hóa đơn tối thiểu"
+                                            type="text"
+                                            value={this.currencyFormat(sumMoneyCondition)}
+                                            onChange={(event) => {
+                                                this.onChangeInput(event, "sumMoneyCondition");
+                                            }}
+                                            onFocus={this.toggleEditing2.bind(this)}
+                                        />
+                                    )}
+                                    {errMessage3 && (
+                                        <div className="col-12" style={{ color: "red" }}>
+                                            * {errMessage3}
+                                        </div>
+                                    )}
                                 </Col>
                                 <Col md={4}>
                                     {" "}
-                                    <label htmlFor="discountMax">Giảm tối đa (đ)</label>
-                                    <input
-                                        style={{ height: "38px" }}
-                                        className="form-control mb-4 h-38 "
-                                        id="discountMax"
-                                        type="text"
-                                        value={discountMax}
-                                        onChange={(event) => {
-                                            this.onChangeInput(event, "discountMax");
-                                        }}
-                                    />
+                                    <label htmlFor="discountMax">
+                                        {" "}
+                                        <FormattedMessage id="menu.busOwner.discount.max" />
+                                    </label>
+                                    {isEditing3 ? (
+                                        <input
+                                            style={{
+                                                height: "38px",
+                                                marginBottom: `${errMessage4 !== "" && "3px"}`,
+                                            }}
+                                            className="form-control"
+                                            id="discountMax"
+                                            type="text"
+                                            value={discountMax}
+                                            onChange={(event) => {
+                                                this.onChangeInput(event, "discountMax");
+                                            }}
+                                            onBlur={this.toggleEditing3.bind(this)}
+                                        />
+                                    ) : (
+                                        <input
+                                            style={{
+                                                height: "38px",
+                                                marginBottom: `${errMessage4 !== "" && "3px"}`,
+                                            }}
+                                            className="form-control"
+                                            id="discountMax"
+                                            type="text"
+                                            onChange={(event) => {
+                                                this.onChangeInput(event, "discountMax");
+                                            }}
+                                            value={this.currencyFormat(discountMax)}
+                                            onFocus={this.toggleEditing3.bind(this)}
+                                        />
+                                    )}
+                                    {errMessage4 && (
+                                        <div className="col-12" style={{ color: "red" }}>
+                                            * {errMessage4}
+                                        </div>
+                                    )}
                                 </Col>
                             </Row>
                             <Row>
                                 <Col md={4}>
                                     {" "}
-                                    <label htmlFor="count">Số lượng mã giảm giá</label>
-                                    <input
-                                        style={{ height: "38px" }}
-                                        className="form-control mb-4 h-38 "
-                                        id="count"
-                                        type="text"
-                                        value={count}
-                                        onChange={(event) => {
-                                            this.onChangeInput(event, "count");
-                                        }}
-                                    />
+                                    <label htmlFor="count">
+                                        {" "}
+                                        <FormattedMessage id="menu.busOwner.discount.count" />
+                                    </label>
+                                    {isEditing4 ? (
+                                        <input
+                                            style={{
+                                                height: "38px",
+                                                marginBottom: `${errMessage5 === false ?? "4px"}`,
+                                            }}
+                                            className="form-control"
+                                            id="discountMax"
+                                            type="text"
+                                            value={count}
+                                            onChange={(event) => {
+                                                this.onChangeInput(event, "count");
+                                            }}
+                                            onBlur={this.toggleEditing4.bind(this)}
+                                        />
+                                    ) : (
+                                        <input
+                                            style={{
+                                                height: "38px",
+                                                marginBottom: `${errMessage5 === false ?? "4px"}`,
+                                            }}
+                                            className="form-control"
+                                            id="discountMax"
+                                            type="text"
+                                            onChange={(event) => {
+                                                this.onChangeInput(event, "count");
+                                            }}
+                                            value={this.currencyFormat1(count)}
+                                            onFocus={this.toggleEditing4.bind(this)}
+                                        />
+                                    )}
+                                    {errMessage5 && (
+                                        <div className="col-12" style={{ color: "red" }}>
+                                            * {errMessage5}
+                                        </div>
+                                    )}
                                 </Col>
                                 <Col md={4}>
                                     <label htmlFor="schedule1">Ngày bắt đầu</label>
 
-                                    <div className="form-control mb-4" style={{ height: "38px" }} htmlFor="schedule1">
-                                        <DatePicker
-                                            locale="vi"
-                                            style={{ border: "none" }}
-                                            onChange={this.handleOnChange1}
-                                            id="schedule1"
-                                            value={dayStart}
-                                            selected={dayStart}
-                                        />
-                                        <label htmlFor="schedule1" style={{ float: "right" }}>
-                                            <i
-                                                className="far fa-calendar-alt"
-                                                style={{
-                                                    fontSize: "20px",
-                                                }}></i>
-                                        </label>
+                                    <div className=" mb-4">
+                                        <ThemeProvider theme={this.theme}>
+                                            {language === "vi" ? (
+                                                <LocalizationProvider
+                                                    dateAdapter={AdapterDayjs}
+                                                    adapterLocale="vi">
+                                                    <Stack>
+                                                        <DatePicker
+                                                            value={dayStart}
+                                                            onChange={this.handleOnChange1}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
+                                                            minDate={new Date()}
+                                                            dayOfWeekFormatter={(day) => `${day}.`}
+                                                        />
+                                                    </Stack>
+                                                </LocalizationProvider>
+                                            ) : (
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <Stack>
+                                                        <DatePicker
+                                                            value={dayStart}
+                                                            onChange={this.handleOnChange1}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
+                                                            minDate={new Date()}
+                                                            dayOfWeekFormatter={(day) => `${day}.`}
+                                                        />
+                                                    </Stack>
+                                                </LocalizationProvider>
+                                            )}
+                                        </ThemeProvider>
                                     </div>
                                 </Col>
                                 <Col md={4}>
                                     <label htmlFor="schedule2">Ngày kết thúc</label>
-                                    <div className="form-control mb-4" style={{ height: "38px" }} htmlFor="schedule2">
-                                        <DatePicker
-                                            style={{ border: "none" }}
-                                            onChange={this.handleOnChange2}
-                                            id="schedule2"
-                                            value={dayEnd}
-                                            selected={dayEnd}
-                                        />
-                                        <label htmlFor="schedule2" style={{ float: "right" }}>
-                                            <i
-                                                className="far fa-calendar-alt"
-                                                style={{
-                                                    fontSize: "20px",
-                                                }}></i>
-                                        </label>
+                                    <div className=" mb-4">
+                                        <ThemeProvider theme={this.theme}>
+                                            {language === "vi" ? (
+                                                <LocalizationProvider
+                                                    dateAdapter={AdapterDayjs}
+                                                    adapterLocale="vi">
+                                                    <Stack>
+                                                        <DatePicker
+                                                            value={dayEnd}
+                                                            onChange={this.handleOnChange2}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
+                                                            minDate={new Date()}
+                                                            dayOfWeekFormatter={(day) => `${day}.`}
+                                                        />
+                                                    </Stack>
+                                                </LocalizationProvider>
+                                            ) : (
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <Stack>
+                                                        <DatePicker
+                                                            value={dayEnd}
+                                                            onChange={this.handleOnChange2}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
+                                                            minDate={new Date()}
+                                                            dayOfWeekFormatter={(day) => `${day}.`}
+                                                        />
+                                                    </Stack>
+                                                </LocalizationProvider>
+                                            )}
+                                        </ThemeProvider>
                                     </div>
                                 </Col>
                             </Row>
@@ -517,7 +757,7 @@ class ModalEdit extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            Cancel
+                            <FormattedMessage id="account.cancel" />
                         </Button>{" "}
                         <Button
                             color="primary"
@@ -525,7 +765,7 @@ class ModalEdit extends Component {
                                 this.handleSave();
                             }}
                             className="btn-primary-modal">
-                            Save
+                            <FormattedMessage id="account.save" />
                         </Button>
                     </ModalFooter>
                 </Modal>
@@ -542,9 +782,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalEdit);

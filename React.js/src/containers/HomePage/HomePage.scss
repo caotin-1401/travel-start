@@ -113,95 +113,128 @@
                     margin-left        : auto;
                     margin-right       : auto;
 
-                    // &.img-routes {
-                    //     background-image: url("../../assets/busStation1.jpg");
-                    // }
+                    border-bottom: 1px solid gray;
 
-                    // &.img-events {
-                    //     background-image: url("../../assets/event1.jpg");
-                    // }
-
-                    // &.img-blog {
-                    //     background-image: url("../../assets/defaultBcg.jpeg");
-                    // }
+                    img {
+                        width        : 100%;
+                        height       : 190px;
+                        border-bottom: 1px solid gray;
+                    }
                 }
 
                 .bg-img1 {
-                    width              : 100%;
-                    height             : 190px;
-                    background-position: center;
-                    background-repeat  : no-repeat;
-                    background-size    : cover;
-                    border-radius      : 5px 5px 0 0 !important;
-                    margin-left        : auto;
-                    margin-right       : auto;
-                    border-bottom      : 1px solid gray;
-                    background-image   : url("../../assets/vungtau.jpg");
+                    width                 : 100%;
+                    height                : 190px;
+                    // background-position: center;
+                    // background-repeat  : no-repeat;
+                    // background-size    : cover;
+                    border-radius         : 5px 5px 0 0 !important;
+                    margin-left           : auto;
+                    margin-right          : auto;
+                    border-bottom         : 1px solid gray;
+
+                    img {
+                        width        : 100%;
+                        height       : 190px;
+                        border-bottom: 1px solid gray;
+                    }
+
+                    // background-image   : url("../../assets/vungtau.jpg");
                 }
 
                 .bg-img2 {
-                    width              : 100%;
-                    height             : 190px;
-                    background-position: center;
-                    background-repeat  : no-repeat;
-                    background-size    : cover;
-                    border-radius      : 5px 5px 0 0 !important;
-                    margin-left        : auto;
-                    margin-right       : auto;
-                    border-bottom      : 1px solid gray;
-                    background-image   : url("../../assets/dalat.jpg");
+                    width                 : 100%;
+                    height                : 190px;
+                    background-position   : center;
+                    background-repeat     : no-repeat;
+                    background-size       : cover;
+                    border-radius         : 5px 5px 0 0 !important;
+                    margin-left           : auto;
+                    margin-right          : auto;
+                    border-bottom         : 1px solid gray;
+                    // background-image   : url("../../assets/dalat.jpg");
+
+                    img {
+                        width        : 100%;
+                        height       : 190px;
+                        border-bottom: 1px solid gray;
+                    }
                 }
 
                 .bg-img3 {
-                    width              : 100%;
-                    height             : 190px;
-                    background-position: center;
-                    background-repeat  : no-repeat;
-                    background-size    : cover;
-                    border-radius      : 5px 5px 0 0 !important;
-                    margin-left        : auto;
-                    margin-right       : auto;
-                    border-bottom      : 1px solid gray;
-                    background-image   : url("../../assets/danang.jpg");
+                    width                 : 100%;
+                    height                : 190px;
+                    background-position   : center;
+                    background-repeat     : no-repeat;
+                    background-size       : cover;
+                    border-radius         : 5px 5px 0 0 !important;
+                    margin-left           : auto;
+                    margin-right          : auto;
+                    border-bottom         : 1px solid gray;
+                    // background-image   : url("../../assets/danang.jpg");
+
+                    img {
+                        width        : 100%;
+                        height       : 190px;
+                        border-bottom: 1px solid gray;
+                    }
                 }
 
                 .bg-img4 {
-                    width              : 100%;
-                    height             : 190px;
-                    background-position: center;
-                    background-repeat  : no-repeat;
-                    background-size    : cover;
-                    border-radius      : 5px 5px 0 0 !important;
-                    margin-left        : auto;
-                    margin-right       : auto;
-                    border-bottom      : 1px solid gray;
-                    background-image   : url("../../assets/khanhhoa.jpg");
+                    width                 : 100%;
+                    height                : 190px;
+                    background-position   : center;
+                    background-repeat     : no-repeat;
+                    background-size       : cover;
+                    border-radius         : 5px 5px 0 0 !important;
+                    margin-left           : auto;
+                    margin-right          : auto;
+                    border-bottom         : 1px solid gray;
+                    // background-image   : url("../../assets/khanhhoa.jpg");
+
+                    img {
+                        width        : 100%;
+                        height       : 190px;
+                        border-bottom: 1px solid gray;
+                    }
                 }
 
                 .bg-img5 {
-                    width              : 100%;
-                    height             : 190px;
-                    background-position: center;
-                    background-repeat  : no-repeat;
-                    background-size    : cover;
-                    border-radius      : 5px 5px 0 0 !important;
-                    margin-left        : auto;
-                    margin-right       : auto;
-                    border-bottom      : 1px solid gray;
-                    background-image   : url("../../assets/quynhon.jpg");
+                    width                 : 100%;
+                    height                : 190px;
+                    background-position   : center;
+                    background-repeat     : no-repeat;
+                    background-size       : cover;
+                    border-radius         : 5px 5px 0 0 !important;
+                    margin-left           : auto;
+                    margin-right          : auto;
+                    border-bottom         : 1px solid gray;
+                    // background-image   : url("../../assets/quynhon.jpg");
+
+                    img {
+                        width        : 100%;
+                        height       : 190px;
+                        border-bottom: 1px solid gray;
+                    }
                 }
 
                 .bg-img6 {
-                    width              : 100%;
-                    height             : 190px;
-                    background-position: center;
-                    background-repeat  : no-repeat;
-                    background-size    : cover;
-                    border-radius      : 5px 5px 0 0 !important;
-                    margin-left        : auto;
-                    margin-right       : auto;
-                    border-bottom      : 1px solid gray;
-                    background-image   : url("../../assets/hcm3.jpg");
+                    width                 : 100%;
+                    height                : 190px;
+                    background-position   : center;
+                    background-repeat     : no-repeat;
+                    background-size       : cover;
+                    border-radius         : 5px 5px 0 0 !important;
+                    margin-left           : auto;
+                    margin-right          : auto;
+                    border-bottom         : 1px solid gray;
+                    // background-image   : url("../../assets/hcm3.jpg");
+
+                    img {
+                        width        : 100%;
+                        height       : 190px;
+                        border-bottom: 1px solid gray;
+                    }
                 }
 
                 .section-title {
@@ -278,7 +311,7 @@
         text-align   : center;
     }
 
-    .fa-twitter {
+    .fa-github {
         height       : 4rem;
         width        : 4rem;
         line-height  : 4rem;

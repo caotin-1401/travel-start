@@ -1,26 +1,15 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
-import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
-import ModalAdd from "./ModalAdd";
-import {
-    TableBody,
-    TableContainer,
-    TableFooter,
-    TablePagination,
-    TableRow,
-    Paper,
-    Table,
-} from "@mui/material";
+import { TableBody, TableContainer, Paper, Table } from "@mui/material";
 import { toast } from "react-toastify";
-import {
-    getAllBusTypesService,
-    deleteBusTypeService,
-} from "../../../../services/userService";
-import TablePaginationActions from "../../../../components/TablePaginationActions";
+import { getAllBusTypesService, deleteBusTypeService } from "../../../../services/userService";
+
+import Loading from "../../../../components/Loading";
+const ModalAdd = lazy(() => import("./ModalAdd"));
 
 class BusType extends Component {
     constructor(props) {
@@ -30,8 +19,6 @@ class BusType extends Component {
             listBusType: [],
             sortBy: "",
             sortField: "",
-            page: 0,
-            rowsPerPage: 5,
 
             isTest: false,
             test: [],
@@ -58,13 +45,13 @@ class BusType extends Component {
         });
     };
 
-    handleAddLocation = () => {
+    handleOpenModelAdd = () => {
         this.setState({
             isOpenModel: true,
         });
     };
 
-    handleDeleteUser = async (user) => {
+    handleDelete = async (user) => {
         let { language } = this.props;
         let res = await deleteBusTypeService(user.id);
         if (res && res.errCode === 0) {
@@ -84,56 +71,30 @@ class BusType extends Component {
         });
     };
 
-    handleChangePage = (event, newPage) => {
-        this.setState({
-            page: newPage,
-        });
-    };
-    handleChangeRowsPerPage = (event) => {
-        this.setState({
-            rowsPerPage: parseInt(event.target.value),
-            page: 0,
-        });
-    };
     handleSort = (a, b) => {
-        this.state.listBusType = _.orderBy(this.state.listBusType, [b], [a]);
+        let clone = this.state.listBusType;
+        clone = _.orderBy(clone, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            listBusType: this.state.listBusType,
+            listBusType: clone,
         });
-    };
-    handleKeyword = (e) => {
-        let term = e.target.value.toUpperCase();
-        let clone = this.state.listBusType;
-
-        if (term) {
-            clone = clone.filter((item) => item.name.includes(term));
-            this.setState({
-                test1: clone,
-                isTest: true,
-            });
-        } else {
-            this.setState({
-                isTest: false,
-            });
-            this.getAllBusType();
-        }
     };
 
     render() {
-        let { page, rowsPerPage, listBusType, test, test1, isTest } =
-            this.state;
+        let { listBusType, test, test1, isTest } = this.state;
         isTest === true ? (test = test1) : (test = listBusType);
         return (
             <div className="container form-redux">
                 <div className="user-container">
-                    <ModalAdd
-                        listBusType={listBusType}
-                        isOpen={this.state.isOpenModel}
-                        toggleFromParent={this.toggleModel}
-                        createLocation={this.createLocation}
-                    />
+                    <Suspense fallback={<Loading />}>
+                        <ModalAdd
+                            listBusType={listBusType}
+                            isOpen={this.state.isOpenModel}
+                            toggleFromParent={this.toggleModel}
+                            createLocation={this.createLocation}
+                        />
+                    </Suspense>
 
                     <div className="title text-center">
                         <FormattedMessage id="menu.admin.listBusType.title" />
@@ -141,7 +102,7 @@ class BusType extends Component {
                     <div className="mx-5 my-3">
                         <button
                             className="btn btn-primary px-3 w130"
-                            onClick={() => this.handleAddLocation()}>
+                            onClick={() => this.handleOpenModelAdd()}>
                             <i className="fas fa-plus px-1 "></i>
                             <FormattedMessage id="menu.admin.listBusType.add" />
                         </button>
@@ -156,9 +117,7 @@ class BusType extends Component {
                                             style={{
                                                 width: "10%",
                                             }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            onClick={() => this.handleSort("asc", "id")}>
                                             Id
                                         </th>
                                         <th
@@ -183,19 +142,13 @@ class BusType extends Component {
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "numOfSeat"
-                                                            )
+                                                            this.handleSort("asc", "numOfSeat")
                                                         }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "numOfSeat"
-                                                            )
+                                                            this.handleSort("desc", "numOfSeat")
                                                         }
                                                     />
                                                 </div>
@@ -205,82 +158,28 @@ class BusType extends Component {
                                             style={{
                                                 width: "15%",
                                             }}
-                                            className="section-id-list">
-                                            <FormattedMessage id="menu.admin.listBusType.action" />
-                                        </th>
+                                            className="section-id-list"></th>
                                     </tr>
 
-                                    {(rowsPerPage > 0 && test && test.length > 0
-                                        ? test.slice(
-                                              page * rowsPerPage,
-                                              page * rowsPerPage + rowsPerPage
-                                          )
-                                        : test
-                                    ).map((user, index) => {
-                                        return (
-                                            <tr key={index}>
-                                                <td>{user.id}</td>
-
-                                                <td>{user.typeName}</td>
-                                                <td>{user.numOfSeat}</td>
-                                                <td className="center">
-                                                    <button
-                                                        className="btn-delete"
-                                                        onClick={() =>
-                                                            this.handleDeleteUser(
-                                                                user
-                                                            )
-                                                        }>
-                                                        <i className="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
+                                    {test &&
+                                        test.length > 0 &&
+                                        test.map((user, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td className="center">{user.id}</td>
+                                                    <td>{user.typeName}</td>
+                                                    <td>{user.numOfSeat}</td>
+                                                    <td className="center">
+                                                        <button
+                                                            className="btn-delete"
+                                                            onClick={() => this.handleDelete(user)}>
+                                                            <i className="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                 </TableBody>
-                                <TableFooter>
-                                    <TableRow>
-                                        <TablePagination
-                                            sx={{
-                                                "& .MuiTablePagination-selectLabel ":
-                                                    {
-                                                        display: "None",
-                                                    },
-                                                "& .MuiTablePagination-displayedRows  ":
-                                                    {
-                                                        marginTop: "10px",
-                                                        fontSize: "15px",
-                                                    },
-                                                "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
-                                                    {
-                                                        fontSize: "15px",
-                                                    },
-                                            }}
-                                            rowsPerPageOptions={[
-                                                5,
-                                                10,
-                                                25,
-                                                { label: "All", value: -1 },
-                                            ]}
-                                            colSpan={7}
-                                            count={listBusType.length}
-                                            rowsPerPage={rowsPerPage}
-                                            page={page}
-                                            onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
-                                            ActionsComponent={(subProps) => (
-                                                <TablePaginationActions
-                                                    style={{
-                                                        marginBottom: "12px",
-                                                    }}
-                                                    {...subProps}
-                                                />
-                                            )}
-                                        />
-                                    </TableRow>
-                                </TableFooter>
                             </Table>
                         </TableContainer>
                     </div>

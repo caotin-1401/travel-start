@@ -16,23 +16,21 @@ class HomeFooter extends Component {
                             <a
                                 target="_blank"
                                 rel="noreferrer"
-                                href="https://www.facebook.com/"
-                                className="fab fa-facebook"></a>
+                                href="https://www.facebook.com/caotin1401/">
+                                <i className="fab fa-facebook"></i>
+                            </a>
                             <a
                                 target="_blank"
                                 rel="noreferrer"
-                                href="https://twitter.com/"
-                                className="fab fa-twitter"></a>
-                            <a
-                                target="_blank"
-                                rel="noreferrer"
-                                href="https://www.linkedin.com/"
-                                className="fab fa-linkedin"></a>
-                            <a
-                                target="_blank"
-                                rel="noreferrer"
-                                href="https://www.google.com/"
-                                className="fab fa-instagram"></a>
+                                href="https://github.com/caotin-1401">
+                                <i className="fab fa-github"></i>
+                            </a>
+                            <a target="_blank" rel="noreferrer" href="https://www.linkedin.com/">
+                                <i className="fab fa-linkedin"></i>
+                            </a>
+                            <a target="_blank" rel="noreferrer" href="https://www.google.com/">
+                                <i className="fab fa-instagram"></i>
+                            </a>
                         </div>
                     </Col>
                     <Col md={4}>

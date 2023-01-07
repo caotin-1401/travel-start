@@ -37,29 +37,14 @@ class ListDriver extends Component {
         await this.allDriver();
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevState.listDrivers !== this.state.listDrivers) {
-            let { listDrivers } = this.state;
-            if (this.props.match && this.props.match.params && this.props.match.params.id) {
-                let driverId = this.props.match.params.id;
-                let test = [];
-                console.log("listDrivers >>:", listDrivers);
-                listDrivers &&
-                    listDrivers.length > 0 &&
-                    (test = listDrivers.filter(
-                        (item) => item.busOwnerId && item.busOwnerId == driverId
-                    ));
-                this.setState({ arrUsers: test });
-            }
-        }
-    }
     allDriver = async () => {
-        let res = await getAllDrivers("ALL");
+        let driverId = this.props.match.params.id;
+        let res = await getAllDrivers(driverId);
         res &&
             res.users &&
             res.users.length > 0 &&
             this.setState({
-                listDrivers: res.users,
+                arrUsers: res.users,
             });
     };
     handleDeleteUser = (user) => {
@@ -67,11 +52,12 @@ class ListDriver extends Component {
     };
 
     handleSort = (a, b) => {
-        this.state.arrUsers = _.orderBy(this.state.arrUsers, [b], [a]);
+        let clone = this.state.arrUsers;
+        clone = _.orderBy(clone, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            arrUsers: this.state.arrUsers,
+            arrUsers: clone,
         });
     };
     handleKeyword = (e) => {
@@ -107,16 +93,35 @@ class ListDriver extends Component {
             this.props.history.push(`/system/busOnwer-manage`);
         }
     };
+    handleChangePage = (event, newPage) => {
+        this.setState({
+            page: newPage,
+        });
+    };
+    handleChangeRowsPerPage = (event) => {
+        this.setState({
+            rowsPerPage: parseInt(event.target.value),
+            page: 0,
+        });
+    };
     render() {
         let { page, rowsPerPage, arrUsers } = this.state;
         console.log(arrUsers);
         let { language } = this.props;
-        let title;
+        let title, mes1, mes2, mes3, mes4;
         if (arrUsers.length > 0) {
             if (language === LANGUAGES.VI) {
                 title = `Danh sách tài xế của ${arrUsers[0].busOwner}`;
+                mes1 = "Tìm tên tài xế";
+                mes2 = "Tìm địa chỉ email tài xế";
+                mes3 = "Đang chạy";
+                mes4 = "Trong bến";
             } else {
                 title = `List of drivers of ${arrUsers[0].busOwner}`;
+                mes1 = "Search driver";
+                mes2 = "Search email address";
+                mes3 = "Running..";
+                mes4 = "In the wharf";
             }
         }
         return (
@@ -129,7 +134,7 @@ class ListDriver extends Component {
                     <div className="user-container">
                         <div className="title text-center">{title}</div>
 
-                        <div style={{ marginTop: "50px" }}></div>
+                        <div style={{ marginTop: "20px" }}></div>
                         <TableContainer component={Paper} id="customers">
                             <Table>
                                 <TableBody>
@@ -148,7 +153,6 @@ class ListDriver extends Component {
                                             }}>
                                             <div className="section-title">
                                                 <div>
-                                                    {" "}
                                                     <FormattedMessage id="menu.admin.listDriver.name" />
                                                 </div>
                                                 <div>
@@ -172,32 +176,18 @@ class ListDriver extends Component {
                                                 width: "20%",
                                             }}>
                                             <div className="section-title">
-                                                <div> email </div>
-                                                <div>
-                                                    <FaLongArrowAltDown
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort("asc", "email")
-                                                        }
-                                                    />
-                                                    <FaLongArrowAltUp
-                                                        className="iconSortDown"
-                                                        onClick={() =>
-                                                            this.handleSort("desc", "email")
-                                                        }
-                                                    />
-                                                </div>
+                                                <FormattedMessage id="account.email" />
                                             </div>
                                         </th>
                                         <th
                                             style={{
-                                                width: "35%",
+                                                width: "25%",
                                             }}>
                                             <FormattedMessage id="menu.admin.listDriver.phone" />
                                         </th>
                                         <th
                                             style={{
-                                                width: "10%",
+                                                width: "20%",
                                             }}
                                             className="section-id-list">
                                             <FormattedMessage id="menu.admin.listDriver.status" />
@@ -214,12 +204,14 @@ class ListDriver extends Component {
                                         <td></td>
                                         <td>
                                             <input
+                                                placeholder={mes1}
                                                 className="form-control"
                                                 onChange={(e) => this.handleKeyword(e)}
                                             />
                                         </td>
                                         <td>
                                             <input
+                                                placeholder={mes2}
                                                 className="form-control"
                                                 onChange={(e) => this.handleKeyword1(e)}
                                             />
@@ -232,7 +224,7 @@ class ListDriver extends Component {
                                         arrUsers.map((user, index) => {
                                             return (
                                                 <tr key={index}>
-                                                    <td>{user.id}</td>
+                                                    <td className="center">{user.id}</td>
                                                     <td>{user.name}</td>
                                                     <td>{user.User.email}</td>
                                                     <td>{user.User.phoneNumber}</td>
@@ -242,12 +234,24 @@ class ListDriver extends Component {
                                                             textAlign: "center",
                                                         }}>
                                                         {user.status === 2 ? (
-                                                            <div className="driver-run">
-                                                                Đang chạy
+                                                            <div
+                                                                className="driver-run"
+                                                                style={{
+                                                                    marginLeft: "auto",
+                                                                    marginRight: "auto",
+                                                                    width: "50%",
+                                                                }}>
+                                                                {mes3}
                                                             </div>
                                                         ) : (
-                                                            <div className="driver-not-run">
-                                                                Không chạy
+                                                            <div
+                                                                className="driver-not-run"
+                                                                style={{
+                                                                    marginLeft: "auto",
+                                                                    marginRight: "auto",
+                                                                    width: "50%",
+                                                                }}>
+                                                                {mes4}
                                                             </div>
                                                         )}
                                                     </td>

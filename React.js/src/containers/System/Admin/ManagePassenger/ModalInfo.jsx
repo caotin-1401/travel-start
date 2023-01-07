@@ -1,19 +1,9 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
-import * as actions from "../../../../store/actions";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import { LANGUAGES } from "../../../../utils";
 import _ from "lodash";
-import localization from "moment/locale/vi";
 import moment from "moment";
 class ModalInfo extends Component {
     constructor(props) {
@@ -75,17 +65,8 @@ class ModalInfo extends Component {
         resultUser = Object.values(tempUser);
         console.log(resultUser);
         if (language === LANGUAGES.VI)
-            gender === "M"
-                ? (sex = "Nam")
-                : gender === "F"
-                ? (sex = "Nữ")
-                : (sex = "Khác");
-        else
-            gender === "M"
-                ? (sex = "Male")
-                : gender === "F"
-                ? (sex = "Female")
-                : (sex = "Other");
+            gender === "M" ? (sex = "Nam") : gender === "F" ? (sex = "Nữ") : (sex = "Khác");
+        else gender === "M" ? (sex = "Male") : gender === "F" ? (sex = "Female") : (sex = "Other");
         return (
             <Modal
                 isOpen={this.props.isOpen}
@@ -110,35 +91,32 @@ class ModalInfo extends Component {
                             fontSize: "16px",
                         }}>
                         <Col md={4}>
-                            <FormattedMessage id="menu.admin.listPassenger.name" />
-                            : <b>{name}</b>
+                            <FormattedMessage id="menu.admin.listPassenger.name" />: <b>{name}</b>
                         </Col>
                         <Col md={4}>
                             Email : <b>{email}</b>
                         </Col>
                         <Col md={4}>
-                            <FormattedMessage id="menu.admin.listPassenger.phone" />
-                            : <b>{phone}</b>
+                            <FormattedMessage id="menu.admin.listPassenger.phone" />: <b>{phone}</b>
                         </Col>
                     </Row>
                     <Row style={{ marginBottom: "30px", fontSize: "16px" }}>
                         <Col md={4}>
-                            <FormattedMessage id="menu.admin.listPassenger.gender" />
-                            : <b>{sex}</b>
+                            <FormattedMessage id="menu.admin.listPassenger.gender" />: <b>{sex}</b>
                         </Col>
                         <Col md={8}>
-                            <FormattedMessage id="menu.admin.listPassenger.address" />
-                            : <b>{address}</b>
+                            <FormattedMessage id="menu.admin.listPassenger.address" />:{" "}
+                            <b>{address}</b>
                         </Col>
                     </Row>
+                    <hr />
                     <h4 style={{ marginBottom: "30px", textAlign: "center" }}>
                         <FormattedMessage id="menu.admin.listPassenger.modal2" />
                     </h4>
                     <Row>
                         {resultUser.length > 1 ? (
                             <table className="table table-striped table-hover table-responsive">
-                                <thead
-                                    style={{ borderBottom: "2px solid black" }}>
+                                <thead style={{ borderBottom: "2px solid black" }}>
                                     <tr>
                                         <th scope="col">
                                             <FormattedMessage id="menu.admin.listPassenger.trip" />
@@ -158,34 +136,26 @@ class ModalInfo extends Component {
                                     {resultUser &&
                                         resultUser.length > 0 &&
                                         resultUser.map((item, index) => {
-                                            let time = moment(
-                                                +item.Trip.timeStart
-                                            ).format("DD/MM/yyyy HH:mm");
-                                            let seatNO =
-                                                item.seatNo.join(" - ");
+                                            let time = moment(+item.Trip.timeStart).format(
+                                                "DD/MM/yyyy HH:mm"
+                                            );
+                                            let seatNO = item.seatNo.join(" - ");
                                             return (
                                                 <tr key={index}>
                                                     <td>
-                                                        {item.Trip.areaStart} -{" "}
-                                                        {item.Trip.areaEnd}
+                                                        {item.Trip.areaStart} - {item.Trip.areaEnd}
                                                     </td>
                                                     <td>{time}</td>
                                                     <td>{seatNO}</td>
-                                                    <td>
-                                                        {this.currencyFormat(
-                                                            item.totalPrice
-                                                        )}
-                                                    </td>
+                                                    <td>{this.currencyFormat(item.totalPrice)}</td>
                                                 </tr>
                                             );
                                         })}
                                 </tbody>
                             </table>
-                        ) : resultUser.length === 1 &&
-                          resultUser[0].totalPrice ? (
+                        ) : resultUser.length === 1 && resultUser[0].totalPrice ? (
                             <table className="table table-striped table-hover table-responsive">
-                                <thead
-                                    style={{ borderBottom: "2px solid black" }}>
+                                <thead style={{ borderBottom: "2px solid black" }}>
                                     <tr>
                                         <th scope="col">
                                             <FormattedMessage id="menu.admin.listPassenger.trip" />
@@ -205,26 +175,19 @@ class ModalInfo extends Component {
                                     {resultUser &&
                                         resultUser.length > 0 &&
                                         resultUser.map((item, index) => {
-                                            let time = moment(
-                                                +item.dayStart
-                                            ).format("DD/MM/yyyy HH:mm");
-                                            let seatNO =
-                                                item.seatNo.join(" - ");
+                                            let time = moment(+item.dayStart).format(
+                                                "DD/MM/yyyy HH:mm"
+                                            );
+                                            let seatNO = item.seatNo.join(" - ");
                                             console.log(seatNO);
                                             return (
                                                 <tr key={index}>
                                                     <td>
-                                                        {item.Trip.areaStart} -{" "}
-                                                        {item.Trip.areaEnd}
+                                                        {item.Trip.areaStart} - {item.Trip.areaEnd}
                                                     </td>
                                                     <td>{time}</td>
                                                     <td>{seatNO}</td>
-                                                    <td>
-                                                        {" "}
-                                                        {this.currencyFormat(
-                                                            item.totalPrice
-                                                        )}
-                                                    </td>
+                                                    <td> {this.currencyFormat(item.totalPrice)}</td>
                                                 </tr>
                                             );
                                         })}

@@ -1,20 +1,26 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import "../style.scss";
-import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
-import _ from "lodash";
 import moment from "moment";
-import localization from "moment/locale/vi";
-import * as actions from "../../../../store/actions";
-import { LANGUAGES } from "../../../../utils";
-import ModalAdd from "./ModalAdd";
-import { TableBody, TableContainer, TableFooter, TablePagination, TableRow, Paper, Table } from "@mui/material";
+import {
+    TableBody,
+    TableContainer,
+    TableFooter,
+    TablePagination,
+    TableRow,
+    Paper,
+    Table,
+} from "@mui/material";
 import { toast } from "react-toastify";
 import { getAllBlogsService, deleteBlogsService } from "../../../../services/userService";
-import ModalEdit from "./ModalEdit";
-
 import TablePaginationActions from "../../../../components/TablePaginationActions";
+import { SkeletonEvent } from "../SkeletonComponent";
+import Loading from "../../../../components/Loading";
+
+const ModalAdd = lazy(() => import("./ModalAdd"));
+const ModalEdit = lazy(() => import("./ModalEdit"));
+
 class TableBlog extends Component {
     constructor(props) {
         super(props);
@@ -23,11 +29,9 @@ class TableBlog extends Component {
             isOpenModelEditUser: false,
             userEdit: {},
             listBlogs: [],
-            sortBy: "",
-            sortField: "",
-            keywordNumber: "",
             page: 0,
             rowsPerPage: 5,
+            loading: false,
         };
     }
 
@@ -38,6 +42,11 @@ class TableBlog extends Component {
     getAllBlogs = async () => {
         let res = await getAllBlogsService("ALL");
         if (res && res.errCode === 0) {
+            setTimeout(() => {
+                this.setState({
+                    loading: true,
+                });
+            }, 50);
             this.setState({
                 listBlogs: res.blogs,
             });
@@ -99,63 +108,40 @@ class TableBlog extends Component {
             page: 0,
         });
     };
-    handleSort = (a, b) => {
-        this.state.listBlogs = _.orderBy(this.state.listBlogs, [b], [a]);
-        this.setState({
-            sortBy: a,
-            sortField: b,
-            listBlogs: this.state.listBlogs,
-        });
-    };
-    handleKeyword = (e) => {
-        let term = e.target.value.toUpperCase();
-        let clone = this.state.listBlogs;
-        if (term) {
-            clone = clone.filter((item) => item.number.includes(term));
-            this.setState({
-                listBlogs: clone,
-            });
-        } else {
-            this.props.fetchAllVehicle();
-        }
-    };
-    handleKeyword1 = (e) => {
-        let term = e.target.value.toUpperCase();
-        let clone = this.state.listBlogs;
-        if (term) {
-            clone = clone.filter((item) => item.BusType.typeName.includes(term));
-            this.setState({
-                listBlogs: clone,
-            });
-        } else {
-            this.props.fetchAllVehicle();
-        }
-    };
+
     render() {
-        let { page, rowsPerPage, listBlogs } = this.state;
-        // listBlogs.reverse();
+        let { page, rowsPerPage, listBlogs, loading } = this.state;
+        let { language } = this.props;
         return (
             <div className="container form-redux">
                 <div className="user-container">
-                    <ModalAdd
-                        listBlogs={listBlogs}
-                        isOpen={this.state.isOpenModel}
-                        toggleFromParent={this.toggleUserModel}
-                        createNewUser1={this.createNewUser1}
-                    />
-                    {this.state.isOpenModelEditUser && (
-                        <ModalEdit
-                            isOpen={this.state.isOpenModelEditUser}
-                            toggleFromParent={this.toggleUserEditModel}
-                            currentUser={this.state.userEdit}
-                            doEditUser={this.doEditUser}
+                    <Suspense fallback={<Loading />}>
+                        <ModalAdd
+                            listBlogs={listBlogs}
+                            isOpen={this.state.isOpenModel}
+                            toggleFromParent={this.toggleUserModel}
+                            createNewUser1={this.createNewUser1}
                         />
-                    )}
-                    <div className="title text-center">Quan ly su kien</div>
+                        {this.state.isOpenModelEditUser && (
+                            <ModalEdit
+                                isOpen={this.state.isOpenModelEditUser}
+                                toggleFromParent={this.toggleUserEditModel}
+                                currentUser={this.state.userEdit}
+                                doEditUser={this.doEditUser}
+                            />
+                        )}
+                    </Suspense>
+
+                    <div className="title text-center">
+                        <FormattedMessage id="menu.admin.listBlog.title" />
+                    </div>
                     <div className="mx-5 my-3">
-                        <button className="btn btn-primary px-3" onClick={() => this.handleAddUser()}>
+                        <button
+                            className="btn btn-primary px-3"
+                            style={{ width: "150px" }}
+                            onClick={() => this.handleAddUser()}>
                             <i className="fas fa-plus px-1"></i>
-                            Them su kien
+                            <FormattedMessage id="menu.admin.listBlog.title3" />
                         </button>
                     </div>
                     <div className="use-table m-3">
@@ -167,74 +153,113 @@ class TableBlog extends Component {
                                             className="section-id"
                                             style={{
                                                 width: "5%",
-                                            }}
-                                            onClick={() => this.handleSort("asc", "id")}>
+                                            }}>
                                             Id
                                         </th>
                                         <th
                                             style={{
-                                                width: "34%",
+                                                width: "35%",
                                             }}>
                                             <div className="section-title">
-                                                <div> Tên sự kiện</div>
-                                                <div>
-                                                    {" "}
-                                                    <FaLongArrowAltDown
-                                                        className="iconSortDown"
-                                                        onClick={() => this.handleSort("asc", "name")}
-                                                    />
-                                                    <FaLongArrowAltUp
-                                                        className="iconSortDown"
-                                                        onClick={() => this.handleSort("desc", "name")}
-                                                    />
-                                                </div>
+                                                <FormattedMessage id="menu.admin.listBlog.name" />
                                             </div>
                                         </th>
 
-                                        <th>
-                                            <div className="section-title">Thời gian tạo bài viết</div>
+                                        <th
+                                            style={{
+                                                width: "25%",
+                                            }}>
+                                            <div className="section-title">
+                                                <FormattedMessage id="menu.admin.listBlog.timeCreated" />
+                                            </div>
                                         </th>
 
-                                        <th>
-                                            <div className="section-title">Người tạo bài viết</div>
+                                        <th
+                                            style={{
+                                                width: "25%",
+                                            }}>
+                                            <div className="section-title">
+                                                <FormattedMessage id="menu.admin.listBlog.personCreated" />
+                                            </div>
                                         </th>
 
-                                        <th style={{ width: "10%" }}>Hành động</th>
+                                        <th style={{ width: "10%" }}></th>
                                     </tr>
+                                    {loading === false && <SkeletonEvent />}
 
-                                    {(rowsPerPage > 0 && listBlogs && listBlogs.length > 0
-                                        ? listBlogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        : listBlogs
-                                    ).map((user, index) => {
-                                        let start = moment(user.createdAt).format("ddd DD-MM-YYYY HH:mm:ss");
-                                        return (
-                                            <tr key={index}>
-                                                <td>{user.id}</td>
+                                    {loading === true &&
+                                        (rowsPerPage > 0 && listBlogs && listBlogs.length > 0
+                                            ? listBlogs.slice(
+                                                  page * rowsPerPage,
+                                                  page * rowsPerPage + rowsPerPage
+                                              )
+                                            : listBlogs
+                                        ).map((user, index) => {
+                                            let start;
+                                            if (language === "vi") {
+                                                start = moment(user.createdAt).format(
+                                                    "ddd DD/MM/YYYY HH:mm"
+                                                );
+                                            } else {
+                                                start = `${moment(user.createdAt)
+                                                    .locale("en")
+                                                    .format("ddd MM/DD/YYYY")} ${" "} ${moment(
+                                                    user.createdAt
+                                                )
+                                                    .locale("en")
+                                                    .format("LT")}`;
+                                            }
 
-                                                <td>{user.description}</td>
-                                                <td>{start}</td>
-                                                <td>{user.author}</td>
-                                                <td>
-                                                    <button
-                                                        className="btn-edit"
-                                                        onClick={() => this.handleEditUser(user)}>
-                                                        <i className="fas fa-edit"></i>
-                                                    </button>
-                                                    <button
-                                                        className="btn-delete"
-                                                        onClick={() => this.handleDeleteUser(user)}>
-                                                        <i className="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
+                                            return (
+                                                <tr key={index}>
+                                                    <td className="center">{user.id}</td>
+
+                                                    <td>{user.description}</td>
+                                                    <td>{start}</td>
+                                                    <td>{user.author}</td>
+                                                    <td className="center">
+                                                        <button
+                                                            className="btn-edit"
+                                                            onClick={() =>
+                                                                this.handleEditUser(user)
+                                                            }>
+                                                            <i className="fas fa-edit"></i>
+                                                        </button>
+                                                        <button
+                                                            className="btn-delete"
+                                                            onClick={() =>
+                                                                this.handleDeleteUser(user)
+                                                            }>
+                                                            <i className="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
                                         <TablePagination
-                                            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                                            colSpan={4}
+                                            sx={{
+                                                "& .MuiTablePagination-selectLabel ": {
+                                                    display: "None",
+                                                },
+                                                "& .MuiTablePagination-displayedRows  ": {
+                                                    marginTop: "10px",
+                                                    fontSize: "15px",
+                                                },
+                                                "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
+                                                    {
+                                                        fontSize: "15px",
+                                                    },
+                                            }}
+                                            rowsPerPageOptions={[
+                                                5,
+                                                10,
+                                                25,
+                                                { label: "All", value: -1 },
+                                            ]}
+                                            colSpan={5}
                                             count={listBlogs.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}

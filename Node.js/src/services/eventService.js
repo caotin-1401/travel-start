@@ -42,6 +42,23 @@ let getAllEvents = (eventId) => {
         }
     });
 };
+let getAllEventsHome = (eventId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let events = [];
+            events = await db.Event.findAll({
+                attributes: ["id", "name", "image"],
+                raw: false,
+                nest: true,
+            });
+            events.reverse();
+            let newArr = events.slice(0, 6);
+            resolve(newArr);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let checkName = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -64,7 +81,16 @@ let createNewEvent = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             let check = await checkName(data.name);
-            let { name, type, image, description, startDate, endDate, busOwnerId, descriptionMarkdown } = data;
+            let {
+                name,
+                type,
+                image,
+                description,
+                startDate,
+                endDate,
+                busOwnerId,
+                descriptionMarkdown,
+            } = data;
             if (
                 !name ||
                 !description ||
@@ -177,4 +203,5 @@ module.exports = {
     createNewEvent,
     deleteEvent,
     editEvent,
+    getAllEventsHome,
 };

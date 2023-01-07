@@ -17,8 +17,6 @@ import {
 import TablePaginationActions from "../../../../components/TablePaginationActions";
 import { withRouter } from "react-router";
 import "../style.scss";
-// import ModalUser from "./ModalUser";
-// import ModalEditUser from "./ModalEditUser";
 import Loading from "../../../../components/Loading";
 
 const ModalUser = lazy(() => import("./ModalUser"));

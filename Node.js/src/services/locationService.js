@@ -56,18 +56,23 @@ let getAllVehicleFromStation = async (locationId) => {
                     include: [
                         {
                             model: db.Vehicle,
-                            attributes: ["id", "arrivalTime", "areaEndId"],
+                            // attributes: ["id", "arrivalTime", "areaEndId"],
                             as: "tovehicle",
                             include: [
                                 {
                                     model: db.User,
                                     attributes: ["id", "name"],
                                 },
+                                {
+                                    model: db.BusType,
+                                    attributes: ["id", "numOfSeat"],
+                                },
                             ],
+                            raw: false,
                         },
                     ],
                     raw: false,
-                    // nest: true,
+                    nest: true,
                 });
             }
 
@@ -97,6 +102,7 @@ let getAllVehicleFromOneStation = async (locationId) => {
             }
             if (locationId && locationId !== "ALL") {
                 vehicles = await db.Vehicle.findAll({
+                    where: { areaEndId: locationId },
                     include: [
                         {
                             model: db.User,
@@ -162,8 +168,7 @@ let createNewLocations = (data) => {
             if (name && city) {
                 resolve({
                     errCode: 1,
-                    errMessage:
-                        "Location already exists, please try another Location",
+                    errMessage: "Location already exists, please try another Location",
                 });
             } else {
                 await db.Location.create({

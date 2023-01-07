@@ -3,9 +3,7 @@ import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
-import { changeLanguageApp } from "../../../../store/actions/appActions";
 import "../style.scss";
-import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
 import MarkdownIt from "markdown-it";
@@ -26,7 +24,6 @@ class ModalAdd extends Component {
             author: "",
         };
     }
-    componentDidMount() {}
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.listBlogs !== this.props.listBlogs) {
@@ -73,12 +70,12 @@ class ModalAdd extends Component {
         let { description, image, content, contentMarkdown } = this.state;
         let language = this.props.language;
         let author = this.props.userInfo.name;
-        let nameErrVi = "Vui lòng điền tên bài viết";
-        let nameErrEn = "Please enter blog name";
+        let nameErrVi = "Vui lòng điền tiêu đề bài viết";
+        let nameErrEn = "Please enter blog title";
         let imageErrVi = "Vui lòng chọn ảnh của bài viết";
         let imageErrEn = "Please choose a photo of the blog";
-        let descriptionVi = "Vui lòng nhập mô tả chi tiết cho bài viết";
-        let descriptionEn = "Please enter a detailed description for the blog";
+        let descriptionVi = "Vui lòng nhập nội dung chi tiết cho bài viết";
+        let descriptionEn = "Please enter a content for the blog";
         if (!description) {
             if (language === LANGUAGES.VI) {
                 toast.error(nameErrVi);
@@ -133,7 +130,7 @@ class ModalAdd extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Thêm bài viết
+                        <FormattedMessage id="menu.admin.listBlog.title1" />
                     </ModalHeader>
                     <ModalBody>
                         <Box
@@ -144,7 +141,9 @@ class ModalAdd extends Component {
                             <Row>
                                 <Col md={6}>
                                     <Row>
-                                        <label htmlFor="exampleEmail">Tên bài viết</label>
+                                        <label htmlFor="exampleEmail">
+                                            <FormattedMessage id="menu.admin.listBlog.name" />
+                                        </label>
                                         <input
                                             className="form-control mb-4 h-38 "
                                             id="description"
@@ -160,19 +159,20 @@ class ModalAdd extends Component {
                                         />
                                     </Row>
                                 </Col>
-                                <Col md={1}></Col>
+                                {/* <Col md={1}></Col> */}
                                 <Col md={5}>
-                                    <label htmlFor="img">Img</label>
+                                    <label htmlFor="img">
+                                        <FormattedMessage id="menu.admin.listBlog.img" />
+                                    </label>
                                     <div className="prev-img-container">
                                         <input
-                                            // className="form-control mb-4"
                                             id="img"
                                             type="file"
                                             hidden
                                             onChange={(event) => this.handleChangeImage(event)}
                                         />
                                         <label className="upload-img" htmlFor="img">
-                                            Tải ảnh
+                                            <FormattedMessage id="account.upload" />{" "}
                                             <i className="fas fa-upload"></i>
                                         </label>
                                         <div
@@ -186,9 +186,11 @@ class ModalAdd extends Component {
                             </Row>
                             <Row>
                                 <Col>
-                                    <label htmlFor="img">Thong tin su kien</label>
+                                    <label htmlFor="img">
+                                        <FormattedMessage id="menu.admin.listBlog.content" />
+                                    </label>
                                     <MdEditor
-                                        style={{ height: "350px" }}
+                                        style={{ height: "380px" }}
                                         renderHTML={(text) => mdParser.render(text)}
                                         onChange={this.handleEditorChange}
                                         value={contentMarkdown}
@@ -205,7 +207,7 @@ class ModalAdd extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            Cancel
+                            <FormattedMessage id="account.cancel" />
                         </Button>{" "}
                         <Button
                             color="primary"
@@ -213,7 +215,7 @@ class ModalAdd extends Component {
                                 this.handleSave();
                             }}
                             className="btn-primary-modal">
-                            Save
+                            <FormattedMessage id="account.save" />
                         </Button>
                     </ModalFooter>
                 </Modal>
@@ -225,16 +227,12 @@ class ModalAdd extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        events: state.admin.events,
         userInfo: state.user.userInfo,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalAdd);

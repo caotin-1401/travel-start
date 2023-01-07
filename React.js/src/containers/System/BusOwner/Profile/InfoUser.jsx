@@ -211,7 +211,12 @@ class InfoUser extends Component {
                 <div className="contentProfile">
                     <div className="avatar-container">
                         <div className="prev-img-container">
-                            <input id="img" type="file" hidden onChange={(event) => this.handleChangeImage(event)} />
+                            <input
+                                id="img"
+                                type="file"
+                                hidden
+                                onChange={(event) => this.handleChangeImage(event)}
+                            />
                             <div
                                 className="avatar"
                                 style={{
@@ -259,7 +264,9 @@ class InfoUser extends Component {
                                     genders.map((item, index) => {
                                         return (
                                             <option key={index} value={item.keyMap}>
-                                                {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
+                                                {language === LANGUAGES.VI
+                                                    ? item.valueVi
+                                                    : item.valueEn}
                                             </option>
                                         );
                                     })}

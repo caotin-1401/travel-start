@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import Header from "../../HomePage/Header";
 import { FormattedMessage } from "react-intl";
 import moment from "moment";
-import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
 import { getAllBlogsService } from "../../../services/userService";
 import { Row, Col } from "reactstrap";
@@ -21,7 +19,6 @@ class DetailBlog extends Component {
         };
     }
     async componentDidMount() {
-        this.props.fetchAllBlogs();
         if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let id = this.props.match.params.id;
             let res = await getAllBlogsService(id);
@@ -95,15 +92,4 @@ class DetailBlog extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        blogs: state.admin.blogs,
-    };
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchAllBlogs: () => dispatch(actions.fetchAllBlogs()),
-    };
-};
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DetailBlog));
+export default withRouter(DetailBlog);

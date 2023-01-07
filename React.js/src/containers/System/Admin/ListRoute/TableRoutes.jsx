@@ -1,11 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, Suspense, lazy } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import _ from "lodash";
-import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
-import ModalAdd from "./ModalAdd";
 import {
     TableBody,
     TableContainer,
@@ -16,11 +14,12 @@ import {
     Table,
 } from "@mui/material";
 import { toast } from "react-toastify";
-import {
-    getAllRoutesService,
-    deleteRouteService,
-} from "../../../../services/userService";
+import { getAllRoutesService, deleteRouteService } from "../../../../services/userService";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
+
+import Loading from "../../../../components/Loading";
+
+const ModalAdd = lazy(() => import("./ModalAdd"));
 
 class TableRoutes extends Component {
     constructor(props) {
@@ -41,10 +40,6 @@ class TableRoutes extends Component {
 
     async componentDidMount() {
         await this.getAllRoutes();
-        this.props.fetchAllLocation();
-    }
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(this.props.locations);
     }
     getAllRoutes = async () => {
         let res = await getAllRoutesService("ALL");
@@ -99,11 +94,12 @@ class TableRoutes extends Component {
         });
     };
     handleSort = (a, b) => {
-        this.state.ListRoutes = _.orderBy(this.state.ListRoutes, [b], [a]);
+        let clone = this.state.ListRoutes;
+        clone = _.orderBy(clone, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            ListRoutes: this.state.ListRoutes,
+            ListRoutes: clone,
         });
     };
     handleKeyword = (e) => {
@@ -146,12 +142,14 @@ class TableRoutes extends Component {
         return (
             <div className="container form-redux">
                 <div className="user-container">
-                    <ModalAdd
-                        ListRoutes={ListRoutes}
-                        isOpen={this.state.isOpenModel}
-                        toggleFromParent={this.toggleModel}
-                        createLocation={this.createLocation}
-                    />
+                    <Suspense fallback={<Loading />}>
+                        <ModalAdd
+                            ListRoutes={ListRoutes}
+                            isOpen={this.state.isOpenModel}
+                            toggleFromParent={this.toggleModel}
+                            createLocation={this.createLocation}
+                        />
+                    </Suspense>
 
                     <div className="title text-center">
                         <FormattedMessage id="menu.admin.listRoute.title" />
@@ -172,9 +170,7 @@ class TableRoutes extends Component {
                                         <th
                                             className="section-id"
                                             style={{ width: "5%" }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            onClick={() => this.handleSort("asc", "id")}>
                                             Id
                                         </th>
                                         <th style={{ width: "35%" }}>
@@ -190,19 +186,13 @@ class TableRoutes extends Component {
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "from.name"
-                                                            )
+                                                            this.handleSort("asc", "from.name")
                                                         }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "from.name"
-                                                            )
+                                                            this.handleSort("desc", "from.name")
                                                         }
                                                     />
                                                 </div>
@@ -218,30 +208,20 @@ class TableRoutes extends Component {
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "to.name"
-                                                            )
+                                                            this.handleSort("asc", "to.name")
                                                         }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "to.name"
-                                                            )
+                                                            this.handleSort("desc", "to.name")
                                                         }
                                                     />
                                                 </div>
                                             </div>
                                         </th>
 
-                                        <th
-                                            style={{ width: "10%" }}
-                                            className="section-id-list">
-                                            <FormattedMessage id="menu.admin.listLocations.action" />
-                                        </th>
+                                        <th style={{ width: "10%" }}></th>
                                     </tr>
                                     <tr style={{ height: "50px" }}>
                                         <td></td>
@@ -249,17 +229,13 @@ class TableRoutes extends Component {
                                         <td>
                                             <input
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword(e)}
                                             />
                                         </td>
                                         <td>
                                             <input
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword1(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword1(e)}
                                             />
                                         </td>
 
@@ -282,11 +258,7 @@ class TableRoutes extends Component {
                                                 <td className="center">
                                                     <button
                                                         className="btn-delete"
-                                                        onClick={() =>
-                                                            this.handleDeleteUser(
-                                                                user
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleDeleteUser(user)}>
                                                         <i className="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
@@ -298,15 +270,13 @@ class TableRoutes extends Component {
                                     <TableRow>
                                         <TablePagination
                                             sx={{
-                                                "& .MuiTablePagination-selectLabel ":
-                                                    {
-                                                        display: "None",
-                                                    },
-                                                "& .MuiTablePagination-displayedRows  ":
-                                                    {
-                                                        marginTop: "10px",
-                                                        fontSize: "15px",
-                                                    },
+                                                "& .MuiTablePagination-selectLabel ": {
+                                                    display: "None",
+                                                },
+                                                "& .MuiTablePagination-displayedRows  ": {
+                                                    marginTop: "10px",
+                                                    fontSize: "15px",
+                                                },
                                                 "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
                                                     {
                                                         fontSize: "15px",
@@ -323,9 +293,7 @@ class TableRoutes extends Component {
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
+                                            onRowsPerPageChange={this.handleChangeRowsPerPage}
                                             ActionsComponent={(subProps) => (
                                                 <TablePaginationActions
                                                     style={{
@@ -349,15 +317,11 @@ class TableRoutes extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        userInfo: state.user.userInfo,
-        locations: state.admin.locations,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchAllLocation: () => dispatch(actions.fetchAllLocation()),
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableRoutes);

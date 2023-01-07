@@ -2,23 +2,21 @@ import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
-import Box from "@mui/material/Box";
-import { changeLanguageApp } from "../../../../store/actions/appActions";
+import { Box, TextField, Stack } from "@mui/material";
 import "../style.scss";
-import DatePicker from "../../../../components/DatePicker";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
 import { toast } from "react-toastify";
 import _ from "lodash";
-import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
-import dayjs from "dayjs";
-import localization from "moment/locale/vi";
-import moment from "moment";
 import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
 import "react-markdown-editor-lite/lib/index.css";
 import Select from "react-select";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import "dayjs/locale/vi";
 
 import { createNewCouponService } from "../../../../services/userService";
 const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -51,11 +49,13 @@ class ModalAdd extends Component {
             errMessage3: "",
             errMessage4: "",
             errMessage5: "",
+            errMessage6: "",
+            dayStartEvent: 0,
+            dayEndEvent: 0,
         };
     }
     componentDidMount() {
         this.props.fetchAllEvents();
-        this.props.fetchAllCoupon();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -86,7 +86,11 @@ class ModalAdd extends Component {
                 let obj = {};
                 obj.label = item.name;
                 obj.value = item.id;
+                if (+item.endDate < new Date().getTime()) {
+                    obj.isDisabled = true;
+                }
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -97,22 +101,40 @@ class ModalAdd extends Component {
 
     onChangeInput = (event, id) => {
         let copyState = { ...this.state };
-        console.log(isNaN(event.target.value));
+        let { language } = this.props;
         let message1 = "";
         let message2 = "";
         let message3 = "";
         let message4 = "";
         let message5 = "";
-        if (id === "discount1" && isNaN(event.target.value)) {
-            message1 = "Trường này bắt buộc phải la số";
-        } else if (id === "discount2" && isNaN(event.target.value)) {
-            message2 = "Trường này bắt buộc phải la số";
-        } else if (id === "discountMax" && isNaN(event.target.value)) {
-            message4 = "Trường này bắt buộc phải la số";
-        } else if (id === "sumMoneyCondition" && isNaN(event.target.value)) {
-            message3 = "Trường này bắt buộc phải la số";
-        } else if (id === "count" && isNaN(event.target.value)) {
-            message5 = "Trường này bắt buộc phải la số";
+        if (language === "vi") {
+            if (id === "discount1" && isNaN(event.target.value)) {
+                message1 = "Trường này bắt buộc phải la số";
+            } else if (id === "discount2" && isNaN(event.target.value)) {
+                message2 = "Trường này bắt buộc phải la số";
+            } else if (id === "discount2" && event.target.value.length > 2) {
+                message2 = "Trường này phải nhỏ hơn 100";
+            } else if (id === "discountMax" && isNaN(event.target.value)) {
+                message4 = "Trường này bắt buộc phải la số";
+            } else if (id === "sumMoneyCondition" && isNaN(event.target.value)) {
+                message3 = "Trường này bắt buộc phải la số";
+            } else if (id === "count" && isNaN(event.target.value)) {
+                message5 = "Trường này bắt buộc phải la số";
+            }
+        } else {
+            if (id === "discount1" && isNaN(event.target.value)) {
+                message1 = "This field must be a number";
+            } else if (id === "discount2" && isNaN(event.target.value)) {
+                message2 = "This field must be a number";
+            } else if (id === "discount2" && event.target.value.length > 2) {
+                message2 = "This field must be less than 100";
+            } else if (id === "discountMax" && isNaN(event.target.value)) {
+                message4 = "This field must be a number";
+            } else if (id === "sumMoneyCondition" && isNaN(event.target.value)) {
+                message3 = "This field must be a number";
+            } else if (id === "count" && isNaN(event.target.value)) {
+                message5 = "This field must be a number";
+            }
         }
 
         if (id === "discount1" || id === "discount2") {
@@ -132,14 +154,44 @@ class ModalAdd extends Component {
         });
     };
     handleOnChange1 = (data) => {
-        this.setState({
-            dayStart: data[0],
-        });
+        let { dayStartEvent, dayEndEvent } = this.state;
+        let { language } = this.props;
+        let mes;
+        if (language === "vi") {
+            mes = "Thời gian sử dụng mã giảm giá phải trong thời gian diễn ra sự kiện";
+        } else mes = "The time to use the discount code must be during the event period";
+        console.log(data.$d.getTime(), data.$d.getTime());
+        console.log(dayStartEvent, dayEndEvent);
+
+        if (data.$d.getTime() < dayStartEvent || data.$d.getTime() > dayEndEvent) {
+            this.setState({
+                dayStart: data.$d,
+                errMessage6: mes,
+            });
+        } else
+            this.setState({
+                errMessage6: "",
+                dayStart: data.$d,
+            });
     };
     handleOnChange2 = (data) => {
-        this.setState({
-            dayEnd: data[0],
-        });
+        let { dayEndEvent } = this.state;
+        let { language } = this.props;
+        let mes;
+        if (language === "vi") {
+            mes = "Thời gian sử dụng mã giảm giá phải trong thời gian diễn ra sự kiện";
+        } else mes = "The time to use the discount code must be during the event period";
+        console.log(data.$d.getTime(), dayEndEvent);
+        if (data.$d.getTime() > dayEndEvent) {
+            this.setState({
+                dayEnd: data.$d,
+                errMessage6: mes,
+            });
+        } else
+            this.setState({
+                dayEnd: data.$d,
+                errMessage6: "",
+            });
     };
     handleEditorChange = ({ html, text }) => {
         this.setState({
@@ -162,122 +214,60 @@ class ModalAdd extends Component {
             descriptionMarkdown,
         } = this.state;
         let language = this.props.language;
+
+        console.log(dayStart);
         let startDate = new Date(dayStart).getTime();
         let endDatetest = new Date(dayEnd).getTime();
-        let nameErrVi = "Vui lòng điền tên sự kiện";
-        let nameErrEn = "Please enter event name";
-        let dateStartErrVi = "Vui lòng chọn thời gian bắt đầu sự kiện";
-        let dateStartErrEn = "Please select an event start time";
-        let dateEndErrVi = "Vui lòng chọn thời gian kết thúc sự kiện";
-        let dateEndErrEn = "Please select an event end time";
-        let compareDateVi = "Thời gian bắt đầu phải trước thời gian kết thúc";
-        let compareDateEn = "The start time must be before the end time";
-        let descriptionVi = "Vui lòng nhập mô tả chi tiết cho sự kiện";
-        let descriptionEn = "Please enter a detailed description for the event";
-        if (isNaN(sumMoneyCondition)) {
-            if (language === LANGUAGES.VI) {
-                toast.error("nameErrVi1");
-            } else {
-                toast.error("1");
-            }
-            return;
-        } else if (isNaN(discount)) {
-            if (language === LANGUAGES.VI) {
-                toast.error("2");
-            } else {
-                toast.error("2");
-            }
-            return;
-        } else if (isNaN(discountMax)) {
-            if (language === LANGUAGES.VI) {
-                toast.error("2");
-            } else {
-                toast.error("2");
-            }
-            return;
-        } else if (isNaN(count)) {
-            if (language === LANGUAGES.VI) {
-                toast.error("nameErrVi");
-            } else {
-                toast.error("nameErrEn");
-            }
-            return;
+        let nameErr,
+            countErr,
+            discountErr,
+            sumErr,
+            dayStartErr,
+            dayEndErr,
+            compareDay,
+            selectTypeErr,
+            selectEventErr;
+
+        if (language === "vi") {
+            nameErr = "Vui lòng điền tên mã giảm giá";
+            countErr = "Vui lòng điền số lượng mã giảm giá";
+            discountErr = "Vui lòng điền số tiền giảm";
+            sumErr = "Vui lòng nhập số tiền tối thiểu để nhận mã giảm giá";
+            dayStartErr = "Vui lòng chọn ngày bắt đầu mã giảm giá có hiệu lực";
+            dayEndErr = "Vui lòng chọn ngày mã giảm giá hết hiệu lực";
+            selectTypeErr = "Vui lòng chọn loại giảm giá";
+            selectEventErr = "Vui lòng chọn sự kiện";
+            compareDay = "Thời gian bắt đầu phải trước thời gian kết thúc";
+        } else {
+            nameErr = "Please enter discount name";
+            countErr = "Please enter the number of discount";
+            discountErr = "Please enter the discount amount";
+            sumErr = "Please enter the minimum amount to receive the discount";
+            dayStartErr = "Please select a valid discount code start date";
+            dayEndErr = "Please select the expiration date of the discount code";
+            selectTypeErr = "Please select a discount type";
+            selectEventErr = "Please select a event";
+            compareDay = "The start time must be before the end time";
         }
+
         if (!name) {
-            if (language === LANGUAGES.VI) {
-                toast.error(nameErrVi);
-            } else {
-                toast.error(nameErrEn);
-            }
-            return;
+            toast.error(nameErr);
         } else if (selectEvent && _.isEmpty(selectEvent)) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
-            } else {
-                toast.error(dateStartErrEn);
-            }
+            toast.error(selectEventErr);
         } else if (selectType && _.isEmpty(selectType)) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
-            } else {
-                toast.error(dateStartErrEn);
-            }
+            toast.error(selectTypeErr);
         } else if (!discount) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
-            } else {
-                toast.error(dateStartErrEn);
-            }
-            return;
-        } else if (!discountMax) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
-            } else {
-                toast.error(dateStartErrEn);
-            }
-            return;
+            toast.error(discountErr);
         } else if (!sumMoneyCondition) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
-            } else {
-                toast.error(dateStartErrEn);
-            }
-            return;
+            toast.error(sumErr);
         } else if (!count) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
-            } else {
-                toast.error(dateStartErrEn);
-            }
-            return;
+            toast.error(countErr);
         } else if (!dayStart) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateStartErrVi);
-            } else {
-                toast.error(dateStartErrEn);
-            }
-            return;
+            toast.error(dayStartErr);
         } else if (!dayEnd) {
-            if (language === LANGUAGES.VI) {
-                toast.error(dateEndErrVi);
-            } else {
-                toast.error(dateEndErrEn);
-            }
-            return;
-        } else if (!description) {
-            if (language === LANGUAGES.VI) {
-                toast.error(descriptionVi);
-            } else {
-                toast.error(descriptionEn);
-            }
-            return;
+            toast.error(dayEndErr);
         } else if (+dayStart > +dayEnd) {
-            if (language === LANGUAGES.VI) {
-                toast.error(compareDateVi);
-            } else {
-                toast.error(compareDateEn);
-            }
-            return;
+            toast.error(compareDay);
         } else {
             let endDate = +endDatetest + 86399000;
             let use = 0;
@@ -312,7 +302,23 @@ class ModalAdd extends Component {
         }
     };
     onChangeInputSelectEvent = (selectEvent) => {
-        this.setState({ selectEvent });
+        let { dayStart, dayEnd } = this.state;
+        let event = this.props.events.filter((item) => item.id === selectEvent.value);
+        let start = +event[0].startDate;
+        let end = +event[0].endDate;
+        if (!dayStart || !dayEnd)
+            this.setState({
+                dayStartEvent: start,
+                dayEndEvent: end,
+                selectEvent,
+            });
+        else {
+            this.setState({
+                dayStartEvent: start,
+                dayEndEvent: end,
+                selectEvent,
+            });
+        }
     };
     onChangeInputSelecType = (selectType) => {
         if (selectType.value === 1) {
@@ -323,13 +329,12 @@ class ModalAdd extends Component {
         this.setState({ selectType });
     };
     currencyFormat(number) {
-        const formatter = new Intl.NumberFormat("sv-SE", {
-            style: "decimal",
-            currency: "SEK",
-        });
-
+        const formatter = new Intl.NumberFormat("vi-VI", { style: "currency", currency: "VND" });
         return formatter.format(number);
-        // return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g) + " đ";
+    }
+    currencyFormat1(number) {
+        const formatter = new Intl.NumberFormat("vi-VI", { maximumSignificantDigits: 3 });
+        return formatter.format(number);
     }
     toggleEditing1() {
         this.setState({ isEditing1: !this.state.isEditing1 });
@@ -343,7 +348,35 @@ class ModalAdd extends Component {
     toggleEditing4() {
         this.setState({ isEditing4: !this.state.isEditing4 });
     }
-
+    theme = createTheme({
+        components: {
+            MuiInputBase: {
+                styleOverrides: {
+                    root: {
+                        height: 38,
+                    },
+                    input: {
+                        height: 1.5,
+                        padding: 0,
+                    },
+                },
+            },
+            MuiOutlinedInput: {
+                styleOverrides: {
+                    notchedOutline: {
+                        borderColor: "#CED4DA!important",
+                    },
+                },
+            },
+            MuiPickersDay: {
+                styleOverrides: {
+                    root: {
+                        fontSize: "15px",
+                    },
+                },
+            },
+        },
+    });
     render() {
         let language = this.props.language;
         let {
@@ -352,12 +385,9 @@ class ModalAdd extends Component {
             selectType,
             dayStart,
             dayEnd,
-            discount,
             discountMax,
             sumMoneyCondition,
             count,
-            description,
-            descriptionMarkdown,
             listEvents,
             discountD,
             discount1,
@@ -371,17 +401,27 @@ class ModalAdd extends Component {
             errMessage3,
             errMessage4,
             errMessage5,
+            errMessage6,
         } = this.state;
+        let label1, label2;
+        if (language === "vi") {
+            label1 = "Giảm giá trực tiếp (theo đ)";
+            label2 = "Giảm giá theo %";
+        } else {
+            label1 = "Direct discount (according to VND)";
+            label2 = "Discount by %";
+        }
         let typeSelect = [
             {
                 value: 1,
-                label: "Giảm theo đ",
+                label: label1,
             },
             {
                 value: 2,
-                label: "Giảm theo %",
+                label: label2,
             },
         ];
+
         return (
             <div>
                 <Modal
@@ -395,7 +435,7 @@ class ModalAdd extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Create a new coupon
+                        <FormattedMessage id="menu.busOwner.discount.title2" />
                     </ModalHeader>
                     <ModalBody>
                         <Box
@@ -404,7 +444,9 @@ class ModalAdd extends Component {
                             }}>
                             <Row>
                                 <Col md={4}>
-                                    <label htmlFor="name">Tên mã giảm giá</label>
+                                    <label htmlFor="name">
+                                        <FormattedMessage id="menu.busOwner.discount.name" />
+                                    </label>
                                     <input
                                         style={{ height: "38px" }}
                                         className="form-control mb-4 h-38 "
@@ -418,7 +460,10 @@ class ModalAdd extends Component {
                                 </Col>
                                 <Col md={4}>
                                     {" "}
-                                    <label>Chọn sự kiện</label>
+                                    <label>
+                                        {" "}
+                                        <FormattedMessage id="menu.admin.listCoupons.selectEvent" />
+                                    </label>
                                     <Select
                                         className="mb-4"
                                         value={selectEvent}
@@ -428,7 +473,10 @@ class ModalAdd extends Component {
                                 </Col>
                                 <Col md={4}>
                                     {" "}
-                                    <label>Chọn loại giảm giá</label>
+                                    <label>
+                                        {" "}
+                                        <FormattedMessage id="menu.busOwner.discount.type" />
+                                    </label>
                                     <Select
                                         className="mb-4"
                                         value={selectType}
@@ -439,7 +487,10 @@ class ModalAdd extends Component {
                             </Row>
                             <Row>
                                 <Col md={3}>
-                                    <label htmlFor="discount">Giảm giá theo đ</label>
+                                    <label htmlFor="discount">
+                                        {" "}
+                                        <FormattedMessage id="menu.busOwner.discount.discountd" />
+                                    </label>
                                     {isEditing1 ? (
                                         <input
                                             style={{
@@ -486,7 +537,9 @@ class ModalAdd extends Component {
                                     )}
                                 </Col>
                                 <Col md={3}>
-                                    <label htmlFor="discount">Giảm giá theo %</label>
+                                    <label htmlFor="discount">
+                                        <FormattedMessage id="menu.busOwner.discount.discount2" />
+                                    </label>
                                     <input
                                         style={{
                                             height: "38px",
@@ -510,7 +563,7 @@ class ModalAdd extends Component {
                                 </Col>
                                 <Col md={3}>
                                     <label htmlFor="sumMoneyCondition">
-                                        Hóa đơn tối thiểu từ (đ)
+                                        <FormattedMessage id="menu.busOwner.discount.min" />
                                     </label>
                                     {isEditing2 ? (
                                         <input
@@ -552,7 +605,9 @@ class ModalAdd extends Component {
                                     )}
                                 </Col>
                                 <Col md={3}>
-                                    <label htmlFor="discountMax">Giảm tối đa (đ)</label>
+                                    <label htmlFor="discountMax">
+                                        <FormattedMessage id="menu.busOwner.discount.max" />
+                                    </label>
                                     {isEditing3 ? (
                                         <input
                                             style={{
@@ -593,7 +648,10 @@ class ModalAdd extends Component {
                             </Row>
                             <Row>
                                 <Col md={4}>
-                                    <label htmlFor="count">Số lượng mã giảm giá</label>
+                                    <label htmlFor="count">
+                                        {" "}
+                                        <FormattedMessage id="menu.busOwner.discount.count" />
+                                    </label>
                                     {isEditing4 ? (
                                         <input
                                             style={{
@@ -621,21 +679,11 @@ class ModalAdd extends Component {
                                             onChange={(event) => {
                                                 this.onChangeInput(event, "count");
                                             }}
-                                            value={this.currencyFormat(count)}
+                                            value={this.currencyFormat1(count)}
                                             onFocus={this.toggleEditing4.bind(this)}
                                         />
                                     )}
 
-                                    {/* <input
-                                        style={{ height: "38px" }}
-                                        className="form-control mb-4 h-38 "
-                                        id="count"
-                                        type="text"
-                                        value={count}
-                                        onChange={(event) => {
-                                            this.onChangeInput(event, "count");
-                                        }}
-                                    /> */}
                                     {errMessage5 && (
                                         <div className="col-12" style={{ color: "red" }}>
                                             * {errMessage5}
@@ -643,63 +691,103 @@ class ModalAdd extends Component {
                                     )}
                                 </Col>
                                 <Col md={4}>
-                                    <label htmlFor="schedule1">Ngày bắt đầu</label>
+                                    <label htmlFor="schedule1">
+                                        <FormattedMessage id="menu.busOwner.discount.start" />
+                                    </label>
 
-                                    <div
-                                        className="form-control mb-4"
-                                        style={{ height: "38px" }}
-                                        htmlFor="schedule1">
-                                        <DatePicker
-                                            locale="vi"
-                                            style={{ border: "none" }}
-                                            onChange={this.handleOnChange1}
-                                            id="schedule1"
-                                            selected={dayStart}
-                                            minDate={
-                                                new Date(
-                                                    new Date().setDate(new Date().getDate() - 1)
-                                                )
-                                            }
-                                        />
-                                        <label htmlFor="schedule1" style={{ float: "right" }}>
-                                            <i
-                                                className="far fa-calendar-alt"
-                                                style={{
-                                                    fontSize: "20px",
-                                                }}></i>
-                                        </label>
+                                    <div className=" mb-4">
+                                        <ThemeProvider theme={this.theme}>
+                                            {language === "vi" ? (
+                                                <LocalizationProvider
+                                                    dateAdapter={AdapterDayjs}
+                                                    adapterLocale="vi">
+                                                    <Stack>
+                                                        <DatePicker
+                                                            value={dayStart}
+                                                            onChange={this.handleOnChange1}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
+                                                            minDate={new Date()}
+                                                            dayOfWeekFormatter={(day) => `${day}.`}
+                                                        />
+                                                    </Stack>
+                                                </LocalizationProvider>
+                                            ) : (
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <Stack>
+                                                        <DatePicker
+                                                            value={dayStart}
+                                                            onChange={this.handleOnChange1}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
+                                                            minDate={new Date()}
+                                                            dayOfWeekFormatter={(day) => `${day}.`}
+                                                        />
+                                                    </Stack>
+                                                </LocalizationProvider>
+                                            )}
+                                        </ThemeProvider>
+                                        {errMessage6 && (
+                                            <div className="col-12" style={{ color: "red" }}>
+                                                * {errMessage6}
+                                            </div>
+                                        )}
                                     </div>
                                 </Col>
                                 <Col md={4}>
-                                    <label htmlFor="schedule2">Ngày kết thúc</label>
-                                    <div
-                                        className="form-control mb-4"
-                                        style={{ height: "38px" }}
-                                        htmlFor="schedule2">
-                                        <DatePicker
-                                            style={{ border: "none" }}
-                                            onChange={this.handleOnChange2}
-                                            id="schedule2"
-                                            selected={dayEnd}
-                                            minDate={
-                                                new Date(
-                                                    new Date().setDate(new Date().getDate() - 1)
-                                                )
-                                            }
-                                        />
-                                        <label htmlFor="schedule2" style={{ float: "right" }}>
-                                            <i
-                                                className="far fa-calendar-alt"
-                                                style={{
-                                                    fontSize: "20px",
-                                                }}></i>
-                                        </label>
+                                    <label htmlFor="schedule2">
+                                        {" "}
+                                        <FormattedMessage id="menu.busOwner.discount.end" />
+                                    </label>
+                                    <div className=" mb-4">
+                                        <ThemeProvider theme={this.theme}>
+                                            {language === "vi" ? (
+                                                <LocalizationProvider
+                                                    dateAdapter={AdapterDayjs}
+                                                    adapterLocale="vi">
+                                                    <Stack>
+                                                        <DatePicker
+                                                            value={dayEnd}
+                                                            onChange={this.handleOnChange2}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
+                                                            minDate={new Date()}
+                                                            dayOfWeekFormatter={(day) => `${day}.`}
+                                                        />
+                                                    </Stack>
+                                                </LocalizationProvider>
+                                            ) : (
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <Stack>
+                                                        <DatePicker
+                                                            value={dayEnd}
+                                                            onChange={this.handleOnChange2}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
+                                                            minDate={new Date()}
+                                                            dayOfWeekFormatter={(day) => `${day}.`}
+                                                        />
+                                                    </Stack>
+                                                </LocalizationProvider>
+                                            )}
+                                        </ThemeProvider>
+                                        {errMessage6 && (
+                                            <div className="col-12" style={{ color: "red" }}>
+                                                * {errMessage6}
+                                            </div>
+                                        )}
                                     </div>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col>
-                                    <label htmlFor="img">Thông tin mã giảm giá</label>
+                                    <label htmlFor="img">
+                                        <FormattedMessage id="menu.admin.listCoupons.info" />
+                                    </label>
                                     <MdEditor
                                         style={{ height: "280px" }}
                                         renderHTML={(text) => mdParser.render(text)}
@@ -718,7 +806,7 @@ class ModalAdd extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            Cancel
+                            <FormattedMessage id="account.cancel" />
                         </Button>{" "}
                         <Button
                             color="primary"
@@ -726,7 +814,7 @@ class ModalAdd extends Component {
                                 this.handleSave();
                             }}
                             className="btn-primary-modal">
-                            Save
+                            <FormattedMessage id="account.save" />
                         </Button>
                     </ModalFooter>
                 </Modal>
@@ -739,15 +827,12 @@ const mapStateToProps = (state) => {
     return {
         language: state.app.language,
         events: state.admin.events,
-        coupons: state.admin.coupons,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-        fetchAllCoupon: () => dispatch(actions.fetchAllCoupon()),
-        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
     };
 };
 

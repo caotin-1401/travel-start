@@ -30,20 +30,13 @@ class InfoUser extends Component {
     }
     async componentDidMount() {
         this.props.getGenderStart();
-        if (
-            this.props.match &&
-            this.props.match.params &&
-            this.props.match.params.id
-        ) {
+        if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let userId = this.props.match.params.id;
             let res = await getAllUsers(+userId);
             console.log(res.users);
             let imageBase64 = "";
             if (res.users[0].image) {
-                imageBase64 = Buffer.from(
-                    res.users[0].image,
-                    "base64"
-                ).toString("binary");
+                imageBase64 = Buffer.from(res.users[0].image, "base64").toString("binary");
             }
             this.setState({
                 gender: res.users[0].gender,
@@ -66,12 +59,12 @@ class InfoUser extends Component {
         }
         if (this.state.name && prevState.name) {
             if (
-                prevState.gender != this.state.gender ||
-                prevState.name != this.state.name ||
-                prevState.phoneNumber != this.state.phoneNumber ||
-                prevState.email != this.state.email ||
-                prevState.address != this.state.address ||
-                prevState.avatar != this.state.avatar ||
+                prevState.gender !== this.state.gender ||
+                prevState.name !== this.state.name ||
+                prevState.phoneNumber !== this.state.phoneNumber ||
+                prevState.email !== this.state.email ||
+                prevState.address !== this.state.address ||
+                prevState.avatar !== this.state.avatar ||
                 prevState.previewImgURL !== this.state.previewImgURL
             ) {
                 this.setState({ isChanged: true });
@@ -102,8 +95,7 @@ class InfoUser extends Component {
         }
     };
     handleSaveUser = async () => {
-        let { gender, name, phoneNumber, email, address, id, avatar } =
-            this.state;
+        let { gender, name, phoneNumber, email, address, id, avatar } = this.state;
         console.log(this.state);
         let language = this.props.language;
         if (!gender) gender = "M";
@@ -130,13 +122,9 @@ class InfoUser extends Component {
                         isChanged: false,
                     });
                     if (language === LANGUAGES.VI) {
-                        toast.success(
-                            "Cập nhập thông tin người dùng thành công"
-                        );
+                        toast.success("Cập nhập thông tin người dùng thành công");
                     } else {
-                        toast.success(
-                            "User information is successfully updated"
-                        );
+                        toast.success("User information is successfully updated");
                     }
                 } else {
                     if (language === LANGUAGES.VI) {
@@ -170,13 +158,9 @@ class InfoUser extends Component {
                         isChanged: false,
                     });
                     if (language === LANGUAGES.VI) {
-                        toast.success(
-                            "Cập nhập thông tin người dùng thành công"
-                        );
+                        toast.success("Cập nhập thông tin người dùng thành công");
                     } else {
-                        toast.success(
-                            "User information is successfully updated"
-                        );
+                        toast.success("User information is successfully updated");
                     }
                 } else {
                     if (language === LANGUAGES.VI) {
@@ -206,10 +190,9 @@ class InfoUser extends Component {
         });
     };
     render() {
-        const { processLogout, language, userInfo } = this.props;
+        const { language } = this.props;
         let genders = this.state.genderArr;
-        let { gender, name, phoneNumber, email, address, isChanged } =
-            this.state;
+        let { gender, name, phoneNumber, email, address, isChanged } = this.state;
         return (
             <React.Fragment>
                 {this.state.isOpenModel && (
@@ -228,9 +211,7 @@ class InfoUser extends Component {
                                 id="img"
                                 type="file"
                                 hidden
-                                onChange={(event) =>
-                                    this.handleChangeImage(event)
-                                }
+                                onChange={(event) => this.handleChangeImage(event)}
                             />
                             <div
                                 className="avatar"
@@ -250,7 +231,7 @@ class InfoUser extends Component {
                     <Row>
                         <Col md={6}>
                             <label htmlFor="name" className="mb-2">
-                                Full Name
+                                <FormattedMessage id="account.Name" />
                             </label>
                             <input
                                 className="form-control mb-4"
@@ -264,7 +245,10 @@ class InfoUser extends Component {
                             />
                         </Col>
                         <Col md={3}>
-                            <label className="mb-2">Gender</label>
+                            <label className="mb-2">
+                                {" "}
+                                <FormattedMessage id="account.gender" />
+                            </label>
                             <select
                                 className="form-select mb-4"
                                 onChange={(event) => {
@@ -275,9 +259,7 @@ class InfoUser extends Component {
                                     genders.length > 0 &&
                                     genders.map((item, index) => {
                                         return (
-                                            <option
-                                                key={index}
-                                                value={item.keyMap}>
+                                            <option key={index} value={item.keyMap}>
                                                 {language === LANGUAGES.VI
                                                     ? item.valueVi
                                                     : item.valueEn}
@@ -287,7 +269,9 @@ class InfoUser extends Component {
                             </select>
                         </Col>
                         <Col md={3}>
-                            <label className="mb-2">Vai trò</label>
+                            <label className="mb-2">
+                                <FormattedMessage id="account.Role" />
+                            </label>
                             <input
                                 className="form-control mb-4"
                                 disabled
@@ -300,7 +284,7 @@ class InfoUser extends Component {
                     <Row>
                         <Col md={6}>
                             <label htmlFor="exampleEmail" className="mb-2">
-                                Email
+                                <FormattedMessage id="account.email" />
                             </label>
                             <input
                                 disabled
@@ -316,9 +300,10 @@ class InfoUser extends Component {
                         </Col>
                         <Col md={6}>
                             <label htmlFor="phoneNumber" className="mb-2">
-                                phoneNumber
+                                <FormattedMessage id="account.phone" />
                             </label>
                             <input
+                                disabled
                                 className="form-control mb-4"
                                 id="phoneNumber"
                                 name="phoneNumberNumber"
@@ -335,7 +320,7 @@ class InfoUser extends Component {
                         <Col md={12}>
                             {" "}
                             <label htmlFor="exampleAddress" className="mb-2">
-                                Address
+                                <FormattedMessage id="account.address" />
                             </label>
                             <input
                                 className="form-control mb-4"
@@ -359,16 +344,14 @@ class InfoUser extends Component {
                                         : "btn btn-secondary save-info mt-3"
                                 }
                                 disabled={isChanged === true ? false : true}>
-                                Lưu thông tin
+                                <FormattedMessage id="account.saveInfo" />
                             </button>
                         </Col>
                         <Col md={6} style={{ display: "flex" }}>
                             <button
                                 className="btn btn-primary change-password mt-3"
-                                onClick={() =>
-                                    this.handleChangeChangePassword()
-                                }>
-                                Đổi mật khẩu
+                                onClick={() => this.handleChangeChangePassword()}>
+                                <FormattedMessage id="account.change" />
                             </button>
                         </Col>
                     </Row>
@@ -393,6 +376,4 @@ const mapDispatchToProps = (dispatch) => {
         processLogout: () => dispatch(actions.processLogout()),
     };
 };
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(InfoUser)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(InfoUser));

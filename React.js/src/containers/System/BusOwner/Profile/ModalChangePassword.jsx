@@ -28,10 +28,6 @@ class ModalChangePassword extends Component {
         });
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        // let;
-    }
-
     toggle = () => {
         this.props.toggleFromParent();
     };
@@ -169,7 +165,7 @@ class ModalChangePassword extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        change password
+                        <FormattedMessage id="account.change" />
                     </ModalHeader>
                     <ModalBody>
                         <Box>
@@ -191,7 +187,12 @@ class ModalChangePassword extends Component {
                                             }}
                                         />
                                         <span onClick={() => this.handleShowOldPassword()}>
-                                            <i className={this.state.isOldPass ? "fas fa-eye" : "fas fa-eye-slash"}></i>
+                                            <i
+                                                className={
+                                                    this.state.isOldPass
+                                                        ? "fas fa-eye"
+                                                        : "fas fa-eye-slash"
+                                                }></i>
                                         </span>
                                     </div>
                                 </Col>
@@ -215,7 +216,12 @@ class ModalChangePassword extends Component {
                                             }}
                                         />
                                         <span onClick={() => this.handleShowNewPassword()}>
-                                            <i className={this.state.isNewPass ? "fas fa-eye" : "fas fa-eye-slash"}></i>
+                                            <i
+                                                className={
+                                                    this.state.isNewPass
+                                                        ? "fas fa-eye"
+                                                        : "fas fa-eye-slash"
+                                                }></i>
                                         </span>
                                     </div>
                                 </Col>
@@ -241,7 +247,9 @@ class ModalChangePassword extends Component {
                                         <span onClick={() => this.handleShowConfirmPassword()}>
                                             <i
                                                 className={
-                                                    this.state.isConfirmPass ? "fas fa-eye" : "fas fa-eye-slash"
+                                                    this.state.isConfirmPass
+                                                        ? "fas fa-eye"
+                                                        : "fas fa-eye-slash"
                                                 }></i>
                                         </span>
                                     </div>
@@ -265,7 +273,7 @@ class ModalChangePassword extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            Cancel
+                            <FormattedMessage id="account.cancel" />
                         </Button>{" "}
                         <Button
                             color="primary"
@@ -273,7 +281,7 @@ class ModalChangePassword extends Component {
                                 this.handleSave();
                             }}
                             className="btn-primary-modal">
-                            Save
+                            <FormattedMessage id="account.save" />
                         </Button>
                     </ModalFooter>
                 </Modal>

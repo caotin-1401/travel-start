@@ -2,11 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Header from "../../HomePage/Header";
 import { FormattedMessage } from "react-intl";
-import { LANGUAGES } from "../../../utils";
-import { changeLanguageApp } from "../../../store/actions/appActions";
 import moment from "moment";
 import localization from "moment/locale/vi";
-import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
 import { getAllEventsService } from "../../../services/userService";
 import { Row, Col } from "reactstrap";
@@ -26,7 +23,6 @@ class DetailEvent extends Component {
         };
     }
     async componentDidMount() {
-        this.props.fetchAllEvents();
         if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let id = this.props.match.params.id;
             let res = await getAllEventsService(id);
@@ -171,7 +167,9 @@ class DetailEvent extends Component {
 
                                                                     <p className="coupon-required">
                                                                         Cho đơn từ{" "}
-                                                                        {this.currencyFormat(item.discountMax)}
+                                                                        {this.currencyFormat(
+                                                                            item.discountMax
+                                                                        )}
                                                                     </p>
                                                                     <p className="start-date">
                                                                         {start} - {end}
@@ -186,8 +184,12 @@ class DetailEvent extends Component {
                                                                             <button
                                                                                 className="btn-coupon"
                                                                                 onClick={() => {
-                                                                                    navigator.clipboard.writeText(text);
-                                                                                    alert("Lấy mã giảm giá thành công");
+                                                                                    navigator.clipboard.writeText(
+                                                                                        text
+                                                                                    );
+                                                                                    alert(
+                                                                                        "Lấy mã giảm giá thành công"
+                                                                                    );
                                                                                 }}>
                                                                                 {text}
                                                                             </button>
@@ -197,7 +199,11 @@ class DetailEvent extends Component {
                                                                     </p>
                                                                     <p
                                                                         className="condition"
-                                                                        onClick={() => this.handleEditUser(item)}>
+                                                                        onClick={() =>
+                                                                            this.handleEditUser(
+                                                                                item
+                                                                            )
+                                                                        }>
                                                                         Điều kiện
                                                                     </p>
                                                                 </div>
@@ -225,7 +231,10 @@ class DetailEvent extends Component {
 
                                                                     <p className="coupon-required">
                                                                         Cho đơn từ{" "}
-                                                                        {this.currencyFormat(item.discountMax)}đ
+                                                                        {this.currencyFormat(
+                                                                            item.discountMax
+                                                                        )}
+                                                                        đ
                                                                     </p>
                                                                     <p className="start-date">
                                                                         {start} - {end}
@@ -240,8 +249,12 @@ class DetailEvent extends Component {
                                                                             <button
                                                                                 className="btn-coupon"
                                                                                 onClick={() => {
-                                                                                    navigator.clipboard.writeText(text);
-                                                                                    alert("Lấy mã giảm giá thành công");
+                                                                                    navigator.clipboard.writeText(
+                                                                                        text
+                                                                                    );
+                                                                                    alert(
+                                                                                        "Lấy mã giảm giá thành công"
+                                                                                    );
                                                                                 }}>
                                                                                 {text}
                                                                             </button>
@@ -249,7 +262,11 @@ class DetailEvent extends Component {
                                                                     </p>
                                                                     <p
                                                                         className="condition"
-                                                                        onClick={() => this.handleEditUser(item)}>
+                                                                        onClick={() =>
+                                                                            this.handleEditUser(
+                                                                                item
+                                                                            )
+                                                                        }>
                                                                         Điều kiện
                                                                     </p>
                                                                 </div>
@@ -282,17 +299,11 @@ class DetailEvent extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        listRoutes: state.admin.routes,
-        events: state.admin.events,
         language: state.app.language,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
-        fetchAllRoute: () => dispatch(actions.fetchAllRoute()),
-        fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-    };
+    return {};
 };
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DetailEvent));

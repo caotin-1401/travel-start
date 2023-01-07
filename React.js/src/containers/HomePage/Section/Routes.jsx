@@ -5,7 +5,12 @@ import Slider from "react-slick";
 import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
 import moment from "moment";
-import localization from "moment/locale/vi";
+import vungtau from "../../../assets/vungtau.jpg";
+import dalat from "../../../assets/dalat.jpg";
+import danang from "../../../assets/danang.jpg";
+import khanhhoa from "../../../assets/khanhhoa.jpg";
+import quynhon from "../../../assets/quynhon.jpg";
+import hcm3 from "../../../assets/hcm3.jpg";
 class Routes extends Component {
     constructor(props) {
         super(props);
@@ -14,7 +19,7 @@ class Routes extends Component {
         };
     }
     componentDidMount() {
-        this.props.fetchAllRoute();
+        this.props.fetchAllRouteHome();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.routes !== this.props.routes) {
@@ -25,15 +30,19 @@ class Routes extends Component {
     }
 
     handleViewDetail = (route) => {
-        let test = moment(new Date(new Date().setDate(new Date().getDate() + 1))).format("L");
-        let test1 = moment(1667926800000).format("LT");
+        let test = moment(new Date(new Date().setDate(new Date().getDate() + 1))).format(
+            "DD/MM/YYYY"
+        );
+        let test1 = "00:00";
         let [hours, minutes] = test1.split(":");
         let [day, month, year] = test.split("/");
         let date = new Date(+year, month - 1, +day, +hours, +minutes);
         let unixTimestamp = Math.floor(date.getTime());
 
         if (this.props.history) {
-            this.props.history.push(`/home/route/${route.from.name}&${route.to.name}&${unixTimestamp}`);
+            this.props.history.push(
+                `/home/route/${route.from.name}&${route.to.name}&${unixTimestamp}`
+            );
         }
     };
     render() {
@@ -51,111 +60,187 @@ class Routes extends Component {
                         <div className="section-body">
                             <Slider {...this.props.settings}>
                                 {newArr && newArr.length === 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[0])}>
-                                        <div className="bg-img1"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[0])}>
+                                        <div className="bg-img1">
+                                            <img src={vungtau} alt="Vũng tàu" loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Vũng Tàu</div>
+                                            <div className="section-title">
+                                                TP. Hồ Chí Minh -{">"} Vũng Tàu
+                                            </div>
                                         </div>
                                     </div>
                                 )}
                                 {newArr && newArr.length === 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[1])}>
-                                        <div className="bg-img2"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[1])}>
+                                        <div className="bg-img2">
+                                            <img src={dalat} alt="..." loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Lâm Đồng</div>
+                                            <div className="section-title">
+                                                TP. Hồ Chí Minh -{">"} Lâm Đồng
+                                            </div>
                                         </div>
                                     </div>
                                 )}
                                 {newArr && newArr.length === 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[2])}>
-                                        <div className="bg-img3"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[2])}>
+                                        <div className="bg-img3">
+                                            <img src={danang} alt="..." loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Đà Nẵng</div>
+                                            <div className="section-title">
+                                                TP. Hồ Chí Minh -{">"} Đà Nẵng
+                                            </div>
                                         </div>
                                     </div>
                                 )}
                                 {newArr && newArr.length === 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[3])}>
-                                        <div className="bg-img4"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[3])}>
+                                        <div className="bg-img4">
+                                            <img src={khanhhoa} alt="..." loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Khánh Hòa</div>
+                                            <div className="section-title">
+                                                TP. Hồ Chí Minh -{">"} Khánh Hòa
+                                            </div>
                                         </div>
                                     </div>
                                 )}
                                 {newArr && newArr.length === 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[4])}>
-                                        <div className="bg-img5"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[4])}>
+                                        <div className="bg-img5">
+                                            <img src={quynhon} alt="..." loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Bình Định</div>
+                                            <div className="section-title">
+                                                TP. Hồ Chí Minh -{">"} Bình Định
+                                            </div>
                                         </div>
                                     </div>
                                 )}
                                 {newArr && newArr.length === 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[5])}>
-                                        <div className="bg-img6"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[5])}>
+                                        <div className="bg-img6">
+                                            <img src={hcm3} alt="..." loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">Lâm Đồng -{">"} TP.Hồ Chí Minh</div>
+                                            <div className="section-title">
+                                                Lâm Đồng -{">"} TP.Hồ Chí Minh
+                                            </div>
                                         </div>
                                     </div>
                                 )}
 
                                 {newArr && newArr.length > 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[0])}>
-                                        <div className="bg-img1"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[0])}>
+                                        <div className="bg-img1">
+                                            {" "}
+                                            <img src={vungtau} alt="Vũng tàu" loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Vũng Tàu</div>
+                                            <div className="section-title">
+                                                TP. Hồ Chí Minh -{">"} Vũng Tàu
+                                            </div>
                                         </div>
                                     </div>
                                 )}
                                 {newArr && newArr.length > 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[1])}>
-                                        <div className="bg-img2"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[1])}>
+                                        <div className="bg-img2">
+                                            <img src={dalat} alt="..." loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Lâm Đồng</div>
+                                            <div className="section-title">
+                                                TP. Hồ Chí Minh -{">"} Lâm Đồng
+                                            </div>
                                         </div>
                                     </div>
                                 )}
                                 {newArr && newArr.length > 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[2])}>
-                                        <div className="bg-img3"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[2])}>
+                                        <div className="bg-img3">
+                                            {" "}
+                                            <img src={danang} alt="..." loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Đà Nẵng</div>
+                                            <div className="section-title">
+                                                TP. Hồ Chí Minh -{">"} Đà Nẵng
+                                            </div>
                                         </div>
                                     </div>
                                 )}
                                 {newArr && newArr.length > 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[3])}>
-                                        <div className="bg-img4"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[3])}>
+                                        <div className="bg-img4">
+                                            {" "}
+                                            <img src={khanhhoa} alt="..." loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Khánh Hòa</div>
+                                            <div className="section-title">
+                                                TP. Hồ Chí Minh -{">"} Khánh Hòa
+                                            </div>
                                         </div>
                                     </div>
                                 )}
                                 {newArr && newArr.length > 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[4])}>
-                                        <div className="bg-img5"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[4])}>
+                                        <div className="bg-img5">
+                                            <img src={quynhon} alt="..." loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">TP. Hồ Chí Minh -{">"} Bình Định</div>
+                                            <div className="section-title">
+                                                TP. Hồ Chí Minh -{">"} Bình Định
+                                            </div>
                                         </div>
                                     </div>
                                 )}
                                 {newArr && newArr.length > 0 && (
-                                    <div className=" section-custom" onClick={() => this.handleViewDetail(newArr[5])}>
-                                        <div className="bg-img6"></div>
+                                    <div
+                                        className=" section-custom"
+                                        onClick={() => this.handleViewDetail(newArr[5])}>
+                                        <div className="bg-img6">
+                                            {" "}
+                                            <img src={hcm3} alt="..." loading="lazy" />
+                                        </div>
 
                                         <div>
-                                            <div className="section-title">Lâm Đồng -{">"} TP.Hồ Chí Minh</div>
+                                            <div className="section-title">
+                                                Lâm Đồng -{">"} TP.Hồ Chí Minh
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -178,7 +263,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchAllRoute: () => dispatch(actions.fetchAllRoute()),
+        fetchAllRouteHome: () => dispatch(actions.fetchAllRouteHome()),
     };
 };
 

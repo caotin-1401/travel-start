@@ -201,7 +201,7 @@ let createNewUserByRegister = (email, password, confirmPassword, phoneNumber) =>
                 let hashPasswordFromBcrypt = await hashUserPassword(password);
                 let user = await db.Passenger.create({
                     email: email,
-                    name: name,
+                    phoneNumber: phoneNumber,
                     password: hashPasswordFromBcrypt,
                     roleID: "R4",
                 });
@@ -228,17 +228,20 @@ let getAllPassengersTicket = (userId) => {
                     attributes: {
                         exclude: ["password", "image"],
                     },
+
                     include: [
                         {
                             model: db.Ticket,
+                            attributes: ["id", "seatNo", "token", "totalPrice"],
                             include: [
                                 {
                                     model: db.Trip,
+                                    attributes: ["id", "areaEnd", "areaStart", "timeStart"],
                                 },
                             ],
                         },
                     ],
-                    raw: true,
+                    raw: false,
                     nest: true,
                 });
                 users = _.sortBy(user, ["id"]);
@@ -254,10 +257,11 @@ let getAllPassengersTicket = (userId) => {
                             model: db.Ticket,
                         },
                     ],
-                    raw: true,
+                    raw: false,
                     nest: true,
                 });
             }
+
             resolve(users);
         } catch (e) {
             reject(e);
@@ -289,24 +293,20 @@ let getAllDrivers = (userId) => {
         try {
             let users = "";
             let user = "";
-            if (userId === "ALL") {
-                user = await db.Driver.findAll({
-                    include: [
-                        {
-                            model: db.User,
-                            attributes: ["email", "address", "phoneNumber", "gender"],
-                        },
-                    ],
-                    raw: true,
-                    nest: true,
-                });
-                users = _.sortBy(user, ["id"]);
-            }
-            if (userId && userId !== "ALL") {
-                users = await db.Driver.findAll({
-                    where: { id: userId },
-                });
-            }
+
+            user = await db.Driver.findAll({
+                where: { busOwnerId: userId },
+                include: [
+                    {
+                        model: db.User,
+                        attributes: ["email", "address", "phoneNumber", "gender"],
+                    },
+                ],
+                raw: true,
+                nest: true,
+            });
+            users = _.sortBy(user, ["id"]);
+
             resolve(users);
         } catch (e) {
             reject(e);
@@ -342,7 +342,14 @@ let getAllUsers = (userId) => {
                     include: [
                         {
                             model: db.Trip,
-                            attributes: ["id", "timeStart", "areaStart", "routeId", "busId", "busOwnerId"],
+                            attributes: [
+                                "id",
+                                "timeStart",
+                                "areaStart",
+                                "routeId",
+                                "busId",
+                                "busOwnerId",
+                            ],
                             include: [
                                 {
                                     model: db.Ticket,
@@ -402,43 +409,34 @@ let getUserTicket = (userId) => {
 let createNewUser = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            //check email exist
-            console.log(data);
             let check = await checkUserEmailAdmin(data.email);
             let checkPhone = await checkPhoneAdmin(data.phoneNumber);
-            console.log(checkPhone);
             if (check) {
-                console.log(2);
                 resolve({
                     errCode: 1,
                     errMessage: "Your email already exists, please try another email",
                 });
             } else if (checkPhone) {
-                console.log(3);
                 resolve({
                     errCode: 8,
                     errMessage: "Your email already exists, please try another email",
                 });
             } else if (data.password.trim().length < 8) {
-                console.log(4);
                 resolve({
                     errCode: 4,
                     errMessage: "Password must be at least 8 characters",
                 });
             } else if (isNaN(data.phoneNumber)) {
-                console.log(5);
                 resolve({
                     errCode: 5,
                     errMessage: "Phone Number must be a number",
                 });
             } else if (!isEmailValid(data.email)) {
-                console.log(2);
                 resolve({
                     errCode: 6,
                     errMessage: "Invalid mail address",
                 });
             } else {
-                console.log(1);
                 let hashPasswordFromBcrypt = await hashUserPassword(data.password);
                 if (!data.avatar) {
                     await db.User.create({
@@ -527,6 +525,27 @@ let deleteUser = async (userId) => {
                 where: { driverId: userId },
             });
         }
+        resolve({
+            errCode: 0,
+            errMessage: "The user is delete",
+        });
+    });
+};
+let handleDeletePassenger = async (userId) => {
+    return new Promise(async (resolve, reject) => {
+        let user = await db.Passenger.findOne({
+            where: { id: userId },
+            // raw: false,
+        });
+        if (!user) {
+            resolve({
+                errCode: 2,
+                errMessage: `The user isn't exist`,
+            });
+        }
+        await db.Passenger.destroy({
+            where: { id: userId },
+        }); // đây là thao tac dưới DB
         resolve({
             errCode: 0,
             errMessage: "The user is delete",
@@ -949,6 +968,7 @@ let handlePostResetPassword = async (email, token, password) => {
 module.exports = {
     handEditPassenger,
     getAllDrivers,
+    handleDeletePassenger,
     getAllPassengersTicket,
     getAllPassengers,
     handleDriverStartTrip,

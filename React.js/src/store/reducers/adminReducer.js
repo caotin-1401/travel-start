@@ -110,7 +110,17 @@ const adminReducer = (state = initialState, action) => {
             return {
                 ...state,
             };
+        case actionTypes.FETCH_ROUTES_HOME_SUCCESS:
+            state.routes = action.routes;
+            return {
+                ...state,
+            };
 
+        case actionTypes.FETCH_ROUTES_HOME_FAILED:
+            state.routes = [];
+            return {
+                ...state,
+            };
         case actionTypes.FETCH_BLOGS_SUCCESS:
             state.blogs = action.blogs;
             return {
@@ -184,7 +194,17 @@ const adminReducer = (state = initialState, action) => {
             return {
                 ...state,
             };
+        case actionTypes.FETCH_EVENT_HOME_SUCCESS:
+            state.events = action.events;
+            return {
+                ...state,
+            };
 
+        case actionTypes.FETCH_EVENT_HOME_FAILED:
+            state.events = [];
+            return {
+                ...state,
+            };
         //coupon
         case actionTypes.FETCH_COUPON_SUCCESS:
             state.coupons = action.coupons;

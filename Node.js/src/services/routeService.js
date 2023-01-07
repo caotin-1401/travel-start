@@ -71,23 +71,14 @@ let getAllRoutes = async (routeId) => {
                                     include: [
                                         {
                                             model: db.BusType,
-                                            attributes: [
-                                                "id",
-                                                "typeName",
-                                                "numOfSeat",
-                                            ],
+                                            attributes: ["id", "typeName", "numOfSeat"],
                                         },
                                     ],
                                 },
 
                                 {
                                     model: db.User,
-                                    attributes: [
-                                        "id",
-                                        "name",
-                                        "busOwner",
-                                        "busOwnerId",
-                                    ],
+                                    attributes: ["id", "name", "busOwner", "busOwnerId"],
                                 },
                             ],
                         },
@@ -105,6 +96,36 @@ let getAllRoutes = async (routeId) => {
         }
     });
 };
+let getAllRoutesHome = async (routeId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let routes = "";
+            if (routeId === "ALL") {
+                routes = await db.Route.findAll({
+                    attributes: ["id"],
+                    include: [
+                        {
+                            model: db.Location,
+                            attributes: ["id", "name"],
+                            as: "from",
+                        },
+                        {
+                            model: db.Location,
+                            attributes: ["id", "name"],
+                            as: "to",
+                        },
+                    ],
+                    raw: false,
+                    nest: true,
+                });
+            }
+            let newArr = routes.slice(0, 6);
+            resolve(newArr);
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 let createNewRoute = (data) => {
     return new Promise(async (resolve, reject) => {
@@ -113,8 +134,7 @@ let createNewRoute = (data) => {
             if (areaStartId) {
                 resolve({
                     errCode: 1,
-                    errMessage:
-                        "Route already exists, please try another Route",
+                    errMessage: "Route already exists, please try another Route",
                 });
             } else if (data.areaStartId === data.areaEndId) {
                 resolve({
@@ -214,5 +234,6 @@ module.exports = {
     getAllRoutes,
     createNewRoute,
     editRoute,
+    getAllRoutesHome,
     deleteRoute,
 };

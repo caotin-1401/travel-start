@@ -293,10 +293,7 @@ class ModalEdit extends Component {
         },
     });
     currencyFormat(number) {
-        const formatter = new Intl.NumberFormat("sv-SE", {
-            style: "decimal",
-            currency: "SEK",
-        });
+        const formatter = new Intl.NumberFormat("vi-VI", { style: "currency", currency: "VND" });
 
         return formatter.format(number);
     }
@@ -421,7 +418,9 @@ class ModalEdit extends Component {
                                         <input
                                             style={{
                                                 height: "38px",
-                                                marginBottom: `${errMessage1 !== "" ? "3px" : "24px"}`,
+                                                marginBottom: `${
+                                                    errMessage1 !== "" ? "3px" : "24px"
+                                                }`,
                                             }}
                                             className="form-control"
                                             id="discount"
@@ -437,7 +436,9 @@ class ModalEdit extends Component {
                                         <input
                                             style={{
                                                 height: "38px",
-                                                marginBottom: `${errMessage1 !== "" ? "3px" : "24px"}`,
+                                                marginBottom: `${
+                                                    errMessage1 !== "" ? "3px" : "24px"
+                                                }`,
                                             }}
                                             className="form-control"
                                             id="discount"
@@ -552,12 +553,16 @@ class ModalEdit extends Component {
                                     <div className=" mb-2">
                                         <ThemeProvider theme={this.theme}>
                                             {language === "vi" ? (
-                                                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="vi">
+                                                <LocalizationProvider
+                                                    dateAdapter={AdapterDayjs}
+                                                    adapterLocale="vi">
                                                     <Stack>
                                                         <DatePicker
                                                             value={dayStart}
                                                             onChange={this.handleOnChange1}
-                                                            renderInput={(params) => <TextField {...params} />}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
                                                             minDate={new Date()}
                                                             dayOfWeekFormatter={(day) => `${day}.`}
                                                         />
@@ -569,7 +574,9 @@ class ModalEdit extends Component {
                                                         <DatePicker
                                                             value={dayStart}
                                                             onChange={this.handleOnChange1}
-                                                            renderInput={(params) => <TextField {...params} />}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
                                                             minDate={new Date()}
                                                             dayOfWeekFormatter={(day) => `${day}.`}
                                                         />
@@ -588,12 +595,16 @@ class ModalEdit extends Component {
                                     <div className=" mb-2">
                                         <ThemeProvider theme={this.theme}>
                                             {language === "vi" ? (
-                                                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="vi">
+                                                <LocalizationProvider
+                                                    dateAdapter={AdapterDayjs}
+                                                    adapterLocale="vi">
                                                     <Stack>
                                                         <DatePicker
                                                             value={dayEnd}
                                                             onChange={this.handleOnChange2}
-                                                            renderInput={(params) => <TextField {...params} />}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
                                                             minDate={new Date()}
                                                             dayOfWeekFormatter={(day) => `${day}.`}
                                                         />
@@ -605,7 +616,9 @@ class ModalEdit extends Component {
                                                         <DatePicker
                                                             value={dayEnd}
                                                             onChange={this.handleOnChange2}
-                                                            renderInput={(params) => <TextField {...params} />}
+                                                            renderInput={(params) => (
+                                                                <TextField {...params} />
+                                                            )}
                                                             minDate={new Date()}
                                                             dayOfWeekFormatter={(day) => `${day}.`}
                                                         />

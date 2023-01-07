@@ -23,7 +23,29 @@ let getAllEvents = async (req, res) => {
         });
     }
 };
-
+let getAllEventsHome = async (req, res) => {
+    try {
+        let id = req.query.id;
+        if (!id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameters",
+                events: [],
+            });
+        }
+        let events = await eventService.getAllEventsHome(id);
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: "OK",
+            events,
+        });
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 let createNewEvent = async (req, res) => {
     try {
         let data = await eventService.createNewEvent(req.body);
@@ -69,4 +91,5 @@ module.exports = {
     createNewEvent,
     deleteEvent,
     editEvent,
+    getAllEventsHome,
 };

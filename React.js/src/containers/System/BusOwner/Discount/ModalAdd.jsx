@@ -77,6 +77,8 @@ class ModalAdd extends Component {
                 message1 = "Trường này bắt buộc phải la số";
             } else if (id === "discount2" && isNaN(event.target.value)) {
                 message2 = "Trường này bắt buộc phải la số";
+            } else if (id === "discount2" && event.target.value.length > 2) {
+                message2 = "Trường này phải nhỏ hơn 100";
             } else if (id === "discountMax" && isNaN(event.target.value)) {
                 message4 = "Trường này bắt buộc phải la số";
             } else if (id === "sumMoneyCondition" && isNaN(event.target.value)) {
@@ -89,6 +91,8 @@ class ModalAdd extends Component {
                 message1 = "This field must be a number";
             } else if (id === "discount2" && isNaN(event.target.value)) {
                 message2 = "This field must be a number";
+            } else if (id === "discount2" && event.target.value.length > 2) {
+                message2 = "This field must be less than 100";
             } else if (id === "discountMax" && isNaN(event.target.value)) {
                 message4 = "This field must be a number";
             } else if (id === "sumMoneyCondition" && isNaN(event.target.value)) {
@@ -226,10 +230,12 @@ class ModalAdd extends Component {
         this.setState({ selectType });
     };
     currencyFormat(number) {
-        const formatter = new Intl.NumberFormat("sv-SE", {
-            style: "decimal",
-            currency: "SEK",
-        });
+        const formatter = new Intl.NumberFormat("vi-VI", { style: "currency", currency: "VND" });
+
+        return formatter.format(number);
+    }
+    currencyFormat1(number) {
+        const formatter = new Intl.NumberFormat("vi-VI", { maximumSignificantDigits: 3 });
 
         return formatter.format(number);
     }
@@ -392,7 +398,7 @@ class ModalAdd extends Component {
                                             onChange={(event) => {
                                                 this.onChangeInput(event, "count");
                                             }}
-                                            value={this.currencyFormat(count)}
+                                            value={this.currencyFormat1(count)}
                                             onFocus={this.toggleEditing4.bind(this)}
                                         />
                                     )}

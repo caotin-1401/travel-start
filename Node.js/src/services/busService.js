@@ -43,9 +43,7 @@ let getAllBus = async (busId) => {
 
                 bus.map(async (item) => {
                     if (item && item.image) {
-                        item.image = Buffer.from(item.image, "base64").toString(
-                            "binary"
-                        );
+                        item.image = Buffer.from(item.image, "base64").toString("binary");
                     }
                 });
 
@@ -69,9 +67,7 @@ let getAllBus = async (busId) => {
                 });
                 let driver = {};
                 if (bus && bus.image) {
-                    bus.image = Buffer.from(bus.image, "base64").toString(
-                        "binary"
-                    );
+                    bus.image = Buffer.from(bus.image, "base64").toString("binary");
                 }
                 if (bus.driverId !== 0) {
                     driver = await db.Driver.findOne({
@@ -86,6 +82,36 @@ let getAllBus = async (busId) => {
         }
     });
 };
+let getNextTrip = async (areaStart, busId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (busId && busId !== "ALL") {
+                let bus = await db.Trip.findAll({
+                    where: {
+                        areaStart: areaStart,
+                        busId: busId,
+                        status: 1,
+                    },
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ["id", "name"],
+                        },
+                    ],
+                    raw: false,
+                    nest: true,
+                });
+                // console.log(bus);
+                let a = _.sortBy(bus, ["timeStart"]);
+                if (a && a.length === 0) a = [];
+                // console.log(a);
+                resolve(a[0]);
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 let createNewBus = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -93,8 +119,7 @@ let createNewBus = (data) => {
             if (number) {
                 resolve({
                     errCode: 1,
-                    errMessage:
-                        "Vehicle already exists, please try another vehicle",
+                    errMessage: "Vehicle already exists, please try another vehicle",
                 });
             } else if (!data.number || !data.busTypeId) {
                 resolve({
@@ -137,8 +162,7 @@ let editBus = (data) => {
                 raw: false,
             });
             if (vehicle) {
-                (vehicle.number = data.number.toUpperCase()),
-                    (vehicle.busTypeId = data.busTypeId);
+                (vehicle.number = data.number.toUpperCase()), (vehicle.busTypeId = data.busTypeId);
                 if (data.image) {
                     vehicle.image = data.image;
                 }
@@ -261,4 +285,5 @@ module.exports = {
     createNewBus,
     editBus,
     deleteBus,
+    getNextTrip,
 };

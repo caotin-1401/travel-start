@@ -5,9 +5,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "re
 import "../style.scss";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
-import PropTypes from "prop-types";
-import Lightbox from "react-image-lightbox";
-import "react-image-lightbox/style.css";
 import { toast } from "react-toastify";
 import { createNewUserService } from "../../../../services/userService";
 
@@ -73,9 +70,7 @@ class ModalUser extends Component {
     };
 
     checkValidInput = () => {
-        let isValid = true;
         let { language } = this.props;
-        let arrCheck = ["email", "password", "name", "phone", "address"];
         if (language === LANGUAGES.VI) {
             if (!this.state.email) {
                 toast.error("Email không được để trống ! ");
@@ -167,6 +162,12 @@ class ModalUser extends Component {
             } else {
                 toast.error("Invalid mail address");
             }
+        } else if (res && res.errCode === 8) {
+            if (language === LANGUAGES.VI) {
+                toast.error("Số điện thoại đã tồn tại, vui lòng nhập số khác");
+            } else {
+                toast.error("Your phone number already exists, please try another phone number");
+            }
         }
     };
 
@@ -191,7 +192,9 @@ class ModalUser extends Component {
                     <ModalBody>
                         <Row>
                             <Col md={6}>
-                                <label htmlFor="exampleEmail">Email</label>
+                                <label htmlFor="exampleEmail">
+                                    <FormattedMessage id="account.email" />
+                                </label>
                                 <input
                                     className="form-control mb-4"
                                     id="exampleEmail"
@@ -283,7 +286,9 @@ class ModalUser extends Component {
                                         genders.map((item, index) => {
                                             return (
                                                 <option key={index} value={item.keyMap}>
-                                                    {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
+                                                    {language === LANGUAGES.VI
+                                                        ? item.valueVi
+                                                        : item.valueEn}
                                                 </option>
                                             );
                                         })}

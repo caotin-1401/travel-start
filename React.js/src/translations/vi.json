@@ -53,8 +53,8 @@
             "list-vehicle": "Quản lý phương tiện",
             "manage-busOnwer": "Quản lý nhà xe",
             "manage-passenger": "Quản lý hành khách",
-            "handbook": "Cẩm nang",
-            "blog": "Quản lý cẩm nang",
+            "handbook": "Bài viết",
+            "blog": "Quản lý bài viết",
             "list-bus": "Danh sách loại xe",
             "location": "Danh sách bến xe",
             "route": "Danh sách tuyến đường",
@@ -82,7 +82,16 @@
                 "add": "Thêm bến xe",
                 "cancel": "Hủy",
                 "save": "Thêm",
-                "modaladd": "Thêm mới bến xe"
+                "modaladd": "Thêm mới bến xe",
+                "count": "Tổng phương tiện trong bến",
+                "list": "Danh sách phương tiện",
+                "time": "Thời gian vào bến",
+                "bus": "Chủ nhà xe",
+                "detail": "Thông tin chi tiết",
+                "detailMode": "Thông tin phương tiện",
+                "titleInfo1": "Tuyến đường chuyến kế tiếp",
+                "titleInfo2": "Thời gian xuất phát chuyến kế tiếp",
+                "titleInfo3": "Tài xế chuyến kế tiếp"
             },
             "listRoute": {
                 "title": "Quản lý danh sách tuyến đường",
@@ -141,7 +150,8 @@
                 "name": "Tên tài xế",
                 "phone": "Số điện thoại",
                 "status": "Tình trạng",
-                "action": "Xóa tài xế"
+                "action": "Xóa tài xế",
+                "action1": "Xóa phương tiện"
             },
             "listErr": {
                 "title": "Danh sách lỗi",
@@ -149,6 +159,38 @@
                 "time": "Thời gian phản ánh lỗi",
                 "done": "Đã sửa xong",
                 "title1": "Hệ thống hiện không còn lỗi nào từ phản ánh người dùng"
+            },
+            "listBlog": {
+                "title": "Quản lý danh sách bài viết",
+                "title1": "Thêm mới bài viết",
+                "title3": "Thêm bài viết",
+                "title2": "Chỉnh sửa bài viết",
+                "name": "Tiêu đề bài viết",
+                "img": "Ảnh bài viết",
+                "content": "Nội dung",
+                "personCreated": "Người tạo bài viết",
+                "timeCreated": "Thời gian tạo bài viết"
+            },
+            "listEvents": {
+                "title": "Quản lý sự kiện",
+                "title1": "Thêm sự kiện",
+                "title2": "Chỉnh sửa thông tin sự kiện",
+                "name": "Tên sự kiện",
+                "start": "Thời gian bắt đầu sự kiện",
+                "end": "Thời gian kết thúc sự kiện",
+                "start1": "Ngày bắt đầu",
+                "end1": "Ngày kết thúc",
+                "img": "Ảnh sự kiện",
+                "description": "Thông tin chi tiết của sự kiện"
+            },
+            "listCoupons": {
+                "title": "Quản lý mã giảm giá",
+                "title1": "Thêm mã giảm giá",
+                "title2": "Chỉnh sửa thông tin mã giảm giá",
+                "add": "Thêm mới",
+                "selectEvent": "Chọn sự kiện",
+                "info": "Thông tin chi tiết mã giảm giá",
+                "title4": "Sự kiện này không có mã giảm giá nào"
             }
         },
         "busOwner": {
@@ -309,7 +351,7 @@
         "comment": "Chúng tôi có thể giúp gì cho bạn?",
         "li_title1": "Thời gian phản hồi cho câu hỏi của bạn ít hơn 12 giờ.",
         "li_title2": "Xem nền tảng chúng tôi hoạt động.",
-        "li_title3": "Kê hoạch được tóm tắt trong email phản hồi.",
+        "li_title3": "Kế hoạch được tóm tắt trong email phản hồi.",
         "send": "Gửi",
         "name": "Họ Tên",
         "link": "Liên kết"

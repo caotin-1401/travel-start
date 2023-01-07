@@ -7,7 +7,6 @@ import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
 import { withRouter } from "react-router";
 import { changeLanguageApp } from "../../../../store/actions/appActions";
-import localization from "moment/locale/vi";
 import moment from "moment";
 import {
     TableBody,
@@ -19,10 +18,7 @@ import {
     Table,
 } from "@mui/material";
 import TablePaginationActions from "../../../../components/TablePaginationActions";
-import {
-    getAllVehicleFromOneStation,
-    getAllVehicleFromStation,
-} from "../../../../services/userService";
+import { getAllVehicleFromStation, getNextTrip } from "../../../../services/userService";
 import ModalInfo from "./ModalInfo";
 
 class ListVehicleOfStation extends Component {
@@ -42,6 +38,7 @@ class ListVehicleOfStation extends Component {
             nameStation: "",
             isOpenModel: false,
             DetailVehicle: [],
+            info: [],
         };
     }
 
@@ -50,19 +47,17 @@ class ListVehicleOfStation extends Component {
     }
 
     getAllvehicle = async () => {
-        if (
-            this.props.match &&
-            this.props.match.params &&
-            this.props.match.params.id
-        ) {
+        if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let driverId = this.props.match.params.id;
-            let res = await getAllVehicleFromOneStation(driverId);
             let resStation = await getAllVehicleFromStation(driverId);
-            res &&
-                res.vehicles.length > 0 &&
+
+            this.setState({
+                nameStation: resStation.vehicles[0].name,
+            });
+            resStation &&
+                resStation.vehicles[0].tovehicle.length > 0 &&
                 this.setState({
-                    listVehicles: res.vehicles,
-                    nameStation: resStation.vehicles[0].name,
+                    listVehicles: resStation.vehicles[0].tovehicle,
                 });
         }
     };
@@ -75,18 +70,21 @@ class ListVehicleOfStation extends Component {
         });
     };
 
-    handleDetailInfo = (item) => {
+    handleDetailInfo = async (item) => {
+        let res = await getNextTrip(this.state.nameStation, item.id);
         this.setState({
             isOpenModel: true,
             DetailVehicle: item,
+            info: res.vehicles,
         });
     };
     handleSort = (a, b) => {
-        this.state.listVehicles = _.orderBy(this.state.listVehicles, [b], [a]);
+        let clone = this.state.listVehicles;
+        clone = _.orderBy(clone, [b], [a]);
         this.setState({
             sortBy: a,
             sortField: b,
-            listVehicles: this.state.listVehicles,
+            listVehicles: clone,
         });
     };
     handleKeyword = (e) => {
@@ -110,9 +108,7 @@ class ListVehicleOfStation extends Component {
         let clone = this.state.listVehicles;
 
         if (term) {
-            clone = clone.filter((item) =>
-                item.BusType.typeName.includes(term)
-            );
+            clone = clone.filter((item) => item.BusType.typeName.includes(term));
             this.setState({
                 test1: clone,
                 isTest: true,
@@ -129,38 +125,44 @@ class ListVehicleOfStation extends Component {
             this.props.history.push(`/system/parking-lot`);
         }
     };
+    handleChangePage = (event, newPage) => {
+        this.setState({
+            page: newPage,
+        });
+    };
+    handleChangeRowsPerPage = (event) => {
+        this.setState({
+            rowsPerPage: parseInt(event.target.value),
+            page: 0,
+        });
+    };
     render() {
-        let {
-            page,
-            rowsPerPage,
-            listVehicles,
-            test,
-            test1,
-            isTest,
-            nameStation,
-        } = this.state;
+        let { page, rowsPerPage, listVehicles, test, test1, isTest, nameStation, info } =
+            this.state;
         isTest === true ? (test = test1) : (test = listVehicles);
         let { language } = this.props;
-        let title;
-        if (test.length > 0) {
-            if (language === LANGUAGES.VI) {
-                title = `Danh sách phương tiện giao thông trong  ${nameStation}`;
-            } else {
-                title = `List of vehicles in ${nameStation}`;
-            }
+
+        let title, mes;
+        if (language === LANGUAGES.VI) {
+            title = `Danh sách phương tiện giao thông trong  ${nameStation}`;
+            mes = "TÌm phương tiện vận tải ";
+        } else {
+            title = `List of vehicles in ${nameStation}`;
+            mes = "Search vehicles";
         }
+
         return (
             <>
-                {" "}
                 {this.state.isOpenModel && (
                     <ModalInfo
                         isOpen={this.state.isOpenModel}
                         toggleFromParent={this.toggleOpenModel}
                         currentUser={this.state.DetailVehicle}
+                        info={info}
                     />
                 )}
                 <div onClick={() => this.handleBack()} className="backsystem">
-                    <i className="fas fa-arrow-left"></i>{" "}
+                    <i className="fas fa-arrow-left"></i>
                     <FormattedMessage id="menu.admin.listDriver.back" />
                 </div>
                 <div className="container form-redux">
@@ -173,57 +175,38 @@ class ListVehicleOfStation extends Component {
                                 <TableBody>
                                     <tr>
                                         <th
-                                            className="section-id"
-                                            style={{
-                                                width: "5%",
-                                            }}
-                                            onClick={() =>
-                                                this.handleSort("asc", "id")
-                                            }>
+                                            className="section-id w5"
+                                            onClick={() => this.handleSort("asc", "id")}>
                                             Id
                                         </th>
-                                        <th
-                                            style={{
-                                                width: "20%",
-                                            }}>
+                                        <th className="w20">
                                             <div className="section-title">
                                                 <div>
                                                     <FormattedMessage id="menu.busOwner.vehicle.bsx" />
                                                 </div>
                                                 <div>
-                                                    {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "asc",
-                                                                "number"
-                                                            )
+                                                            this.handleSort("asc", "number")
                                                         }
                                                     />
                                                     <FaLongArrowAltUp
                                                         className="iconSortDown"
                                                         onClick={() =>
-                                                            this.handleSort(
-                                                                "desc",
-                                                                "number"
-                                                            )
+                                                            this.handleSort("desc", "number")
                                                         }
                                                     />
                                                 </div>
                                             </div>
                                         </th>
 
-                                        <th
-                                            style={{
-                                                width: "20%",
-                                            }}>
+                                        <th className="w20">
                                             <div className="section-title">
                                                 <div>
                                                     <FormattedMessage id="menu.busOwner.vehicle.seat" />
                                                 </div>
                                                 <div>
-                                                    {" "}
                                                     <FaLongArrowAltDown
                                                         className="iconSortDown"
                                                         onClick={() =>
@@ -245,18 +228,14 @@ class ListVehicleOfStation extends Component {
                                                 </div>
                                             </div>
                                         </th>
-                                        <th
-                                            style={{
-                                                width: "15%",
-                                            }}
-                                            className="section-id-list">
-                                            Thời gian vào bến
+                                        <th className="w15">
+                                            <FormattedMessage id="menu.admin.listLocations.time" />
                                         </th>
-                                        <th className="section-id-list">
-                                            Nhà xe
+                                        <th className="w20">
+                                            <FormattedMessage id="menu.admin.listLocations.bus" />
                                         </th>
-                                        <th className="section-id-list">
-                                            Thông tin chi tiết
+                                        <th className="section-id-list w20">
+                                            <FormattedMessage id="menu.admin.listLocations.detail" />
                                         </th>
                                     </tr>
                                     <tr style={{ height: "50px" }}>
@@ -264,10 +243,9 @@ class ListVehicleOfStation extends Component {
 
                                         <td>
                                             <input
+                                                placeholder={mes}
                                                 className="form-control"
-                                                onChange={(e) =>
-                                                    this.handleKeyword1(e)
-                                                }
+                                                onChange={(e) => this.handleKeyword1(e)}
                                             />
                                         </td>
                                         <td></td>
@@ -282,29 +260,31 @@ class ListVehicleOfStation extends Component {
                                           )
                                         : test
                                     ).map((item, index) => {
-                                        let time = moment(
-                                            +item.arrivalTime
-                                        ).format("DD/MM/YYYY HH:mm");
+                                        let time;
+                                        if (language === "vi") {
+                                            time = moment(+item.arrivalTime).format(
+                                                " DD/MM/YYYY HH:mm"
+                                            );
+                                        } else {
+                                            time = `${moment(+item.arrivalTime)
+                                                .locale("en")
+                                                .format("L")} ${" "} ${moment(+item.arrivalTime)
+                                                .locale("en")
+                                                .format("LT")}`;
+                                        }
+
                                         return (
                                             <tr key={index}>
-                                                <td className="section-id-list">
-                                                    {item.id}
-                                                </td>
+                                                <td className="section-id-list">{item.id}</td>
                                                 <td>{item.number}</td>
-                                                <td>
-                                                    {item.BusType.numOfSeat}
-                                                </td>
+                                                <td>{item.BusType.numOfSeat}</td>
                                                 <td>{time}</td>
                                                 <td>{item.User.name}</td>
                                                 <td className="center">
                                                     <button
                                                         title="Infomation Detail"
                                                         className="btn-edit"
-                                                        onClick={() =>
-                                                            this.handleDetailInfo(
-                                                                item
-                                                            )
-                                                        }>
+                                                        onClick={() => this.handleDetailInfo(item)}>
                                                         <i className="fas fa-info-circle"></i>
                                                     </button>
                                                 </td>
@@ -316,15 +296,13 @@ class ListVehicleOfStation extends Component {
                                     <TableRow>
                                         <TablePagination
                                             sx={{
-                                                "& .MuiTablePagination-selectLabel ":
-                                                    {
-                                                        display: "None",
-                                                    },
-                                                "& .MuiTablePagination-displayedRows  ":
-                                                    {
-                                                        marginTop: "10px",
-                                                        fontSize: "15px",
-                                                    },
+                                                "& .MuiTablePagination-selectLabel ": {
+                                                    display: "None",
+                                                },
+                                                "& .MuiTablePagination-displayedRows  ": {
+                                                    marginTop: "10px",
+                                                    fontSize: "15px",
+                                                },
                                                 "& .css-194a1fa-MuiSelect-select-MuiInputBase-input  ":
                                                     {
                                                         fontSize: "15px",
@@ -341,9 +319,7 @@ class ListVehicleOfStation extends Component {
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={this.handleChangePage}
-                                            onRowsPerPageChange={
-                                                this.handleChangeRowsPerPage
-                                            }
+                                            onRowsPerPageChange={this.handleChangeRowsPerPage}
                                             ActionsComponent={(subProps) => (
                                                 <TablePaginationActions
                                                     style={{
@@ -377,11 +353,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchAllVehicle: () => dispatch(actions.fetchAllVehicle()),
         deleteVehicle: (id) => dispatch(actions.deleteVehicle(id)),
-        changeLanguageAppRedux: (language) =>
-            dispatch(changeLanguageApp(language)),
+        changeLanguageAppRedux: (language) => dispatch(changeLanguageApp(language)),
     };
 };
 
-export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(ListVehicleOfStation)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ListVehicleOfStation));

@@ -1,22 +1,11 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
-import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
-import _ from "lodash";
 import Select from "react-select";
-
 import { createNewRouteService } from "../../../../services/userService";
 
 class ModalAdd extends Component {
@@ -29,9 +18,6 @@ class ModalAdd extends Component {
             previewImgURL: "",
             image: "",
         };
-    }
-    componentDidMount() {
-        this.props.fetchAllLocation();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -72,6 +58,7 @@ class ModalAdd extends Component {
                 obj.label = `${item.name} (${item.city}) `;
                 obj.value = item.id;
                 result.push(obj);
+                return result;
             });
         }
         return result;
@@ -120,9 +107,7 @@ class ModalAdd extends Component {
                 if (language === LANGUAGES.VI) {
                     toast.error("Điểm bắt đầu và kết thúc phải khác nhau");
                 } else {
-                    toast.error(
-                        "The starting and ending points must be different"
-                    );
+                    toast.error("The starting and ending points must be different");
                 }
             } else {
                 if (language === LANGUAGES.VI) {
@@ -140,7 +125,6 @@ class ModalAdd extends Component {
         this.setState({ selectLocaion2 });
     };
     render() {
-        let language = this.props.language;
         let { selectLocaion1, selectLocaion2 } = this.state;
 
         return (
@@ -189,17 +173,12 @@ class ModalAdd extends Component {
                                     <label htmlFor="img">Img</label>
                                     <div className="prev-img-container">
                                         <input
-                                            // className="form-control mb-4"
                                             id="img"
                                             type="file"
                                             hidden
-                                            onChange={(event) =>
-                                                this.handleChangeImage(event)
-                                            }
+                                            onChange={(event) => this.handleChangeImage(event)}
                                         />
-                                        <label
-                                            className="upload-img"
-                                            htmlFor="img">
+                                        <label className="upload-img" htmlFor="img">
                                             <FormattedMessage id="menu.admin.listRoute.upimage" />
                                             <i className="fas fa-upload"></i>
                                         </label>
@@ -247,7 +226,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return { fetchAllLocation: () => dispatch(actions.fetchAllLocation()) };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalAdd);

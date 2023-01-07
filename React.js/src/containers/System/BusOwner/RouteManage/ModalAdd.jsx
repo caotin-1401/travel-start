@@ -607,7 +607,6 @@ const mapDispatchToProps = (dispatch) => {
         fetchAllRoute: () => dispatch(actions.fetchAllRoute()),
         fetchAllVehicle: () => dispatch(actions.fetchAllVehicle()),
         fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()),
-        createNewSchedule: (data) => dispatch(actions.createNewSchedule(data)),
     };
 };
 

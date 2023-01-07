@@ -38,16 +38,21 @@ let handleRegister = async (req, res) => {
         let email = req.body.email;
         let password = req.body.password;
         let confirmPassword = req.body.confirmPassword;
-        let phoneNumber = req.body.phoneNumber;
+        let name = req.body.name;
 
-        if (!phoneNumber || !password || !confirmPassword) {
+        if (!name || !password || !confirmPassword) {
             return res.status(500).json({
                 errCode: 1,
                 message: "Missing inputs parameter",
             });
         }
 
-        let userData = await userService.createNewUserByRegister(email, password, confirmPassword, phoneNumber);
+        let userData = await userService.createNewUserByRegister(
+            email,
+            password,
+            confirmPassword,
+            name
+        );
 
         return res.status(200).json({
             errCode: userData.errCode,
@@ -270,7 +275,23 @@ let handleDeleteUser = async (req, res) => {
         });
     }
 };
-
+let handleDeletePassenger = async (req, res) => {
+    try {
+        if (!req.body.id) {
+            return res.status(200).json({
+                errCode: 1,
+                errMessage: "Missing required parameter",
+            });
+        }
+        let message = await userService.handleDeletePassenger(req.body.id);
+        return res.status(200).json(message);
+    } catch (e) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server",
+        });
+    }
+};
 let getAllCode = async (req, res) => {
     try {
         let data = await userService.getAllCodeService(req.query.type);
@@ -390,7 +411,11 @@ let handlePostResetPassword = async (req, res) => {
             });
         }
 
-        let userData = await userService.handlePostResetPassword(email, req.body.token, req.body.password);
+        let userData = await userService.handlePostResetPassword(
+            email,
+            req.body.token,
+            req.body.password
+        );
 
         return res.status(200).json({
             errCode: 0,
@@ -425,4 +450,5 @@ module.exports = {
     handleGetForgotPassword,
     getInfoDriverRoute,
     getAllDrivers,
+    handleDeletePassenger,
 };

@@ -1,17 +1,9 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import * as actions from "../../../../store/actions";
-import { LANGUAGES, CommonUtils } from "../../../../utils";
+import { LANGUAGES } from "../../../../utils";
 import _ from "lodash";
 
 class ModalEditUser extends Component {
@@ -29,7 +21,6 @@ class ModalEditUser extends Component {
             address: "",
             gender: "",
             avatar: "",
-            id: "",
         };
     }
     async componentDidMount() {
@@ -39,11 +30,8 @@ class ModalEditUser extends Component {
         if (user && !_.isEmpty(user)) {
             let imageBase64 = "";
             if (user.image) {
-                imageBase64 = Buffer.from(user.image, "base64").toString(
-                    "binary"
-                );
+                imageBase64 = Buffer.from(user.image, "base64").toString("binary");
             }
-
             this.setState({
                 email: user.email,
                 password: "HASHCODE",
@@ -72,8 +60,7 @@ class ModalEditUser extends Component {
     render() {
         let language = this.props.language;
         let genders = this.state.genderArr;
-        let { email, password, name, phone, address, gender, avatar } =
-            this.state;
+        let { email, password, name, phone, address, gender } = this.state;
         return (
             <Modal
                 isOpen={this.props.isOpen}
@@ -90,11 +77,15 @@ class ModalEditUser extends Component {
                 <ModalBody>
                     <Row>
                         <Col md={6}>
-                            <label>Email</label>
-                            <input className="form-control mb-4" disabled />
+                            <label>
+                                <FormattedMessage id="account.email" />
+                            </label>
+                            <input className="form-control mb-4" disabled value={email} />
                         </Col>
                         <Col md={6}>
-                            <label>Password</label>
+                            <label>
+                                <FormattedMessage id="account.pass" />
+                            </label>
                             <input
                                 className="form-control mb-4"
                                 type="password"
@@ -105,42 +96,31 @@ class ModalEditUser extends Component {
                     </Row>
                     <Row>
                         <Col md={6}>
-                            <label>Full Name</label>
-                            <input
-                                className="form-control mb-4"
-                                value={name}
-                                disabled
-                            />
+                            <label>
+                                <FormattedMessage id="account.Name" />
+                            </label>
+                            <input className="form-control mb-4" value={name} disabled />
                         </Col>
                         <Col md={6}>
-                            <label>Phone Number</label>
-                            <input
-                                className="form-control mb-4"
-                                value={phone}
-                                disabled
-                            />
+                            <label>
+                                <FormattedMessage id="account.phone" />
+                            </label>
+                            <input className="form-control mb-4" value={phone} disabled />
                         </Col>
                     </Row>
-                    <label>Address</label>
-                    <input
-                        className="form-control mb-4"
-                        value={address}
-                        disabled
-                    />
+                    <label>
+                        <FormattedMessage id="account.address" />
+                    </label>
+                    <input className="form-control mb-4" value={address} disabled />
                     <Row>
                         <Col md={3}>
                             <label>Gender</label>
-                            <select
-                                className="form-select mb-4"
-                                disabled
-                                value={gender}>
+                            <select className="form-select mb-4" disabled value={gender}>
                                 {genders &&
                                     genders.length > 0 &&
                                     genders.map((item, index) => {
                                         return (
-                                            <option
-                                                key={index}
-                                                value={item.keyMap}>
+                                            <option key={index} value={item.keyMap}>
                                                 {language === LANGUAGES.VI
                                                     ? item.valueVi
                                                     : item.valueEn}
@@ -153,14 +133,10 @@ class ModalEditUser extends Component {
                         <Col md={6} disabled>
                             <label>Img</label>
                             <div className="prev-img-container">
-                                <input
-                                    // className="form-control mb-4"
-                                    type="file"
-                                    hidden
-                                    disabled
-                                />
+                                <input type="file" hidden disabled />
                                 <label className="upload-img">
-                                    Tải ảnh<i className="fas fa-upload"></i>
+                                    <FormattedMessage id="account.upload" />
+                                    <i className="fas fa-upload"></i>
                                 </label>
                                 <div
                                     className="prev-img"
@@ -178,15 +154,15 @@ class ModalEditUser extends Component {
                             this.toggle();
                         }}
                         className="btn-primary-modal">
-                        Cancel
-                    </Button>{" "}
+                        <FormattedMessage id="account.cancel" />
+                    </Button>
                     <Button
                         color="primary"
                         onClick={() => {
                             this.toggle();
                         }}
                         className="btn-primary-modal">
-                        Close
+                        <FormattedMessage id="account.save" />
                     </Button>
                 </ModalFooter>
             </Modal>

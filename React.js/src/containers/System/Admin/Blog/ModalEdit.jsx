@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
 import "../style.scss";
-import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
 import _ from "lodash";
@@ -28,7 +27,6 @@ class ModalEdit extends Component {
     }
     async componentDidMount() {
         let user = this.props.currentUser;
-        console.log(user);
         if (user && !_.isEmpty(user)) {
             let imageBase64 = "";
             if (user.image) {
@@ -82,12 +80,12 @@ class ModalEdit extends Component {
         let author = this.props.userInfo.name;
         let language = this.props.language;
 
-        let nameErrVi = "Vui lòng điền tên bài viết";
-        let nameErrEn = "Please enter blog name";
-        let imageErrVi = "Vui lòng chọn ảnh của bài viết";
+        let nameErrVi = "Vui lòng điền tiêu đề bài viết";
+        let nameErrEn = "Please enter blog title";
+        let imageErrVi = "Vui lòng chọn ảnh tiêu đề của bài viết";
         let imageErrEn = "Please choose a photo of the blog";
-        let descriptionVi = "Vui lòng nhập mô tả chi tiết cho bài viết";
-        let descriptionEn = "Please enter a detailed description for the blog";
+        let descriptionVi = "Vui lòng nhập nội dung cho bài viết";
+        let descriptionEn = "Please enter a content for the blog";
         if (!description) {
             if (language === LANGUAGES.VI) {
                 toast.error(nameErrVi);
@@ -120,9 +118,9 @@ class ModalEdit extends Component {
             });
             if (res && res.errCode === 0) {
                 if (language === LANGUAGES.VI) {
-                    toast.success("Chỉnh sửa sự kiện thành công");
+                    toast.success("Chỉnh sửa bài viết thành công");
                 } else {
-                    toast.success("Edit successful event");
+                    toast.success("Edit successful blog");
                 }
             }
         }
@@ -143,7 +141,7 @@ class ModalEdit extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Create a new trip
+                        <FormattedMessage id="menu.admin.listBlog.title2" />
                     </ModalHeader>
                     <ModalBody>
                         <Box
@@ -154,7 +152,10 @@ class ModalEdit extends Component {
                             <Row>
                                 <Col md={6}>
                                     <Row>
-                                        <label htmlFor="exampleEmail">Tên sự kiện</label>
+                                        <label htmlFor="exampleEmail">
+                                            {" "}
+                                            <FormattedMessage id="menu.admin.listBlog.name" />
+                                        </label>
                                         <input
                                             className="form-control mb-4 h-38 "
                                             id="description"
@@ -172,7 +173,9 @@ class ModalEdit extends Component {
                                 </Col>
                                 <Col md={1}></Col>
                                 <Col md={5}>
-                                    <label htmlFor="img">Img</label>
+                                    <label htmlFor="img">
+                                        <FormattedMessage id="menu.admin.listBlog.img" />
+                                    </label>
                                     <div className="prev-img-container">
                                         <input
                                             id="img"
@@ -181,7 +184,7 @@ class ModalEdit extends Component {
                                             onChange={(event) => this.handleChangeImage(event)}
                                         />
                                         <label className="upload-img" htmlFor="img">
-                                            Tải ảnh
+                                            <FormattedMessage id="account.upload" />
                                             <i className="fas fa-upload"></i>
                                         </label>
                                         <div
@@ -195,7 +198,10 @@ class ModalEdit extends Component {
                             </Row>
                             <Row>
                                 <Col>
-                                    <label>Thong tin su kien</label>
+                                    <label>
+                                        {" "}
+                                        <FormattedMessage id="menu.admin.listBlog.content" />
+                                    </label>
                                     <MdEditor
                                         style={{ height: "370px" }}
                                         renderHTML={(text) => mdParser.render(text)}
@@ -214,7 +220,7 @@ class ModalEdit extends Component {
                                 this.toggle();
                             }}
                             className="btn-primary-modal">
-                            Cancel
+                            <FormattedMessage id="account.cancel" />
                         </Button>{" "}
                         <Button
                             color="primary"
@@ -222,7 +228,7 @@ class ModalEdit extends Component {
                                 this.handleSave();
                             }}
                             className="btn-primary-modal">
-                            Save
+                            <FormattedMessage id="account.save" />
                         </Button>
                     </ModalFooter>
                 </Modal>
@@ -239,9 +245,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchAllEvents: () => dispatch(actions.fetchAllEvents()),
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalEdit);

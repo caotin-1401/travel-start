@@ -1,27 +1,14 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
 import "../style.scss";
-import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
 import { toast } from "react-toastify";
-import _ from "lodash";
 import Select from "react-select";
 
-import {
-    createNewLocationService,
-    getAllCity,
-} from "../../../../services/userService";
+import { createNewLocationService, getAllCity } from "../../../../services/userService";
 
 class ModalAdd extends Component {
     constructor(props) {
@@ -194,10 +181,7 @@ class ModalAdd extends Component {
                                         placeholder={addressInput}
                                         type="text"
                                         onChange={(event) => {
-                                            this.onChangeInput(
-                                                event,
-                                                "address"
-                                            );
+                                            this.onChangeInput(event, "address");
                                         }}
                                         value={this.state.address}
                                         onKeyDown={this.handleKeyDown}

@@ -96,12 +96,15 @@ class AllBlogs extends Component {
                                         listBlogs &&
                                         listBlogs.length > 0 &&
                                         listBlogs.map((item, index) => {
-                                            let time = moment(new Date(item.createdAt).getTime()).format(
-                                                "DD-MM-YYYY HH:mm:ss"
-                                            );
+                                            let time = moment(
+                                                new Date(item.createdAt).getTime()
+                                            ).format("DD-MM-YYYY HH:mm:ss");
                                             let imageBase64 = "";
                                             if (item.image) {
-                                                imageBase64 = Buffer.from(item.image, "base64").toString("binary");
+                                                imageBase64 = Buffer.from(
+                                                    item.image,
+                                                    "base64"
+                                                ).toString("binary");
                                             }
 
                                             return (

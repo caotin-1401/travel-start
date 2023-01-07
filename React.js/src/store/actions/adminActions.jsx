@@ -11,25 +11,18 @@ import {
     editLocationService,
     deleteLocationService,
     getAllBusTypesService,
-    createNewBusTypeService,
-    deleteBusTypeService,
-    editBusTypeService,
     getAllRoutesService,
-    createNewRouteService,
-    deleteRouteService,
-    editRouteService,
     getAllVehiclesService,
-    createNewVehicleService,
     deleteVehicleService,
-    editVehicleService,
     getAllScheduleService,
     deleteScheduleService,
-    createNewTrip,
     getAllTickets,
     getAllEventsService,
     getAllCouponService,
     getAllPassengers,
     getAllBlogsService,
+    getAllRoutesHomeService,
+    getAllEventsHomeService,
 } from "../../services/userService";
 import { toast } from "react-toastify";
 
@@ -327,31 +320,6 @@ export const EditLocation = (data) => {
 };
 
 //BusType
-export const createNewBusType = (data) => {
-    return async (dispatch, getState) => {
-        try {
-            let res = await createNewBusTypeService(data);
-            if (res && res.errCode === 0) {
-                toast.success("Create a new bus type success!");
-                dispatch({
-                    type: actionTypes.CREATE_BUS_TYPE_SUCCESS,
-                    busTypes: res.data,
-                });
-                dispatch(fetchAllBusType());
-            } else {
-                alert(res.errMessage);
-                dispatch({
-                    type: actionTypes.CREATE_BUS_TYPE_FAILED,
-                });
-            }
-        } catch (e) {
-            dispatch({
-                type: actionTypes.CREATE_BUS_TYPE_FAILED,
-            });
-        }
-    };
-};
-
 export const fetchAllBusType = (data) => {
     return async (dispatch, getState) => {
         try {
@@ -374,81 +342,7 @@ export const fetchAllBusType = (data) => {
     };
 };
 
-export const deleteBusType = (userId) => {
-    return async (dispatch, getState) => {
-        try {
-            let res = await deleteBusTypeService(userId);
-            if (res && res.errCode === 0) {
-                toast.success("Delete the bus type success!");
-                dispatch({
-                    type: actionTypes.DELETE_BUS_TYPE_SUCCESS,
-                    busTypes: res.userId,
-                });
-                dispatch(fetchAllBusType());
-            } else {
-                alert(res.errMessage);
-                dispatch({
-                    type: actionTypes.DELETE_BUS_TYPE_FAILED,
-                });
-            }
-        } catch (e) {
-            dispatch({
-                type: actionTypes.DELETE_BUS_TYPE_FAILED,
-            });
-        }
-    };
-};
-
-export const EditBusType = (data) => {
-    return async (dispatch, getState) => {
-        try {
-            let res = await editBusTypeService(data);
-            if (res && res.errCode === 0) {
-                toast.success("Update the bus type success!");
-                dispatch({
-                    type: actionTypes.EDIT_BUS_TYPE_SUCCESS,
-                    busTypes: res.data,
-                });
-                dispatch(fetchAllBusType());
-            } else {
-                alert(res.errMessage);
-                dispatch({
-                    type: actionTypes.EDIT_BUS_TYPE_FAILED,
-                });
-            }
-        } catch (e) {
-            dispatch({
-                type: actionTypes.EDIT_LOCATION_FAILED,
-            });
-        }
-    };
-};
-
 //Route
-export const createNewRoute = (data) => {
-    return async (dispatch, getState) => {
-        try {
-            let res = await createNewRouteService(data);
-            if (res && res.errCode === 0) {
-                toast.success("Create a new route success!");
-                dispatch({
-                    type: actionTypes.CREATE_ROUTE_SUCCESS,
-                    routes: res.data,
-                });
-                dispatch(fetchAllRoute());
-            } else {
-                alert(res.errMessage);
-                dispatch({
-                    type: actionTypes.CREATE_ROUTE_FAILED,
-                });
-            }
-        } catch (e) {
-            dispatch({
-                type: actionTypes.CREATE_ROUTE_FAILED,
-            });
-        }
-    };
-};
 
 export const fetchAllRoute = (data) => {
     return async (dispatch, getState) => {
@@ -471,6 +365,28 @@ export const fetchAllRoute = (data) => {
         }
     };
 };
+export const fetchAllRouteHome = (data) => {
+    return async (dispatch, getState) => {
+        try {
+            let res = await getAllRoutesHomeService("ALL");
+            if (res && res.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_ROUTES_HOME_SUCCESS,
+                    routes: res.routes,
+                }); // trong cai dispatch la action truyen di
+            } else {
+                dispatch({
+                    type: actionTypes.FETCH_ROUTES_HOME_FAILED,
+                });
+            }
+        } catch (e) {
+            dispatch({
+                type: actionTypes.FETCH_ROUTES_HOME_FAILED,
+            });
+        }
+    };
+};
+
 export const fetchAllBlogs = (data) => {
     return async (dispatch, getState) => {
         try {
@@ -492,82 +408,8 @@ export const fetchAllBlogs = (data) => {
         }
     };
 };
-export const deleteRoute = (userId) => {
-    return async (dispatch, getState) => {
-        try {
-            let res = await deleteRouteService(userId);
-            if (res && res.errCode === 0) {
-                toast.success("Delete the bus type success!");
-                dispatch({
-                    type: actionTypes.DELETE_ROUTE_SUCCESS,
-                    routes: res.userId,
-                });
-                dispatch(fetchAllRoute());
-            } else {
-                alert(res.errMessage);
-                dispatch({
-                    type: actionTypes.DELETE_ROUTE_FAILED,
-                });
-            }
-        } catch (e) {
-            dispatch({
-                type: actionTypes.DELETE_ROUTE_FAILED,
-            });
-        }
-    };
-};
-
-export const EditRoute = (data) => {
-    return async (dispatch, getState) => {
-        try {
-            let res = await editRouteService(data);
-            if (res && res.errCode === 0) {
-                toast.success("Update the bus type success!");
-                dispatch({
-                    type: actionTypes.EDIT_ROUTE_SUCCESS,
-                    routes: res.data,
-                });
-                dispatch(fetchAllRoute());
-            } else {
-                alert(res.errMessage);
-                dispatch({
-                    type: actionTypes.EDIT_ROUTE_FAILED,
-                });
-            }
-        } catch (e) {
-            dispatch({
-                type: actionTypes.EDIT_ROUTE_FAILED,
-            });
-        }
-    };
-};
 
 //Vehicle
-export const createNewVehicle = (data) => {
-    return async (dispatch, getState) => {
-        try {
-            let res = await createNewVehicleService(data);
-            if (res && res.errCode === 0) {
-                toast.success("Create a new vehicle success!");
-                dispatch({
-                    type: actionTypes.CREATE_VEHICLE_SUCCESS,
-                    vehicles: res.data,
-                });
-                dispatch(fetchAllVehicle());
-            } else {
-                alert(res.errMessage);
-                dispatch({
-                    type: actionTypes.CREATE_VEHICLE_FAILED,
-                });
-            }
-        } catch (e) {
-            dispatch({
-                type: actionTypes.CREATE_VEHICLE_FAILED,
-            });
-        }
-    };
-};
-
 export const fetchAllVehicle = () => {
     return async (dispatch, getState) => {
         try {
@@ -615,57 +457,7 @@ export const deleteVehicle = (userId) => {
     };
 };
 
-export const EditVehicle = (data) => {
-    return async (dispatch, getState) => {
-        try {
-            let res = await editVehicleService(data);
-            if (res && res.errCode === 0) {
-                toast.success("Update the vehicle success!");
-                dispatch({
-                    type: actionTypes.EDIT_VEHICLE_SUCCESS,
-                    vehicles: res.data,
-                });
-                dispatch(fetchAllVehicle());
-            } else {
-                // alert(res.errMessage);
-                dispatch({
-                    type: actionTypes.EDIT_VEHICLE_FAILED,
-                });
-            }
-        } catch (e) {
-            dispatch({
-                type: actionTypes.EDIT_VEHICLE_FAILED,
-            });
-        }
-    };
-};
-
 //schedule
-
-export const createNewSchedule = (data) => {
-    return async (dispatch, getState) => {
-        try {
-            let res = await createNewTrip(data);
-            if (res && res.errCode === 0) {
-                toast.success("Create a new vehicle success!");
-                dispatch({
-                    type: actionTypes.CREATE_SCHEDULES_SUCCESS,
-                    trips: res.data,
-                });
-                dispatch(fetchAllScheduleTrip());
-            } else {
-                alert(res.errMessage);
-                dispatch({
-                    type: actionTypes.CREATE_SCHEDULES_FAILED,
-                });
-            }
-        } catch (e) {
-            dispatch({
-                type: actionTypes.CREATE_SCHEDULES_FAILED,
-            });
-        }
-    };
-};
 export const fetchAllScheduleTrip = () => {
     return async (dispatch, getState) => {
         try {
@@ -786,7 +578,29 @@ export const fetchAllEvents = () => {
         }
     };
 };
-
+export const fetchAllEventsHome = () => {
+    return async (dispatch, getState) => {
+        try {
+            let res = await getAllEventsHomeService("ALL");
+            if (res && res.errCode === 0) {
+                dispatch({
+                    type: actionTypes.FETCH_EVENT_SUCCESS,
+                    events: res.events,
+                }); // trong cai dispatch la action truyen di
+            } else {
+                console.log("FETCH_EVENT_FAILED");
+                dispatch({
+                    type: actionTypes.FETCH_EVENT_FAILED,
+                });
+            }
+        } catch (e) {
+            console.log("FETCH_EVENT_FAILED: ", e);
+            dispatch({
+                type: actionTypes.FETCH_EVENT_FAILED,
+            });
+        }
+    };
+};
 ///coupon
 export const fetchAllCoupon = () => {
     return async (dispatch, getState) => {

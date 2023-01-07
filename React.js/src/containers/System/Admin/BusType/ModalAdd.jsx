@@ -1,21 +1,10 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
-import { changeLanguageApp } from "../../../../store/actions/appActions";
-import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
 import { toast } from "react-toastify";
-import _ from "lodash";
 import { createNewBusTypeService } from "../../../../services/userService";
 
 class ModalAdd extends Component {
@@ -148,10 +137,7 @@ class ModalAdd extends Component {
                                         type="text"
                                         placeholder={num}
                                         onChange={(event) => {
-                                            this.onChangeInput(
-                                                event,
-                                                "numOfSeat"
-                                            );
+                                            this.onChangeInput(event, "numOfSeat");
                                         }}
                                         value={this.state.numOfSeat}
                                         onKeyDown={this.handleKeyDown}
@@ -192,10 +178,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        changeLanguageAppRedux: (language) =>
-            dispatch(changeLanguageApp(language)),
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalAdd);
