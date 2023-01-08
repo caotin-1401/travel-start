@@ -67,11 +67,7 @@ class Events extends Component {
                                                 className=" section-custom"
                                                 onClick={() => this.handleViewDetail(item)}>
                                                 <div className="bg-img">
-                                                    <img
-                                                        src={imageBase64}
-                                                        alt="..."
-                                                        loading="lazy"
-                                                    />
+                                                    <img src={imageBase64} alt="..." />
                                                 </div>
 
                                                 <div>

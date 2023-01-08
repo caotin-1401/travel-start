@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
 
@@ -37,7 +35,8 @@ class Blog extends Component {
     render() {
         console.log(this.state.listBlogs);
         let { listBlogs } = this.state;
-        let test = listBlogs.concat(listBlogs).concat(listBlogs).concat(listBlogs).concat(listBlogs);
+        let test = listBlogs.concat(listBlogs).concat(listBlogs);
+
         let newArr = test.slice(0, 6);
 
         return (
@@ -57,7 +56,10 @@ class Blog extends Component {
                                     newArr.map((item, index) => {
                                         let imageBase64 = "";
                                         if (item.image) {
-                                            imageBase64 = Buffer.from(item.image, "base64").toString("binary");
+                                            imageBase64 = Buffer.from(
+                                                item.image,
+                                                "base64"
+                                            ).toString("binary");
                                         }
 
                                         return (
@@ -73,7 +75,9 @@ class Blog extends Component {
                                                     }}></div>
 
                                                 <div>
-                                                    <div className="section-title">{item.description}</div>
+                                                    <div className="section-title">
+                                                        {item.description}
+                                                    </div>
                                                 </div>
                                             </div>
                                         );

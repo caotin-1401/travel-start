@@ -65,13 +65,13 @@ class ForgotPassword extends Component {
 
     render() {
         let language = this.props.language;
-        let input1, input2;
+        let input1;
         if (language === LANGUAGES.VI) {
             input1 = "Nhập email";
-            input2 = "Gửi email thành công";
+            // input2 = "Gửi email thành công";
         } else {
             input1 = "Enter your email";
-            input2 = "Send email success";
+            // input2 = "Send email success";
         }
         return (
             <div className="login-background">

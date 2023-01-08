@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
-import { Route, Switch, Redirect, withRouter } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { ConnectedRouter as Router } from "connected-react-router";
 import { history } from "../redux";
 import { ToastContainer } from "react-toastify";
@@ -59,7 +59,10 @@ class App extends Component {
                                 <CustomScrollbars style={{ height: "100vh", with: "100%" }}>
                                     <Switch>
                                         <Route path={path.HOME} exact component={Home} />
-                                        <Route path={path.LOGIN} component={userIsNotAuthenticated(Login)} />{" "}
+                                        <Route
+                                            path={path.LOGIN}
+                                            component={userIsNotAuthenticated(Login)}
+                                        />{" "}
                                         <Route
                                             path={path.FORGOT_PASSWORD}
                                             component={userIsNotAuthenticated(ForgotPassword)}
@@ -68,12 +71,27 @@ class App extends Component {
                                             path={path.RESET_PASSWORD}
                                             component={userIsNotAuthenticated(ResetPassword)}
                                         />
-                                        <Route path={path.REGISTER} component={userIsNotAuthenticated(Register)} />
+                                        <Route
+                                            path={path.REGISTER}
+                                            component={userIsNotAuthenticated(Register)}
+                                        />
                                         <Route path={path.HOMEPAGE} exact component={HomePage} />
-                                        <Route path={path.SYSTEM} component={userIsAuthenticated(System)} />
-                                        <Route path={path.BUSOWNER} component={userIsAuthenticated(BusOnwer)} />
-                                        <Route path={path.DRIVER} component={userIsAuthenticated(Driver)} />
-                                        <Route path={path.ROUTE} component={userIsAuthenticated(BusRoute)} />
+                                        <Route
+                                            path={path.SYSTEM}
+                                            component={userIsAuthenticated(System)}
+                                        />
+                                        <Route
+                                            path={path.BUSOWNER}
+                                            component={userIsAuthenticated(BusOnwer)}
+                                        />
+                                        <Route
+                                            path={path.DRIVER}
+                                            component={userIsAuthenticated(Driver)}
+                                        />
+                                        <Route
+                                            path={path.ROUTE}
+                                            component={userIsAuthenticated(BusRoute)}
+                                        />
                                         <Route path={path.VERIFY_EMAIL} component={VerifyEmail} />
                                         <Route path={path.EVENTS} component={AllEvents} />
                                         <Route path={path.EVENT} component={DetailEvent} />
@@ -92,7 +110,10 @@ class App extends Component {
                                             path={path.PROFILE_DRIVER}
                                             component={userIsAuthenticated(ProfileDriver)}
                                         />
-                                        <Route path={path.PROFILE} component={userIsAuthenticated(Profile)} />{" "}
+                                        <Route
+                                            path={path.PROFILE}
+                                            component={userIsAuthenticated(Profile)}
+                                        />{" "}
                                         <Route
                                             component={() => {
                                                 return <Redirect to={BusRoute} />;

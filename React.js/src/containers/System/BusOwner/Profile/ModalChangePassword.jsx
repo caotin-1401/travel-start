@@ -11,7 +11,6 @@ class ModalChangePassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: "",
             oldPass: "",
             newPass: "",
             confirmPass: "",
@@ -20,12 +19,6 @@ class ModalChangePassword extends Component {
             isNewPass: false,
             isConfirmPass: false,
         };
-    }
-
-    componentDidMount() {
-        this.setState({
-            id: this.props.currentUser,
-        });
     }
 
     toggle = () => {
@@ -56,7 +49,8 @@ class ModalChangePassword extends Component {
     };
     handleSave = async () => {
         let language = this.props.language;
-        let { id, oldPass, newPass, confirmPass } = this.state;
+        let { oldPass, newPass, confirmPass } = this.state;
+        let id = this.props.currentUser;
         let err;
         if (!oldPass) {
             if (language === LANGUAGES.VI) {
@@ -124,7 +118,6 @@ class ModalChangePassword extends Component {
                 oldPass,
                 newPass,
             });
-            console.log(res);
             if (res && res.errCode === 0) {
                 if (language === LANGUAGES.VI) {
                     toast.success("Thay đổi mật khẩu thành công");
@@ -180,8 +173,8 @@ class ModalChangePassword extends Component {
                                             type={this.state.isOldPass ? "text" : "password"}
                                             id="oldPass"
                                             className="form-control"
-                                            placeholder={mes}
                                             value={oldPass}
+                                            placeholder={mes}
                                             onChange={(event) => {
                                                 this.onChangeInput(event, "oldPass");
                                             }}

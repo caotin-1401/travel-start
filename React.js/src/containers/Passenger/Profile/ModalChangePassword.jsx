@@ -1,26 +1,16 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import {
-    Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Row,
-    Col,
-} from "reactstrap";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import Box from "@mui/material/Box";
 import * as actions from "../../../store/actions";
-import { LANGUAGES, CommonUtils } from "../../../utils";
+import { LANGUAGES } from "../../../utils";
 import { toast } from "react-toastify";
-import moment from "moment";
 import { handleChangePasswordPassenger } from "../../../services/userService";
 class ModalChangePassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: "",
             oldPass: "",
             newPass: "",
             confirmPass: "",
@@ -29,16 +19,6 @@ class ModalChangePassword extends Component {
             isNewPass: false,
             isConfirmPass: false,
         };
-    }
-
-    componentDidMount() {
-        this.setState({
-            id: this.props.currentUser,
-        });
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        // let;
     }
 
     toggle = () => {
@@ -69,7 +49,8 @@ class ModalChangePassword extends Component {
     };
     handleSave = async () => {
         let language = this.props.language;
-        let { id, oldPass, newPass, confirmPass } = this.state;
+        let { oldPass, newPass, confirmPass } = this.state;
+        let id = this.props.currentUser;
         let err;
         if (!oldPass) {
             if (language === LANGUAGES.VI) {
@@ -101,7 +82,7 @@ class ModalChangePassword extends Component {
                 errMessage: err,
             });
             return;
-        } else if (newPass != confirmPass) {
+        } else if (newPass !== confirmPass) {
             if (language === LANGUAGES.VI) {
                 err = "Xác nhận mật khẩu phải giống mật khẩu";
             } else {
@@ -137,7 +118,6 @@ class ModalChangePassword extends Component {
                 oldPass,
                 newPass,
             });
-            console.log(res);
             if (res && res.errCode === 0) {
                 if (language === LANGUAGES.VI) {
                     toast.success("Thay đổi mật khẩu thành công");
@@ -160,7 +140,11 @@ class ModalChangePassword extends Component {
     };
     render() {
         let language = this.props.language;
-        let { oldPass, newPass, confirmPass, id, errMessage } = this.state;
+        let mes;
+        if (language === LANGUAGES.VI) {
+            mes = "Nhập mật khẩu";
+        } else mes = "Enter your password";
+        let { oldPass, newPass, confirmPass, errMessage } = this.state;
         console.log(errMessage);
         return (
             <div>
@@ -175,7 +159,7 @@ class ModalChangePassword extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        change password
+                        <FormattedMessage id="account.change" />
                     </ModalHeader>
                     <ModalBody>
                         <Box>
@@ -183,30 +167,20 @@ class ModalChangePassword extends Component {
                                 <Col md={1}></Col>
                                 <Col md={10} className="form-group login-input">
                                     <label htmlFor="oldPass" className="mb-2">
-                                        Password :
+                                        <FormattedMessage id="account.passOld" />
                                     </label>
                                     <div className="custom-password mb-4">
                                         <input
-                                            type={
-                                                this.state.isOldPass
-                                                    ? "text"
-                                                    : "password"
-                                            }
+                                            type={this.state.isOldPass ? "text" : "password"}
                                             id="oldPass"
                                             className="form-control"
-                                            placeholder="Enter your password"
                                             value={oldPass}
+                                            placeholder={mes}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "oldPass"
-                                                );
+                                                this.onChangeInput(event, "oldPass");
                                             }}
                                         />
-                                        <span
-                                            onClick={() =>
-                                                this.handleShowOldPassword()
-                                            }>
+                                        <span onClick={() => this.handleShowOldPassword()}>
                                             <i
                                                 className={
                                                     this.state.isOldPass
@@ -222,30 +196,20 @@ class ModalChangePassword extends Component {
                                 <Col md={1}></Col>
                                 <Col md={10} className="form-group login-input">
                                     <label htmlFor="newPass" className="mb-2">
-                                        New Password :
+                                        <FormattedMessage id="account.passNew" />
                                     </label>
                                     <div className="custom-password mb-4">
                                         <input
-                                            type={
-                                                this.state.isNewPass
-                                                    ? "text"
-                                                    : "password"
-                                            }
+                                            type={this.state.isNewPass ? "text" : "password"}
                                             id="newPass"
                                             className="form-control"
-                                            placeholder="Enter your password"
+                                            placeholder={mes}
                                             value={newPass}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "newPass"
-                                                );
+                                                this.onChangeInput(event, "newPass");
                                             }}
                                         />
-                                        <span
-                                            onClick={() =>
-                                                this.handleShowNewPassword()
-                                            }>
+                                        <span onClick={() => this.handleShowNewPassword()}>
                                             <i
                                                 className={
                                                     this.state.isNewPass
@@ -260,33 +224,21 @@ class ModalChangePassword extends Component {
                             <Row>
                                 <Col md={1}></Col>
                                 <Col md={10} className="form-group login-input">
-                                    <label
-                                        htmlFor="confirmPass"
-                                        className="mb-2">
-                                        Confirm password :
+                                    <label htmlFor="confirmPass" className="mb-2">
+                                        <FormattedMessage id="account.confirm" />
                                     </label>
                                     <div className="custom-password mb-4">
                                         <input
-                                            type={
-                                                this.state.isConfirmPass
-                                                    ? "text"
-                                                    : "password"
-                                            }
+                                            type={this.state.isConfirmPass ? "text" : "password"}
                                             id="confirmPass"
                                             className="form-control"
-                                            placeholder="Enter your password"
+                                            placeholder={mes}
                                             value={confirmPass}
                                             onChange={(event) => {
-                                                this.onChangeInput(
-                                                    event,
-                                                    "confirmPass"
-                                                );
+                                                this.onChangeInput(event, "confirmPass");
                                             }}
                                         />
-                                        <span
-                                            onClick={() =>
-                                                this.handleShowConfirmPassword()
-                                            }>
+                                        <span onClick={() => this.handleShowConfirmPassword()}>
                                             <i
                                                 className={
                                                     this.state.isConfirmPass
@@ -300,7 +252,7 @@ class ModalChangePassword extends Component {
                                             color: "red",
                                             fontSize: "16px",
                                         }}>
-                                        {this.state.errMessage}
+                                        {errMessage}
                                     </div>
                                 </Col>
                                 <Col md={1}></Col>
@@ -345,7 +297,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ModalChangePassword);
+export default connect(mapStateToProps, mapDispatchToProps)(ModalChangePassword);

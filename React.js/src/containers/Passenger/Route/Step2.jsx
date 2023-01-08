@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Row, Col } from "reactstrap";
-class Step2 extends Component {
+import { Row } from "reactstrap";
+import { FormattedMessage } from "react-intl";
+
+export default class Step2 extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,7 +23,12 @@ class Step2 extends Component {
         });
         let isCleanData = this.props.isCleanDataParent;
         if (isCleanData === false) {
-            if (this.props.nameParent || this.props.phoneParent || this.props.emailParent || this.props.description) {
+            if (
+                this.props.nameParent ||
+                this.props.phoneParent ||
+                this.props.emailParent ||
+                this.props.description
+            ) {
                 this.setState({
                     name: this.props.nameParent,
                     phone: this.props.phoneParent,
@@ -42,18 +48,6 @@ class Step2 extends Component {
         }
     }
 
-    checkValidInput = () => {
-        let isValid = true;
-        let arrCheck = ["name", "email", "phone", "description"];
-        for (let i = 0; i < arrCheck.length; i++) {
-            if (!this.state[arrCheck[i]]) {
-                isValid = false;
-                alert("this input is required: " + arrCheck[i]);
-                break;
-            }
-        }
-        return isValid;
-    };
     onChangeInput = (event, id) => {
         let copyState = { ...this.state };
         copyState[id] = event.target.value;
@@ -82,7 +76,10 @@ class Step2 extends Component {
                     }}>
                     <div style={{ width: "400px" }}>
                         <Row>
-                            <label htmlFor="name">Full Name *</label>
+                            <label htmlFor="name">
+                                {" "}
+                                <FormattedMessage id="account.Name" />
+                            </label>
                             <input
                                 className="form-control mb-4"
                                 id="name"
@@ -95,7 +92,9 @@ class Step2 extends Component {
                             />
                         </Row>
                         <Row>
-                            <label htmlFor="exampleEmail">Email *</label>
+                            <label htmlFor="exampleEmail">
+                                <FormattedMessage id="account.email" />{" "}
+                            </label>
                             <input
                                 className="form-control mb-4"
                                 id="exampleEmail"
@@ -108,7 +107,10 @@ class Step2 extends Component {
                             />
                         </Row>
                         <Row>
-                            <label htmlFor="phone">Phone Number *</label>
+                            <label htmlFor="phone">
+                                {" "}
+                                <FormattedMessage id="account.phone" /> *
+                            </label>
                             <input
                                 className="form-control mb-4"
                                 id="phone"
@@ -121,7 +123,10 @@ class Step2 extends Component {
                             />
                         </Row>
                         <Row>
-                            <label htmlFor="description">Ghi chus</label>
+                            <label htmlFor="description">
+                                {" "}
+                                <FormattedMessage id="routes.description" />
+                            </label>
                             <textarea
                                 className="form-control mb-4"
                                 id="description"
@@ -140,7 +145,8 @@ class Step2 extends Component {
                                         fontWeight: "bold",
                                         fontSize: "16px",
                                     }}>
-                                    Giá : {this.currencyFormat(totalPrice)}
+                                    <FormattedMessage id="routes.prices" /> :{" "}
+                                    {this.currencyFormat(totalPrice)}
                                 </span>
                             </div>
                         </Row>
@@ -151,7 +157,7 @@ class Step2 extends Component {
                                         fontWeight: "bold",
                                         fontSize: "16px",
                                     }}>
-                                    Vị trí ngồi :{" "}
+                                    <FormattedMessage id="routes.seats" /> :{" "}
                                     {seatArr &&
                                         seatArr.length > 0 &&
                                         seatArr.map((item) => {
@@ -166,11 +172,3 @@ class Step2 extends Component {
         );
     }
 }
-
-const mapStateToProps = (state) => {
-    return {};
-};
-const mapDispatchToProps = (dispatch) => {
-    return {};
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Step2);

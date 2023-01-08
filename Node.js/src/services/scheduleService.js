@@ -385,32 +385,58 @@ let getTripsFromBusCompany = (tripId) => {
         }
     });
 };
-let getTripsFromCompany = (busOwnerId, driverId) => {
+let getTripsFromCompany = (busOwnerId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let trip = await db.Driver.findAll({
-                where: { busOwnerId: busOwnerId },
-                include: [
-                    {
-                        model: db.User,
-                        attributes: ["id", "name"],
-                        include: [
-                            {
-                                model: db.Trip,
-                                attributes: ["timeStart", "timeEnd"],
-                                include: [
-                                    {
-                                        model: db.Ticket,
-                                        attributes: ["id", "token", "totalPrice"],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-                raw: false,
-                nest: true,
-            });
+            let trip;
+            if (busOwnerId === "ALL") {
+                trip = await db.Driver.findAll({
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ["id", "name"],
+                            include: [
+                                {
+                                    model: db.Trip,
+                                    attributes: ["timeStart", "timeEnd"],
+                                    include: [
+                                        {
+                                            model: db.Ticket,
+                                            attributes: ["id", "token", "totalPrice"],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                    raw: false,
+                    nest: true,
+                });
+            } else {
+                trip = await db.Driver.findAll({
+                    where: { busOwnerId: busOwnerId },
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ["id", "name"],
+                            include: [
+                                {
+                                    model: db.Trip,
+                                    attributes: ["timeStart", "timeEnd"],
+                                    include: [
+                                        {
+                                            model: db.Ticket,
+                                            attributes: ["id", "token", "totalPrice"],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                    raw: false,
+                    nest: true,
+                });
+            }
             trip = _.sortBy(trip, ["id"]);
             resolve(trip);
         } catch (e) {

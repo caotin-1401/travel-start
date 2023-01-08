@@ -482,10 +482,12 @@ class BusRoute extends Component {
                                                                     <FormattedMessage id="routes.has" />
                                                                 </span>
                                                                 <span className="f-bold">
-                                                                    {arrFinish.length}
+                                                                    {" "}
+                                                                    {arrFinish.length}{" "}
                                                                 </span>
                                                                 <span className="f-bold">
-                                                                    <FormattedMessage id="routes.trip" />
+                                                                    {" "}
+                                                                    <FormattedMessage id="routes.trip" />{" "}
                                                                 </span>
                                                                 <span>
                                                                     <FormattedMessage id="routes.found" />

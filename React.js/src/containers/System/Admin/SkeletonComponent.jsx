@@ -4,7 +4,7 @@ export const SkeletonEvent = () => {
     return (
         <tr>
             <td
-                colSpan="5"
+                colSpan="8"
                 style={{
                     height: "47px",
                 }}>

@@ -29,7 +29,10 @@ const chooseSelect2 = [
 const arr1 = ["Nov 2022", "Dec 2022", "Jan - 2023"];
 const arr2 = ["Tháng 11 -2022", "Tháng 12 -2022", "Tháng 1 - 2023"];
 
-const time1 = [1671987600000 - 60 * 60 * 24 * 1000 * 7 * 2, 1672592399000 - 60 * 60 * 24 * 1000 * 7 * 2];
+const time1 = [
+    1671987600000 - 60 * 60 * 24 * 1000 * 7 * 2,
+    1672592399000 - 60 * 60 * 24 * 1000 * 7 * 2,
+];
 const time2 = [1671987600000 - 60 * 60 * 24 * 1000 * 7, 1672592399000 - 60 * 60 * 24 * 1000 * 7];
 const time3 = [1671987600000, 1672592399000];
 const time4 = [1672592400000, 1673197199000];
@@ -120,6 +123,7 @@ class ReportsLineRoute extends Component {
             });
 
             arrRevenueWeek.push(week.length);
+            return arrRevenueWeek;
         });
         handleArrMonth.map((item) => {
             month = trip.filter((i) => {
@@ -127,6 +131,7 @@ class ReportsLineRoute extends Component {
             });
 
             arrRevenueMonth.push(month.length);
+            return arrRevenueMonth;
         });
         this.setState({ listWeek: arrRevenueWeek, listMonths: arrRevenueMonth });
     };

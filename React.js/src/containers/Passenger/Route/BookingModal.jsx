@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
 import "./BookingModal.scss";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import Box from "@mui/material/Box";
@@ -12,7 +11,6 @@ import Step2 from "./Step2";
 import Step3 from "./Step3";
 import { saveBulkTicket } from "../../../services/userService";
 import moment from "moment";
-import localization from "moment/locale/vi";
 import { toast } from "react-toastify";
 import { CouponService, changeUserFirstCouponService } from "../../../services/userService";
 class BookingModal extends Component {
@@ -34,20 +32,21 @@ class BookingModal extends Component {
             isCleanData: false,
         };
     }
-    componentDidMount() {}
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.dataFromParent !== this.props.dataFromParent) {
             this.setState({
                 tripInfo: this.props.dataFromParent,
-            });
-        }
-
-        if (prevState.tripInfo !== this.state.tripInfo) {
-            this.setState({
                 seatArr: [],
                 totalPrice: 0,
             });
         }
+
+        // if (prevState.tripInfo !== this.state.tripInfo) {
+        //     this.setState({
+        //         seatArr: [],
+        //         totalPrice: 0,
+        //     });
+        // }
     }
     toggle = () => {
         this.props.toggleFromParent();
@@ -55,7 +54,6 @@ class BookingModal extends Component {
 
     handleChooseTicket = async () => {
         let {
-            current,
             tripInfo,
             seatArr,
             name,
@@ -67,7 +65,6 @@ class BookingModal extends Component {
             isActive,
             infoUser,
             totalPrice,
-            isCleanData,
         } = this.state;
         let test;
         let dayStart;
@@ -111,9 +108,9 @@ class BookingModal extends Component {
                     obj.time = moment(+tripInfo.timeStart).format("ddd DD/MM hh:mm");
                     obj.status = "S1";
                     result.push(obj);
+                    return result;
                 });
             }
-            let arrTicket = [];
 
             let res = await saveBulkTicket({ arrTicket: result });
             if (res && res.errCode === 0) {
@@ -132,16 +129,14 @@ class BookingModal extends Component {
                         id: inFoCoupon[0].id,
                         use: +inFoCoupon[0].use + 1,
                     });
-                let resCoupon;
-                let resUser;
                 if (data) {
                     if (data.id) {
-                        resCoupon = await CouponService(data);
+                        await CouponService(data);
                     }
                 }
                 if (infoUser) {
                     if (infoUser.id) {
-                        resUser = await changeUserFirstCouponService(infoUser);
+                        await changeUserFirstCouponService(infoUser);
                     }
                 }
             } else if (res && res.errCode === 5) {
@@ -214,11 +209,34 @@ class BookingModal extends Component {
         });
     };
     render() {
-        let { current, tripInfo, seatArr, totalPrice, name, phone, email, description, isActive, isCleanData } =
-            this.state;
+        let {
+            current,
+            tripInfo,
+            seatArr,
+            totalPrice,
+            name,
+            phone,
+            email,
+            description,
+            isActive,
+            isCleanData,
+        } = this.state;
+        let { language } = this.props;
+        let mes1, mes2, mes3, mes4;
+        if (language === "vi") {
+            mes1 = "Chọn ghế";
+            mes2 = "Nhập thông tin hành khách";
+            mes3 = "Thanh toán";
+            mes4 = "Đặt vé";
+        } else {
+            mes1 = "Select seat";
+            mes2 = "Enter passenger information";
+            mes3 = "Payment";
+            mes4 = "Booking";
+        }
         const steps = [
             {
-                label: "Chọn ghế",
+                label: mes1,
                 description: (
                     <Step1
                         parentCallback={this.callbackFunction1}
@@ -231,7 +249,7 @@ class BookingModal extends Component {
                 ),
             },
             {
-                label: "Nhập thông tin",
+                label: mes2,
                 description: (
                     <Step2
                         nameParent={name}
@@ -247,7 +265,7 @@ class BookingModal extends Component {
                 ),
             },
             {
-                label: "Thanh toan",
+                label: mes3,
                 description: (
                     <Step3
                         seatArrParent={seatArr}
@@ -303,7 +321,10 @@ class BookingModal extends Component {
                             activeStep={current}
                             nextButton={
                                 <>
-                                    <Button size="small" onClick={() => this.next()} disabled={current === maxSteps}>
+                                    <Button
+                                        size="small"
+                                        onClick={() => this.next()}
+                                        disabled={current === maxSteps}>
                                         {current === 2 ? (
                                             <span
                                                 color="primary"
@@ -311,7 +332,7 @@ class BookingModal extends Component {
                                                     this.handleChooseTicket();
                                                 }}
                                                 className="btn-primary-modal">
-                                                Đặt vé
+                                                {mes4}
                                             </span>
                                         ) : (
                                             <span>

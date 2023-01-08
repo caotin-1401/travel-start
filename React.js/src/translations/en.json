@@ -55,8 +55,8 @@
             "manage-passenger": "Manage Passenger",
             "handbook": "Blogs",
             "blog": "Manage blogs",
-            "list-bus": "List Bus",
-            "location": "List Location",
+            "list-bus": "List Bus Type",
+            "location": "List Stations",
             "route": "List Route",
             "event": "Events",
             "err": "Error",
@@ -193,6 +193,12 @@
                 "selectEvent": "Select Event",
                 "info": "Discount code details",
                 "title4": "This event does not have any discount codes"
+            },
+            "dashboards": {
+                "users": "Users",
+                "stations": "Stations",
+                "busCompany": "Bus Company",
+                "vehicle": "Vehicles"
             }
         },
         "busOwner": {
@@ -339,7 +345,27 @@
         "event": "Events",
         "list": "List Events",
         "blog": "Blog",
-        "listblog": "List Blogs"
+        "listblog": "List Blogs",
+        "time1": "Publication date",
+        "updated": "Last update",
+        "actor": "Article writer",
+        "model": {
+            "title": "Discount code information",
+            "incentives": "Deals",
+            "discount": "Discount",
+            "discount_": "for orders from",
+            "time": "Time to use the coupon",
+            "count": "Total number of coupons",
+            "use": "Remaining"
+        },
+        "details": {
+            "title": "Featured offer",
+            "time1": "Time: From date ",
+            "time2": " to",
+            "conditions": "Conditions",
+            "order": "For bill from",
+            "mes": "Get the coupon successfully"
+        }
     },
     "contacts": {
         "title": "Contact Us",
@@ -381,7 +407,18 @@
         "note": "Note",
         "emply": "Still empty",
         "not": "Not availble",
-        "Selected": "Selected"
+        "Selected": "Selected",
+        "prices": "Total amount",
+        "seats": "Seat",
+        "infoPassenger": "Enter passenger information",
+        "description": "Note",
+        "coupon": "Enter coupon",
+        "discount": "Discount",
+        "order": "Total payment",
+        "title": "Please check your email to complete the ticket registration procedure",
+        "entercoupon": "Enter coupon",
+        "floor1": "1st Floor",
+        "floor2": "2nd Floor"
     },
     "account": {
         "Name": "Full Name",
@@ -398,6 +435,13 @@
         "save": "Save",
         "cancel": "Cancel",
         "pass": "Password",
-        "upload": "Upload"
+        "upload": "Upload",
+        "myTicket": "My tickets",
+        "infoTicket": "My ticket information",
+        "home": "Homepage",
+        "depart": "Departure place",
+        "destroy": "Cancel tickets",
+        "ticketTitle1": "You don't have any upcoming trips",
+        "ticketTitle2": "Book your tickets now"
     }
 }

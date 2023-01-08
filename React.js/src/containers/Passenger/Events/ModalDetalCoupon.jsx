@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import Box from "@mui/material/Box";
 import * as actions from "../../../store/actions";
-import { LANGUAGES, CommonUtils } from "../../../utils";
-import { toast } from "react-toastify";
 import _ from "lodash";
 import moment from "moment";
-import localization from "moment/locale/vi";
 
 class ModalDetalCoupon extends Component {
     constructor(props) {
@@ -46,12 +43,11 @@ class ModalDetalCoupon extends Component {
     };
 
     render() {
-        let language = this.props.language;
-        let { description, count, use, discountMax, endDate, startDate, discount, type, sumMoneyCondition } =
+        let { description, count, use, endDate, startDate, discount, type, sumMoneyCondition } =
             this.state;
         console.log(endDate);
         let price;
-        +type == 2 ? (price = "%") : (price = "đ");
+        +type === 2 ? (price = "%") : (price = "đ");
         let start = moment(+startDate).format(" DD.MM.YYYY ");
         let end = moment(+endDate).format("  DD.MM.YYYY  ");
         return (
@@ -66,7 +62,7 @@ class ModalDetalCoupon extends Component {
                         toggle={() => {
                             this.toggle();
                         }}>
-                        Thông tin mã giảm gía
+                        <FormattedMessage id="events.model.title" />
                     </ModalHeader>
                     <ModalBody>
                         <Box
@@ -75,11 +71,21 @@ class ModalDetalCoupon extends Component {
                             }}>
                             <h6 className="mb0">Ưu đãi: </h6>
                             <span>
-                                Giảm {discount} {price} cho đơn hàng từ {sumMoneyCondition} đ
+                                <FormattedMessage id="events.model.discount" /> {discount} {price}{" "}
+                                <FormattedMessage id="events.model.discount_" /> {sumMoneyCondition}{" "}
+                                đ
                             </span>
-                            <h6 className="mb0">Tổng số mã giảm giá : </h6> <span>{count}</span>
-                            <h6 className="mb0">Số lượng còn lại :</h6> <span>{count - use}</span>
-                            <h6 className="mb0">Thời gian sử dụng mã: </h6>
+                            <h6 className="mb0">
+                                <FormattedMessage id="events.model.count" />:{" "}
+                            </h6>{" "}
+                            <span>{count}</span>
+                            <h6 className="mb0">
+                                <FormattedMessage id="events.model.use" /> :
+                            </h6>{" "}
+                            <span>{count - use}</span>
+                            <h6 className="mb0">
+                                <FormattedMessage id="events.model.time" />:{" "}
+                            </h6>
                             <span>
                                 {start} - {end}
                             </span>

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Slider, Box } from "@mui/material";
 import { FormattedMessage } from "react-intl";
+import { Row, Col } from "reactstrap";
 export default class ChoosePrice extends Component {
     constructor(props) {
         super(props);
@@ -42,24 +43,29 @@ export default class ChoosePrice extends Component {
         let { value } = this.props;
         return (
             <>
-                <Box sx={{ width: 280 }}>
-                    <Slider
-                        getAriaLabel={() => "Temperature range"}
-                        value={value}
-                        min={0}
-                        max={1000000}
-                        step={50000}
-                        onMouseUp={this.handleMouseLeave}
-                        onChange={(e) => this.handleChange(e)}
-                        valueLabelDisplay="auto"
-                    />
-                </Box>
+                <Row>
+                    <Col md={12}>
+                        {" "}
+                        <Box>
+                            <Slider
+                                getAriaLabel={() => "Temperature range"}
+                                value={value}
+                                min={0}
+                                max={1000000}
+                                step={50000}
+                                onMouseUp={this.handleMouseLeave}
+                                onChange={(e) => this.handleChange(e)}
+                                valueLabelDisplay="auto"
+                            />
+                        </Box>
+                    </Col>
+                </Row>
                 {/* <Slider range min={0} max={2000000} defaultValue={[0, 2000000]} /> */}
                 <div className="filter_b">
                     <span>{this.currencyFormat(value[0])}</span>
                     <span className="float-end">{this.currencyFormat(value[1])}</span>
                 </div>
-                <div className="filter_brand">
+                {/* <div className="filter_brand">
                     <h6 className="mt-3">
                         <FormattedMessage id="routes.oparator" />
                     </h6>
@@ -72,7 +78,7 @@ export default class ChoosePrice extends Component {
                             </label>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </>
         );
     }

@@ -74,6 +74,7 @@ export default class DashboardComponent extends Component {
     };
     render() {
         let { Trips } = this.state;
+        console.log(Trips);
         return (
             <Grid container mt={4.5} spacing={3}>
                 <Grid item xs={12} md={6}>

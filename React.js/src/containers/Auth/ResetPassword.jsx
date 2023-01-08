@@ -4,7 +4,11 @@ import { push } from "connected-react-router";
 import * as actions from "../../store/actions";
 import "./Login.scss";
 import logo from "../../assets/logo2.png";
-import { getForgotPasswordService, postResetPasswordService, handleLogin } from "../../services/userService";
+import {
+    getForgotPasswordService,
+    postResetPasswordService,
+    handleLogin,
+} from "../../services/userService";
 import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../utils";
@@ -114,7 +118,7 @@ class ResetPassword extends Component {
                 });
             }
         } else {
-            let res = await postResetPasswordService({
+            await postResetPasswordService({
                 password,
                 email,
                 token,
@@ -181,7 +185,12 @@ class ResetPassword extends Component {
                                     }}
                                 />
                                 <span onClick={() => this.handleShowPassword()}>
-                                    <i className={this.state.isShowPassword ? "fas fa-eye" : "fas fa-eye-slash"}></i>
+                                    <i
+                                        className={
+                                            this.state.isShowPassword
+                                                ? "fas fa-eye"
+                                                : "fas fa-eye-slash"
+                                        }></i>
                                 </span>
                             </div>
                         </div>
@@ -204,7 +213,9 @@ class ResetPassword extends Component {
                                 <span onClick={() => this.handleShowconfirmPassword()}>
                                     <i
                                         className={
-                                            this.state.isShowconfirmPassword ? "fas fa-eye" : "fas fa-eye-slash"
+                                            this.state.isShowconfirmPassword
+                                                ? "fas fa-eye"
+                                                : "fas fa-eye-slash"
                                         }></i>
                                 </span>
                             </div>

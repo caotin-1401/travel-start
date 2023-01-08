@@ -61,6 +61,7 @@
         display       : flex;
         flex-direction: column;
 
+
         .section-header {
             height     : 60px;
             padding-top: 10px;
@@ -92,7 +93,7 @@
             .section-custom {
                 cursor       : pointer;
                 border       : 1px solid gray !important;
-                width        : 290px !important;
+                width        : 95% !important;
                 height       : 290px;
                 margin       : 10px;
                 border-radius: 8px !important;
@@ -356,3 +357,898 @@
         font-size      : 15px;
     }
 }
+
+// $mobile-width : 480px;
+// $tablet-width : 768px;
+// $desktop-width: 1024px;
+
+// /*Mobile and tablet */
+// @media only screen and (max-width: 63.9375em) {
+//     .section-container {
+//         display       : flex;
+//         flex-direction: column;
+//     }
+// }
+
+@media only screen and (max-width: 480px) {
+    .section-share {
+        height     : 430px;
+        margin-top : 50px;
+        padding-top: 20px;
+
+        &.section-routes {
+            background-color: #f5f5f5;
+        }
+
+        &.section-events {
+            background-color: white;
+        }
+
+        &.section-blog {
+            background-color: #f5f5f5;
+        }
+
+        .section-container {
+            margin        : 0 20px;
+            display       : flex;
+            flex-direction: column;
+
+
+            .section-header {
+                height     : 60px;
+                padding-top: 10px;
+
+                .title-section {
+                    font-size  : 24px;
+                    font-weight: 600;
+                }
+
+                .btn-section {
+                    float           : right;
+                    padding         : 10px 15px;
+                    margin-bottom   : 5px;
+                    display         : block;
+                    border          : none;
+                    outline         : none;
+                    background-color: #ebebeb;
+                    color           : black;
+                    cursor          : pointer;
+
+                    &:hover {
+                        color           : #ffffff;
+                        background-color: #f7d800;
+                    }
+                }
+            }
+
+            .section-body {
+                .section-custom {
+                    cursor       : pointer;
+                    border       : 1px solid gray !important;
+                    width        : 95% !important;
+                    height       : 290px;
+                    margin       : 10px;
+                    border-radius: 8px !important;
+                    transition   : all 0.4s cubic-bezier(0, 0.69, 0.25, 1) 0s;
+
+                    &:hover {
+                        box-shadow: 3px 6px 9px #888888;
+                    }
+
+                    .bg-img {
+                        width : 100%;
+                        height: 190px;
+
+                        background-position: center;
+                        background-repeat  : no-repeat;
+                        background-size    : cover;
+                        border-radius      : 5px 5px 0 0 !important;
+                        margin-left        : auto;
+                        margin-right       : auto;
+
+                        border-bottom: 1px solid gray;
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img1 {
+                        width                 : 100%;
+                        height                : 190px;
+                        // background-position: center;
+                        // background-repeat  : no-repeat;
+                        // background-size    : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+
+                        // background-image   : url("../../assets/vungtau.jpg");
+                    }
+
+                    .bg-img2 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/dalat.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img3 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/danang.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img4 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/khanhhoa.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img5 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/quynhon.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img6 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/hcm3.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .section-title {
+                        padding    : 16px 20px;
+                        font-size  : 15px;
+                        line-height: 21.48px;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 767px) {
+    .section-share {
+        height     : 430px;
+        margin-top : 50px;
+        padding-top: 20px;
+
+        &.section-routes {
+            background-color: #f5f5f5;
+        }
+
+        &.section-events {
+            background-color: white;
+        }
+
+        &.section-blog {
+            background-color: #f5f5f5;
+        }
+
+        .section-container {
+            margin        : 0 20px;
+            display       : flex;
+            flex-direction: column;
+
+
+            .section-header {
+                height     : 60px;
+                padding-top: 10px;
+
+                .title-section {
+                    font-size  : 24px;
+                    font-weight: 600;
+                }
+
+                .btn-section {
+                    float           : right;
+                    padding         : 10px 15px;
+                    margin-bottom   : 5px;
+                    display         : block;
+                    border          : none;
+                    outline         : none;
+                    background-color: #ebebeb;
+                    color           : black;
+                    cursor          : pointer;
+
+                    &:hover {
+                        color           : #ffffff;
+                        background-color: #f7d800;
+                    }
+                }
+            }
+
+            .section-body {
+                .section-custom {
+                    cursor       : pointer;
+                    border       : 1px solid gray !important;
+                    width        : 95% !important;
+                    height       : 290px;
+                    margin       : 10px;
+                    border-radius: 8px !important;
+                    transition   : all 0.4s cubic-bezier(0, 0.69, 0.25, 1) 0s;
+
+                    &:hover {
+                        box-shadow: 3px 6px 9px #888888;
+                    }
+
+                    .bg-img {
+                        width : 100%;
+                        height: 190px;
+
+                        background-position: center;
+                        background-repeat  : no-repeat;
+                        background-size    : cover;
+                        border-radius      : 5px 5px 0 0 !important;
+                        margin-left        : auto;
+                        margin-right       : auto;
+
+                        border-bottom: 1px solid gray;
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img1 {
+                        width                 : 100%;
+                        height                : 190px;
+                        // background-position: center;
+                        // background-repeat  : no-repeat;
+                        // background-size    : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+
+                        // background-image   : url("../../assets/vungtau.jpg");
+                    }
+
+                    .bg-img2 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/dalat.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img3 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/danang.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img4 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/khanhhoa.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img5 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/quynhon.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img6 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/hcm3.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .section-title {
+                        padding    : 16px 20px;
+                        font-size  : 15px;
+                        line-height: 21.48px;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .section-share {
+        height     : 430px;
+        margin-top : 50px;
+        padding-top: 20px;
+
+        &.section-routes {
+            background-color: #f5f5f5;
+        }
+
+        &.section-events {
+            background-color: white;
+        }
+
+        &.section-blog {
+            background-color: #f5f5f5;
+        }
+
+        .section-container {
+            margin        : 0 50px;
+            display       : flex;
+            flex-direction: column;
+
+
+            .section-header {
+                height     : 60px;
+                padding-top: 10px;
+
+                .title-section {
+                    font-size  : 24px;
+                    font-weight: 600;
+                }
+
+                .btn-section {
+                    float           : right;
+                    padding         : 10px 15px;
+                    margin-bottom   : 5px;
+                    display         : block;
+                    border          : none;
+                    outline         : none;
+                    background-color: #ebebeb;
+                    color           : black;
+                    cursor          : pointer;
+
+                    &:hover {
+                        color           : #ffffff;
+                        background-color: #f7d800;
+                    }
+                }
+            }
+
+            .section-body {
+                .section-custom {
+                    cursor       : pointer;
+                    border       : 1px solid gray !important;
+                    width        : 95% !important;
+                    height       : 290px;
+                    margin       : 10px;
+                    border-radius: 8px !important;
+                    transition   : all 0.4s cubic-bezier(0, 0.69, 0.25, 1) 0s;
+
+                    &:hover {
+                        box-shadow: 3px 6px 9px #888888;
+                    }
+
+                    .bg-img {
+                        width : 100%;
+                        height: 190px;
+
+                        background-position: center;
+                        background-repeat  : no-repeat;
+                        background-size    : cover;
+                        border-radius      : 5px 5px 0 0 !important;
+                        margin-left        : auto;
+                        margin-right       : auto;
+
+                        border-bottom: 1px solid gray;
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img1 {
+                        width                 : 100%;
+                        height                : 190px;
+                        // background-position: center;
+                        // background-repeat  : no-repeat;
+                        // background-size    : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+
+                        // background-image   : url("../../assets/vungtau.jpg");
+                    }
+
+                    .bg-img2 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/dalat.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img3 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/danang.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img4 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/khanhhoa.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img5 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/quynhon.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img6 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/hcm3.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .section-title {
+                        padding    : 16px 20px;
+                        font-size  : 15px;
+                        line-height: 21.48px;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1025px) and (max-width: 1200px) {
+    .section-share {
+        height     : 430px;
+        margin-top : 50px;
+        padding-top: 20px;
+
+        &.section-routes {
+            background-color: #f5f5f5;
+        }
+
+        &.section-events {
+            background-color: white;
+        }
+
+        &.section-blog {
+            background-color: #f5f5f5;
+        }
+
+        .section-container {
+            margin        : 0 100px;
+            display       : flex;
+            flex-direction: column;
+
+
+            .section-header {
+                height     : 60px;
+                padding-top: 10px;
+
+                .title-section {
+                    font-size  : 24px;
+                    font-weight: 600;
+                }
+
+                .btn-section {
+                    float           : right;
+                    padding         : 10px 15px;
+                    margin-bottom   : 5px;
+                    display         : block;
+                    border          : none;
+                    outline         : none;
+                    background-color: #ebebeb;
+                    color           : black;
+                    cursor          : pointer;
+
+                    &:hover {
+                        color           : #ffffff;
+                        background-color: #f7d800;
+                    }
+                }
+            }
+
+            .section-body {
+                .section-custom {
+                    cursor       : pointer;
+                    border       : 1px solid gray !important;
+                    width        : 95% !important;
+                    height       : 290px;
+                    margin       : 10px;
+                    border-radius: 8px !important;
+                    transition   : all 0.4s cubic-bezier(0, 0.69, 0.25, 1) 0s;
+
+                    &:hover {
+                        box-shadow: 3px 6px 9px #888888;
+                    }
+
+                    .bg-img {
+                        width : 100%;
+                        height: 190px;
+
+                        background-position: center;
+                        background-repeat  : no-repeat;
+                        background-size    : cover;
+                        border-radius      : 5px 5px 0 0 !important;
+                        margin-left        : auto;
+                        margin-right       : auto;
+
+                        border-bottom: 1px solid gray;
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img1 {
+                        width                 : 100%;
+                        height                : 190px;
+                        // background-position: center;
+                        // background-repeat  : no-repeat;
+                        // background-size    : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+
+                        // background-image   : url("../../assets/vungtau.jpg");
+                    }
+
+                    .bg-img2 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/dalat.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img3 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/danang.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img4 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/khanhhoa.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img5 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/quynhon.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .bg-img6 {
+                        width                 : 100%;
+                        height                : 190px;
+                        background-position   : center;
+                        background-repeat     : no-repeat;
+                        background-size       : cover;
+                        border-radius         : 5px 5px 0 0 !important;
+                        margin-left           : auto;
+                        margin-right          : auto;
+                        border-bottom         : 1px solid gray;
+                        // background-image   : url("../../assets/hcm3.jpg");
+
+                        img {
+                            width        : 100%;
+                            height       : 190px;
+                            border-bottom: 1px solid gray;
+                        }
+                    }
+
+                    .section-title {
+                        padding    : 16px 20px;
+                        font-size  : 15px;
+                        line-height: 21.48px;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+// @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+//     @content;
+// }
+
+
+
+// @media (min-width: #{$desktop-width}) {
+//     @content;
+// }
+
+
+// /* Mobile: width < 740px */
+// @media only screen and (max-width: 46.1875em) {}
+
+// /* Tablet: width >= 740px and width < 1024px */
+// @media only screen and (min-width: 46.25em) and (max-width: 63.9375em) {}
+
+// @media only screen and (min-width: 64em) and (max-width: 73em) {
+//     .section-body {
+//         .section-custom {
+//             cursor          : pointer !important;
+//             border          : 1px solid gray !important;
+//             // height       : 290px;
+//             margin          : 10px;
+//             border-radius   : 8px !important;
+//             transition      : all 0.4s cubic-bezier(0, 0.69, 0.25, 1) 0s;
+
+
+//         }
+
+//     }
+
+// }

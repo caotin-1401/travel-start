@@ -7,7 +7,7 @@ import { handleRegister } from "../../services/userService";
 import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../utils";
-
+import LoadingOverlay from "react-loading-overlay-ts";
 class Register extends Component {
     constructor(props) {
         super(props);
@@ -19,6 +19,7 @@ class Register extends Component {
             isShowPassword: false,
             isShowconfirmPassword: false,
             errMessage: "",
+            isActive: false,
         };
     }
     onChangeInput = (event, id) => {
@@ -30,6 +31,7 @@ class Register extends Component {
     };
 
     handleRegister = async () => {
+        this.setState({ isActive: true });
         let { language } = this.props;
         let { email, password, confirmPassword, phoneNumber } = this.state;
         let message;
@@ -37,24 +39,28 @@ class Register extends Component {
             errMessage: "",
         });
         if (!phoneNumber) {
+            this.setState({ isActive: false });
             if (language === LANGUAGES.VI) {
                 message = "Vui lòng nhập số điện thoại";
             } else {
                 message = "Please enter phone number";
             }
         } else if (!password) {
+            this.setState({ isActive: false });
             if (language === LANGUAGES.VI) {
                 message = "Vui lòng nhập mật khẩu";
             } else {
                 message = "Please enter your password";
             }
         } else if (!confirmPassword) {
+            this.setState({ isActive: false });
             if (language === LANGUAGES.VI) {
                 message = "Vui lòng nhập xác nhận mật khẩu";
             } else {
                 message = "Please enter your comfirm password";
             }
         } else if (password.length !== confirmPassword.length) {
+            this.setState({ isActive: false });
             if (language === LANGUAGES.VI) {
                 message = "Mật khẩu và xác nhận mật khẩu phải giống nhau";
             } else {
@@ -90,6 +96,7 @@ class Register extends Component {
                         message = "Invalid email address";
                     }
                 }
+                this.setState({ isActive: false });
             } catch (error) {
                 if (error.response) {
                     if (error.response.data) {
@@ -184,7 +191,12 @@ class Register extends Component {
                                     }}
                                 />
                                 <span onClick={() => this.handleShowPassword()}>
-                                    <i className={this.state.isShowPassword ? "fas fa-eye" : "fas fa-eye-slash"}></i>
+                                    <i
+                                        className={
+                                            this.state.isShowPassword
+                                                ? "fas fa-eye"
+                                                : "fas fa-eye-slash"
+                                        }></i>
                                 </span>
                             </div>
                         </div>
@@ -206,7 +218,9 @@ class Register extends Component {
                                 <span onClick={() => this.handleShowconfirmPassword()}>
                                     <i
                                         className={
-                                            this.state.isShowconfirmPassword ? "fas fa-eye" : "fas fa-eye-slash"
+                                            this.state.isShowconfirmPassword
+                                                ? "fas fa-eye"
+                                                : "fas fa-eye-slash"
                                         }></i>
                                 </span>
                             </div>
@@ -216,13 +230,25 @@ class Register extends Component {
                             {this.state.errMessage}
                         </div>
                         <div className="col-12">
-                            <button
-                                className="btn-login"
-                                onClick={() => {
-                                    this.handleRegister();
-                                }}>
-                                <FormattedMessage id="login.register" />
-                            </button>
+                            {this.state.isActive === true ? (
+                                <LoadingOverlay active={this.state.isActive} spinner>
+                                    <button
+                                        className="btn-login"
+                                        onClick={() => {
+                                            this.handleRegister();
+                                        }}>
+                                        <FormattedMessage id="login.register" />
+                                    </button>
+                                </LoadingOverlay>
+                            ) : (
+                                <button
+                                    className="btn-login"
+                                    onClick={() => {
+                                        this.handleRegister();
+                                    }}>
+                                    <FormattedMessage id="login.register" />
+                                </button>
+                            )}
                         </div>
                         <div className="col-12">
                             <p

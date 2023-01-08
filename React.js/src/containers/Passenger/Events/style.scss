@@ -11,6 +11,7 @@
     }
 }
 
+
 .body-events {
     background-color: white;
 
@@ -239,4 +240,20 @@
 
 .mb1 {
     padding-bottom: 20px;
+}
+
+.content_mardown {
+    img {
+        width              : 100%;
+        margin-top         : 20px;
+        margin-bottom      : 20px;
+        margin-left        : auto;
+        margin-right       : auto;
+        background-position: center;
+        background-repeat  : no-repeat;
+        background-size    : contain;
+        border-radius      : 5px;
+        margin-left        : 0;
+        margin-bottom      : 15px;
+    }
 }

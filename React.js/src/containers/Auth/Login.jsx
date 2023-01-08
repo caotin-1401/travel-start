@@ -8,6 +8,7 @@ import { handleLogin } from "../../services/userService";
 import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { LANGUAGES } from "../../utils";
+import LoadingOverlay from "react-loading-overlay-ts";
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -16,6 +17,7 @@ class Login extends Component {
             password: "",
             isShowPassword: false,
             errMessage: "",
+            isActive: false,
         };
     }
 
@@ -51,16 +53,19 @@ class Login extends Component {
         navigate(`${redirectPath}`);
     };
     handleLogin = async () => {
+        this.setState({ isActive: true });
         let { email, password } = this.state;
         let language = this.props.language;
         let message1;
         if (!email) {
+            this.setState({ isActive: false });
             if (language === LANGUAGES.VI) {
                 message1 = "Vui lòng nhập email hoặc số điện thoại đã đăng ký";
             } else {
                 message1 = "Please enter your registered email or phone number";
             }
         } else if (!password) {
+            this.setState({ isActive: false });
             if (language === LANGUAGES.VI) {
                 message1 = "Vui lòng nhập mật khẩu";
             } else {
@@ -84,8 +89,10 @@ class Login extends Component {
                             message1 = "Invalid email";
                         }
                     }
+                    this.setState({ isActive: false });
                 }
                 if (data && data.errCode === 0) {
+                    this.setState({ isActive: false });
                     this.redirectToSystemPage(data.user.roleID);
                     this.props.userLoginSuccess(data.user);
                 }
@@ -159,7 +166,12 @@ class Login extends Component {
                                     onKeyDown={this.handleKeyDown}
                                 />
                                 <span onClick={() => this.handleShowPassword()}>
-                                    <i className={this.state.isShowPassword ? "fas fa-eye" : "fas fa-eye-slash"}></i>
+                                    <i
+                                        className={
+                                            this.state.isShowPassword
+                                                ? "fas fa-eye"
+                                                : "fas fa-eye-slash"
+                                        }></i>
                                 </span>
                             </div>
                         </div>
@@ -167,9 +179,17 @@ class Login extends Component {
                             {this.state.errMessage}
                         </div>
                         <div className="col-12">
-                            <button className="btn-login" onClick={this.handleLogin}>
-                                <FormattedMessage id="login.login" />
-                            </button>
+                            {this.state.isActive === true ? (
+                                <LoadingOverlay active={this.state.isActive} spinner>
+                                    <button className="btn-login" onClick={this.handleLogin}>
+                                        <FormattedMessage id="login.login" />
+                                    </button>{" "}
+                                </LoadingOverlay>
+                            ) : (
+                                <button className="btn-login" onClick={this.handleLogin}>
+                                    <FormattedMessage id="login.login" />
+                                </button>
+                            )}
                         </div>
                         <div className="col-12">
                             <p

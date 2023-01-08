@@ -1,7 +1,7 @@
-.backgroundColor {
-    background-color: #fafafa;
-    height          : calc(100vh - 60px);
-
+.backgroundColorPass {
+    background-color   : #fafafa;
+    // height          : calc(100vh - 60px);
+    height             : 100%;
 
     .container-left {
         margin-top: 10px;
@@ -132,4 +132,16 @@ label {
 
 .ticket-content {
     margin: 30px 20px 0 20px;
+}
+
+.w30 {
+    width: 30%;
+}
+
+.w20 {
+    width: 20%;
+}
+
+.w15 {
+    width: 15%;
 }

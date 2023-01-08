@@ -191,6 +191,12 @@
                 "selectEvent": "Chọn sự kiện",
                 "info": "Thông tin chi tiết mã giảm giá",
                 "title4": "Sự kiện này không có mã giảm giá nào"
+            },
+            "dashboards": {
+                "users": "Ngươi dùng",
+                "stations": "Bến xe",
+                "busCompany": "Nhà xe",
+                "vehicle": "Phương tiện"
             }
         },
         "busOwner": {
@@ -338,7 +344,27 @@
         "event": "Sự kiện",
         "list": "Danh sách sự kiện",
         "blog": "Bài viết",
-        "listblog": "Danh sách bài viết"
+        "listblog": "Danh sách bài viết",
+        "time1": "Ngày xuất bản",
+        "updated": "Lần cập nhập cuối",
+        "actor": "Người viết bài",
+        "model": {
+            "title": "Thông tin mã giảm giá",
+            "incentives": "Ưu đãi",
+            "discount": "Giảm",
+            "discount_": "cho đơn hàng từ",
+            "time": "Thời gian sử dụng mã",
+            "count": "Tổng số mã giảm giá",
+            "use": "Còn lại"
+        },
+        "details": {
+            "title": "Ưu đãi nổi bậc",
+            "time1": "Thời gian: Từ ngày ",
+            "time2": " đến hết ngày",
+            "conditions": "Điều kiện",
+            "order": "Cho đơn từ",
+            "mes": "Lấy mã giảm giá thành công"
+        }
     },
     "contacts": {
         "title": "Liên lạc",
@@ -380,7 +406,18 @@
         "note": "Chú thích",
         "emply": "Ghế trống",
         "not": "Ghế không bán",
-        "Selected": "Đang chọn"
+        "Selected": "Đang chọn",
+        "prices": "Tổng tiền",
+        "seats": "Vị trí ngồi",
+        "infoPassenger": "Nhập thông tin hành khách",
+        "description": "Ghi chú",
+        "coupon": "Nhập mã khuyến mãi",
+        "discount": "Giảm",
+        "order": "Tổng thanh toán",
+        "title": "Vui lòng kiểm tra email để hoàn tất thủ tục đăng ký vé",
+        "entercoupon": "Nhập mã khuyến mãi",
+        "floor1": "Tầng 1",
+        "floor2": "Tầng 2"
     },
     "account": {
         "Name": "Họ và tên",
@@ -397,6 +434,13 @@
         "confirm": "Xác nhận mật khẩu :",
         "save": "Lưu",
         "cancel": "Hủy",
-        "upload": "Tải ảnh"
+        "upload": "Tải ảnh",
+        "myTicket": "Vé của tôi",
+        "infoTicket": "Thông tin vé xe của tôi",
+        "home": "Trang chủ",
+        "depart": "Nơi xuất phát",
+        "destroy": "Hủy vé",
+        "ticketTitle1": "Sắp tới bạn chưa có chuyến đi nào",
+        "ticketTitle2": "Đặt vé ngay"
     }
 }

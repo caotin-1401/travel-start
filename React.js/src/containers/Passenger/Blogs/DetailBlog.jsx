@@ -5,6 +5,8 @@ import moment from "moment";
 import { withRouter } from "react-router";
 import { getAllBlogsService } from "../../../services/userService";
 import { Row, Col } from "reactstrap";
+import HomeFooter from "./../../HomePage/Section/HomeFooter";
+import SkeletonDetail from "./SkeletonDetail";
 
 class DetailBlog extends Component {
     constructor(props) {
@@ -16,6 +18,7 @@ class DetailBlog extends Component {
             createAt: "",
             updateAt: "",
             author: "",
+            loading: false,
         };
     }
     async componentDidMount() {
@@ -24,6 +27,7 @@ class DetailBlog extends Component {
             let res = await getAllBlogsService(id);
             let data = [];
             res && res.errCode === 0 && (data = res.blogs);
+            res && res.errCode === 0 && this.setState({ loading: true });
             if (data.length > 0) {
                 let create = moment(new Date(data[0].createdAt).getTime()).format("DD/MM/YYYY");
                 let update = moment(new Date(data[0].updatedAt).getTime()).format("DD/MM/YYYY");
@@ -40,14 +44,14 @@ class DetailBlog extends Component {
     }
 
     render() {
-        let { content, description, image } = this.state;
+        let { content, description, image, loading } = this.state;
 
         let imageBase64 = "";
         if (image) {
             imageBase64 = Buffer.from(image, "base64").toString("binary");
         }
         return (
-            <React.Fragment style={{ overflowX: "hidden" }}>
+            <div style={{ overflowX: "hidden" }}>
                 <Header />
                 <div
                     style={{
@@ -57,37 +61,47 @@ class DetailBlog extends Component {
                         <Row>
                             <Col lg={3} md={2} sm={1}></Col>
                             <Col lg={6} md={8} sm={10} className="content_blog">
-                                <h4>{description}</h4>
-                                <span>
-                                    Xuất bản: <b>{this.state.createAt}</b>
-                                </span>
-                                <span>
-                                    , Cập nhập lần cuối:
-                                    <b>{this.state.updateAt}</b>
-                                </span>
-                                <p>
-                                    Người kiểm duyệt: <b>{this.state.author}</b>
-                                </p>
-                                <div className="t-box">
-                                    <div
-                                        className="t-img"
-                                        style={{
-                                            backgroundImage: `url(${imageBase64})`,
-                                        }}
-                                    />
-                                </div>
-                                <div
-                                    style={{ textAlign: "justify" }}
-                                    dangerouslySetInnerHTML={{
-                                        __html: content,
-                                    }}></div>
+                                {loading === false && <SkeletonDetail />}
+                                {loading === true && (
+                                    <>
+                                        {" "}
+                                        <h4>{description}</h4>
+                                        <span>
+                                            <FormattedMessage id="events.time1" />:{" "}
+                                            <b>{this.state.createAt},</b>
+                                        </span>
+                                        <span>
+                                            {" "}
+                                            <FormattedMessage id="events.updated" />:{" "}
+                                            <b>{this.state.updateAt}</b>
+                                        </span>
+                                        <p>
+                                            <FormattedMessage id="events.actor" />:{" "}
+                                            <b>{this.state.author}</b>
+                                        </p>
+                                        <div className="t-box">
+                                            <div
+                                                className="t-img"
+                                                style={{
+                                                    backgroundImage: `url(${imageBase64})`,
+                                                }}
+                                            />
+                                        </div>
+                                        <div
+                                            style={{ textAlign: "justify" }}
+                                            dangerouslySetInnerHTML={{
+                                                __html: content,
+                                            }}></div>
+                                    </>
+                                )}
                             </Col>
 
                             <Col lg={3} md={2} sm={1}></Col>
                         </Row>
                     </div>
                 </div>
-            </React.Fragment>
+                <HomeFooter />
+            </div>
         );
     }
 }

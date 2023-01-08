@@ -40,7 +40,7 @@ export const customStylesBanner = {
     }),
     valueContainer: (base) => ({
         // ...base,
-        width: 290,
+        // width: 290,
         height: 27,
         alignItems: "center",
         flexWrap: "wrap",

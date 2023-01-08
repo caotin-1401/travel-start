@@ -6,12 +6,12 @@ import Header from "../../HomePage/Header";
 import { Row, Col } from "reactstrap";
 import "./Profile.scss";
 import * as actions from "../../../store/actions";
-import { LANGUAGES } from "../../../utils";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Link from "@mui/material/Link";
 import HomeIcon from "@mui/icons-material/Home";
 import InfoUser from "./InfoUser";
 import InfoTicket from "./InfoTicket";
+import HomeFooter from "./../../HomePage/Section/HomeFooter";
 
 class Profile extends Component {
     constructor(props) {
@@ -28,8 +28,6 @@ class Profile extends Component {
             });
         }
     }
-    componentDidUpdate(prevProps, prevState, snapshot) {}
-
     returnToHome = () => {
         if (this.props.history) {
             this.props.history.push(`/home`);
@@ -46,12 +44,14 @@ class Profile extends Component {
         });
     };
     render() {
-        const { processLogout, language } = this.props;
+        const { processLogout } = this.props;
         let { isInfo } = this.state;
+        let mes1 = <FormattedMessage id="menu.driver.info" />;
+        let mes2 = <FormattedMessage id="account.infoTicket" />;
         return (
-            <React.Fragment>
+            <div style={{ overflowX: "hidden" }}>
                 <Header />
-                <div className="backgroundColor">
+                <div className="backgroundColorPass">
                     <div className="container ">
                         <div>
                             <Breadcrumbs aria-label="breadcrumb" sx={{ pt: 2 }}>
@@ -64,11 +64,9 @@ class Profile extends Component {
                                     color="inherit"
                                     href="/home">
                                     <HomeIcon sx={{ mr: 0.5, ml: 12 }} />
-                                    Trang chủ
+                                    <FormattedMessage id="account.home" />
                                 </Link>
-                                <p style={{ marginTop: "14px" }}>
-                                    {isInfo === 1 ? "Thông tin cá nhân" : "Thông tin vé xe của tôi"}
-                                </p>
+                                <p style={{ marginTop: "14px" }}>{isInfo === 1 ? mes1 : mes2}</p>
                             </Breadcrumbs>
                         </div>
                         <Row>
@@ -82,7 +80,9 @@ class Profile extends Component {
                                                 <i className="fas fa-user-circle"></i>
                                             </Col>
                                             <Col md={10}>
-                                                <p>Thông tin tài khoản</p>
+                                                <p>
+                                                    <FormattedMessage id="menu.driver.info" />
+                                                </p>
                                             </Col>
                                         </Row>
                                     </div>
@@ -94,7 +94,9 @@ class Profile extends Component {
                                                 <i className="fas fa-ticket-alt"></i>
                                             </Col>
                                             <Col md={10}>
-                                                <p>Vé của tôi</p>
+                                                <p>
+                                                    <FormattedMessage id="account.myTicket" />
+                                                </p>
                                             </Col>
                                         </Row>
                                     </div>
@@ -104,7 +106,9 @@ class Profile extends Component {
                                                 <i className="fas fa-sign-out-alt"></i>
                                             </Col>
                                             <Col md={10}>
-                                                <p>Đăng xuất</p>
+                                                <p>
+                                                    <FormattedMessage id="menu.driver.logout" />
+                                                </p>
                                             </Col>
                                         </Row>
                                     </div>
@@ -117,7 +121,8 @@ class Profile extends Component {
                         </Row>
                     </div>
                 </div>
-            </React.Fragment>
+                <HomeFooter />
+            </div>
         );
     }
 }

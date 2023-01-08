@@ -100,7 +100,14 @@ class TableCustomer extends Component {
                 }
                 return;
             }
-            let res = await getAllRouteFromDateDriver(idDriver, time);
+            let date1;
+            if (time.length === 10) {
+                let str1 = "00:00";
+                let [month, day, year] = time.split("/");
+                let [hours, minutes] = str1.split(":");
+                date1 = new Date(+year, month - 1, +day, +hours, +minutes);
+            } else date1 = time;
+            let res = await getAllRouteFromDateDriver(idDriver, date1.getTime());
             this.setState({
                 listRoute: res.tickets,
             });
@@ -130,7 +137,14 @@ class TableCustomer extends Component {
                 id: vehicleId,
                 areaEndId: station,
             });
-            let res = await getAllRouteFromDateDriver(idDriver, time);
+            let date1;
+            if (time.length === 10) {
+                let str1 = "00:00";
+                let [month, day, year] = time.split("/");
+                let [hours, minutes] = str1.split(":");
+                date1 = new Date(+year, month - 1, +day, +hours, +minutes);
+            } else date1 = time;
+            let res = await getAllRouteFromDateDriver(idDriver, date1.getTime());
             this.setState({
                 listRoute: res.tickets,
             });

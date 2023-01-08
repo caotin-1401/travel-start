@@ -138,10 +138,18 @@ class HeaderPage extends Component {
                                     <FormattedMessage id="header.supports" />
                                 </i>
                             </div>
-                            <div className={language === LANGUAGES.VI ? "language-vi active" : "language-vi"}>
+                            <div
+                                className={
+                                    language === LANGUAGES.VI ? "language-vi active" : "language-vi"
+                                }>
                                 <span onClick={() => this.changeLanguage(LANGUAGES.VI)}>VI</span>
                             </div>
-                            <div className={language === LANGUAGES.VI ? "language-en " : "language-en active"}>
+                            <div
+                                className={
+                                    language === LANGUAGES.VI
+                                        ? "language-en "
+                                        : "language-en active"
+                                }>
                                 <span onClick={() => this.changeLanguage(LANGUAGES.EN)}>EN</span>
                             </div>
                             {/* {info && info.roleID && info.roleID === "R4" && (
@@ -172,16 +180,19 @@ class HeaderPage extends Component {
                                     </DropdownToggle>
                                     <DropdownMenu>
                                         <DropdownItem onClick={this.handleProfile}>
-                                            <i className="fas fa-user-circle"></i> Thông tin tài khoản
+                                            <i className="fas fa-user-circle"></i>{" "}
+                                            <FormattedMessage id="menu.driver.info" />
                                         </DropdownItem>
                                         <DropdownItem onClick={this.handleProfile1}>
-                                            <i className="fas fa-ticket-alt"></i> Vé của tôi
+                                            <i className="fas fa-ticket-alt"></i>{" "}
+                                            <FormattedMessage id="account.myTicket" />
                                         </DropdownItem>
 
                                         <DropdownItem divider />
                                         <DropdownItem>
                                             <div onClick={processLogout} title="Log out">
-                                                <i className="fas fa-sign-out-alt"></i> Đăng xuất
+                                                <i className="fas fa-sign-out-alt"></i>{" "}
+                                                <FormattedMessage id="menu.driver.logout" />
                                             </div>
                                         </DropdownItem>
                                     </DropdownMenu>

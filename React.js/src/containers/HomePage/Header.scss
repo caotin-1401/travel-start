@@ -15,11 +15,12 @@
         display: flex;
 
         .left-content {
-            width      : 25%;
+            width      : 20%;
             display    : flex;
             align-items: center;
 
             .bar-logo {
+                display    : none;
                 font-size  : 25px;
                 margin-left: 10px;
                 color      : gray;
@@ -53,7 +54,7 @@
         }
 
         .right-content {
-            width             : 25%;
+            width             : 30%;
             display           : flex;
             align-items       : center;
             justify-content   : flex-begin;
@@ -109,7 +110,7 @@
                 cursor       : pointer;
                 font-weight  : 500;
                 opacity      : 0.3;
-                padding-right: 30px;
+                padding-right: 20px;
 
                 span {
                     font-weight: 600;
@@ -231,4 +232,259 @@
 
 .test {
     height: 1000px;
+}
+
+@media only screen and (max-width: 480px) {}
+
+@media only screen and (min-width: 481px) and (max-width: 767px) {
+    .home-header-container {
+        height             : 60px;
+        width              : 100%;
+        padding            : 0 20px;
+        // background-color: #fdfdfd;
+        box-shadow         : 0 0 5px #000;
+        position           : sticky;
+        top                : 0;
+        background-color   : white;
+        z-index            : 500;
+
+        .home-header-content {
+            width  : 100%;
+            height : 100%;
+            display: flex;
+
+            .left-content {
+                width      : 10%;
+                align-items: center;
+
+                .fa-bars {
+                    display    : block;
+                    font-size  : 25px;
+                    width      : 10%;
+                    margin-left: 10px;
+                    color      : gray;
+                    cursor     : pointer;
+                }
+
+                .bar-logo {
+                    font-size  : 25px;
+                    width      : 10%;
+                    margin-left: 10px;
+                    color      : gray;
+                    cursor     : pointer;
+                }
+
+                .logostyle {
+                    display: none;
+                }
+
+            }
+
+            .center-content {
+                padding-top    : 15px;
+                width          : 50%;
+                display        : flex;
+                justify-content: space-evenly;
+                align-items    : center;
+
+                .child-content {
+                    font-size  : 15px;
+                    font-weight: 600;
+                    cursor     : pointer;
+                }
+
+            }
+
+            .right-content {
+                width             : 40%;
+                display           : flex;
+                align-items       : center;
+                justify-content   : flex-begin;
+                // position       : absolute;
+                right             : 50px;
+
+                .disable {
+                    display: none;
+                }
+
+                .support {
+                    padding-right: 40px;
+                    display      : flex;
+                    align-items  : center;
+                    cursor       : pointer;
+                    font-size    : 15px;
+                    margin-right : 5px;
+                    color        : gray;
+
+                    i {
+                        font-size   : 15px;
+                        margin-right: 5px;
+                        color       : gray;
+
+                        span {
+                            margin-right: 5px;
+                        }
+                    }
+                }
+
+                .language-vi {
+                    cursor     : pointer;
+                    font-weight: 500;
+                    opacity    : 0.3;
+
+                    span {
+                        font-weight: 600;
+                        font-size  : 15px;
+                    }
+
+                    &.active {
+                        opacity: 1;
+                        color  : blue;
+                    }
+
+                    &:hover {
+                        opacity: 1;
+                    }
+                }
+
+                .language-en {
+                    margin       : 0 10px;
+                    cursor       : pointer;
+                    font-weight  : 500;
+                    opacity      : 0.3;
+                    padding-right: 20px;
+
+                    span {
+                        font-weight: 600;
+                        font-size  : 15px;
+                    }
+
+                    &.active {
+                        opacity: 1;
+                        color  : blue;
+                    }
+
+                    &:hover {
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .home-header-container {
+        height             : 60px;
+        width              : 100%;
+        padding            : 0 20px;
+        // background-color: #fdfdfd;
+        box-shadow         : 0 0 5px #000;
+        position           : sticky;
+        top                : 0;
+        background-color   : white;
+        z-index            : 500;
+
+        .home-header-content {
+            width  : 100%;
+            height : 100%;
+            display: flex;
+
+            .left-content {
+                display: none;
+
+
+            }
+
+            .center-content {
+                padding-top    : 15px;
+                width          : 60%;
+                display        : flex;
+                justify-content: space-evenly;
+                align-items    : center;
+
+                .child-content {
+                    font-size  : 15px;
+                    font-weight: 600;
+                    cursor     : pointer;
+                }
+
+            }
+
+            .right-content {
+                width             : 40%;
+                display           : flex;
+                align-items       : center;
+                justify-content   : flex-begin;
+                // position       : absolute;
+                right             : 50px;
+
+                .disable {
+                    display: none;
+                }
+
+                .support {
+                    padding-right: 40px;
+                    display      : flex;
+                    align-items  : center;
+                    cursor       : pointer;
+                    font-size    : 15px;
+                    margin-right : 5px;
+                    color        : gray;
+
+                    i {
+                        font-size   : 15px;
+                        margin-right: 5px;
+                        color       : gray;
+
+                        span {
+                            margin-right: 5px;
+                        }
+                    }
+                }
+
+                .language-vi {
+                    cursor     : pointer;
+                    font-weight: 500;
+                    opacity    : 0.3;
+
+                    span {
+                        font-weight: 600;
+                        font-size  : 15px;
+                    }
+
+                    &.active {
+                        opacity: 1;
+                        color  : blue;
+                    }
+
+                    &:hover {
+                        opacity: 1;
+                    }
+                }
+
+                .language-en {
+                    margin       : 0 10px;
+                    cursor       : pointer;
+                    font-weight  : 500;
+                    opacity      : 0.3;
+                    padding-right: 20px;
+
+                    span {
+                        font-weight: 600;
+                        font-size  : 15px;
+                    }
+
+                    &.active {
+                        opacity: 1;
+                        color  : blue;
+                    }
+
+                    &:hover {
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
 }

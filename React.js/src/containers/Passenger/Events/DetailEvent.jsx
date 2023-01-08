@@ -8,6 +8,8 @@ import { withRouter } from "react-router";
 import { getAllEventsService } from "../../../services/userService";
 import { Row, Col } from "reactstrap";
 import ModalDetalCoupon from "./ModalDetalCoupon";
+import HomeFooter from "./../../HomePage/Section/HomeFooter";
+import SkeletonDetail from "./SkeletonDetail";
 class DetailEvent extends Component {
     constructor(props) {
         super(props);
@@ -20,6 +22,7 @@ class DetailEvent extends Component {
             endDate: "",
             image: "",
             isOpenModelEditUser: false,
+            loading: false,
         };
     }
     async componentDidMount() {
@@ -28,7 +31,11 @@ class DetailEvent extends Component {
             let res = await getAllEventsService(id);
             let data = [];
             res && res.errCode === 0 && (data = res.events);
-            // console.log(data);
+            res &&
+                res.errCode === 0 &&
+                this.setState({
+                    loading: true,
+                });
             let arr = [];
             data &&
                 data.length > 0 &&
@@ -86,9 +93,16 @@ class DetailEvent extends Component {
         if (image) {
             imageBase64 = Buffer.from(image, "base64").toString("binary");
         }
-        console.log(listCoupons);
+        let mes, mes2;
+        if (language === "en") {
+            mes = "Discount";
+            mes2 = "Get the coupon successfully";
+        } else {
+            mes = "Giảm";
+            mes2 = "Lấy mã giảm giá thành công";
+        }
         return (
-            <React.Fragment>
+            <div style={{ overflowX: "hidden" }}>
                 <Header />
                 {this.state.isOpenModelEditUser && (
                     <ModalDetalCoupon
@@ -106,30 +120,42 @@ class DetailEvent extends Component {
                         <Row>
                             <Col lg={3} md={2} sm={1}></Col>
                             <Col lg={6} md={8} sm={10} className="content_event">
-                                <div className="title_header">Uu dai noi bac</div>
-                                <h2
-                                    style={{
-                                        marginBottom: "22px",
-                                        fontSize: "30px",
-                                    }}>
-                                    {name}
-                                </h2>
-                                <div style={{ marginBottom: "22px" }}>
-                                    Thời gian: Từ <b>{start}</b> đến hết <b>{end} </b>
-                                </div>
-                                <div className="t-box">
-                                    <div
-                                        className="bg-img_100"
-                                        style={{
-                                            backgroundImage: `url(${imageBase64})`,
-                                        }}
-                                    />
-                                </div>
-                                <div
-                                    style={{ textAlign: "justify" }}
-                                    dangerouslySetInnerHTML={{
-                                        __html: description,
-                                    }}></div>
+                                {this.state.loading === false && <SkeletonDetail />}
+                                {this.state.loading === true && (
+                                    <>
+                                        <div className="title_header">
+                                            {" "}
+                                            <FormattedMessage id="events.details.title" />
+                                        </div>
+                                        <h2
+                                            style={{
+                                                marginBottom: "22px",
+                                                fontSize: "30px",
+                                            }}>
+                                            {name}
+                                        </h2>
+                                        <div style={{ marginBottom: "22px" }}>
+                                            <FormattedMessage id="events.details.time1" />
+                                            <b>{start}</b>{" "}
+                                            <FormattedMessage id="events.details.time2" />
+                                            <b>{end} </b>
+                                        </div>
+                                        <div className="t-box">
+                                            <div
+                                                className="bg-img_100"
+                                                style={{
+                                                    backgroundImage: `url(${imageBase64})`,
+                                                }}
+                                            />
+                                        </div>
+                                        <div
+                                            className="content_mardown"
+                                            style={{ textAlign: "justify " }}
+                                            dangerouslySetInnerHTML={{
+                                                __html: description,
+                                            }}></div>
+                                    </>
+                                )}
                             </Col>
 
                             <Col lg={3} md={2} sm={1}></Col>
@@ -150,7 +176,7 @@ class DetailEvent extends Component {
                                     listCoupons.map((item, index) => {
                                         if (index % 2 === 0) {
                                             let price;
-                                            +item.type == 2 ? (price = "%") : (price = "đ");
+                                            +item.type === 2 ? (price = "%") : (price = "đ");
                                             let start = moment(+item.startDate).format("L");
                                             let end = moment(+item.endDate).format("L");
                                             let text = item.name;
@@ -162,11 +188,15 @@ class DetailEvent extends Component {
                                                             <div className="coupon">
                                                                 <div className="main-coupon">
                                                                     <p className="coupon-value">
-                                                                        Giảm {item.discount} {price}
+                                                                        {+item.type === 2
+                                                                            ? `  ${mes} ${item.discount} ${price}`
+                                                                            : `  ${mes} ${this.currencyFormat(
+                                                                                  +item.discount
+                                                                              )} `}
                                                                     </p>
 
                                                                     <p className="coupon-required">
-                                                                        Cho đơn từ{" "}
+                                                                        <FormattedMessage id="events.details.order" />{" "}
                                                                         {this.currencyFormat(
                                                                             item.discountMax
                                                                         )}
@@ -187,14 +217,10 @@ class DetailEvent extends Component {
                                                                                     navigator.clipboard.writeText(
                                                                                         text
                                                                                     );
-                                                                                    alert(
-                                                                                        "Lấy mã giảm giá thành công"
-                                                                                    );
+                                                                                    alert(mes2);
                                                                                 }}>
                                                                                 {text}
                                                                             </button>
-                                                                            {/* {" "}
-                                                                    NEWFREND2022 */}
                                                                         </p>
                                                                     </p>
                                                                     <p
@@ -204,7 +230,7 @@ class DetailEvent extends Component {
                                                                                 item
                                                                             )
                                                                         }>
-                                                                        Điều kiện
+                                                                        <FormattedMessage id="events.details.conditions" />
                                                                     </p>
                                                                 </div>
                                                                 <i></i>
@@ -215,7 +241,7 @@ class DetailEvent extends Component {
                                             );
                                         } else {
                                             let price;
-                                            +item.type == 2 ? (price = "%") : (price = "đ");
+                                            +item.type === 2 ? (price = "%") : (price = "đ");
                                             let start = moment(+item.startDate).format("L");
                                             let end = moment(+item.endDate).format("L");
                                             let text = item.name;
@@ -226,15 +252,18 @@ class DetailEvent extends Component {
                                                             <div className="coupon">
                                                                 <div className="main-coupon">
                                                                     <p className="coupon-value">
-                                                                        Giảm {item.discount} {price}
+                                                                        {+item.type === 2
+                                                                            ? `  ${mes} ${item.discount} ${price}`
+                                                                            : `  ${mes} ${this.currencyFormat(
+                                                                                  +item.discount
+                                                                              )} `}
                                                                     </p>
 
                                                                     <p className="coupon-required">
-                                                                        Cho đơn từ{" "}
+                                                                        <FormattedMessage id="events.details.order" />{" "}
                                                                         {this.currencyFormat(
                                                                             item.discountMax
                                                                         )}
-                                                                        đ
                                                                     </p>
                                                                     <p className="start-date">
                                                                         {start} - {end}
@@ -252,9 +281,7 @@ class DetailEvent extends Component {
                                                                                     navigator.clipboard.writeText(
                                                                                         text
                                                                                     );
-                                                                                    alert(
-                                                                                        "Lấy mã giảm giá thành công"
-                                                                                    );
+                                                                                    alert(mes2);
                                                                                 }}>
                                                                                 {text}
                                                                             </button>
@@ -267,7 +294,7 @@ class DetailEvent extends Component {
                                                                                 item
                                                                             )
                                                                         }>
-                                                                        Điều kiện
+                                                                        <FormattedMessage id="events.details.conditions" />
                                                                     </p>
                                                                 </div>
                                                                 <i></i>
@@ -292,7 +319,8 @@ class DetailEvent extends Component {
                         <div style={{ height: "100px" }}></div>
                     </Row>
                 </div>
-            </React.Fragment>
+                <HomeFooter />
+            </div>
         );
     }
 }

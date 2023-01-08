@@ -39,6 +39,7 @@ export default class TableDriver extends Component {
             listDrivers: [],
             selectMonth: "",
             time: [],
+            arrCompany: [],
         };
     }
     componentDidMount() {
@@ -79,6 +80,13 @@ export default class TableDriver extends Component {
             });
             this.filterTickets();
         }
+        if (prevProps.arrBusCompany !== this.props.arrBusCompany) {
+            let { arrBusCompany } = this.props;
+            this.setState({
+                arrCompany: arrBusCompany,
+            });
+        }
+
         if (prevState.selectMonth !== this.state.selectMonth) {
             this.filterTickets();
         }
@@ -109,19 +117,14 @@ export default class TableDriver extends Component {
         let current = new Date().getTime();
         if (selectMonth.value === 1) {
             if (current > time2[0] && current < time2[1]) {
-                console.log(1);
                 time = time2;
             } else if (current > time3[0] && current < time3[1]) {
-                console.log(2);
                 time = time3;
             } else if (current > time4[0] && current < time4[1]) {
-                console.log(3);
                 time = time4;
             } else {
-                console.log(4);
                 time = time5;
             }
-            console.log(time);
         } else {
             if (current > month12[0] && current < month12[1]) {
                 time = month12;
@@ -183,8 +186,12 @@ export default class TableDriver extends Component {
     currencyFormat(num) {
         return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + " đ";
     }
+    // currencyFormat(number) {
+    //     const formatter = new Intl.NumberFormat("vi-VI", { style: "currency", currency: "VND" });
+    //     return formatter.format(number);
+    // }
     render() {
-        let { listDrivers, selectMonth, time } = this.state;
+        let { listDrivers, selectMonth, time, arrCompany } = this.state;
         let { language } = this.props;
 
         let chooseSelect, mes;
@@ -214,7 +221,6 @@ export default class TableDriver extends Component {
                 <Box padding="1rem">
                     <Box
                         sx={{
-                            height: "25rem",
                             borderRadius: "10px",
                             mt: "30px",
                         }}>
@@ -223,7 +229,8 @@ export default class TableDriver extends Component {
                                 <tr>
                                     <th scope="col">Id</th>
                                     <th scope="col">
-                                        <FormattedMessage id="menu.busOwner.dashboards.name" />
+                                        {/* <FormattedMessage id="menu.busOwner.dashboards.name" /> */}{" "}
+                                        tên nhà xe
                                     </th>
                                     <th scope="col">
                                         {" "}
@@ -236,21 +243,36 @@ export default class TableDriver extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {listDrivers &&
-                                    listDrivers.length > 0 &&
-                                    listDrivers.map((item, index) => {
-                                        let totalPrice = 0;
-                                        let tickets = item.test;
-                                        tickets.length > 0 &&
-                                            tickets.map(
-                                                (item) => (totalPrice = totalPrice + item.total)
-                                            );
+                                {arrCompany &&
+                                    arrCompany.length > 0 &&
+                                    arrCompany.map((item) => {
+                                        let arr = [];
+                                        let trips = 0;
+                                        let revenue = 0;
+                                        listDrivers &&
+                                            listDrivers.length > 0 &&
+                                            (arr = listDrivers.filter(
+                                                (i) => i.busOwnerId === item.id
+                                            ));
+                                        arr.length > 0 &&
+                                            arr.map((i) => {
+                                                console.log(i);
+                                                trips = trips + i.test.length;
+                                                let tickets = i.test;
+                                                tickets.length > 0 &&
+                                                    tickets.map(
+                                                        (ticket) =>
+                                                            (revenue = revenue + ticket.total)
+                                                    );
+                                                return trips;
+                                            });
+                                        console.log(trips);
                                         return (
                                             <tr>
-                                                <td>{item.driverId}</td>
+                                                <td>{item.id}</td>
                                                 <td>{item.name}</td>
-                                                <td>{item.test.length}</td>
-                                                <td>{this.currencyFormat(totalPrice)}</td>
+                                                <td>{trips}</td>
+                                                <td>{this.currencyFormat(revenue)}</td>
                                             </tr>
                                         );
                                     })}

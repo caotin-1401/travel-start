@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import { withRouter } from "react-router";
-import Header from "../../HomePage/Header";
 import { Row, Col } from "reactstrap";
 import "./Profile.scss";
 import * as actions from "../../../store/actions";
@@ -59,12 +58,12 @@ class InfoUser extends Component {
         }
         if (this.state.name && prevState.name) {
             if (
-                prevState.gender != this.state.gender ||
-                prevState.name != this.state.name ||
-                prevState.phoneNumber != this.state.phoneNumber ||
-                prevState.email != this.state.email ||
-                prevState.address != this.state.address ||
-                prevState.avatar != this.state.avatar ||
+                prevState.gender !== this.state.gender ||
+                prevState.name !== this.state.name ||
+                prevState.phoneNumber !== this.state.phoneNumber ||
+                prevState.email !== this.state.email ||
+                prevState.address !== this.state.address ||
+                prevState.avatar !== this.state.avatar ||
                 prevState.previewImgURL !== this.state.previewImgURL
             ) {
                 this.setState({ isChanged: true });
@@ -82,8 +81,6 @@ class InfoUser extends Component {
 
     handleChangeImage = async (event) => {
         const file = event.target.files[0];
-        console.log(file);
-        console.log(file.preview);
 
         if (file) {
             let base64 = await CommonUtils.getBase64(file);
@@ -102,12 +99,7 @@ class InfoUser extends Component {
         if (language === LANGUAGES.VI) {
             if (!name) {
                 toast.error("Tên không được để trống");
-            } else if (!email) {
-                toast.error("Email không được để trống");
-            } else if (!phoneNumber) {
-                toast.error("Số điện thoại không được để trống");
             } else {
-                console.log(gender);
                 let res = await handEditPassenger({
                     id,
                     name,
@@ -138,12 +130,7 @@ class InfoUser extends Component {
         } else if (language === LANGUAGES.EN) {
             if (!name) {
                 toast.error("Please enter your name");
-            } else if (!email) {
-                toast.error("Please enter your email");
-            } else if (!phoneNumber) {
-                toast.error("Please enter your phone number");
             } else {
-                console.log(gender);
                 let res = await handEditPassenger({
                     id,
                     name,
@@ -190,10 +177,9 @@ class InfoUser extends Component {
         });
     };
     render() {
-        const { processLogout, language, userInfo } = this.props;
+        const { language } = this.props;
         let genders = this.state.genderArr;
         let { gender, name, phoneNumber, email, address, isChanged } = this.state;
-        console.log(gender);
         return (
             <React.Fragment>
                 {this.state.isOpenModel && (
@@ -208,7 +194,12 @@ class InfoUser extends Component {
                 <div className="contentProfile">
                     <div className="avatar-container">
                         <div className="prev-img-container">
-                            <input id="img" type="file" hidden onChange={(event) => this.handleChangeImage(event)} />
+                            <input
+                                id="img"
+                                type="file"
+                                hidden
+                                onChange={(event) => this.handleChangeImage(event)}
+                            />
                             <div
                                 className="avatar"
                                 style={{
@@ -227,7 +218,7 @@ class InfoUser extends Component {
                     <Row>
                         <Col md={8}>
                             <label htmlFor="name" className="mb-2">
-                                Full Name
+                                <FormattedMessage id="account.Name" />
                             </label>
                             <input
                                 className="form-control mb-4"
@@ -241,7 +232,9 @@ class InfoUser extends Component {
                             />
                         </Col>
                         <Col md={4}>
-                            <label className="mb-2">Gender</label>
+                            <label className="mb-2">
+                                <FormattedMessage id="account.gender" />
+                            </label>
                             <select
                                 className="form-select mb-4"
                                 onChange={(event) => {
@@ -253,7 +246,9 @@ class InfoUser extends Component {
                                     genders.map((item, index) => {
                                         return (
                                             <option key={index} value={item.keyMap}>
-                                                {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
+                                                {language === LANGUAGES.VI
+                                                    ? item.valueVi
+                                                    : item.valueEn}
                                             </option>
                                         );
                                     })}
@@ -263,10 +258,9 @@ class InfoUser extends Component {
                     <Row>
                         <Col md={6}>
                             <label htmlFor="exampleEmail" className="mb-2">
-                                Email
+                                <FormattedMessage id="account.email" />
                             </label>
                             <input
-                                disabled
                                 className="form-control mb-4"
                                 id="exampleEmail"
                                 placeholder="with a placeholder"
@@ -279,7 +273,7 @@ class InfoUser extends Component {
                         </Col>
                         <Col md={6}>
                             <label htmlFor="phoneNumber" className="mb-2">
-                                phoneNumber
+                                <FormattedMessage id="account.phone" />
                             </label>
                             <input
                                 className="form-control mb-4"
@@ -299,7 +293,7 @@ class InfoUser extends Component {
                         <Col md={12}>
                             {" "}
                             <label htmlFor="exampleAddress" className="mb-2">
-                                Address
+                                <FormattedMessage id="account.address" />
                             </label>
                             <input
                                 className="form-control mb-4"
@@ -323,14 +317,14 @@ class InfoUser extends Component {
                                         : "btn btn-secondary save-info mt-3"
                                 }
                                 disabled={isChanged === true ? false : true}>
-                                Lưu thông tin
+                                <FormattedMessage id="account.saveInfo" />
                             </button>
                         </Col>
                         <Col md={6} style={{ display: "flex" }}>
                             <button
                                 className="btn btn-primary change-password mt-3"
                                 onClick={() => this.handleChangeChangePassword()}>
-                                Đổi mật khẩu
+                                <FormattedMessage id="account.change" />
                             </button>
                         </Col>
                     </Row>

@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Row, Col } from "reactstrap";
-import {
-    getUseCouponService,
-    getAllPassengers,
-} from "../../../services/userService";
-
+import { getUseCouponService, getAllPassengers } from "../../../services/userService";
+import { FormattedMessage } from "react-intl";
 class Step3 extends Component {
     constructor(props) {
         super(props);
@@ -53,6 +50,7 @@ class Step3 extends Component {
         });
     };
     handleBlur = async (event) => {
+        let { language } = this.props;
         let {
             finalPrice,
             inFoCoupon,
@@ -64,47 +62,40 @@ class Step3 extends Component {
             infoUser,
         } = this.state;
 
-        inFoCoupon && inFoCoupon.length > 0
-            ? (discount = inFoCoupon[0].discount)
-            : (discount = 0);
-        inFoCoupon && inFoCoupon.length > 0
-            ? (type = inFoCoupon[0].type)
-            : (discount = 0);
+        inFoCoupon && inFoCoupon.length > 0 ? (discount = inFoCoupon[0].discount) : (discount = 0);
+        inFoCoupon && inFoCoupon.length > 0 ? (type = inFoCoupon[0].type) : (discount = 0);
         inFoCoupon && inFoCoupon.length > 0
             ? (discountMax = inFoCoupon[0].discountMax)
             : (discount = 0);
 
         if (inFoCoupon && inFoCoupon.length > 0) {
-            if (
-                inFoCoupon &&
-                inFoCoupon[0].Event &&
-                inFoCoupon[0].Event.id !== 6
-            ) {
+            if (inFoCoupon && inFoCoupon[0].Event && inFoCoupon[0].Event.id !== 6) {
                 let current = new Date().getTime();
                 if (current < inFoCoupon[0].startDate) {
-                    errMessage = "Mã giảm giá chưa tới thời gian sử dụng";
+                    if (language === "en") {
+                        errMessage = "The coupon has not been used yet";
+                    } else errMessage = "Mã giảm giá chưa tới thời gian sử dụng";
                 } else if (current > inFoCoupon[0].endDate) {
-                    errMessage = "Mã giảm giá đã hết thời gian sử dụng";
+                    if (language === "en") {
+                        errMessage = "The coupon has expired";
+                    } else errMessage = "Mã giảm giá đã hết thời gian sử dụng";
                 } else if (inFoCoupon[0].use == inFoCoupon[0].count) {
-                    errMessage = "Mã giảm giả đã hết";
+                    if (language === "en") {
+                        errMessage = "The coupon is out of stock";
+                    } else errMessage = "Mã giảm giả đã hết";
                 } else if (!type) {
                     finalPrice = totalPrice;
-                } else if (type == "1") {
+                } else if (type === "1") {
                     finalPrice = totalPrice - +discount;
                 } else {
                     if ((totalPrice * +discount) / 100 > discountMax) {
                         finalPrice = totalPrice - +discountMax;
-                    } else
-                        finalPrice =
-                            totalPrice - (totalPrice * +discount) / 100;
+                    } else finalPrice = totalPrice - (totalPrice * +discount) / 100;
 
                     discount = (totalPrice * +discount) / 100;
                 }
                 if (finalPrice < 0) finalPrice = 0;
-                else {
-                    finalPrice = finalPrice;
-                }
-                // console.log(finalPrice);
+
                 if (errMessage) {
                     this.setState({
                         errMessage,
@@ -128,36 +119,30 @@ class Step3 extends Component {
                         if (!resUser.users[0].isFirst) {
                             let current = new Date().getTime();
                             if (current < inFoCoupon[0].startDate) {
-                                errMessage =
-                                    "Mã giảm giá chưa tới thời gian sử dụng";
+                                if (language === "en") {
+                                    errMessage = "The coupon has not been used yet";
+                                } else errMessage = "Mã giảm giá chưa tới thời gian sử dụng";
                             } else if (current > inFoCoupon[0].endDate) {
-                                errMessage =
-                                    "Mã giảm giá đã hết thời gian sử dụng";
-                            } else if (
-                                inFoCoupon[0].use == inFoCoupon[0].count
-                            ) {
-                                errMessage = "Mã giảm giả đã hết";
+                                if (language === "en") {
+                                    errMessage = "The coupon has expired";
+                                } else errMessage = "Mã giảm giá đã hết thời gian sử dụng";
+                            } else if (inFoCoupon[0].use == inFoCoupon[0].count) {
+                                if (language === "en") {
+                                    errMessage = "The coupon is out of stock";
+                                } else errMessage = "Mã giảm giả đã hết";
                             } else if (!type) {
                                 finalPrice = totalPrice;
-                            } else if (type == "1") {
+                            } else if (type === "1") {
                                 finalPrice = totalPrice - +discount;
                             } else {
-                                if (
-                                    (totalPrice * +discount) / 100 >
-                                    discountMax
-                                )
+                                if ((totalPrice * +discount) / 100 > discountMax)
                                     finalPrice = totalPrice - +discountMax;
-                                else
-                                    finalPrice =
-                                        totalPrice -
-                                        (totalPrice * +discount) / 100;
+                                else finalPrice = totalPrice - (totalPrice * +discount) / 100;
 
                                 discount = (totalPrice * +discount) / 100;
                             }
                             if (finalPrice < 0) finalPrice = 0;
-                            else {
-                                finalPrice = finalPrice;
-                            }
+
                             if (errMessage) {
                                 this.setState({
                                     errMessage,
@@ -176,17 +161,12 @@ class Step3 extends Component {
                                         infoUser,
                                     },
                                     () => {
-                                        this.props.parentCallback(
-                                            inFoCoupon,
-                                            finalPrice,
-                                            infoUser
-                                        );
+                                        this.props.parentCallback(inFoCoupon, finalPrice, infoUser);
                                     }
                                 );
                             }
                         } else {
-                            errMessage =
-                                "Bạn đã sử dụng mã giảm giá lần đầu rồi ";
+                            errMessage = "Bạn đã sử dụng mã giảm giá lần đầu rồi ";
                             this.setState({
                                 errMessage,
                             });
@@ -195,7 +175,8 @@ class Step3 extends Component {
                 }
             }
         } else {
-            errMessage = "Mã giảm giá không tồn tại ";
+            if (language === "vi") errMessage = "Mã giảm giá không tồn tại ";
+            else errMessage = "Coupon does not exist ";
             this.setState({
                 errMessage,
                 discount: 0,
@@ -210,8 +191,7 @@ class Step3 extends Component {
         }
     };
     render() {
-        let { seatArr, totalPrice, coupon, finalPrice, discount, errMessage } =
-            this.state;
+        let { seatArr, totalPrice, coupon, finalPrice, discount, errMessage } = this.state;
         return (
             <div className="container">
                 <div
@@ -228,10 +208,11 @@ class Step3 extends Component {
                                     fontSize: "16px",
                                 }}>
                                 <Row>
-                                    <Col md={5}> Giá : </Col>
-                                    <Col md={7}>
-                                        {this.currencyFormat(totalPrice)}
+                                    <Col md={5}>
+                                        {" "}
+                                        <FormattedMessage id="routes.prices" /> :{" "}
                                     </Col>
+                                    <Col md={7}>{this.currencyFormat(totalPrice)}</Col>
                                 </Row>
                             </span>
                         </Row>
@@ -242,7 +223,10 @@ class Step3 extends Component {
                                     fontSize: "16px",
                                 }}>
                                 <Row>
-                                    <Col md={5}>Vị trí ngồi : </Col>
+                                    <Col md={5}>
+                                        {" "}
+                                        <FormattedMessage id="routes.seats" /> :{" "}
+                                    </Col>
                                     <Col md={7}>
                                         {seatArr &&
                                             seatArr.length > 0 &&
@@ -256,7 +240,7 @@ class Step3 extends Component {
                         <Row>
                             <Col md={5}>
                                 <label htmlFor="coupon" className="mt-2">
-                                    Nhap ma khuyen mai :
+                                    <FormattedMessage id="routes.entercoupon" /> :
                                 </label>
                             </Col>
 
@@ -284,10 +268,11 @@ class Step3 extends Component {
                                     fontSize: "16px",
                                 }}>
                                 <Row>
-                                    <Col md={5}> Giảm : </Col>
-                                    <Col md={7}>
-                                        - {this.currencyFormat(+discount)}
+                                    <Col md={5}>
+                                        {" "}
+                                        <FormattedMessage id="routes.discount" /> :{" "}
                                     </Col>
+                                    <Col md={7}>- {this.currencyFormat(+discount)}</Col>
                                 </Row>
                             </span>
                         </Row>
@@ -298,16 +283,16 @@ class Step3 extends Component {
                                     fontSize: "16px",
                                 }}>
                                 <Row>
-                                    <Col md={5}> Tổng thanh toán : </Col>
-                                    <Col md={7}>
-                                        {this.currencyFormat(finalPrice)}
+                                    <Col md={5}>
+                                        {" "}
+                                        <FormattedMessage id="routes.order" /> :{" "}
                                     </Col>
+                                    <Col md={7}>{this.currencyFormat(finalPrice)}</Col>
                                 </Row>
                             </span>
                         </Row>
                         <p>
-                            Vui lòng kiểm tra email đã đăng ký để hoàn tất thủ
-                            tục đăng ký vé
+                            <FormattedMessage id="routes.title" />
                         </p>
                     </div>
                 </div>
@@ -317,7 +302,7 @@ class Step3 extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return { userInfo: state.user.userInfo };
+    return { userInfo: state.user.userInfo, language: state.app.language };
 };
 const mapDispatchToProps = (dispatch) => {
     return {};
