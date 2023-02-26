@@ -30,6 +30,7 @@ class BookingModal extends Component {
             isActive: false,
             infoUser: {},
             isCleanData: false,
+            coupon: "",
         };
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -38,15 +39,9 @@ class BookingModal extends Component {
                 tripInfo: this.props.dataFromParent,
                 seatArr: [],
                 totalPrice: 0,
+                coupon: "",
             });
         }
-
-        // if (prevState.tripInfo !== this.state.tripInfo) {
-        //     this.setState({
-        //         seatArr: [],
-        //         totalPrice: 0,
-        //     });
-        // }
     }
     toggle = () => {
         this.props.toggleFromParent();
@@ -118,6 +113,8 @@ class BookingModal extends Component {
                     {
                         isActive: false,
                         isCleanData: true,
+                        coupon: "",
+                        seatArr: [],
                     },
                     this.props.parentCallback2(isActive)
                 );
@@ -171,6 +168,11 @@ class BookingModal extends Component {
         );
         this.setState({
             current: 0,
+            isCleanData: false,
+            name: "",
+            phone: "",
+            email: "",
+            description: "",
         });
     };
     next() {
@@ -201,11 +203,11 @@ class BookingModal extends Component {
             description: description,
         });
     };
-    callbackFunction3 = (inFoCoupon, finalPrice, infoUser) => {
+    callbackFunction3 = (inFoCoupon, finalPrice, coupon) => {
         this.setState({
             inFoCoupon,
             totalPrice: finalPrice,
-            infoUser,
+            coupon,
         });
     };
     render() {
@@ -269,6 +271,7 @@ class BookingModal extends Component {
                 description: (
                     <Step3
                         seatArrParent={seatArr}
+                        coupon={this.state.coupon}
                         totalPriceParent={totalPrice}
                         parentCallback={this.callbackFunction3}
                     />
@@ -277,6 +280,7 @@ class BookingModal extends Component {
         ];
 
         const maxSteps = steps.length;
+        console.log(seatArr);
         return (
             <div>
                 {" "}

@@ -3,7 +3,6 @@ import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from "reactstrap";
 import "../style.scss";
-import * as actions from "../../../../store/actions";
 import { LANGUAGES, CommonUtils } from "../../../../utils";
 import { toast } from "react-toastify";
 import { createNewUserService } from "../../../../services/userService";
@@ -12,41 +11,24 @@ class ModalUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            genderArr: [],
             previewImgURL: "",
             email: "",
             password: "",
             name: "",
             phone: "",
             address: "",
-            gender: "",
             avatar: "",
         };
     }
-    async componentDidMount() {
-        this.props.getGenderStart();
-    }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.genderRedux !== this.props.genderRedux) {
-            let arrGenders = this.props.genderRedux;
-            this.setState({
-                genderArr: arrGenders,
-                gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
-            });
-        }
-        console.log(prevProps.usersRedux);
-        console.log(this.props.usersRedux);
-
         if (prevProps.usersRedux !== this.props.usersRedux) {
-            let arrGenders = this.props.genderRedux;
             this.setState({
                 email: "",
                 password: "",
                 name: "",
                 phone: "",
                 address: "",
-                gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
                 avatar: "",
                 previewImgURL: "",
             });
@@ -140,7 +122,6 @@ class ModalUser extends Component {
             address: this.state.address,
             phoneNumber: this.state.phone,
             roleID: "R2",
-            gender: this.state.gender,
             avatar: this.state.avatar,
         });
         if (res && res.errCode === 0) {
@@ -166,9 +147,7 @@ class ModalUser extends Component {
     };
 
     render() {
-        let language = this.props.language;
-        let genders = this.state.genderArr;
-        let { email, password, name, phone, address, gender } = this.state;
+        let { email, password, name, phone, address } = this.state;
         return (
             <div>
                 <Modal
@@ -253,26 +232,6 @@ class ModalUser extends Component {
                             }}
                         />
                         <Row>
-                            <Col md={3}>
-                                <label htmlFor="exampleAddress">Gender</label>
-                                <select
-                                    className="form-select mb-4"
-                                    onChange={(event) => {
-                                        this.onChangeInput(event, "gender");
-                                    }}
-                                    value={gender}>
-                                    {genders &&
-                                        genders.length > 0 &&
-                                        genders.map((item, index) => {
-                                            return (
-                                                <option key={index} value={item.keyMap}>
-                                                    {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
-                                                </option>
-                                            );
-                                        })}
-                                </select>
-                            </Col>
-
                             <Col md={6}>
                                 <label htmlFor="img">Img</label>
                                 <div className="prev-img-container">
@@ -325,14 +284,11 @@ class ModalUser extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        genderRedux: state.admin.gender,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        getGenderStart: () => dispatch(actions.fetchGenderStart()),
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ModalUser);

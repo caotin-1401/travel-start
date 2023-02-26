@@ -36,6 +36,7 @@ class ModalUser extends Component {
             busOwnerId: "",
             price: "",
             checked: false,
+            isEditing1: false,
         };
     }
     componentDidMount() {
@@ -318,6 +319,14 @@ class ModalUser extends Component {
             checked: event.target.checked,
         });
     };
+    currencyFormat(number) {
+        const formatter = new Intl.NumberFormat("vi-VI", { style: "currency", currency: "VND" });
+
+        return formatter.format(number);
+    }
+    toggleEditing1() {
+        this.setState({ isEditing1: !this.state.isEditing1 });
+    }
     render() {
         let language = this.props.language;
         let {
@@ -333,6 +342,7 @@ class ModalUser extends Component {
             timeStart,
             timeEnd,
             checked,
+            isEditing1,
         } = this.state;
         return (
             <div>
@@ -388,7 +398,32 @@ class ModalUser extends Component {
                                 <label>
                                     <FormattedMessage id="menu.busOwner.trips.prices" />
                                 </label>
-                                <input
+                                {isEditing1 ? (
+                                    <input
+                                        className="form-control"
+                                        id="discount"
+                                        placeholder="Lớn hơn 1.000"
+                                        type="text"
+                                        onBlur={this.toggleEditing1.bind(this)}
+                                        value={price}
+                                        onChange={(event) => {
+                                            this.onChangeInput(event, "number");
+                                        }}
+                                    />
+                                ) : (
+                                    <input
+                                        className="form-control"
+                                        id="discount"
+                                        placeholder="Lớn hơn 1.000"
+                                        type="text"
+                                        value={this.currencyFormat(price)}
+                                        onChange={(event) => {
+                                            this.onChangeInput(event, "number");
+                                        }}
+                                        onFocus={this.toggleEditing1.bind(this)}
+                                    />
+                                )}
+                                {/* <input
                                     style={{ height: "38px" }}
                                     className="form-control mb-4 h-38"
                                     id="name"
@@ -396,7 +431,7 @@ class ModalUser extends Component {
                                     onChange={(event) => {
                                         this.onChangeInput(event, "number");
                                     }}
-                                />
+                                /> */}
                             </Col>
                         </Row>
                         {language === "vi" ? (

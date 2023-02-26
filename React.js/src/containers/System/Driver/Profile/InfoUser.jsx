@@ -100,80 +100,56 @@ class InfoUser extends Component {
         console.log(this.state);
         let language = this.props.language;
         if (!gender) gender = "M";
-        if (language === LANGUAGES.VI) {
-            if (!name) {
-                toast.error("Tên không được để trống");
-            } else if (!email) {
-                toast.error("Email không được để trống");
-            } else if (!phoneNumber) {
-                toast.error("Số điện thoại không được để trống");
-            } else {
-                console.log(gender);
-                let res = await editUserService({
-                    id,
-                    name,
-                    email,
-                    gender,
-                    phoneNumber,
-                    address,
-                    avatar,
-                });
-                if (res && res.errCode === 0) {
-                    this.setState({
-                        isChanged: false,
-                    });
-                    if (language === LANGUAGES.VI) {
-                        toast.success("Cập nhập thông tin người dùng thành công");
-                    } else {
-                        toast.success("User information is successfully updated");
-                    }
-                } else {
-                    if (language === LANGUAGES.VI) {
-                        toast.success("Cập nhập thông tin người dùng thất bại");
-                    } else {
-                        toast.success("User information update failed");
-                    }
-                }
-            }
-            return;
-        } else if (language === LANGUAGES.EN) {
-            if (!name) {
-                toast.error("Please enter your name");
-            } else if (!email) {
-                toast.error("Please enter your email");
-            } else if (!phoneNumber) {
-                toast.error("Please enter your phone number");
-            } else {
-                console.log(gender);
-                let res = await editUserService({
-                    id,
-                    name,
-                    email,
-                    gender,
-                    phoneNumber,
-                    address,
-                    avatar,
-                });
-                if (res && res.errCode === 0) {
-                    this.setState({
-                        isChanged: false,
-                    });
-                    if (language === LANGUAGES.VI) {
-                        toast.success("Cập nhập thông tin người dùng thành công");
-                    } else {
-                        toast.success("User information is successfully updated");
-                    }
-                } else {
-                    if (language === LANGUAGES.VI) {
-                        toast.success("Cập nhập thông tin người dùng thất bại");
-                    } else {
-                        toast.success("User information update failed");
-                    }
-                }
-            }
-            return;
+        if (!name) {
+            if (language === "vi") toast.error("Tên không được để trống");
+            else toast.error("Please enter your name");
+        } else if (!email) {
+            if (language === "vi") toast.error("Email không được để trống");
+            else toast.error("Please enter your Email");
+        } else if (!phoneNumber) {
+            if (language === "vi") toast.error("Số điện thoại không được để trống");
+            else toast.error("Please enter your phone");
         } else {
+            console.log(gender);
+            let res = await editUserService({
+                id,
+                name,
+                email,
+                gender,
+                phoneNumber,
+                address,
+                avatar,
+            });
+            if (res && res.errCode === 0) {
+                this.setState({
+                    isChanged: false,
+                });
+                if (language === LANGUAGES.VI) {
+                    toast.success("Cập nhập thông tin người dùng thành công");
+                } else {
+                    toast.success("User information is successfully updated");
+                }
+            } else if (res && res.errCode === 1) {
+                if (language === LANGUAGES.VI) {
+                    toast.error("Email đã tồn tại trong hệ thống, vui lòng chọn email khác");
+                } else {
+                    toast.error("Your email already exists, please try another email");
+                }
+            } else if (res && res.errCode === 6) {
+                if (language === LANGUAGES.VI) {
+                    toast.error("Số điện thoại tồn tại trong hệ thống, vui lòng chọn sô khác");
+                } else {
+                    toast.error("Your email already exists, please try another email");
+                }
+            } else {
+                if (language === LANGUAGES.VI) {
+                    toast.error("Cập nhập thông tin người dùng thất bại");
+                } else {
+                    toast.error("User information update failed");
+                }
+            }
         }
+        return;
     };
     toggleUserEditModel = () => {
         this.setState({
@@ -213,7 +189,12 @@ class InfoUser extends Component {
                 <div className="contentProfile">
                     <div className="avatar-container">
                         <div className="prev-img-container">
-                            <input id="img" type="file" hidden onChange={(event) => this.handleChangeImage(event)} />
+                            <input
+                                id="img"
+                                type="file"
+                                hidden
+                                onChange={(event) => this.handleChangeImage(event)}
+                            />
                             <div
                                 className="avatar"
                                 style={{
@@ -260,7 +241,9 @@ class InfoUser extends Component {
                                     genders.map((item, index) => {
                                         return (
                                             <option key={index} value={item.keyMap}>
-                                                {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
+                                                {language === LANGUAGES.VI
+                                                    ? item.valueVi
+                                                    : item.valueEn}
                                             </option>
                                         );
                                     })}
@@ -285,7 +268,6 @@ class InfoUser extends Component {
                                 <FormattedMessage id="account.email" />
                             </label>
                             <input
-                                disabled
                                 className="form-control mb-4"
                                 id="exampleEmail"
                                 placeholder="with a placeholder"
@@ -303,7 +285,6 @@ class InfoUser extends Component {
                             <input
                                 className="form-control mb-4"
                                 id="phoneNumber"
-                                disabled
                                 name="phoneNumberNumber"
                                 placeholder="with a placeholder"
                                 type="text"

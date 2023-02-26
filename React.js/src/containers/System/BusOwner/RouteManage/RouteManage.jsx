@@ -96,8 +96,9 @@ class RouteManage extends Component {
         });
     };
 
-    handleDeleteUser = (user) => {
+    handleDeleteUser = async (user) => {
         this.props.deleteSchedule(user.id);
+        await this.getAllTrips();
     };
 
     doEditUser1 = (user) => {
@@ -546,7 +547,7 @@ class RouteManage extends Component {
                                                     .locale("en")
                                                     .format("LT")}`;
                                             }
-                                            let current = new Date().getTime();
+                                            // let current = new Date().getTime();
                                             return (
                                                 <tr key={index}>
                                                     <td className="center">{user.id}</td>
@@ -557,7 +558,7 @@ class RouteManage extends Component {
                                                     <td>{start}</td>
                                                     <td>{end}</td>
                                                     <td className="center">
-                                                        {current < +user.timeStart && (
+                                                        {/* {current < +user.timeStart && (
                                                             <button
                                                                 className="btn-edit"
                                                                 onClick={() =>
@@ -565,7 +566,7 @@ class RouteManage extends Component {
                                                                 }>
                                                                 <i className=" fas fa-edit"></i>
                                                             </button>
-                                                        )}
+                                                        )} */}
 
                                                         <button
                                                             className="btn-delete"

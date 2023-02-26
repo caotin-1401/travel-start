@@ -105,9 +105,9 @@ class TableCustomer extends Component {
                 let str1 = "00:00";
                 let [month, day, year] = time.split("/");
                 let [hours, minutes] = str1.split(":");
-                date1 = new Date(+year, month - 1, +day, +hours, +minutes);
+                date1 = new Date(+year, month - 1, +day, +hours, +minutes).getTime();
             } else date1 = time;
-            let res = await getAllRouteFromDateDriver(idDriver, date1.getTime());
+            let res = await getAllRouteFromDateDriver(idDriver, date1);
             this.setState({
                 listRoute: res.tickets,
             });
@@ -142,9 +142,9 @@ class TableCustomer extends Component {
                 let str1 = "00:00";
                 let [month, day, year] = time.split("/");
                 let [hours, minutes] = str1.split(":");
-                date1 = new Date(+year, month - 1, +day, +hours, +minutes);
+                date1 = new Date(+year, month - 1, +day, +hours, +minutes).getTime();
             } else date1 = time;
-            let res = await getAllRouteFromDateDriver(idDriver, date1.getTime());
+            let res = await getAllRouteFromDateDriver(idDriver, date1);
             this.setState({
                 listRoute: res.tickets,
             });

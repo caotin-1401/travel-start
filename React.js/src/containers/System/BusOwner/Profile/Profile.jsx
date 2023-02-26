@@ -1,4 +1,4 @@
-import React, { Component, Suspense, lazy } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
 import { withRouter } from "react-router";
@@ -6,9 +6,8 @@ import * as actions from "../../../../store/actions";
 import Header from "../../../Header/Header";
 import { Row, Col } from "reactstrap";
 import "../style.scss";
-import Loading from "../../../../components/Loading";
+import InfoUser from "./InfoUser";
 
-const InfoUser = lazy(() => import("./InfoUser"));
 class ProfileBusOwner extends Component {
     render() {
         const { processLogout } = this.props;
@@ -48,9 +47,7 @@ class ProfileBusOwner extends Component {
                                 </div>
                             </Col>
                             <Col md={7} className="container-right__admin">
-                                <Suspense fallback={<Loading />}>
-                                    <InfoUser />
-                                </Suspense>
+                                <InfoUser />
                             </Col>
                             <Col md={1} className="none"></Col>
                         </Row>
@@ -64,7 +61,6 @@ class ProfileBusOwner extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        genderRedux: state.admin.gender,
         isLoggedIn: state.user.isLoggedIn,
         userInfo: state.user.userInfo,
     };
@@ -72,7 +68,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getGenderStart: () => dispatch(actions.fetchGenderStart()),
         processLogout: () => dispatch(actions.processLogout()),
     };
 };

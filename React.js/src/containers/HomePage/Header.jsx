@@ -189,7 +189,7 @@ class HeaderPage extends Component {
                                         </DropdownItem>
 
                                         <DropdownItem divider />
-                                        <DropdownItem>
+                                        <DropdownItem onClick={this.returnToHome}>
                                             <div onClick={processLogout} title="Log out">
                                                 <i className="fas fa-sign-out-alt"></i>{" "}
                                                 <FormattedMessage id="menu.driver.logout" />

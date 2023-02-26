@@ -14,8 +14,6 @@ class InfoUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            genderArr: [],
-            gender: "",
             name: "",
             phoneNumber: "",
             email: "",
@@ -29,7 +27,6 @@ class InfoUser extends Component {
         };
     }
     async componentDidMount() {
-        this.props.getGenderStart();
         if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let userId = this.props.match.params.id;
             let res = await getAllUsers(+userId);
@@ -39,7 +36,6 @@ class InfoUser extends Component {
                 imageBase64 = Buffer.from(res.users[0].image, "base64").toString("binary");
             }
             this.setState({
-                gender: res.users[0].gender,
                 id: res.users[0].id,
                 name: res.users[0].name,
                 phoneNumber: res.users[0].phoneNumber,
@@ -51,15 +47,8 @@ class InfoUser extends Component {
         }
     }
     async componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.genderRedux !== this.props.genderRedux) {
-            let arrGenders = this.props.genderRedux;
-            this.setState({
-                genderArr: arrGenders,
-            });
-        }
         if (this.state.name && prevState.name) {
             if (
-                prevState.gender !== this.state.gender ||
                 prevState.name !== this.state.name ||
                 prevState.phoneNumber !== this.state.phoneNumber ||
                 prevState.email !== this.state.email ||
@@ -95,84 +84,56 @@ class InfoUser extends Component {
         }
     };
     handleSaveUser = async () => {
-        let { gender, name, phoneNumber, email, address, id, avatar } = this.state;
-        console.log(this.state);
+        let { name, phoneNumber, email, address, id, avatar } = this.state;
         let language = this.props.language;
-        if (!gender) gender = "M";
-        if (language === LANGUAGES.VI) {
-            if (!name) {
-                toast.error("Tên không được để trống");
-            } else if (!email) {
-                toast.error("Email không được để trống");
-            } else if (!phoneNumber) {
-                toast.error("Số điện thoại không được để trống");
-            } else {
-                console.log(gender);
-                let res = await editUserService({
-                    id,
-                    name,
-                    email,
-                    gender,
-                    phoneNumber,
-                    address,
-                    avatar,
-                });
-                if (res && res.errCode === 0) {
-                    this.setState({
-                        isChanged: false,
-                    });
-                    if (language === LANGUAGES.VI) {
-                        toast.success("Cập nhập thông tin người dùng thành công");
-                    } else {
-                        toast.success("User information is successfully updated");
-                    }
-                } else {
-                    if (language === LANGUAGES.VI) {
-                        toast.success("Cập nhập thông tin người dùng thất bại");
-                    } else {
-                        toast.success("User information update failed");
-                    }
-                }
-            }
-            return;
-        } else if (language === LANGUAGES.EN) {
-            if (!name) {
-                toast.error("Please enter your name");
-            } else if (!email) {
-                toast.error("Please enter your email");
-            } else if (!phoneNumber) {
-                toast.error("Please enter your phone number");
-            } else {
-                console.log(gender);
-                let res = await editUserService({
-                    id,
-                    name,
-                    email,
-                    gender,
-                    phoneNumber,
-                    address,
-                    avatar,
-                });
-                if (res && res.errCode === 0) {
-                    this.setState({
-                        isChanged: false,
-                    });
-                    if (language === LANGUAGES.VI) {
-                        toast.success("Cập nhập thông tin người dùng thành công");
-                    } else {
-                        toast.success("User information is successfully updated");
-                    }
-                } else {
-                    if (language === LANGUAGES.VI) {
-                        toast.success("Cập nhập thông tin người dùng thất bại");
-                    } else {
-                        toast.success("User information update failed");
-                    }
-                }
-            }
-            return;
+        if (!name) {
+            if (language === "vi") toast.error("Tên không được để trống");
+            else toast.error("Please enter your name");
+        } else if (!email) {
+            if (language === "vi") toast.error("Email không được để trống");
+            else toast.error("Please enter your Email");
+        } else if (!phoneNumber) {
+            if (language === "vi") toast.error("Số điện thoại không được để trống");
+            else toast.error("Please enter your phone");
         } else {
+            let res = await editUserService({
+                id,
+                name,
+                email,
+                phoneNumber,
+                address,
+                avatar,
+            });
+            if (res && res.errCode === 0) {
+                this.setState({
+                    isChanged: false,
+                });
+                if (language === LANGUAGES.VI) {
+                    toast.success("Cập nhập thông tin người dùng thành công");
+                } else {
+                    toast.success("User information is successfully updated");
+                }
+            } else if (res && res.errCode === 1) {
+                if (language === LANGUAGES.VI) {
+                    toast.error("Email đã tồn tại trong hệ thống, vui lòng chọn email khác");
+                } else {
+                    toast.error("Your email already exists, please try another email");
+                }
+            } else if (res && res.errCode === 6) {
+                if (language === LANGUAGES.VI) {
+                    toast.error("Số điện thoại tồn tại trong hệ thống, vui lòng chọn sô khác");
+                } else {
+                    toast.error("Your email already exists, please try another email");
+                }
+            } else {
+                if (language === LANGUAGES.VI) {
+                    toast.error("Cập nhập thông tin người dùng thất bại");
+                } else {
+                    toast.error("User information update failed");
+                }
+            }
         }
+        return;
     };
     toggleUserEditModel = () => {
         this.setState({
@@ -191,8 +152,7 @@ class InfoUser extends Component {
     };
     render() {
         const { language } = this.props;
-        let genders = this.state.genderArr;
-        let { gender, name, phoneNumber, email, address, isChanged } = this.state;
+        let { name, phoneNumber, email, address, isChanged } = this.state;
 
         let value;
         if (language === "vi") value = "Chủ nhà xe";
@@ -248,31 +208,8 @@ class InfoUser extends Component {
                                 }}
                             />
                         </Col>
-                        <Col md={3}>
-                            <label className="mb-2">
-                                {" "}
-                                <FormattedMessage id="account.gender" />
-                            </label>
-                            <select
-                                className="form-select mb-4"
-                                onChange={(event) => {
-                                    this.onChangeInput(event, "gender");
-                                }}
-                                value={gender}>
-                                {genders &&
-                                    genders.length > 0 &&
-                                    genders.map((item, index) => {
-                                        return (
-                                            <option key={index} value={item.keyMap}>
-                                                {language === LANGUAGES.VI
-                                                    ? item.valueVi
-                                                    : item.valueEn}
-                                            </option>
-                                        );
-                                    })}
-                            </select>
-                        </Col>
-                        <Col md={3}>
+
+                        <Col md={6}>
                             <label className="mb-2">
                                 {" "}
                                 <FormattedMessage id="account.Role" />
@@ -292,7 +229,6 @@ class InfoUser extends Component {
                                 <FormattedMessage id="account.email" />
                             </label>
                             <input
-                                disabled
                                 className="form-control mb-4"
                                 id="exampleEmail"
                                 placeholder="with a placeholder"
@@ -308,7 +244,6 @@ class InfoUser extends Component {
                                 <FormattedMessage id="account.phone" />
                             </label>
                             <input
-                                disabled
                                 className="form-control mb-4"
                                 id="phoneNumber"
                                 name="phoneNumberNumber"
@@ -369,7 +304,6 @@ class InfoUser extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.app.language,
-        genderRedux: state.admin.gender,
         isLoggedIn: state.user.isLoggedIn,
         userInfo: state.user.userInfo,
     };
@@ -377,7 +311,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getGenderStart: () => dispatch(actions.fetchGenderStart()),
         processLogout: () => dispatch(actions.processLogout()),
     };
 };

@@ -25,7 +25,7 @@ class ModalAdd extends Component {
             selectType: "",
             dayStart: "",
             dayEnd: "",
-            sumMoneyCondition: "",
+            sumMoneyCondition: 0,
             count: "",
             discount: "",
             discountMax: "",
@@ -51,7 +51,7 @@ class ModalAdd extends Component {
                 selectType: "",
                 dayStart: "",
                 dayEnd: "",
-                sumMoneyCondition: "",
+                sumMoneyCondition: 0,
                 count: "",
                 discount: "",
                 discountMax: "",
@@ -139,6 +139,7 @@ class ModalAdd extends Component {
             sumMoneyCondition,
             count,
         } = this.state;
+        console.log(sumMoneyCondition);
         let language = this.props.language;
         let pointCondition = this.props.userInfo.id;
         let startDate = new Date(dayStart).getTime();

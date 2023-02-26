@@ -12,6 +12,7 @@ class Step3 extends Component {
             finalPrice: 0,
             coupon: "",
             inFoCoupon: [],
+            couponCode: "",
             discount: 0,
             discountMax: 0,
             type: "",
@@ -25,6 +26,7 @@ class Step3 extends Component {
             seatArr: this.props.seatArrParent,
             totalPrice: this.props.totalPriceParent,
             finalPrice: this.props.totalPriceParent,
+            coupon: this.props.coupon,
         });
     }
     async componentDidUpdate(prevProps, prevState, snapshot) {
@@ -43,10 +45,8 @@ class Step3 extends Component {
     }
 
     onChangeInput = (event, id) => {
-        let copyState = { ...this.state };
-        copyState[id] = event.target.value.toUpperCase();
         this.setState({
-            ...copyState,
+            coupon: event.target.value.toUpperCase(),
         });
     };
     handleBlur = async (event) => {
@@ -108,7 +108,7 @@ class Step3 extends Component {
                             discountMax,
                             type,
                         },
-                        this.props.parentCallback(inFoCoupon, finalPrice)
+                        this.props.parentCallback(inFoCoupon, finalPrice, this.state.coupon)
                     );
             } else {
                 let id;

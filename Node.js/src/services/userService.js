@@ -7,49 +7,17 @@ import { v4 as uuidv4 } from "uuid";
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 var salt = bcrypt.genSaltSync(10);
-let checkUserEmailAdmin = (userEmail) => {
+
+let checkEmailExist = (userEmail) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let user = await db.User.findOne({
-                where: { email: userEmail },
-            });
-            if (user) {
-                resolve(true);
-            } else {
-                resolve(false);
-            }
-        } catch (e) {
-            reject(e);
-        }
-    });
-};
-let checkPhoneAdmin = (userEmail) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            console.log(userEmail);
-            let user = await db.User.findOne({
-                where: { phoneNumber: userEmail },
-            });
-            console.log(user);
-            if (user) {
-                resolve(true);
-            } else {
-                resolve(false);
-            }
-        } catch (e) {
-            reject(e);
-        }
-    });
-};
-let checkEmailPassenger = (userEmail) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            console.log(userEmail);
             let passenger = await db.Passenger.findOne({
                 where: { email: userEmail },
             });
-            console.log(passenger);
-            if (passenger) {
+            let admin = await db.User.findOne({
+                where: { email: userEmail },
+            });
+            if (passenger || admin) {
                 resolve(true);
             } else {
                 resolve(false);
@@ -59,13 +27,16 @@ let checkEmailPassenger = (userEmail) => {
         }
     });
 };
-let checkPhonePassenger = (phone) => {
+let checkPhoneExist = (phone) => {
     return new Promise(async (resolve, reject) => {
         try {
             let passenger = await db.Passenger.findOne({
                 where: { phoneNumber: phone },
             });
-            if (passenger) {
+            let admin = await db.User.findOne({
+                where: { phoneNumber: phone },
+            });
+            if (passenger || admin) {
                 resolve(true);
             } else {
                 resolve(false);
@@ -165,8 +136,8 @@ let createNewUserByRegister = (email, password, confirmPassword, phoneNumber) =>
     return new Promise(async (resolve, reject) => {
         try {
             let userData = {};
-            let check = await checkEmailPassenger(email);
-            let checkPhone = await checkPhonePassenger(phoneNumber);
+            let check = await checkEmailExist(email);
+            let checkPhone = await checkPhoneExist(phoneNumber);
             if (check) {
                 resolve({
                     errCode: 1,
@@ -409,8 +380,8 @@ let getUserTicket = (userId) => {
 let createNewUser = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let check = await checkUserEmailAdmin(data.email);
-            let checkPhone = await checkPhoneAdmin(data.phoneNumber);
+            let check = await checkEmailExist(data.email);
+            let checkPhone = await checkPhoneExist(data.phoneNumber);
             if (check) {
                 resolve({
                     errCode: 1,
@@ -565,26 +536,46 @@ let handEditPassenger = async (data) => {
                 where: { id: data.id },
                 raw: false,
             });
+            console.log(user);
+            let check, checkPhone;
+            if (data.email !== user.email) {
+                check = await checkEmailExist(data.email);
+            }
+            if (data.phoneNumber !== user.phoneNumber) {
+                checkPhone = await checkPhoneExist(data.phoneNumber);
+            }
 
-            if (user) {
-                user.name = data.name;
-                user.address = data.address;
-                user.roleID = data.roleID;
-                user.gender = data.gender;
-                user.phoneNumber = data.phoneNumber;
-                if (data.avatar) {
-                    user.image = data.avatar;
-                }
-                await user.save();
-                resolve({
-                    errCode: 0,
-                    message: "update user success",
-                });
-            } else {
+            if (check) {
                 resolve({
                     errCode: 1,
-                    errMessage: "user not found",
+                    errMessage: "Your email already exists, please try another email",
                 });
+            } else if (checkPhone) {
+                resolve({
+                    errCode: 6,
+                    errMessage: "Your email already exists, please try another email",
+                });
+            } else {
+                if (user) {
+                    user.name = data.name;
+                    user.address = data.address;
+                    user.roleID = data.roleID;
+                    user.gender = data.gender;
+                    user.phoneNumber = data.phoneNumber;
+                    if (data.avatar) {
+                        user.image = data.avatar;
+                    }
+                    await user.save();
+                    resolve({
+                        errCode: 0,
+                        message: "update user success",
+                    });
+                } else {
+                    resolve({
+                        errCode: 1,
+                        errMessage: "user not found",
+                    });
+                }
             }
         } catch (e) {
             reject(e);
@@ -604,25 +595,44 @@ let updateUserData = async (data) => {
                 where: { id: data.id },
                 raw: false,
             });
+            let check, checkPhone;
+            if (data.email !== user.email) {
+                check = await checkEmailExist(data.email);
+            }
+            if (data.phoneNumber !== user.phoneNumber) {
+                checkPhone = await checkPhoneExist(data.phoneNumber);
+            }
 
-            if (user) {
-                user.name = data.name;
-                user.address = data.address;
-                user.gender = data.gender;
-                user.phoneNumber = data.phoneNumber;
-                if (data.avatar) {
-                    user.image = data.avatar;
-                }
-                await user.save();
-                resolve({
-                    errCode: 0,
-                    message: "update user success",
-                });
-            } else {
+            if (check) {
                 resolve({
                     errCode: 1,
-                    errMessage: "user not found",
+                    errMessage: "Your email already exists, please try another email",
                 });
+            } else if (checkPhone) {
+                resolve({
+                    errCode: 6,
+                    errMessage: "Your email already exists, please try another email",
+                });
+            } else {
+                if (user) {
+                    user.name = data.name;
+                    user.address = data.address;
+                    user.gender = data.gender;
+                    user.phoneNumber = data.phoneNumber;
+                    if (data.avatar) {
+                        user.image = data.avatar;
+                    }
+                    await user.save();
+                    resolve({
+                        errCode: 0,
+                        message: "update user success",
+                    });
+                } else {
+                    resolve({
+                        errCode: 1,
+                        errMessage: "user not found",
+                    });
+                }
             }
         } catch (e) {
             reject(e);
